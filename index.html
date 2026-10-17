@@ -41,12 +41,9 @@
                 </div>
             </div>
             <div class="flex items-center space-x-2">
-                <!-- Role Switcher & Security Modal Trigger -->
-                <button onclick="toggleAdminMode()" id="role-badge" class="text-xs bg-brand-100 text-brand-700 px-2.5 py-1 rounded-full font-semibold border border-brand-200">
+                <!-- Admin Toggle / Login Trigger -->
+                <button onclick="openAdminLoginModal()" id="role-badge" class="text-xs bg-brand-100 text-brand-700 px-2.5 py-1.5 rounded-xl font-semibold border border-brand-200">
                     <i class="fa-solid fa-user-shield mr-1"></i> <span id="role-text">Customer</span>
-                </button>
-                <button onclick="openRulesModal()" class="text-gray-500 hover:text-brand-600 p-1.5" title="Firestore Security Rules">
-                    <i class="fa-solid fa-shield-halved text-base"></i>
                 </button>
             </div>
         </div>
@@ -55,32 +52,32 @@
     <!-- Main Container -->
     <main class="max-w-md mx-auto px-4 py-4">
 
-        <!-- AUTH & PROFILE CARD -->
-        <section id="auth-section" class="mb-4 bg-white rounded-2xl p-4 shadow-sm border border-brand-100">
-            <div id="auth-logged-out" class="space-y-3">
-                <div class="flex justify-between items-center">
-                    <h2 class="font-bold text-sm text-gray-900"><i class="fa-solid fa-lock text-brand-500 mr-1.5"></i> Account Login / Sign Up</h2>
-                    <span class="text-xs text-gray-400">Firebase Auth Active</span>
+        <!-- GUEST BROWSING BANNER (Shows if not logged in) -->
+        <section id="guest-banner" class="mb-4 bg-white rounded-2xl p-3 shadow-sm border border-brand-100 flex items-center justify-between">
+            <div class="flex items-center space-x-2.5">
+                <div class="w-8 h-8 bg-brand-100 text-brand-600 rounded-xl flex items-center justify-center text-xs">
+                    <i class="fa-solid fa-sparkles"></i>
                 </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <input type="email" id="auth-email" placeholder="Email address" class="col-span-2 text-xs border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-brand-500">
-                    <input type="password" id="auth-password" placeholder="Password" class="col-span-2 text-xs border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-brand-500">
-                </div>
-                <div class="flex space-x-2 pt-1">
-                    <button onclick="handleLogin()" class="flex-1 bg-brand-500 text-white text-xs font-semibold py-2 rounded-xl shadow-sm hover:bg-brand-600 transition">Log In</button>
-                    <button onclick="handleSignup()" class="flex-1 bg-brand-100 text-brand-700 text-xs font-semibold py-2 rounded-xl hover:bg-brand-200 transition">Sign Up</button>
+                <div>
+                    <p class="text-xs font-bold text-gray-900">Browsing as Guest</p>
+                    <p class="text-[10px] text-gray-400">Log in with Telegram to purchase items</p>
                 </div>
             </div>
-            <div id="auth-logged-in" class="hidden flex items-center justify-between">
-                <div class="flex items-center space-x-2">
-                    <div class="w-9 h-9 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center font-bold text-sm" id="user-avatar-initial">U</div>
-                    <div>
-                        <p class="text-xs font-bold text-gray-900" id="user-display-email">user@email.com</p>
-                        <p class="text-[10px] text-emerald-600 font-medium"><i class="fa-solid fa-circle text-[8px] mr-1"></i> Connected to Firebase</p>
-                    </div>
+            <button onclick="loginWithTelegram()" class="bg-brand-500 text-white text-xs font-semibold px-3 py-1.5 rounded-xl shadow-sm hover:bg-brand-600 transition">
+                <i class="fa-brands fa-telegram mr-1"></i> Telegram Login
+            </button>
+        </section>
+
+        <!-- LOGGED IN USER PROFILE (Hidden until login) -->
+        <section id="user-profile-section" class="mb-4 bg-white rounded-2xl p-3 shadow-sm border border-brand-100 hidden flex items-center justify-between">
+            <div class="flex items-center space-x-2.5">
+                <div class="w-8 h-8 bg-brand-500 text-white rounded-xl flex items-center justify-center font-bold text-xs" id="user-avatar-initial">U</div>
+                <div>
+                    <p class="text-xs font-bold text-gray-900" id="user-display-name">Customer Name</p>
+                    <p class="text-[10px] text-emerald-600 font-medium"><i class="fa-solid fa-circle text-[8px] mr-1"></i> Connected via Telegram</p>
                 </div>
-                <button onclick="handleLogout()" class="text-xs text-gray-500 hover:text-red-500 px-3 py-1.5 rounded-lg border border-gray-200">Log Out</button>
             </div>
+            <button onclick="handleLogout()" class="text-xs text-gray-400 hover:text-red-500 p-1.5"><i class="fa-solid fa-right-from-bracket"></i></button>
         </section>
 
         <!-- CUSTOMER VIEW WRAPPER -->
@@ -93,7 +90,7 @@
                 </div>
                 <!-- Category Pills -->
                 <div class="flex space-x-1.5 overflow-x-auto pb-1 scrollbar-none text-xs">
-                    <button onclick="filterCategory('All')" class="cat-btn bg-brand-500 text-white px-3 py-1.5 rounded-full font-medium whitespace-shadow shadow-sm transition">All ✨</button>
+                    <button onclick="filterCategory('All')" class="cat-btn bg-brand-500 text-white px-3 py-1.5 rounded-full font-medium whitespace-nowrap shadow-sm transition">All ✨</button>
                     <button onclick="filterCategory('Hairpins')" class="cat-btn bg-white text-gray-600 border border-brand-100 px-3 py-1.5 rounded-full font-medium whitespace-nowrap hover:bg-brand-50 transition">Hairpins 🎀</button>
                     <button onclick="filterCategory('Necklaces')" class="cat-btn bg-white text-gray-600 border border-brand-100 px-3 py-1.5 rounded-full font-medium whitespace-nowrap hover:bg-brand-50 transition">Necklaces 💎</button>
                     <button onclick="filterCategory('Rings')" class="cat-btn bg-white text-gray-600 border border-brand-100 px-3 py-1.5 rounded-full font-medium whitespace-nowrap hover:bg-brand-50 transition">Rings 💍</button>
@@ -110,6 +107,14 @@
 
         <!-- ADMIN VIEW WRAPPER -->
         <div id="admin-view" class="hidden space-y-4">
+            <div class="flex justify-between items-center bg-white p-3 rounded-2xl border border-brand-100 shadow-sm">
+                <div>
+                    <h3 class="font-bold text-xs text-gray-900">Admin Control Center</h3>
+                    <p class="text-[10px] text-brand-600 font-medium">Manage store, products, and orders</p>
+                </div>
+                <button onclick="exitAdminMode()" class="text-xs bg-gray-100 text-gray-600 px-3 py-1.5 rounded-xl font-semibold hover:bg-gray-200 transition">Exit Admin</button>
+            </div>
+
             <!-- Admin KPI Stats -->
             <div class="grid grid-cols-2 gap-3">
                 <div class="bg-white p-3 rounded-2xl border border-brand-100 shadow-sm">
@@ -137,13 +142,9 @@
                 </div>
 
                 <!-- Admin Tab Content: Products -->
-                <div id="admin-tab-products" class="space-y-2 pt-1 max-h-80 overflow-y-auto">
-                    <!-- Loaded via JS -->
-                </div>
+                <div id="admin-tab-products" class="space-y-2 pt-1 max-h-80 overflow-y-auto"></div>
                 <!-- Admin Tab Content: Orders -->
-                <div id="admin-tab-orders" class="space-y-2 pt-1 max-h-80 overflow-y-auto hidden">
-                    <!-- Loaded via JS -->
-                </div>
+                <div id="admin-tab-orders" class="space-y-2 pt-1 max-h-80 overflow-y-auto hidden"></div>
                 <!-- Admin Tab Content: Coupons -->
                 <div id="admin-tab-coupons" class="space-y-2 pt-1 max-h-80 overflow-y-auto hidden">
                     <div class="flex space-x-2">
@@ -177,6 +178,19 @@
         </div>
     </nav>
 
+    <!-- ADMIN LOGIN MODAL -->
+    <div id="admin-login-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative">
+            <button onclick="closeAdminLoginModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="font-bold text-sm text-gray-900"><i class="fa-solid fa-user-shield text-brand-500 mr-1.5"></i> Admin Dashboard Login</h3>
+            <div class="space-y-2 text-xs">
+                <input type="email" id="admin-email" placeholder="Admin Email" class="w-full border border-gray-200 rounded-xl px-3 py-2">
+                <input type="password" id="admin-password" placeholder="Password" class="w-full border border-gray-200 rounded-xl px-3 py-2">
+            </div>
+            <button onclick="handleAdminLogin()" class="w-full bg-brand-500 text-white font-bold text-xs py-3 rounded-2xl shadow-md hover:bg-brand-600 transition">Log In to Admin 🔑</button>
+        </div>
+    </div>
+
     <!-- SLIDING CART DRAWER -->
     <div id="cart-drawer" class="fixed inset-0 bg-black/50 z-50 hidden transition-opacity">
         <div class="absolute inset-y-0 right-0 max-w-xs w-full bg-white shadow-2xl flex flex-col p-4">
@@ -184,11 +198,8 @@
                 <h3 class="font-bold text-sm text-gray-900"><i class="fa-solid fa-bag-shopping text-brand-500 mr-1.5"></i> Your Shopping Bag</h3>
                 <button onclick="closeCartDrawer()" class="text-gray-400 hover:text-gray-600 text-sm p-1"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div id="cart-items-container" class="flex-1 overflow-y-auto py-3 space-y-3">
-                <!-- Cart Items -->
-            </div>
+            <div id="cart-items-container" class="flex-1 overflow-y-auto py-3 space-y-3"></div>
             <div class="border-t border-gray-100 pt-3 space-y-2">
-                <!-- Coupon Input -->
                 <div class="flex space-x-1.5">
                     <input type="text" id="cart-coupon-input" placeholder="Promo Code (e.g. PINK10)" class="flex-1 text-xs border border-gray-200 rounded-xl px-3 py-2 uppercase">
                     <button onclick="applyCoupon()" class="bg-gray-900 text-white text-xs px-3 py-2 rounded-xl font-semibold">Apply</button>
@@ -210,13 +221,11 @@
         </div>
     </div>
 
-    <!-- PRODUCT DETAIL & REVIEW MODAL -->
+    <!-- PRODUCT DETAIL MODAL -->
     <div id="product-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button onclick="closeProductModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
-            <div id="modal-product-content">
-                <!-- Populated via JS -->
-            </div>
+            <div id="modal-product-content"></div>
         </div>
     </div>
 
@@ -264,12 +273,10 @@
 
     <!-- FIREBASE & APP LOGIC -->
     <script type="module">
-        // Import Firebase SDKs
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Your web app's Firebase configuration (songsashop-be6d7)
         const firebaseConfig = {
             apiKey: "AIzaSyDz6snwoujsmp8IQ5-1c2_IL-JmEOx2tIM",
             authDomain: "songsashop-be6d7.firebaseapp.com",
@@ -280,53 +287,36 @@
             measurementId: "G-NFSK4MPH0M"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Make globally available
         window.firebaseAuth = auth;
         window.firebaseDb = db;
         window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-        window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
         window.signOut = signOut;
-        window.collection = collection;
-        window.getDocs = getDocs;
-        window.addDoc = addDoc;
-        window.updateDoc = updateDoc;
-        window.deleteDoc = deleteDoc;
-        window.doc = doc;
-        window.setDoc = setDoc;
 
-        // Init Telegram WebApp if available
+        // Auto-login Telegram user upon opening mini app
         if (window.Telegram && window.Telegram.WebApp) {
             window.Telegram.WebApp.ready();
             window.Telegram.WebApp.expand();
             const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
             if (tgUser && tgUser.first_name) {
+                window.currentUser = {
+                    name: tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : ''),
+                    username: tgUser.username || 'tg_user_' + tgUser.id,
+                    id: tgUser.id
+                };
                 document.getElementById('user-welcome').innerText = `Welcome, ${tgUser.first_name} ✨`;
+                document.getElementById('guest-banner').classList.add('hidden');
+                document.getElementById('user-profile-section').classList.remove('hidden');
+                document.getElementById('user-display-name').innerText = window.currentUser.name;
+                document.getElementById('user-avatar-initial').innerText = tgUser.first_name.charAt(0).toUpperCase();
             }
         }
-
-        // Listen to Auth State
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                document.getElementById('auth-logged-out').classList.add('hidden');
-                document.getElementById('auth-logged-in').classList.remove('hidden');
-                document.getElementById('user-display-email').innerText = user.email;
-                document.getElementById('user-avatar-initial').innerText = user.email.charAt(0).toUpperCase();
-            } else {
-                document.getElementById('auth-logged-out').classList.remove('hidden');
-                document.getElementById('auth-logged-in').classList.add('hidden');
-            }
-        });
-
-        loadInitialData();
     </script>
 
     <script>
-        // Local Mock/State fallback & Controllers
         let products = [
             { id: '1', name: 'Crystal Pearl Hairpin', category: 'Hairpins', price: 12.50, stock: 15, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
             { id: '2', name: 'Dainty Butterfly Choker', category: 'Necklaces', price: 18.00, stock: 8, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' },
@@ -347,15 +337,9 @@
             { code: 'SPARKLE20', discount: 20 }
         ];
         let activeCategory = 'All';
-        let isAdmin = false;
         let appliedDiscount = 0;
 
-        function loadInitialData() {
-            renderProducts();
-            renderAdminProducts();
-            renderAdminOrders();
-            renderCoupons();
-        }
+        window.currentUser = window.currentUser || null;
 
         function renderProducts() {
             const grid = document.getElementById('product-grid');
@@ -367,19 +351,11 @@
                 return matchCat && matchSearch;
             });
 
-            if (filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-2 text-center py-8 text-xs text-gray-400">No cute accessories found ✨</div>`;
-                return;
-            }
-
             grid.innerHTML = filtered.map(p => `
                 <div class="bg-white rounded-2xl p-2.5 border border-brand-100 shadow-sm flex flex-col justify-between">
                     <div>
                         <div class="relative rounded-xl overflow-hidden aspect-square bg-brand-50 mb-2 cursor-pointer" onclick="openProductDetail('${p.id}')">
                             <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover hover:scale-105 transition">
-                            <button onclick="event.stopPropagation(); toggleWishlist('${p.id}')" class="absolute top-2 right-2 w-7 h-7 bg-white/80 rounded-full flex items-center justify-center text-xs ${wishlist.includes(p.id) ? 'text-red-500' : 'text-gray-400'} shadow-sm">
-                                <i class="fa-solid fa-heart"></i>
-                            </button>
                         </div>
                         <h4 class="font-bold text-xs text-gray-900 truncate">${p.name}</h4>
                         <p class="text-[10px] text-gray-400">${p.category}</p>
@@ -394,13 +370,6 @@
 
         function filterCategory(cat) {
             activeCategory = cat;
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                if (btn.innerText.includes(cat) || (cat === 'All' && btn.innerText.includes('All'))) {
-                    btn.className = 'cat-btn bg-brand-500 text-white px-3 py-1.5 rounded-full font-medium whitespace-nowrap shadow-sm transition';
-                } else {
-                    btn.className = 'cat-btn bg-white text-gray-600 border border-brand-100 px-3 py-1.5 rounded-full font-medium whitespace-nowrap hover:bg-brand-50 transition';
-                }
-            });
             renderProducts();
         }
 
@@ -408,16 +377,39 @@
             renderProducts();
         }
 
-        function toggleWishlist(id) {
-            if (wishlist.includes(id)) {
-                wishlist = wishlist.filter(item => item !== id);
+        function loginWithTelegram() {
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe?.user) {
+                const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
+                window.currentUser = { name: tgUser.first_name, id: tgUser.id };
+                document.getElementById('guest-banner').classList.add('hidden');
+                document.getElementById('user-profile-section').classList.remove('hidden');
+                document.getElementById('user-display-name').innerText = tgUser.first_name;
+                document.getElementById('user-avatar-initial').innerText = tgUser.first_name.charAt(0).toUpperCase();
+                alert(`Successfully logged in as ${tgUser.first_name} via Telegram! ✨`);
             } else {
-                wishlist.push(id);
+                // Fallback simulation for browser testing
+                window.currentUser = { name: 'Demo Customer', id: '12345' };
+                document.getElementById('guest-banner').classList.add('hidden');
+                document.getElementById('user-profile-section').classList.remove('hidden');
+                document.getElementById('user-display-name').innerText = 'Demo Customer';
+                document.getElementById('user-avatar-initial').innerText = 'D';
+                alert('Logged in successfully via Telegram WebApp!');
             }
-            renderProducts();
+        }
+
+        function handleLogout() {
+            window.currentUser = null;
+            document.getElementById('guest-banner').classList.remove('hidden');
+            document.getElementById('user-profile-section').classList.add('hidden');
+            alert('Logged out successfully.');
         }
 
         function addToCart(id) {
+            if (!window.currentUser) {
+                alert('Please log in with Telegram first before buying items! 🌸');
+                loginWithTelegram();
+                return;
+            }
             const prod = products.find(p => p.id === id);
             if (!prod || prod.stock <= 0) return alert('Out of stock!');
             const existing = cart.find(item => item.id === id);
@@ -427,7 +419,7 @@
                 cart.push({ ...prod, qty: 1 });
             }
             updateCartBadge();
-            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+            if (window.Telegram?.WebApp?.HapticFeedback) {
                 window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
             }
         }
@@ -467,9 +459,7 @@
 
         function updateQty(idx, change) {
             cart[idx].qty += change;
-            if (cart[idx].qty <= 0) {
-                cart.splice(idx, 1);
-            }
+            if (cart[idx].qty <= 0) cart.splice(idx, 1);
             openCartDrawer();
             updateCartBadge();
         }
@@ -477,15 +467,7 @@
         function calculateCartTotals() {
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
             document.getElementById('cart-subtotal').innerText = `$${subtotal.toFixed(2)}`;
-            
             let discAmt = subtotal * (appliedDiscount / 100);
-            if (appliedDiscount > 0) {
-                document.getElementById('discount-row').classList.remove('hidden');
-                document.getElementById('discount-label').innerText = `${appliedDiscount}%`;
-                document.getElementById('cart-discount').innerText = `-$${discAmt.toFixed(2)}`;
-            } else {
-                document.getElementById('discount-row').classList.add('hidden');
-            }
             const total = subtotal - discAmt;
             document.getElementById('cart-total').innerText = `$${total.toFixed(2)}`;
         }
@@ -503,6 +485,7 @@
         }
 
         function openCheckoutModal() {
+            if (!window.currentUser) return alert('Please log in first!');
             if (cart.length === 0) return alert('Your cart is empty');
             closeCartDrawer();
             document.getElementById('checkout-modal').classList.remove('hidden');
@@ -516,66 +499,73 @@
             const name = document.getElementById('checkout-name').value;
             const phone = document.getElementById('checkout-phone').value;
             const address = document.getElementById('checkout-address').value;
-            if (!name || !phone || !address) return alert('Please fill in all delivery details');
+            if (!name || !phone || !address) return alert('Please fill in delivery details');
 
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
             const total = subtotal - (subtotal * (appliedDiscount / 100));
 
-            const newOrd = {
+            orders.unshift({
                 id: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
                 customer: name,
                 total: total,
                 status: 'Processing',
                 date: new Date().toISOString().split('T')[0]
-            };
-            orders.unshift(newOrd);
+            });
             cart = [];
             updateCartBadge();
             closeCheckoutModal();
-            alert('Order placed successfully! Thank you for shopping with Sparkle & Bloom ✨');
+            alert('Order placed successfully! ✨');
             renderAdminOrders();
         }
 
-        // Toggle Admin Mode
-        function toggleAdminMode() {
-            isAdmin = !isAdmin;
-            const roleBadge = document.getElementById('role-badge');
-            const roleText = document.getElementById('role-text');
-            const customerView = document.getElementById('customer-view');
-            const adminView = document.getElementById('admin-view');
-            const customerNav = document.getElementById('customer-nav');
+        // Admin Login Modal Handlers
+        function openAdminLoginModal() {
+            document.getElementById('admin-login-modal').classList.remove('hidden');
+        }
 
-            if (isAdmin) {
-                roleBadge.className = 'text-xs bg-brand-500 text-white px-2.5 py-1 rounded-full font-semibold shadow-sm';
-                roleText.innerText = 'Admin';
-                customerView.classList.add('hidden');
-                adminView.classList.remove('hidden');
-                customerNav.classList.add('hidden');
-            } else {
-                roleBadge.className = 'text-xs bg-brand-100 text-brand-700 px-2.5 py-1 rounded-full font-semibold border border-brand-200';
-                roleText.innerText = 'Customer';
-                customerView.classList.remove('hidden');
-                adminView.classList.add('hidden');
-                customerNav.classList.remove('hidden');
+        function closeAdminLoginModal() {
+            document.getElementById('admin-login-modal').classList.add('hidden');
+        }
+
+        async function handleAdminLogin() {
+            const email = document.getElementById('admin-email').value;
+            const password = document.getElementById('admin-password').value;
+            if (!email || !password) return alert('Enter admin credentials');
+            try {
+                await window.signInWithEmailAndPassword(window.firebaseAuth, email, password);
+                closeAdminLoginModal();
+                enterAdminMode();
+            } catch (err) {
+                alert('Admin Login Failed: ' + err.message);
             }
         }
 
-        function switchAdminTab(tab) {
-            document.getElementById('admin-tab-products').classList.add('hidden');
-            document.getElementById('admin-tab-orders').classList.add('hidden');
-            document.getElementById('admin-tab-coupons').classList.add('hidden');
-            
-            document.getElementById('tab-btn-products').className = 'flex-1 py-1.5 bg-gray-50 text-gray-500 rounded-xl transition';
-            document.getElementById('tab-btn-orders').className = 'flex-1 py-1.5 bg-gray-50 text-gray-500 rounded-xl transition';
-            document.getElementById('tab-btn-coupons').className = 'flex-1 py-1.5 bg-gray-50 text-gray-500 rounded-xl transition';
+        function enterAdminMode() {
+            document.getElementById('customer-view').classList.add('hidden');
+            document.getElementById('admin-view').classList.remove('hidden');
+            document.getElementById('customer-nav').classList.add('hidden');
+            renderAdminProducts();
+            renderAdminOrders();
+            renderCoupons();
+        }
 
+        function exitAdminMode() {
+            document.getElementById('customer-view').classList.remove('hidden');
+            document.getElementById('admin-view').classList.add('hidden');
+            document.getElementById('customer-nav').classList.remove('hidden');
+        }
+
+        function switchAdminTab(tab) {
+            ['products', 'orders', 'coupons'].forEach(t => {
+                document.getElementById(`admin-tab-${t}`).classList.add('hidden');
+                document.getElementById(`tab-btn-${t}`).className = 'flex-1 py-1.5 bg-gray-50 text-gray-500 rounded-xl transition';
+            });
             document.getElementById(`admin-tab-${tab}`).classList.remove('hidden');
             document.getElementById(`tab-btn-${tab}`).className = 'flex-1 py-1.5 bg-brand-50 text-brand-600 rounded-xl font-bold transition';
         }
 
         function renderAdminProducts() {
-            const container = document.getElementById('admin-tab-products');
-            container.innerHTML = products.map(p => `
+            document.getElementById('admin-tab-products').innerHTML = products.map(p => `
                 <div class="flex items-center justify-between bg-gray-50 p-2.5 rounded-xl border border-gray-100">
                     <div class="flex items-center space-x-2">
                         <img src="${p.image}" class="w-10 h-10 rounded-lg object-cover">
@@ -593,8 +583,7 @@
         }
 
         function renderAdminOrders() {
-            const container = document.getElementById('admin-tab-orders');
-            container.innerHTML = orders.map(o => `
+            document.getElementById('admin-tab-orders').innerHTML = orders.map(o => `
                 <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 space-y-1">
                     <div class="flex justify-between items-center">
                         <span class="font-bold text-xs text-gray-900">${o.id} - ${o.customer}</span>
@@ -609,8 +598,7 @@
         }
 
         function renderCoupons() {
-            const container = document.getElementById('coupons-list');
-            container.innerHTML = coupons.map(c => `
+            document.getElementById('coupons-list').innerHTML = coupons.map(c => `
                 <div class="flex justify-between items-center bg-gray-50 p-2 rounded-xl text-xs">
                     <span class="font-bold">${c.code}</span>
                     <span class="text-brand-600 font-semibold">${c.discount}% OFF</span>
@@ -621,7 +609,7 @@
         function createCoupon() {
             const code = document.getElementById('new-coupon-code').value.toUpperCase().trim();
             const disc = parseFloat(document.getElementById('new-coupon-disc').value);
-            if (!code || isNaN(disc)) return alert('Please enter valid coupon info');
+            if (!code || isNaN(disc)) return alert('Enter valid coupon info');
             coupons.push({ code, discount: disc });
             renderCoupons();
             document.getElementById('new-coupon-code').value = '';
@@ -663,20 +651,13 @@
             const stock = parseInt(document.getElementById('prod-stock').value);
             const image = document.getElementById('prod-image').value;
 
-            if (!name || isNaN(price) || isNaN(stock)) return alert('Please fill in valid details');
+            if (!name || isNaN(price) || isNaN(stock)) return alert('Fill in valid details');
 
             if (id) {
                 const p = products.find(item => item.id === id);
-                if (p) {
-                    p.name = name; p.category = category; p.price = price; p.stock = stock; if (image) p.image = image;
-                }
+                if (p) { p.name = name; p.category = category; p.price = price; p.stock = stock; if (image) p.image = image; }
             } else {
-                const newP = {
-                    id: String(Date.now()),
-                    name, category, price, stock,
-                    image: image || 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80'
-                };
-                products.push(newP);
+                products.push({ id: String(Date.now()), name, category, price, stock, image: image || 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' });
             }
             closeAdminProductModal();
             renderProducts();
@@ -692,8 +673,7 @@
         function openProductDetail(id) {
             const p = products.find(item => item.id === id);
             if (!p) return;
-            const content = document.getElementById('modal-product-content');
-            content.innerHTML = `
+            document.getElementById('modal-product-content').innerHTML = `
                 <img src="${p.image}" class="w-full h-48 rounded-2xl object-cover mb-3">
                 <span class="bg-brand-100 text-brand-700 text-[10px] font-bold px-2.5 py-1 rounded-full">${p.category}</span>
                 <h4 class="font-bold text-base text-gray-900 mt-1">${p.name}</h4>
@@ -711,57 +691,11 @@
         }
 
         function switchTab(tab) {
-            if (tab === 'wishlist') {
-                alert(`You have ${wishlist.length} items saved in your wishlist!`);
-            } else if (tab === 'orders') {
-                alert(`You have ${orders.length} order history records.`);
-            }
+            if (tab === 'wishlist') alert(`You have ${wishlist.length} saved items.`);
+            if (tab === 'orders') alert(`You have ${orders.length} order history records.`);
         }
 
-        // Firebase Auth UI Handlers
-        async function handleLogin() {
-            const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-password').value;
-            if (!email || !password) return alert('Please enter email and password');
-            try {
-                await window.signInWithEmailAndPassword(window.firebaseAuth, email, password);
-                alert('Logged in successfully!');
-            } catch (err) {
-                alert(err.message);
-            }
-        }
-
-        async function handleSignup() {
-            const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-password').value;
-            if (!email || !password) return alert('Please enter email and password');
-            try {
-                await window.createUserWithEmailAndPassword(window.firebaseAuth, email, password);
-                alert('Account created and logged in!');
-            } catch (err) {
-                alert(err.message);
-            }
-        }
-
-        async function handleLogout() {
-            try {
-                await window.signOut(window.firebaseAuth);
-                alert('Logged out successfully');
-            } catch (err) {
-                alert(err.message);
-            }
-        }
-
-        function openRulesModal() {
-            alert("Firestore Security Rules Exporter:\n\n" +
-                  "rules_version = '2';\n" +
-                  "service cloud.firestore {\n" +
-                  "  match /databases/{database}/documents {\n" +
-                  "    match /products/{doc} { allow read: if true; allow write: if request.auth != null; }\n" +
-                  "    match /orders/{order} { allow read, write: if request.auth != null; }\n" +
-                  "  }\n" +
-                  "}");
-        }
+        renderProducts();
     </script>
 </body>
 </html>
