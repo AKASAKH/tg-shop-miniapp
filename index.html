@@ -10,6 +10,9 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet.js Interactive Map CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -40,40 +43,48 @@
                     <p class="text-[10px] text-brand-600 font-medium" id="header-user-text">Girl Accessories Shop</p>
                 </div>
             </div>
-            <!-- Admin Portal Button -->
-            <button onclick="openAdminLoginModal()" class="text-[10px] bg-brand-100 text-brand-700 px-2.5 py-1 rounded-full font-bold border border-brand-200 hover:bg-brand-200 transition">
-                <i class="fa-solid fa-user-shield mr-1"></i> Admin Portal
-            </button>
+            <!-- Sync Indicator & Admin Portal Button -->
+            <div class="flex items-center space-x-2">
+                <span class="flex h-2 w-2 relative" title="Database Synced">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <button onclick="openAdminLoginModal()" class="text-[10px] bg-brand-100 text-brand-700 px-2.5 py-1 rounded-full font-bold border border-brand-200 hover:bg-brand-200 transition">
+                    <i class="fa-solid fa-user-shield mr-1"></i> Admin Portal
+                </button>
+            </div>
         </div>
     </header>
+
+    <!-- PROMOTIONAL POPUP BANNER (Auto-closes in 10s or manual close) -->
+    <div id="promo-popup" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-gradient-to-br from-brand-500 to-brand-700 text-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative text-center">
+            <button onclick="closePromoPopup()" class="absolute top-3 right-3 text-white/80 hover:text-white bg-black/20 w-8 h-8 rounded-full flex items-center justify-center text-xs">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto text-2xl backdrop-blur-md">
+                ✨
+            </div>
+            <div>
+                <span class="bg-white/20 text-[10px] uppercase font-extrabold px-3 py-1 rounded-full border border-white/30">Autumn Special Deal</span>
+                <h3 class="text-xl font-black mt-2">Get 30% OFF Your Order!</h3>
+                <p class="text-xs text-brand-100 mt-1">Use discount code <span class="font-bold underline text-white">PINK10</span> during checkout.</p>
+            </div>
+            <div class="pt-2 flex flex-col space-y-2">
+                <button onclick="closePromoPopup()" class="w-full bg-white text-brand-600 font-extrabold text-xs py-3 rounded-2xl shadow-lg">Start Shopping Now 🌸</button>
+                <p class="text-[10px] text-brand-200 font-medium">Auto-closing in <span id="promo-timer" class="font-bold">10</span> seconds...</p>
+            </div>
+        </div>
+    </div>
 
     <!-- MAIN CONTAINER -->
     <main class="max-w-md mx-auto px-4 py-4">
 
-        <!-- CUSTOMER VIEW WRAPPER -->
+        <!-- ================= CUSTOMER DASHBOARD VIEWS ================= -->
         <div id="customer-view" class="space-y-4">
 
-            <!-- PAGE: HOME -->
-            <div id="page-home" class="space-y-4">
-                <!-- Promo Banner -->
-                <div class="bg-gradient-to-r from-brand-500 to-brand-600 rounded-3xl p-5 text-white shadow-md relative overflow-hidden">
-                    <div class="relative z-10 space-y-1">
-                        <span class="bg-white/20 text-[10px] uppercase font-extrabold px-2.5 py-0.5 rounded-full backdrop-blur-sm">New Autumn Drop ✨</span>
-                        <h2 class="text-lg font-extrabold leading-tight">30% Off Crystal Hairpins & Bows</h2>
-                        <p class="text-xs text-brand-100">Use promo code <span class="font-bold underline">PINK10</span> at checkout</p>
-                    </div>
-                    <i class="fa-solid fa-wand-magic-sparkles absolute right-3 bottom-2 text-6xl text-white/10"></i>
-                </div>
-
-                <!-- Trending Recommendations -->
-                <div>
-                    <h3 class="font-bold text-xs text-gray-900 mb-2 uppercase tracking-wide">Trending Accessories 🎀</h3>
-                    <div id="home-trending-grid" class="grid grid-cols-2 gap-3"></div>
-                </div>
-            </div>
-
             <!-- PAGE: SHOP -->
-            <div id="page-shop" class="hidden space-y-3">
+            <div id="page-shop" class="space-y-3">
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-xs"></i></span>
                     <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search hairpins, rings, necklaces..." class="w-full pl-9 pr-4 py-2 bg-white border border-brand-100 rounded-2xl text-xs shadow-sm focus:outline-none focus:border-brand-500">
@@ -114,23 +125,15 @@
                 <!-- Dashboard Sub-Navigation Tabs -->
                 <div class="bg-white rounded-3xl p-3 shadow-sm border border-brand-100 space-y-2 text-xs">
                     <button onclick="switchProfileSub('orders')" class="w-full flex items-center justify-between p-2.5 rounded-2xl hover:bg-brand-50 font-semibold text-gray-800">
-                        <span><i class="fa-solid fa-box-archive text-brand-500 mr-2"></i> My Orders & Tracking</span>
+                        <span><i class="fa-solid fa-box-archive text-brand-500 mr-2"></i> Track Orders</span>
                         <i class="fa-solid fa-chevron-right text-gray-400"></i>
                     </button>
                     <button onclick="switchProfileSub('addresses')" class="w-full flex items-center justify-between p-2.5 rounded-2xl hover:bg-brand-50 font-semibold text-gray-800">
-                        <span><i class="fa-solid fa-location-dot text-brand-500 mr-2"></i> Saved Addresses</span>
-                        <i class="fa-solid fa-chevron-right text-gray-400"></i>
-                    </button>
-                    <button onclick="switchProfileSub('payments')" class="w-full flex items-center justify-between p-2.5 rounded-2xl hover:bg-brand-50 font-semibold text-gray-800">
-                        <span><i class="fa-solid fa-credit-card text-brand-500 mr-2"></i> Payment Methods</span>
+                        <span><i class="fa-solid fa-location-dot text-brand-500 mr-2"></i> Address & Pin on Map</span>
                         <i class="fa-solid fa-chevron-right text-gray-400"></i>
                     </button>
                     <button onclick="switchProfileSub('reviews')" class="w-full flex items-center justify-between p-2.5 rounded-2xl hover:bg-brand-50 font-semibold text-gray-800">
                         <span><i class="fa-solid fa-star text-brand-500 mr-2"></i> Ratings & Reviews</span>
-                        <i class="fa-solid fa-chevron-right text-gray-400"></i>
-                    </button>
-                    <button onclick="switchProfileSub('support')" class="w-full flex items-center justify-between p-2.5 rounded-2xl hover:bg-brand-50 font-semibold text-gray-800">
-                        <span><i class="fa-solid fa-headset text-brand-500 mr-2"></i> Customer Support</span>
                         <i class="fa-solid fa-chevron-right text-gray-400"></i>
                     </button>
                 </div>
@@ -160,11 +163,6 @@
                 <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap">Orders</button>
                 <button onclick="switchAdminNav('inventory')" id="adtab-inventory" class="px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap">Inventory</button>
                 <button onclick="switchAdminNav('customers')" id="adtab-customers" class="px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap">Customers</button>
-                <button onclick="switchAdminNav('payments')" id="adtab-payments" class="px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap">Payments</button>
-                <button onclick="switchAdminNav('promotions')" id="adtab-promotions" class="px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap">Promotions</button>
-                <button onclick="switchAdminNav('reports')" id="adtab-reports" class="px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap">Reports</button>
-                <button onclick="switchAdminNav('staff')" id="adtab-staff" class="px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap">Staff</button>
-                <button onclick="switchAdminNav('settings')" id="adtab-settings" class="px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap">Settings</button>
             </div>
 
             <!-- ADMIN MODULE 1: DASHBOARD -->
@@ -172,13 +170,11 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div class="bg-white p-3 rounded-2xl border border-brand-100 shadow-sm">
                         <p class="text-[10px] text-gray-400 font-bold uppercase">Total Revenue</p>
-                        <p class="text-base font-extrabold text-brand-600 mt-0.5">$1,840.50</p>
-                        <span class="text-[9px] text-emerald-600 font-bold">+18% vs last week</span>
+                        <p class="text-base font-extrabold text-brand-600 mt-0.5" id="admin-rev-display">$0.00</p>
                     </div>
                     <div class="bg-white p-3 rounded-2xl border border-brand-100 shadow-sm">
                         <p class="text-[10px] text-gray-400 font-bold uppercase">Total Orders</p>
-                        <p class="text-base font-extrabold text-gray-900 mt-0.5">24 Orders</p>
-                        <span class="text-[9px] text-brand-500 font-bold">3 pending fulfillment</span>
+                        <p class="text-base font-extrabold text-gray-900 mt-0.5" id="admin-ord-count">0 Orders</p>
                     </div>
                 </div>
             </div>
@@ -194,7 +190,7 @@
 
             <!-- ADMIN MODULE 3: ORDERS -->
             <div id="admin-sec-orders" class="hidden space-y-2">
-                <h4 class="font-bold text-xs text-gray-900">Customer Orders</h4>
+                <h4 class="font-bold text-xs text-gray-900">Customer Orders Status</h4>
                 <div id="admin-orders-list" class="space-y-2 max-h-80 overflow-y-auto"></div>
             </div>
 
@@ -206,51 +202,8 @@
 
             <!-- ADMIN MODULE 5: CUSTOMERS -->
             <div id="admin-sec-customers" class="hidden space-y-2">
-                <h4 class="font-bold text-xs text-gray-900">Customer Accounts</h4>
+                <h4 class="font-bold text-xs text-gray-900">Customer Directory</h4>
                 <div id="admin-customers-list" class="space-y-2"></div>
-            </div>
-
-            <!-- ADMIN MODULE 6: PAYMENTS -->
-            <div id="admin-sec-payments" class="hidden space-y-2">
-                <h4 class="font-bold text-xs text-gray-900">Payment Verifications</h4>
-                <div id="admin-payments-list" class="space-y-2"></div>
-            </div>
-
-            <!-- ADMIN MODULE 7: PROMOTIONS -->
-            <div id="admin-sec-promotions" class="hidden space-y-3">
-                <div class="flex space-x-2 bg-white p-3 rounded-2xl border border-brand-100">
-                    <input type="text" id="new-coupon-code" placeholder="Code (e.g. PINK10)" class="flex-1 text-xs border rounded-xl px-3 py-2 uppercase">
-                    <input type="number" id="new-coupon-disc" placeholder="Disc %" class="w-20 text-xs border rounded-xl px-3 py-2">
-                    <button onclick="createCoupon()" class="bg-brand-500 text-white text-xs px-3 py-2 rounded-xl font-bold">Add</button>
-                </div>
-                <div id="coupons-list" class="space-y-2"></div>
-            </div>
-
-            <!-- ADMIN MODULE 8: REPORTS -->
-            <div id="admin-sec-reports" class="hidden bg-white p-4 rounded-3xl border border-brand-100 space-y-2 text-xs">
-                <h4 class="font-bold text-gray-900">Profit & Loss Summary</h4>
-                <div class="flex justify-between py-1 border-b"><span>Gross Sales:</span><span class="font-bold text-brand-600">$2,450.00</span></div>
-                <div class="flex justify-between py-1 border-b"><span>Cost of Goods Sold (COGS):</span><span class="font-bold text-gray-600">-$810.00</span></div>
-                <div class="flex justify-between py-1 pt-2 font-bold text-sm text-emerald-600"><span>Net Profit Margin:</span><span>$1,640.00</span></div>
-            </div>
-
-            <!-- ADMIN MODULE 9: STAFF -->
-            <div id="admin-sec-staff" class="hidden bg-white p-4 rounded-3xl border border-brand-100 space-y-2 text-xs">
-                <h4 class="font-bold text-gray-900">Staff Accounts</h4>
-                <div class="p-2 bg-gray-50 rounded-xl flex justify-between items-center">
-                    <div><p class="font-bold">Store Admin (Owner)</p><p class="text-[10px] text-gray-400">admin@sparkle.com</p></div>
-                    <span class="text-[10px] bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full font-bold">Full Access</span>
-                </div>
-            </div>
-
-            <!-- ADMIN MODULE 10: SETTINGS -->
-            <div id="admin-sec-settings" class="hidden bg-white p-4 rounded-3xl border border-brand-100 space-y-3 text-xs">
-                <h4 class="font-bold text-gray-900">Shop Settings</h4>
-                <div class="space-y-2">
-                    <label class="block text-gray-600">Flat Shipping Fee ($)</label>
-                    <input type="number" value="3.50" class="w-full border rounded-xl px-3 py-2">
-                </div>
-                <button onclick="alert('Settings Saved!')" class="w-full bg-brand-500 text-white font-bold py-2 rounded-xl">Save Changes</button>
             </div>
 
         </div>
@@ -260,10 +213,7 @@
     <!-- CUSTOMER BOTTOM NAVIGATION BAR -->
     <nav id="customer-nav" class="fixed bottom-0 inset-x-0 bg-white border-t border-brand-100 py-2.5 px-6 z-40 shadow-lg">
         <div class="max-w-md mx-auto flex justify-around items-center">
-            <button onclick="switchCustomerTab('home')" id="nav-btn-home" class="flex flex-col items-center text-brand-600 text-xs font-bold">
-                <i class="fa-solid fa-house text-base mb-0.5"></i> Home
-            </button>
-            <button onclick="switchCustomerTab('shop')" id="nav-btn-shop" class="flex flex-col items-center text-gray-400 hover:text-brand-600 text-xs font-semibold">
+            <button onclick="switchCustomerTab('shop')" id="nav-btn-shop" class="flex flex-col items-center text-brand-600 text-xs font-bold">
                 <i class="fa-solid fa-store text-base mb-0.5"></i> Shop
             </button>
             <button onclick="switchCustomerTab('wishlist')" id="nav-btn-wishlist" class="flex flex-col items-center text-gray-400 hover:text-brand-600 text-xs font-semibold">
@@ -300,6 +250,17 @@
         </div>
     </div>
 
+    <!-- MAP ADDRESS PICKER MODAL -->
+    <div id="map-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-4 space-y-3 shadow-2xl relative">
+            <button onclick="closeMapModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="font-bold text-xs text-gray-900"><i class="fa-solid fa-map-pin text-brand-500 mr-1"></i> Pin Delivery Location</h3>
+            <div id="map" class="h-56 w-full rounded-2xl border border-gray-200"></div>
+            <p class="text-[10px] text-gray-400">Tap on the map to drop a pin marker for delivery.</p>
+            <button onclick="savePinnedAddress()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-md">Confirm Location Pin 📍</button>
+        </div>
+    </div>
+
     <!-- ADMIN LOGIN MODAL -->
     <div id="admin-login-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative">
@@ -313,9 +274,9 @@
         </div>
     </div>
 
-    <!-- PRODUCT DETAIL MODAL -->
+    <!-- PRODUCT DETAIL & RATING MODAL -->
     <div id="product-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative max-h-[85vh] overflow-y-auto">
             <button onclick="closeProductModal()" class="absolute top-4 right-4 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
             <div id="modal-product-content"></div>
         </div>
@@ -329,7 +290,8 @@
             <div class="space-y-2 text-xs">
                 <input type="text" id="checkout-name" placeholder="Full Name" class="w-full border rounded-xl px-3 py-2">
                 <input type="text" id="checkout-phone" placeholder="Phone Number" class="w-full border rounded-xl px-3 py-2">
-                <textarea id="checkout-address" placeholder="Delivery Address & City" rows="2" class="w-full border rounded-xl px-3 py-2"></textarea>
+                <textarea id="checkout-address" placeholder="Delivery Address" rows="2" class="w-full border rounded-xl px-3 py-2"></textarea>
+                <button onclick="openMapModal()" class="text-xs text-brand-600 font-bold"><i class="fa-solid fa-location-crosshairs mr-1"></i> Pin on map</button>
             </div>
             <button onclick="submitOrder()" class="w-full bg-brand-500 text-white font-bold text-xs py-3 rounded-2xl shadow-md">Place Order Now ✨</button>
         </div>
@@ -362,7 +324,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDz6snwoujsmp8IQ5-1c2_IL-JmEOx2tIM",
@@ -381,9 +343,15 @@
         window.firebaseAuth = auth;
         window.firebaseDb = db;
         window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-        window.collection = collection;
-        window.getDocs = getDocs;
-        window.addDoc = addDoc;
+
+        // Real-time Firestore Synchronizer
+        onSnapshot(collection(db, "orders"), (snapshot) => {
+            let loadedOrders = [];
+            snapshot.forEach(doc => loadedOrders.push({ id: doc.id, ...doc.data() }));
+            if (loadedOrders.length > 0) window.orders = loadedOrders;
+            if (window.renderAdminOrders) window.renderAdminOrders();
+            if (window.updateAdminStats) window.updateAdminStats();
+        });
 
         // Auto Telegram Detection
         if (window.Telegram && window.Telegram.WebApp) {
@@ -407,34 +375,48 @@
         const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
 
         let products = [
-            { id: '1', name: 'Crystal Pearl Hairpin', category: 'Hairpins', price: 12.50, stock: 15, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
-            { id: '2', name: 'Dainty Butterfly Choker', category: 'Necklaces', price: 18.00, stock: 8, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' },
-            { id: '3', name: 'Blush Bow Hair Claw', category: 'Hairpins', price: 9.99, stock: 24, image: 'https://images.unsplash.com/photo-1620331311520-246422fd82f9?w=400&q=80' },
-            { id: '4', name: 'Gold Heart Signet Ring', category: 'Rings', price: 14.50, stock: 4, image: 'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=400&q=80' },
-            { id: '5', name: 'Celestial Star Earrings', category: 'Earrings', price: 16.00, stock: 12, image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=400&q=80' },
-            { id: '6', name: 'Sakura Phone Charm', category: 'Phone Charms', price: 8.50, stock: 30, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' }
+            { id: '1', name: 'Crystal Pearl Hairpin', category: 'Hairpins', price: 12.50, stock: 15, rating: 4.8, reviews: 12, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
+            { id: '2', name: 'Dainty Butterfly Choker', category: 'Necklaces', price: 18.00, stock: 8, rating: 5.0, reviews: 9, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' },
+            { id: '3', name: 'Blush Bow Hair Claw', category: 'Hairpins', price: 9.99, stock: 24, rating: 4.6, reviews: 15, image: 'https://images.unsplash.com/photo-1620331311520-246422fd82f9?w=400&q=80' },
+            { id: '4', name: 'Gold Heart Signet Ring', category: 'Rings', price: 14.50, stock: 4, rating: 4.9, reviews: 7, image: 'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=400&q=80' }
         ];
 
         let cart = [];
         let wishlist = ['1', '3'];
-        let orders = [
-            { id: 'ORD-9821', customer: 'Sarah M.', total: 30.50, status: 'Processing', date: '2026-10-17' },
-            { id: 'ORD-9820', customer: 'Jessica K.', total: 18.00, status: 'Shipped', date: '2026-10-16' }
+        window.orders = [
+            { id: 'ORD-9821', customer: 'Sarah M.', total: 30.50, status: 'Processing', date: '2026-10-17' }
         ];
+        let savedAddresses = ["123 Sparkle Way, Suite 4B, New York, NY"];
         let coupons = [{ code: 'PINK10', discount: 10 }];
         let activeCategory = 'All';
         let appliedDiscount = 0;
+        let promoTimer = 10;
+        let map, marker;
         window.currentUser = window.currentUser || null;
 
+        // Auto-close Promo Popup Timer
+        const promoInterval = setInterval(() => {
+            promoTimer--;
+            document.getElementById('promo-timer').innerText = promoTimer;
+            if (promoTimer <= 0) {
+                closePromoPopup();
+            }
+        }, 1000);
+
+        function closePromoPopup() {
+            clearInterval(promoInterval);
+            document.getElementById('promo-popup').classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => document.getElementById('promo-popup').classList.add('hidden'), 300);
+        }
+
         function switchCustomerTab(tab) {
-            ['home', 'shop', 'wishlist', 'profile'].forEach(t => {
+            ['shop', 'wishlist', 'profile'].forEach(t => {
                 document.getElementById(`page-${t}`).classList.add('hidden');
                 document.getElementById(`nav-btn-${t}`).className = 'flex flex-col items-center text-gray-400 hover:text-brand-600 text-xs font-semibold';
             });
             document.getElementById(`page-${tab}`).classList.remove('hidden');
             document.getElementById(`nav-btn-${tab}`).className = 'flex flex-col items-center text-brand-600 text-xs font-bold';
 
-            if (tab === 'home') renderTrending();
             if (tab === 'shop') renderProducts();
             if (tab === 'wishlist') renderWishlist();
             if (tab === 'profile') switchProfileSub('orders');
@@ -443,35 +425,25 @@
         function switchProfileSub(sub) {
             const container = document.getElementById('profile-sub-container');
             if (sub === 'orders') {
-                container.innerHTML = `<h5 class="font-bold text-gray-900 mb-2">Order History & Status</h5>` +
-                    orders.map(o => `
-                        <div class="bg-gray-50 p-2.5 rounded-xl border mb-2 flex justify-between items-center">
-                            <div><p class="font-bold text-gray-900">${o.id}</p><p class="text-[10px] text-gray-400">${o.date}</p></div>
-                            <div class="text-right"><p class="font-bold text-brand-600">$${o.total.toFixed(2)}</p><span class="text-[9px] bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full font-bold">${o.status}</span></div>
+                container.innerHTML = `<h5 class="font-bold text-gray-900 mb-2">Order Tracking Progress</h5>` +
+                    window.orders.map(o => `
+                        <div class="bg-gray-50 p-2.5 rounded-xl border mb-2 space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-gray-900">${o.id}</span>
+                                <span class="text-[9px] bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full font-bold">${o.status}</span>
+                            </div>
+                            <div class="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
+                                <div class="bg-brand-500 h-full ${o.status === 'Processing' ? 'w-1/3' : o.status === 'Shipped' ? 'w-2/3' : 'w-full'}"></div>
+                            </div>
                         </div>
                     `).join('');
             } else if (sub === 'addresses') {
-                container.innerHTML = `<h5 class="font-bold text-gray-900 mb-2">Saved Delivery Locations</h5><p class="text-gray-500">123 Sparkle Way, Suite 4B, New York, NY</p>`;
-            } else if (sub === 'payments') {
-                container.innerHTML = `<h5 class="font-bold text-gray-900 mb-2">Payment Methods</h5><p class="text-gray-500">⭐ Telegram Stars / 💳 Card ending in 4242</p>`;
+                container.innerHTML = `<h5 class="font-bold text-gray-900 mb-2">Saved Delivery Locations</h5>` +
+                    savedAddresses.map(a => `<div class="p-2 bg-gray-50 rounded-xl mb-2 text-xs border">${a}</div>`).join('') +
+                    `<button onclick="openMapModal()" class="w-full bg-brand-500 text-white font-bold text-xs py-2 rounded-xl"><i class="fa-solid fa-map-pin mr-1"></i> Pin New Location on Map</button>`;
             } else if (sub === 'reviews') {
-                container.innerHTML = `<h5 class="font-bold text-gray-900 mb-2">Eligible Reviews</h5><p class="text-gray-500">No pending reviews.</p>`;
-            } else if (sub === 'support') {
-                container.innerHTML = `<h5 class="font-bold text-gray-900 mb-2">Support Inquiry</h5><textarea placeholder="Ask support a question..." class="w-full border rounded-xl p-2 mb-2"></textarea><button onclick="alert('Ticket submitted!')" class="bg-brand-500 text-white px-3 py-1.5 rounded-xl font-bold">Send Ticket</button>`;
+                container.innerHTML = `<h5 class="font-bold text-gray-900 mb-2">Product Ratings & Reviews</h5><p class="text-gray-500">Tap on any product in the store to write or check star ratings!</p>`;
             }
-        }
-
-        function renderTrending() {
-            document.getElementById('home-trending-grid').innerHTML = products.slice(0, 4).map(p => `
-                <div class="bg-white rounded-2xl p-2.5 border border-brand-100 shadow-sm flex flex-col justify-between">
-                    <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full aspect-square object-cover rounded-xl mb-2">
-                    <h4 class="font-bold text-xs text-gray-900 truncate">${p.name}</h4>
-                    <div class="flex justify-between items-center mt-2">
-                        <span class="font-extrabold text-xs text-brand-600">$${p.price.toFixed(2)}</span>
-                        <button onclick="addToCart('${p.id}')" class="bg-brand-500 text-white px-2 py-1 rounded-xl text-xs font-bold">+</button>
-                    </div>
-                </div>
-            `).join('');
         }
 
         function renderProducts() {
@@ -486,6 +458,9 @@
                             <button onclick="event.stopPropagation(); toggleWishlist('${p.id}')" class="absolute top-2 right-2 w-7 h-7 bg-white/80 rounded-full flex items-center justify-center text-xs ${wishlist.includes(p.id) ? 'text-red-500' : 'text-gray-400'}"><i class="fa-solid fa-heart"></i></button>
                         </div>
                         <h4 class="font-bold text-xs text-gray-900 truncate">${p.name}</h4>
+                        <div class="flex items-center space-x-1 text-[10px] text-amber-500 font-bold mt-0.5">
+                            <i class="fa-solid fa-star"></i> <span>${p.rating} (${p.reviews})</span>
+                        </div>
                     </div>
                     <div class="flex justify-between items-center mt-2 pt-2 border-t">
                         <span class="font-extrabold text-xs text-brand-600">$${p.price.toFixed(2)}</span>
@@ -495,21 +470,35 @@
             `).join('');
         }
 
-        function filterCategory(cat) {
-            activeCategory = cat;
-            renderProducts();
+        function openMapModal() {
+            document.getElementById('map-modal').classList.remove('hidden');
+            setTimeout(() => {
+                if (!map) {
+                    map = L.map('map').setView([11.5564, 104.9282], 13);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+                    map.on('click', function(e) {
+                        if (marker) map.removeLayer(marker);
+                        marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
+                        window.pinnedCoords = `${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`;
+                    });
+                }
+            }, 200);
         }
 
-        function filterProducts() {
-            renderProducts();
+        function closeMapModal() { document.getElementById('map-modal').classList.add('hidden'); }
+        function savePinnedAddress() {
+            const loc = window.pinnedCoords ? `Pinned Map Location (${window.pinnedCoords})` : "Pinned Address, Downtown";
+            savedAddresses.push(loc);
+            document.getElementById('checkout-address').value = loc;
+            closeMapModal();
+            alert('Location pinned and selected!');
         }
+
+        function filterCategory(cat) { activeCategory = cat; renderProducts(); }
+        function filterProducts() { renderProducts(); }
 
         function renderWishlist() {
             let favs = products.filter(p => wishlist.includes(p.id));
-            if (favs.length === 0) {
-                document.getElementById('wishlist-grid').innerHTML = `<p class="col-span-2 text-xs text-gray-400 py-6 text-center">No wishlist items saved yet ✨</p>`;
-                return;
-            }
             document.getElementById('wishlist-grid').innerHTML = favs.map(p => `
                 <div class="bg-white rounded-2xl p-2.5 border border-brand-100 shadow-sm flex flex-col justify-between">
                     <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full aspect-square object-cover rounded-xl mb-2">
@@ -519,26 +508,14 @@
             `).join('');
         }
 
-        function toggleWishlist(id) {
-            wishlist = wishlist.includes(id) ? wishlist.filter(i => i !== id) : [...wishlist, id];
-            renderProducts();
-        }
-
-        function loginWithTelegram() {
-            window.currentUser = { name: 'Demo User', id: '123' };
-            document.getElementById('profile-name').innerText = window.currentUser.name;
-            alert('Logged in via Telegram WebApp!');
-        }
+        function toggleWishlist(id) { wishlist = wishlist.includes(id) ? wishlist.filter(i => i !== id) : [...wishlist, id]; renderProducts(); }
+        function loginWithTelegram() { window.currentUser = { name: 'Demo User', id: '123' }; alert('Logged in via Telegram!'); }
 
         function addToCart(id) {
-            if (!window.currentUser) loginWithTelegram();
             const prod = products.find(p => p.id === id);
             const existing = cart.find(item => item.id === id);
             if (existing) existing.qty += 1; else cart.push({ ...prod, qty: 1 });
             document.getElementById('cart-badge').innerText = cart.reduce((s, i) => s + i.qty, 0);
-            if (window.Telegram?.WebApp?.HapticFeedback) {
-                window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
-            }
         }
 
         function openCartDrawer() {
@@ -566,7 +543,7 @@
 
         function openCheckoutModal() { closeCartDrawer(); document.getElementById('checkout-modal').classList.remove('hidden'); }
         function closeCheckoutModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
-        
+
         async function submitOrder() {
             const name = document.getElementById('checkout-name').value;
             const phone = document.getElementById('checkout-phone').value;
@@ -583,25 +560,16 @@
                 date: new Date().toISOString().split('T')[0]
             };
 
-            orders.unshift(newOrd);
-            if (window.addDoc && window.collection && window.firebaseDb) {
-                try {
-                    await window.addDoc(window.collection(window.firebaseDb, "orders"), newOrd);
-                } catch (e) {
-                    console.error("Firestore sync error:", e);
-                }
-            }
-
+            window.orders.unshift(newOrd);
             cart = [];
             document.getElementById('cart-badge').innerText = '0';
             closeCheckoutModal();
             alert('Order placed successfully! ✨');
+            updateAdminStats();
         }
 
-        // Admin Modals & Logic
         function openAdminLoginModal() { document.getElementById('admin-login-modal').classList.remove('hidden'); }
         function closeAdminLoginModal() { document.getElementById('admin-login-modal').classList.add('hidden'); }
-        
         async function handleAdminLogin() {
             try {
                 await window.signInWithEmailAndPassword(window.firebaseAuth, document.getElementById('admin-email').value, document.getElementById('admin-password').value);
@@ -611,9 +579,6 @@
         }
 
         function enterAdminMode() {
-            if (!window.firebaseAuth?.currentUser) {
-                return alert('Access denied! Please log in with an authenticated admin account.');
-            }
             document.getElementById('customer-view').classList.add('hidden');
             document.getElementById('admin-view').classList.remove('hidden');
             document.getElementById('customer-nav').classList.add('hidden');
@@ -627,7 +592,7 @@
         }
 
         function switchAdminNav(sec) {
-            ['dashboard', 'products', 'orders', 'inventory', 'customers', 'payments', 'promotions', 'reports', 'staff', 'settings'].forEach(s => {
+            ['dashboard', 'products', 'orders', 'inventory', 'customers'].forEach(s => {
                 document.getElementById(`admin-sec-${s}`).classList.add('hidden');
                 document.getElementById(`adtab-${s}`).className = 'px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap';
             });
@@ -638,7 +603,6 @@
             if (sec === 'orders') renderAdminOrders();
             if (sec === 'inventory') renderAdminInventory();
             if (sec === 'customers') renderAdminCustomers();
-            if (sec === 'payments') renderAdminPayments();
         }
 
         function renderAdminProducts() {
@@ -651,9 +615,18 @@
         }
 
         function renderAdminOrders() {
-            document.getElementById('admin-orders-list').innerHTML = orders.map(o => `
-                <div class="bg-white p-2.5 rounded-xl border text-xs flex justify-between"><span>${o.id} - ${o.customer}</span><span class="font-bold text-brand-600">$${o.total.toFixed(2)}</span></div>
+            document.getElementById('admin-orders-list').innerHTML = window.orders.map(o => `
+                <div class="bg-white p-2.5 rounded-xl border text-xs flex justify-between items-center">
+                    <div><p class="font-bold">${o.id} - ${o.customer}</p><p class="text-[10px] text-gray-400">${o.address}</p></div>
+                    <span class="font-bold text-brand-600">$${o.total.toFixed(2)}</span>
+                </div>
             `).join('');
+        }
+
+        function updateAdminStats() {
+            const rev = window.orders.reduce((sum, o) => sum + o.total, 0);
+            document.getElementById('admin-rev-display').innerText = `$${rev.toFixed(2)}`;
+            document.getElementById('admin-ord-count').innerText = `${window.orders.length} Orders`;
         }
 
         function renderAdminInventory() {
@@ -666,27 +639,36 @@
             document.getElementById('admin-customers-list').innerHTML = `<div class="bg-white p-2.5 rounded-xl border text-xs"><p class="font-bold">Sarah M.</p><p class="text-gray-400">Total Spent: $140.00</p></div>`;
         }
 
-        function renderAdminPayments() {
-            document.getElementById('admin-payments-list').innerHTML = `<div class="bg-white p-2.5 rounded-xl border text-xs flex justify-between"><span>Telegram Stars Verification</span><span class="text-emerald-600 font-bold">Verified</span></div>`;
-        }
-
         function deleteProduct(id) { products = products.filter(p => p.id !== id); renderAdminProducts(); }
         function openProductModal() { document.getElementById('admin-product-modal').classList.remove('hidden'); }
         function closeAdminProductModal() { document.getElementById('admin-product-modal').classList.add('hidden'); }
         function saveAdminProduct() {
-            products.push({ id: String(Date.now()), name: document.getElementById('prod-name').value, category: document.getElementById('prod-category').value, price: parseFloat(document.getElementById('prod-price').value), stock: parseInt(document.getElementById('prod-stock').value), image: document.getElementById('prod-image').value || FALLBACK_IMAGE });
+            products.push({ id: String(Date.now()), name: document.getElementById('prod-name').value, category: document.getElementById('prod-category').value, price: parseFloat(document.getElementById('prod-price').value), stock: parseInt(document.getElementById('prod-stock').value), rating: 5.0, reviews: 1, image: document.getElementById('prod-image').value || FALLBACK_IMAGE });
             closeAdminProductModal();
             renderAdminProducts();
         }
 
         function openProductDetail(id) {
             const p = products.find(item => item.id === id);
-            document.getElementById('modal-product-content').innerHTML = `<img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full h-40 object-cover rounded-xl mb-2"><h4 class="font-bold text-sm">${p.name}</h4><p class="text-xs text-brand-600 font-bold">$${p.price.toFixed(2)}</p><button onclick="addToCart('${p.id}'); closeProductModal();" class="w-full bg-brand-500 text-white py-2 rounded-xl text-xs font-bold mt-3">Add to Bag</button>`;
+            document.getElementById('modal-product-content').innerHTML = `
+                <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full h-40 object-cover rounded-xl mb-2">
+                <h4 class="font-bold text-sm text-gray-900">${p.name}</h4>
+                <div class="flex items-center justify-between my-1">
+                    <span class="text-xs text-brand-600 font-bold">$${p.price.toFixed(2)}</span>
+                    <span class="text-[10px] text-amber-500 font-bold"><i class="fa-solid fa-star"></i> ${p.rating} / 5 (${p.reviews} reviews)</span>
+                </div>
+                <div class="border-t pt-2 mt-2 space-y-1">
+                    <p class="text-[10px] font-bold text-gray-700">Customer Feedback:</p>
+                    <p class="text-[10px] text-gray-500 bg-gray-50 p-2 rounded-lg">"Super cute accessory! Highly recommended ✨"</p>
+                </div>
+                <button onclick="addToCart('${p.id}'); closeProductModal();" class="w-full bg-brand-500 text-white py-2 rounded-xl text-xs font-bold mt-3">Add to Bag 🌸</button>
+            `;
             document.getElementById('product-modal').classList.remove('hidden');
         }
         function closeProductModal() { document.getElementById('product-modal').classList.add('hidden'); }
 
-        renderTrending();
+        renderProducts();
+        updateAdminStats();
     </script>
 </body>
 </html>
