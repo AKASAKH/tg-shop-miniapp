@@ -264,7 +264,7 @@
     <!-- ADMIN LOGIN MODAL -->
     <div id="admin-login-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative">
-            <button onclick="closeAdminLoginModal()" class="absolute top-4 right-4 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
+            <button onclick="closeAdminLoginModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
             <h3 class="font-bold text-sm text-gray-900"><i class="fa-solid fa-user-shield text-brand-500 mr-1.5"></i> Admin Dashboard Login</h3>
             <div class="space-y-2 text-xs">
                 <input type="email" id="admin-email" placeholder="Admin Email" class="w-full border rounded-xl px-3 py-2">
@@ -274,10 +274,10 @@
         </div>
     </div>
 
-    <!-- PRODUCT DETAIL & RATING MODAL -->
+    <!-- PRODUCT DETAIL & REVIEW MODAL -->
     <div id="product-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative max-h-[85vh] overflow-y-auto">
-            <button onclick="closeProductModal()" class="absolute top-4 right-4 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
+            <button onclick="closeProductModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
             <div id="modal-product-content"></div>
         </div>
     </div>
@@ -285,7 +285,7 @@
     <!-- CHECKOUT MODAL -->
     <div id="checkout-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative">
-            <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
+            <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
             <h3 class="font-bold text-sm text-gray-900"><i class="fa-solid fa-truck-fast text-brand-500 mr-1.5"></i> Delivery Address & Payment</h3>
             <div class="space-y-2 text-xs">
                 <input type="text" id="checkout-name" placeholder="Full Name" class="w-full border rounded-xl px-3 py-2">
@@ -300,7 +300,7 @@
     <!-- ADD/EDIT PRODUCT MODAL -->
     <div id="admin-product-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative">
-            <button onclick="closeAdminProductModal()" class="absolute top-4 right-4 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
+            <button onclick="closeAdminProductModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
             <h3 class="font-bold text-sm text-gray-900" id="admin-modal-title">Add New Product</h3>
             <input type="hidden" id="edit-product-id">
             <div class="space-y-2 text-xs">
@@ -324,7 +324,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDz6snwoujsmp8IQ5-1c2_IL-JmEOx2tIM",
@@ -344,14 +344,40 @@
         window.firebaseDb = db;
         window.signInWithEmailAndPassword = signInWithEmailAndPassword;
 
-        // Real-time Firestore Synchronizer
+        // Real-time Firestore Synchronizer for Products
+        onSnapshot(collection(db, "products"), (snapshot) => {
+            let loadedProducts = [];
+            snapshot.forEach(doc => loadedProducts.push({ id: doc.id, ...doc.data() }));
+            if (loadedProducts.length > 0) {
+                window.products = loadedProducts;
+            } else {
+                initialSeed(db);
+            }
+            if (window.renderProducts) window.renderProducts();
+            if (window.renderWishlist) window.renderWishlist();
+            if (window.renderAdminProducts) window.renderAdminProducts();
+            if (window.renderAdminInventory) window.renderAdminInventory();
+        });
+
+        // Real-time Firestore Synchronizer for Orders
         onSnapshot(collection(db, "orders"), (snapshot) => {
             let loadedOrders = [];
             snapshot.forEach(doc => loadedOrders.push({ id: doc.id, ...doc.data() }));
             if (loadedOrders.length > 0) window.orders = loadedOrders;
             if (window.renderAdminOrders) window.renderAdminOrders();
             if (window.updateAdminStats) window.updateAdminStats();
+            if (window.switchProfileSub) window.switchProfileSub('orders');
         });
+
+        async function initialSeed(db) {
+            const defaults = [
+                { name: 'Crystal Pearl Hairpin', category: 'Hairpins', price: 12.50, stock: 15, rating: 4.8, reviews: 12, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
+                { name: 'Dainty Butterfly Choker', category: 'Necklaces', price: 18.00, stock: 8, rating: 5.0, reviews: 9, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' }
+            ];
+            for (let p of defaults) {
+                await addDoc(collection(db, "products"), p);
+            }
+        }
 
         // Auto Telegram Detection
         if (window.Telegram && window.Telegram.WebApp) {
@@ -374,13 +400,7 @@
     <script>
         const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
 
-        let products = [
-            { id: '1', name: 'Crystal Pearl Hairpin', category: 'Hairpins', price: 12.50, stock: 15, rating: 4.8, reviews: 12, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
-            { id: '2', name: 'Dainty Butterfly Choker', category: 'Necklaces', price: 18.00, stock: 8, rating: 5.0, reviews: 9, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' },
-            { id: '3', name: 'Blush Bow Hair Claw', category: 'Hairpins', price: 9.99, stock: 24, rating: 4.6, reviews: 15, image: 'https://images.unsplash.com/photo-1620331311520-246422fd82f9?w=400&q=80' },
-            { id: '4', name: 'Gold Heart Signet Ring', category: 'Rings', price: 14.50, stock: 4, rating: 4.9, reviews: 7, image: 'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=400&q=80' }
-        ];
-
+        window.products = [];
         let cart = [];
         let wishlist = ['1', '3'];
         window.orders = [
@@ -448,7 +468,7 @@
 
         function renderProducts() {
             const searchVal = document.getElementById('search-input').value.toLowerCase();
-            let filtered = products.filter(p => (activeCategory === 'All' || p.category === activeCategory) && p.name.toLowerCase().includes(searchVal));
+            let filtered = window.products.filter(p => (activeCategory === 'All' || p.category === activeCategory) && p.name.toLowerCase().includes(searchVal));
             
             document.getElementById('product-grid').innerHTML = filtered.map(p => `
                 <div class="bg-white rounded-2xl p-2.5 border border-brand-100 shadow-sm flex flex-col justify-between">
@@ -459,7 +479,7 @@
                         </div>
                         <h4 class="font-bold text-xs text-gray-900 truncate">${p.name}</h4>
                         <div class="flex items-center space-x-1 text-[10px] text-amber-500 font-bold mt-0.5">
-                            <i class="fa-solid fa-star"></i> <span>${p.rating} (${p.reviews})</span>
+                            <i class="fa-solid fa-star"></i> <span>${p.rating || 5.0} (${p.reviews || 0})</span>
                         </div>
                     </div>
                     <div class="flex justify-between items-center mt-2 pt-2 border-t">
@@ -498,7 +518,7 @@
         function filterProducts() { renderProducts(); }
 
         function renderWishlist() {
-            let favs = products.filter(p => wishlist.includes(p.id));
+            let favs = window.products.filter(p => wishlist.includes(p.id));
             document.getElementById('wishlist-grid').innerHTML = favs.map(p => `
                 <div class="bg-white rounded-2xl p-2.5 border border-brand-100 shadow-sm flex flex-col justify-between">
                     <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full aspect-square object-cover rounded-xl mb-2">
@@ -512,7 +532,7 @@
         function loginWithTelegram() { window.currentUser = { name: 'Demo User', id: '123' }; alert('Logged in via Telegram!'); }
 
         function addToCart(id) {
-            const prod = products.find(p => p.id === id);
+            const prod = window.products.find(p => p.id === id);
             const existing = cart.find(item => item.id === id);
             if (existing) existing.qty += 1; else cart.push({ ...prod, qty: 1 });
             document.getElementById('cart-badge').innerText = cart.reduce((s, i) => s + i.qty, 0);
@@ -529,15 +549,21 @@
                     </div>
                 `).join('');
             const subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            let discAmt = subtotal * (appliedDiscount / 100);
             document.getElementById('cart-subtotal').innerText = `$${subtotal.toFixed(2)}`;
-            document.getElementById('cart-total').innerText = `$${(subtotal - (subtotal * (appliedDiscount/100))).toFixed(2)}`;
+            if (appliedDiscount > 0) {
+                document.getElementById('discount-row').classList.remove('hidden');
+                document.getElementById('cart-discount').innerText = `-$${discAmt.toFixed(2)}`;
+            }
+            document.getElementById('cart-total').innerText = `$${(subtotal - discAmt).toFixed(2)}`;
             document.getElementById('cart-drawer').classList.remove('hidden');
         }
 
         function closeCartDrawer() { document.getElementById('cart-drawer').classList.add('hidden'); }
         function updateQty(idx, change) { cart[idx].qty += change; if (cart[idx].qty <= 0) cart.splice(idx, 1); openCartDrawer(); }
         function applyCoupon() {
-            const found = coupons.find(c => c.code === document.getElementById('cart-coupon-input').value.toUpperCase().trim());
+            const code = document.getElementById('cart-coupon-input').value.toUpperCase().trim();
+            const found = coupons.find(c => c.code === code);
             if (found) { appliedDiscount = found.discount; alert('Coupon Applied!'); openCartDrawer(); }
         }
 
@@ -550,22 +576,26 @@
             const address = document.getElementById('checkout-address').value;
             if (!name || !phone || !address) return alert('Please fill in delivery details');
 
+            const sub = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            const total = sub - (sub * (appliedDiscount / 100));
+
             const newOrd = {
                 id: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
                 customer: name,
                 phone: phone,
                 address: address,
-                total: parseFloat(document.getElementById('cart-total').innerText.replace('$', '')),
+                total: total,
                 status: 'Processing',
                 date: new Date().toISOString().split('T')[0]
             };
 
-            window.orders.unshift(newOrd);
+            const { addDoc, collection } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+            await addDoc(collection(window.firebaseDb, "orders"), newOrd);
+
             cart = [];
             document.getElementById('cart-badge').innerText = '0';
             closeCheckoutModal();
-            alert('Order placed successfully! ✨');
-            updateAdminStats();
+            alert('Order placed successfully to database! ✨');
         }
 
         function openAdminLoginModal() { document.getElementById('admin-login-modal').classList.remove('hidden'); }
@@ -605,16 +635,16 @@
             if (sec === 'customers') renderAdminCustomers();
         }
 
-        function renderAdminProducts() {
-            document.getElementById('admin-products-list').innerHTML = products.map(p => `
-                <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border">
-                    <div class="flex items-center space-x-2"><img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-10 h-10 object-cover rounded-lg"><p class="font-bold text-xs">${p.name}</p></div>
-                    <button onclick="deleteProduct('${p.id}')" class="text-red-500 text-xs"><i class="fa-solid fa-trash"></i></button>
+        window.renderAdminProducts = function() {
+            document.getElementById('admin-products-list').innerHTML = window.products.map(p => `
+                <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border text-xs">
+                    <span><b>${p.name}</b> ($${p.price})</span>
+                    <button onclick="deleteProduct('${p.id}')" class="text-red-500"><i class="fa-solid fa-trash"></i></button>
                 </div>
             `).join('');
         }
 
-        function renderAdminOrders() {
+        window.renderAdminOrders = function() {
             document.getElementById('admin-orders-list').innerHTML = window.orders.map(o => `
                 <div class="bg-white p-2.5 rounded-xl border text-xs flex justify-between items-center">
                     <div><p class="font-bold">${o.id} - ${o.customer}</p><p class="text-[10px] text-gray-400">${o.address}</p></div>
@@ -623,39 +653,52 @@
             `).join('');
         }
 
-        function updateAdminStats() {
+        window.updateAdminStats = function() {
             const rev = window.orders.reduce((sum, o) => sum + o.total, 0);
             document.getElementById('admin-rev-display').innerText = `$${rev.toFixed(2)}`;
             document.getElementById('admin-ord-count').innerText = `${window.orders.length} Orders`;
         }
 
-        function renderAdminInventory() {
-            document.getElementById('admin-inventory-list').innerHTML = products.map(p => `
-                <div class="bg-white p-2.5 rounded-xl border text-xs flex justify-between"><span>${p.name}</span><span class="font-bold">Stock: ${p.stock}</span></div>
+        window.renderAdminInventory = function() {
+            document.getElementById('admin-inventory-list').innerHTML = window.products.map(p => `
+                <div class="bg-white p-2.5 rounded-xl border text-xs flex justify-between"><span>${p.name}</span><span class="font-bold">Stock: ${p.stock || 10}</span></div>
             `).join('');
         }
 
-        function renderAdminCustomers() {
-            document.getElementById('admin-customers-list').innerHTML = `<div class="bg-white p-2.5 rounded-xl border text-xs"><p class="font-bold">Sarah M.</p><p class="text-gray-400">Total Spent: $140.00</p></div>`;
+        window.renderAdminCustomers = function() {
+            document.getElementById('admin-customers-list').innerHTML = `<div class="bg-white p-2.5 rounded-xl border text-xs"><p class="font-bold">Telegram Users</p><p class="text-gray-400">Active synced profiles</p></div>`;
         }
 
-        function deleteProduct(id) { products = products.filter(p => p.id !== id); renderAdminProducts(); }
         function openProductModal() { document.getElementById('admin-product-modal').classList.remove('hidden'); }
         function closeAdminProductModal() { document.getElementById('admin-product-modal').classList.add('hidden'); }
-        function saveAdminProduct() {
-            products.push({ id: String(Date.now()), name: document.getElementById('prod-name').value, category: document.getElementById('prod-category').value, price: parseFloat(document.getElementById('prod-price').value), stock: parseInt(document.getElementById('prod-stock').value), rating: 5.0, reviews: 1, image: document.getElementById('prod-image').value || FALLBACK_IMAGE });
+        
+        async function saveAdminProduct() {
+            const { addDoc, collection } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+            await addDoc(collection(window.firebaseDb, "products"), {
+                name: document.getElementById('prod-name').value,
+                category: document.getElementById('prod-category').value,
+                price: parseFloat(document.getElementById('prod-price').value),
+                stock: parseInt(document.getElementById('prod-stock').value),
+                rating: 5.0, reviews: 0,
+                image: document.getElementById('prod-image').value || FALLBACK_IMAGE
+            });
             closeAdminProductModal();
-            renderAdminProducts();
+            alert('Product added to database successfully!');
+        }
+
+        async function deleteProduct(id) {
+            const { deleteDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+            await deleteDoc(doc(window.firebaseDb, "products", id));
         }
 
         function openProductDetail(id) {
-            const p = products.find(item => item.id === id);
+            const p = window.products.find(item => item.id === id);
             document.getElementById('modal-product-content').innerHTML = `
                 <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full h-40 object-cover rounded-xl mb-2">
                 <h4 class="font-bold text-sm text-gray-900">${p.name}</h4>
                 <div class="flex items-center justify-between my-1">
                     <span class="text-xs text-brand-600 font-bold">$${p.price.toFixed(2)}</span>
-                    <span class="text-[10px] text-amber-500 font-bold"><i class="fa-solid fa-star"></i> ${p.rating} / 5 (${p.reviews} reviews)</span>
+                    <span class="text-[10px] text-amber-500 font-bold"><i class="fa-solid fa-star"></i> ${p.rating || 5.0} / 5 (${p.reviews || 0} reviews)</span>
                 </div>
                 <div class="border-t pt-2 mt-2 space-y-1">
                     <p class="text-[10px] font-bold text-gray-700">Customer Feedback:</p>
@@ -666,9 +709,6 @@
             document.getElementById('product-modal').classList.remove('hidden');
         }
         function closeProductModal() { document.getElementById('product-modal').classList.add('hidden'); }
-
-        renderProducts();
-        updateAdminStats();
     </script>
 </body>
 </html>
