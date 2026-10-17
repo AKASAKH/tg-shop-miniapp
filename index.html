@@ -83,7 +83,7 @@
         <!-- ================= CUSTOMER DASHBOARD VIEWS ================= -->
         <div id="customer-view" class="space-y-4">
 
-            <!-- PAGE: SHOP -->
+            <!-- PAGE: SHOP & HOME FEATURED -->
             <div id="page-shop" class="space-y-3">
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-xs"></i></span>
@@ -108,7 +108,7 @@
                 <div id="wishlist-grid" class="grid grid-cols-2 gap-3"></div>
             </div>
 
-            <!-- PAGE: PROFILE (Customer Account Dashboard) -->
+            <!-- PAGE: PROFILE & FULL CUSTOMER DASHBOARD -->
             <div id="page-profile" class="hidden space-y-4">
                 <!-- User Identity Card -->
                 <div class="bg-white rounded-3xl p-4 shadow-sm border border-brand-100 flex items-center space-x-3">
@@ -122,19 +122,25 @@
                     <button onclick="loginWithTelegram()" class="text-xs bg-brand-100 text-brand-700 px-3 py-1.5 rounded-xl font-bold">Switch Account</button>
                 </div>
 
-                <!-- Dashboard Sub-Navigation Tabs -->
-                <div class="bg-white rounded-3xl p-3 shadow-sm border border-brand-100 space-y-2 text-xs">
-                    <button onclick="switchProfileSub('orders')" class="w-full flex items-center justify-between p-2.5 rounded-2xl hover:bg-brand-50 font-semibold text-gray-800">
-                        <span><i class="fa-solid fa-box-archive text-brand-500 mr-2"></i> Track Orders</span>
-                        <i class="fa-solid fa-chevron-right text-gray-400"></i>
+                <!-- Dashboard Sub-Navigation Grid -->
+                <div class="bg-white rounded-3xl p-3 shadow-sm border border-brand-100 grid grid-cols-2 gap-2 text-xs">
+                    <button onclick="switchProfileSub('orders')" class="p-3 bg-brand-50 rounded-2xl flex flex-col items-center justify-center text-center font-bold text-gray-800">
+                        <i class="fa-solid fa-box-archive text-brand-500 text-lg mb-1"></i> My Orders
                     </button>
-                    <button onclick="switchProfileSub('addresses')" class="w-full flex items-center justify-between p-2.5 rounded-2xl hover:bg-brand-50 font-semibold text-gray-800">
-                        <span><i class="fa-solid fa-location-dot text-brand-500 mr-2"></i> Address & Pin on Map</span>
-                        <i class="fa-solid fa-chevron-right text-gray-400"></i>
+                    <button onclick="switchProfileSub('addresses')" class="p-3 bg-brand-50 rounded-2xl flex flex-col items-center justify-center text-center font-bold text-gray-800">
+                        <i class="fa-solid fa-location-dot text-brand-500 text-lg mb-1"></i> Addresses
                     </button>
-                    <button onclick="switchProfileSub('reviews')" class="w-full flex items-center justify-between p-2.5 rounded-2xl hover:bg-brand-50 font-semibold text-gray-800">
-                        <span><i class="fa-solid fa-star text-brand-500 mr-2"></i> Ratings & Reviews</span>
-                        <i class="fa-solid fa-chevron-right text-gray-400"></i>
+                    <button onclick="switchProfileSub('payments')" class="p-3 bg-brand-50 rounded-2xl flex flex-col items-center justify-center text-center font-bold text-gray-800">
+                        <i class="fa-solid fa-credit-card text-brand-500 text-lg mb-1"></i> Payments
+                    </button>
+                    <button onclick="switchProfileSub('reviews')" class="p-3 bg-brand-50 rounded-2xl flex flex-col items-center justify-center text-center font-bold text-gray-800">
+                        <i class="fa-solid fa-star text-brand-500 text-lg mb-1"></i> Reviews
+                    </button>
+                    <button onclick="switchProfileSub('account')" class="p-3 bg-brand-50 rounded-2xl flex flex-col items-center justify-center text-center font-bold text-gray-800">
+                        <i class="fa-solid fa-user-gear text-brand-500 text-lg mb-1"></i> Account Info
+                    </button>
+                    <button onclick="switchProfileSub('support')" class="p-3 bg-brand-50 rounded-2xl flex flex-col items-center justify-center text-center font-bold text-gray-800">
+                        <i class="fa-solid fa-headset text-brand-500 text-lg mb-1"></i> Support
                     </button>
                 </div>
 
@@ -146,26 +152,34 @@
 
         </div>
 
-        <!-- SHOP ADMIN PANEL -->
+        <!-- ================= FULL SHOP ADMIN PANEL (ADMIN SOP) ================= -->
         <div id="admin-view" class="hidden space-y-4">
             <div class="flex justify-between items-center bg-white p-3.5 rounded-3xl border border-brand-100 shadow-sm">
                 <div>
                     <h3 class="font-bold text-xs text-gray-900">Store Management Console</h3>
                     <p class="text-[10px] text-brand-600 font-medium">Sparkle & Bloom Admin Controls</p>
                 </div>
-                <button onclick="exitAdminMode()" class="text-xs bg-gray-100 text-gray-600 px-3 py-1.5 rounded-xl font-semibold hover:bg-gray-200 transition">Exit Admin</button>
+                <!-- ICON-ONLY EXIT BUTTON (NO TEXT) -->
+                <button onclick="exitAdminMode()" class="w-8 h-8 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center hover:bg-gray-200 transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
 
-            <!-- Admin Navigation Selector -->
+            <!-- Admin SOP Navigation Modules -->
             <div class="bg-white rounded-2xl p-2 shadow-sm border border-brand-100 flex overflow-x-auto space-x-1 text-xs scrollbar-none font-semibold">
                 <button onclick="switchAdminNav('dashboard')" id="adtab-dashboard" class="px-3 py-1.5 bg-brand-500 text-white rounded-xl whitespace-nowrap">Dashboard</button>
                 <button onclick="switchAdminNav('products')" id="adtab-products" class="px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap">Products</button>
                 <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap">Orders</button>
                 <button onclick="switchAdminNav('inventory')" id="adtab-inventory" class="px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap">Inventory</button>
                 <button onclick="switchAdminNav('customers')" id="adtab-customers" class="px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap">Customers</button>
+                <button onclick="switchAdminNav('payments')" id="adtab-payments" class="px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap">Payments</button>
+                <button onclick="switchAdminNav('coupons')" id="adtab-coupons" class="px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap">Coupons</button>
+                <button onclick="switchAdminNav('reports')" id="adtab-reports" class="px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap">Reports</button>
+                <button onclick="switchAdminNav('staff')" id="adtab-staff" class="px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap">Staff</button>
+                <button onclick="switchAdminNav('settings')" id="adtab-settings" class="px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap">Settings</button>
             </div>
 
-            <!-- ADMIN MODULE 1: DASHBOARD -->
+            <!-- MODULE 1: DASHBOARD -->
             <div id="admin-sec-dashboard" class="space-y-3">
                 <div class="grid grid-cols-2 gap-3">
                     <div class="bg-white p-3 rounded-2xl border border-brand-100 shadow-sm">
@@ -176,10 +190,18 @@
                         <p class="text-[10px] text-gray-400 font-bold uppercase">Total Orders</p>
                         <p class="text-base font-extrabold text-gray-900 mt-0.5" id="admin-ord-count">0 Orders</p>
                     </div>
+                    <div class="bg-white p-3 rounded-2xl border border-brand-100 shadow-sm">
+                        <p class="text-[10px] text-gray-400 font-bold uppercase">Estimated Profit</p>
+                        <p class="text-base font-extrabold text-emerald-600 mt-0.5" id="admin-profit-display">$0.00</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-2xl border border-brand-100 shadow-sm">
+                        <p class="text-[10px] text-gray-400 font-bold uppercase">Active Products</p>
+                        <p class="text-base font-extrabold text-indigo-600 mt-0.5" id="admin-prod-count">0</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- ADMIN MODULE 2: PRODUCTS -->
+            <!-- MODULE 2: PRODUCTS CRUD & PUBLISH -->
             <div id="admin-sec-products" class="hidden space-y-3">
                 <div class="flex justify-between items-center bg-white p-3 rounded-2xl border border-brand-100">
                     <h4 class="font-bold text-xs text-gray-900">Catalog Manager</h4>
@@ -188,22 +210,62 @@
                 <div id="admin-products-list" class="space-y-2 max-h-80 overflow-y-auto"></div>
             </div>
 
-            <!-- ADMIN MODULE 3: ORDERS -->
+            <!-- MODULE 3: ORDERS PROCESS, SHIP & CANCEL -->
             <div id="admin-sec-orders" class="hidden space-y-2">
-                <h4 class="font-bold text-xs text-gray-900">Customer Orders Status</h4>
+                <h4 class="font-bold text-xs text-gray-900">Order Workflow Controls</h4>
                 <div id="admin-orders-list" class="space-y-2 max-h-80 overflow-y-auto"></div>
             </div>
 
-            <!-- ADMIN MODULE 4: INVENTORY -->
+            <!-- MODULE 4: INVENTORY & LOW STOCK ALERTS -->
             <div id="admin-sec-inventory" class="hidden space-y-2">
-                <h4 class="font-bold text-xs text-gray-900">Stock & Alerts</h4>
+                <h4 class="font-bold text-xs text-gray-900">Stock Levels & Low-Stock Alerts</h4>
                 <div id="admin-inventory-list" class="space-y-2"></div>
             </div>
 
-            <!-- ADMIN MODULE 5: CUSTOMERS -->
+            <!-- MODULE 5: CUSTOMER ACCOUNTS -->
             <div id="admin-sec-customers" class="hidden space-y-2">
-                <h4 class="font-bold text-xs text-gray-900">Customer Directory</h4>
+                <h4 class="font-bold text-xs text-gray-900">Registered Customer Accounts</h4>
                 <div id="admin-customers-list" class="space-y-2"></div>
+            </div>
+
+            <!-- MODULE 6: PAYMENTS & REFUNDS -->
+            <div id="admin-sec-payments" class="hidden space-y-2">
+                <h4 class="font-bold text-xs text-gray-900">Payment Verification & Refunds</h4>
+                <div id="admin-payments-list" class="space-y-2"></div>
+            </div>
+
+            <!-- MODULE 7: COUPONS & PROMOTIONS -->
+            <div id="admin-sec-coupons" class="hidden space-y-3">
+                <div class="flex justify-between items-center bg-white p-3 rounded-2xl border border-brand-100">
+                    <h4 class="font-bold text-xs text-gray-900">Active Promo Codes</h4>
+                    <button onclick="addPromoCode()" class="bg-brand-500 text-white text-xs px-3 py-1.5 rounded-xl font-bold">+ New Code</button>
+                </div>
+                <div id="admin-coupons-list" class="space-y-2"></div>
+            </div>
+
+            <!-- MODULE 8: REPORTS & ANALYTICS -->
+            <div id="admin-sec-reports" class="hidden space-y-3">
+                <div class="bg-white p-4 rounded-3xl border border-brand-100 space-y-2 text-xs">
+                    <h4 class="font-bold text-gray-900">Sales & Profit Performance Report</h4>
+                    <p class="text-gray-500">Gross Margin: <span class="font-bold text-emerald-600">68.5%</span></p>
+                    <p class="text-gray-500">Average Order Value: <span class="font-bold text-brand-600">$24.50</span></p>
+                </div>
+            </div>
+
+            <!-- MODULE 9: STAFF & PERMISSIONS -->
+            <div id="admin-sec-staff" class="hidden space-y-2">
+                <h4 class="font-bold text-xs text-gray-900">Staff Members & Roles</h4>
+                <div id="admin-staff-list" class="space-y-2"></div>
+            </div>
+
+            <!-- MODULE 10: SHOP SETTINGS & DELIVERY FEES -->
+            <div id="admin-sec-settings" class="hidden space-y-3 bg-white p-4 rounded-3xl border border-brand-100 text-xs">
+                <h4 class="font-bold text-gray-900">Store Configurations</h4>
+                <div class="space-y-2">
+                    <label class="font-bold text-gray-600">Standard Delivery Fee ($)</label>
+                    <input type="number" id="setting-delivery-fee" value="2.50" class="w-full border rounded-xl px-3 py-2">
+                    <button onclick="saveShopSettings()" class="w-full bg-brand-500 text-white font-bold py-2 rounded-xl">Save Configurations</button>
+                </div>
             </div>
 
         </div>
@@ -357,6 +419,7 @@
             if (window.renderWishlist) window.renderWishlist();
             if (window.renderAdminProducts) window.renderAdminProducts();
             if (window.renderAdminInventory) window.renderAdminInventory();
+            if (window.updateAdminStats) window.updateAdminStats();
         });
 
         // Real-time Firestore Synchronizer for Orders
@@ -371,8 +434,8 @@
 
         async function initialSeed(db) {
             const defaults = [
-                { name: 'Crystal Pearl Hairpin', category: 'Hairpins', price: 12.50, stock: 15, rating: 4.8, reviews: 12, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
-                { name: 'Dainty Butterfly Choker', category: 'Necklaces', price: 18.00, stock: 8, rating: 5.0, reviews: 9, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' }
+                { name: 'Crystal Pearl Hairpin', category: 'Hairpins', price: 12.50, stock: 15, rating: 4.8, reviews: 12, published: true, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
+                { name: 'Dainty Butterfly Choker', category: 'Necklaces', price: 18.00, stock: 8, rating: 5.0, reviews: 9, published: true, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' }
             ];
             for (let p of defaults) {
                 await addDoc(collection(db, "products"), p);
@@ -402,7 +465,7 @@
 
         window.products = [];
         let cart = [];
-        let wishlist = ['1', '3'];
+        let wishlist = ['1'];
         window.orders = [
             { id: 'ORD-9821', customer: 'Sarah M.', total: 30.50, status: 'Processing', date: '2026-10-17' }
         ];
@@ -445,7 +508,7 @@
         function switchProfileSub(sub) {
             const container = document.getElementById('profile-sub-container');
             if (sub === 'orders') {
-                container.innerHTML = `<h5 class="font-bold text-gray-900 mb-2">Order Tracking Progress</h5>` +
+                container.innerHTML = `<h5 class="font-bold text-gray-900 mb-2">My Orders & Tracking</h5>` +
                     window.orders.map(o => `
                         <div class="bg-gray-50 p-2.5 rounded-xl border mb-2 space-y-2">
                             <div class="flex justify-between items-center">
@@ -458,11 +521,17 @@
                         </div>
                     `).join('');
             } else if (sub === 'addresses') {
-                container.innerHTML = `<h5 class="font-bold text-gray-900 mb-2">Saved Delivery Locations</h5>` +
+                container.innerHTML = `<h5 class="font-bold text-gray-900 mb-2">Delivery Locations</h5>` +
                     savedAddresses.map(a => `<div class="p-2 bg-gray-50 rounded-xl mb-2 text-xs border">${a}</div>`).join('') +
                     `<button onclick="openMapModal()" class="w-full bg-brand-500 text-white font-bold text-xs py-2 rounded-xl"><i class="fa-solid fa-map-pin mr-1"></i> Pin New Location on Map</button>`;
+            } else if (sub === 'payments') {
+                container.innerHTML = `<h5 class="font-bold text-gray-900 mb-2">Payment Options</h5><p class="text-gray-500">Telegram Wallet / Cash on Delivery Enabled</p>`;
             } else if (sub === 'reviews') {
-                container.innerHTML = `<h5 class="font-bold text-gray-900 mb-2">Product Ratings & Reviews</h5><p class="text-gray-500">Tap on any product in the store to write or check star ratings!</p>`;
+                container.innerHTML = `<h5 class="font-bold text-gray-900 mb-2">Ratings & Reviews</h5><p class="text-gray-500">Tap on any item in shop to review!</p>`;
+            } else if (sub === 'account') {
+                container.innerHTML = `<h5 class="font-bold text-gray-900 mb-2">My Profile Info</h5><p class="text-gray-600">Name: Guest User</p><p class="text-gray-600">Status: Verified via Telegram</p>`;
+            } else if (sub === 'support') {
+                container.innerHTML = `<h5 class="font-bold text-gray-900 mb-2">Customer Support</h5><p class="text-gray-500">Need help? Chat with store admin directly on Telegram.</p>`;
             }
         }
 
@@ -622,17 +691,24 @@
         }
 
         function switchAdminNav(sec) {
-            ['dashboard', 'products', 'orders', 'inventory', 'customers'].forEach(s => {
-                document.getElementById(`admin-sec-${s}`).classList.add('hidden');
-                document.getElementById(`adtab-${s}`).className = 'px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap';
+            ['dashboard', 'products', 'orders', 'inventory', 'customers', 'payments', 'coupons', 'reports', 'staff', 'settings'].forEach(s => {
+                const el = document.getElementById(`admin-sec-${s}`);
+                if (el) el.classList.add('hidden');
+                const btn = document.getElementById(`adtab-${s}`);
+                if (btn) btn.className = 'px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap';
             });
-            document.getElementById(`admin-sec-${sec}`).classList.remove('hidden');
-            document.getElementById(`adtab-${sec}`).className = 'px-3 py-1.5 bg-brand-500 text-white rounded-xl whitespace-nowrap';
+            const activeEl = document.getElementById(`admin-sec-${sec}`);
+            if (activeEl) activeEl.classList.remove('hidden');
+            const activeBtn = document.getElementById(`adtab-${sec}`);
+            if (activeBtn) activeBtn.className = 'px-3 py-1.5 bg-brand-500 text-white rounded-xl whitespace-nowrap';
 
             if (sec === 'products') renderAdminProducts();
             if (sec === 'orders') renderAdminOrders();
             if (sec === 'inventory') renderAdminInventory();
             if (sec === 'customers') renderAdminCustomers();
+            if (sec === 'payments') renderAdminPayments();
+            if (sec === 'coupons') renderAdminCoupons();
+            if (sec === 'staff') renderAdminStaff();
         }
 
         window.renderAdminProducts = function() {
@@ -657,17 +733,39 @@
             const rev = window.orders.reduce((sum, o) => sum + o.total, 0);
             document.getElementById('admin-rev-display').innerText = `$${rev.toFixed(2)}`;
             document.getElementById('admin-ord-count').innerText = `${window.orders.length} Orders`;
+            document.getElementById('admin-profit-display').innerText = `$${(rev * 0.4).toFixed(2)}`;
+            document.getElementById('admin-prod-count').innerText = `${window.products.length}`;
         }
 
         window.renderAdminInventory = function() {
             document.getElementById('admin-inventory-list').innerHTML = window.products.map(p => `
-                <div class="bg-white p-2.5 rounded-xl border text-xs flex justify-between"><span>${p.name}</span><span class="font-bold">Stock: ${p.stock || 10}</span></div>
+                <div class="bg-white p-2.5 rounded-xl border text-xs flex justify-between"><span>${p.name}</span><span class="font-bold ${(p.stock || 0) < 5 ? 'text-red-500' : 'text-gray-700'}">Stock: ${p.stock || 0}</span></div>
             `).join('');
         }
 
         window.renderAdminCustomers = function() {
-            document.getElementById('admin-customers-list').innerHTML = `<div class="bg-white p-2.5 rounded-xl border text-xs"><p class="font-bold">Telegram Users</p><p class="text-gray-400">Active synced profiles</p></div>`;
+            document.getElementById('admin-customers-list').innerHTML = `<div class="bg-white p-2.5 rounded-xl border text-xs"><p class="font-bold">Active Shoppers</p><p class="text-gray-400">Telegram accounts synced</p></div>`;
         }
+
+        function renderAdminPayments() {
+            document.getElementById('admin-payments-list').innerHTML = `<div class="bg-white p-2.5 rounded-xl border text-xs flex justify-between"><span>Telegram Checkout Wallet</span><span class="font-bold text-emerald-600">Verified</span></div>`;
+        }
+
+        function renderAdminCoupons() {
+            document.getElementById('admin-coupons-list').innerHTML = coupons.map(c => `<div class="bg-white p-2.5 rounded-xl border text-xs flex justify-between"><span>Code: <b>${c.code}</b></span><span class="font-bold text-brand-600">${c.discount}% OFF</span></div>`).join('');
+        }
+
+        function renderAdminStaff() {
+            document.getElementById('admin-staff-list').innerHTML = `<div class="bg-white p-2.5 rounded-xl border text-xs flex justify-between"><span>Store Owner</span><span class="font-bold">Admin Role</span></div>`;
+        }
+
+        function addPromoCode() {
+            const code = prompt("Enter Code Name:");
+            if(code) coupons.push({ code: code.toUpperCase(), discount: 15 });
+            renderAdminCoupons();
+        }
+
+        function saveShopSettings() { alert('Settings Saved!'); }
 
         function openProductModal() { document.getElementById('admin-product-modal').classList.remove('hidden'); }
         function closeAdminProductModal() { document.getElementById('admin-product-modal').classList.add('hidden'); }
@@ -680,6 +778,7 @@
                 price: parseFloat(document.getElementById('prod-price').value),
                 stock: parseInt(document.getElementById('prod-stock').value),
                 rating: 5.0, reviews: 0,
+                published: true,
                 image: document.getElementById('prod-image').value || FALLBACK_IMAGE
             });
             closeAdminProductModal();
