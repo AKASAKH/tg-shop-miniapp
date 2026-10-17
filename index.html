@@ -10,7 +10,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Leaflet.js Interactive Map CSS & JS -->
+    <!-- Leaflet Map SDK -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
@@ -33,7 +33,7 @@
 </head>
 <body class="bg-brand-50 text-gray-800 font-sans antialiased pb-24">
 
-    <!-- HEADER BANNER -->
+    <!-- HEADER -->
     <header class="bg-white border-b border-brand-100 sticky top-0 z-40 shadow-sm">
         <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center space-x-2">
@@ -43,9 +43,8 @@
                     <p class="text-[10px] text-brand-600 font-medium" id="header-user-text">Girl Accessories Shop</p>
                 </div>
             </div>
-            <!-- Sync Indicator & Admin Portal Button -->
             <div class="flex items-center space-x-2">
-                <span class="flex h-2 w-2 relative" title="Database Synced">
+                <span class="flex h-2 w-2 relative" title="Database Connected">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
@@ -56,208 +55,153 @@
         </div>
     </header>
 
-    <!-- PROMOTIONAL POPUP BANNER (Auto-closes in 10s or manual close) -->
+    <!-- PROMO POPUP -->
     <div id="promo-popup" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300">
         <div class="bg-gradient-to-br from-brand-500 to-brand-700 text-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative text-center">
-            <button onclick="closePromoPopup()" class="absolute top-3 right-3 text-white/80 hover:text-white bg-black/20 w-8 h-8 rounded-full flex items-center justify-center text-xs">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto text-2xl backdrop-blur-md">
-                ✨
-            </div>
+            <button onclick="closePromoPopup()" class="absolute top-3 right-3 text-white/85 bg-black/20 w-8 h-8 rounded-full flex items-center justify-center text-xs"><i class="fa-solid fa-xmark"></i></button>
+            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto text-2xl">✨</div>
             <div>
-                <span class="bg-white/20 text-[10px] uppercase font-extrabold px-3 py-1 rounded-full border border-white/30">Autumn Special Deal</span>
-                <h3 class="text-xl font-black mt-2">Get 30% OFF Your Order!</h3>
-                <p class="text-xs text-brand-100 mt-1">Use discount code <span class="font-bold underline text-white">PINK10</span> during checkout.</p>
+                <span class="bg-white/20 text-[10px] uppercase font-extrabold px-3 py-1 rounded-full">Special Promotion</span>
+                <h3 class="text-xl font-black mt-2">Get 30% OFF Your First Order!</h3>
+                <p class="text-xs text-brand-100 mt-1">Use promo code <span class="font-bold underline text-white">PINK10</span> at checkout.</p>
             </div>
-            <div class="pt-2 flex flex-col space-y-2">
-                <button onclick="closePromoPopup()" class="w-full bg-white text-brand-600 font-extrabold text-xs py-3 rounded-2xl shadow-lg">Start Shopping Now 🌸</button>
-                <p class="text-[10px] text-brand-200 font-medium">Auto-closing in <span id="promo-timer" class="font-bold">10</span> seconds...</p>
-            </div>
+            <button onclick="closePromoPopup()" class="w-full bg-white text-brand-600 font-extrabold text-xs py-3 rounded-2xl shadow-lg">Start Shopping 🌸</button>
+            <p class="text-[10px] text-brand-200">Auto-closing in <span id="promo-timer" class="font-bold">10</span>s...</p>
         </div>
     </div>
 
-    <!-- MAIN CONTAINER -->
+    <!-- MAIN APP CONTAINER -->
     <main class="max-w-md mx-auto px-4 py-4">
 
-        <!-- ================= CUSTOMER DASHBOARD VIEWS ================= -->
+        <!-- CUSTOMER VIEW -->
         <div id="customer-view" class="space-y-4">
-
-            <!-- PAGE: SHOP -->
+            <!-- SHOP TAB -->
             <div id="page-shop" class="space-y-3">
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-xs"></i></span>
-                    <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search hairpins, rings, necklaces..." class="w-full pl-9 pr-4 py-2 bg-white border border-brand-100 rounded-2xl text-xs shadow-sm focus:outline-none focus:border-brand-500">
+                    <input type="text" id="search-input" oninput="renderProducts()" placeholder="Search items..." class="w-full pl-9 pr-4 py-2 bg-white border border-brand-100 rounded-2xl text-xs shadow-sm focus:outline-none focus:border-brand-500">
                 </div>
-                <!-- Categories -->
                 <div class="flex space-x-1.5 overflow-x-auto pb-1 text-xs scrollbar-none">
                     <button onclick="filterCategory('All')" class="cat-btn bg-brand-500 text-white px-3 py-1.5 rounded-full font-medium whitespace-nowrap shadow-sm">All ✨</button>
                     <button onclick="filterCategory('Hairpins')" class="cat-btn bg-white text-gray-600 border border-brand-100 px-3 py-1.5 rounded-full font-medium whitespace-nowrap">Hairpins 🎀</button>
                     <button onclick="filterCategory('Necklaces')" class="cat-btn bg-white text-gray-600 border border-brand-100 px-3 py-1.5 rounded-full font-medium whitespace-nowrap">Necklaces 💎</button>
                     <button onclick="filterCategory('Rings')" class="cat-btn bg-white text-gray-600 border border-brand-100 px-3 py-1.5 rounded-full font-medium whitespace-nowrap">Rings 💍</button>
-                    <button onclick="filterCategory('Earrings')" class="cat-btn bg-white text-gray-600 border border-brand-100 px-3 py-1.5 rounded-full font-medium whitespace-nowrap">Earrings ✨</button>
-                    <button onclick="filterCategory('Phone Charms')" class="cat-btn bg-white text-gray-600 border border-brand-100 px-3 py-1.5 rounded-full font-medium whitespace-nowrap">Charms 🌸</button>
                 </div>
-                <!-- Product Grid -->
                 <div id="product-grid" class="grid grid-cols-2 gap-3"></div>
             </div>
 
-            <!-- PAGE: WISHLIST -->
+            <!-- WISHLIST TAB -->
             <div id="page-wishlist" class="hidden space-y-3">
-                <h3 class="font-bold text-xs text-gray-900 uppercase tracking-wide">Saved Favorite Items 💖</h3>
+                <h3 class="font-bold text-xs text-gray-900 uppercase tracking-wide">Saved Favorites 💖</h3>
                 <div id="wishlist-grid" class="grid grid-cols-2 gap-3"></div>
             </div>
 
-            <!-- PAGE: PROFILE (Customer Account Dashboard) -->
+            <!-- PROFILE TAB -->
             <div id="page-profile" class="hidden space-y-4">
-                <!-- User Identity Card -->
                 <div class="bg-white rounded-3xl p-4 shadow-sm border border-brand-100 flex items-center space-x-3">
-                    <div id="profile-avatar" class="w-12 h-12 rounded-full bg-brand-500 text-white font-bold flex items-center justify-center text-lg shadow-sm border-2 border-brand-200 overflow-hidden">
-                        U
-                    </div>
+                    <div id="profile-avatar" class="w-12 h-12 rounded-full bg-brand-500 text-white font-bold flex items-center justify-center text-lg">U</div>
                     <div class="flex-1">
                         <h3 id="profile-name" class="font-bold text-sm text-gray-900">Guest User</h3>
-                        <p id="profile-status" class="text-xs text-brand-600 font-medium">Auto-Logged in via Telegram</p>
+                        <p class="text-xs text-brand-600 font-medium">Telegram Connected</p>
                     </div>
-                    <button onclick="loginWithTelegram()" class="text-xs bg-brand-100 text-brand-700 px-3 py-1.5 rounded-xl font-bold">Switch Account</button>
                 </div>
-
-                <!-- Dashboard Sub-Navigation Tabs -->
                 <div class="bg-white rounded-3xl p-3 shadow-sm border border-brand-100 space-y-2 text-xs">
-                    <button onclick="switchProfileSub('orders')" class="w-full flex items-center justify-between p-2.5 rounded-2xl hover:bg-brand-50 font-semibold text-gray-800">
-                        <span><i class="fa-solid fa-box-archive text-brand-500 mr-2"></i> Track Orders</span>
-                        <i class="fa-solid fa-chevron-right text-gray-400"></i>
-                    </button>
-                    <button onclick="switchProfileSub('addresses')" class="w-full flex items-center justify-between p-2.5 rounded-2xl hover:bg-brand-50 font-semibold text-gray-800">
-                        <span><i class="fa-solid fa-location-dot text-brand-500 mr-2"></i> Address & Pin on Map</span>
-                        <i class="fa-solid fa-chevron-right text-gray-400"></i>
-                    </button>
-                    <button onclick="switchProfileSub('reviews')" class="w-full flex items-center justify-between p-2.5 rounded-2xl hover:bg-brand-50 font-semibold text-gray-800">
-                        <span><i class="fa-solid fa-star text-brand-500 mr-2"></i> Ratings & Reviews</span>
-                        <i class="fa-solid fa-chevron-right text-gray-400"></i>
-                    </button>
+                    <button onclick="switchProfileSub('orders')" class="w-full flex justify-between p-2.5 rounded-xl hover:bg-brand-50 font-semibold"><span>📦 Track Orders</span><i class="fa-solid fa-chevron-right text-gray-400"></i></button>
+                    <button onclick="switchProfileSub('addresses')" class="w-full flex justify-between p-2.5 rounded-xl hover:bg-brand-50 font-semibold"><span>📍 Map & Addresses</span><i class="fa-solid fa-chevron-right text-gray-400"></i></button>
                 </div>
-
-                <!-- Sub-Section Display Area -->
-                <div id="profile-sub-container" class="bg-white rounded-3xl p-4 shadow-sm border border-brand-100 text-xs">
-                    <!-- Dynamic Content -->
-                </div>
+                <div id="profile-sub-container" class="bg-white rounded-3xl p-4 shadow-sm border border-brand-100 text-xs"></div>
             </div>
-
         </div>
 
-        <!-- SHOP ADMIN PANEL -->
+        <!-- ADMIN PANEL VIEW -->
         <div id="admin-view" class="hidden space-y-4">
             <div class="flex justify-between items-center bg-white p-3.5 rounded-3xl border border-brand-100 shadow-sm">
                 <div>
                     <h3 class="font-bold text-xs text-gray-900">Store Management Console</h3>
-                    <p class="text-[10px] text-brand-600 font-medium">Sparkle & Bloom Admin Controls</p>
+                    <p class="text-[10px] text-brand-600 font-medium">Full Store Control Panel</p>
                 </div>
-                <button onclick="exitAdminMode()" class="text-xs bg-gray-100 text-gray-600 px-3 py-1.5 rounded-xl font-semibold hover:bg-gray-200 transition">Exit Admin</button>
+                <button onclick="exitAdminMode()" class="text-xs bg-gray-100 text-gray-600 px-3 py-1.5 rounded-xl font-semibold">Exit</button>
             </div>
 
-            <!-- Admin Navigation Selector -->
-            <div class="bg-white rounded-2xl p-2 shadow-sm border border-brand-100 flex overflow-x-auto space-x-1 text-xs scrollbar-none font-semibold">
+            <div class="bg-white rounded-2xl p-2 shadow-sm border flex overflow-x-auto space-x-1 text-xs font-semibold">
                 <button onclick="switchAdminNav('dashboard')" id="adtab-dashboard" class="px-3 py-1.5 bg-brand-500 text-white rounded-xl whitespace-nowrap">Dashboard</button>
                 <button onclick="switchAdminNav('products')" id="adtab-products" class="px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap">Products</button>
                 <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap">Orders</button>
                 <button onclick="switchAdminNav('inventory')" id="adtab-inventory" class="px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap">Inventory</button>
-                <button onclick="switchAdminNav('customers')" id="adtab-customers" class="px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap">Customers</button>
             </div>
 
-            <!-- ADMIN MODULE 1: DASHBOARD -->
+            <!-- ADMIN DASHBOARD -->
             <div id="admin-sec-dashboard" class="space-y-3">
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-white p-3 rounded-2xl border border-brand-100 shadow-sm">
+                    <div class="bg-white p-3 rounded-2xl border shadow-sm">
                         <p class="text-[10px] text-gray-400 font-bold uppercase">Total Revenue</p>
                         <p class="text-base font-extrabold text-brand-600 mt-0.5" id="admin-rev-display">$0.00</p>
                     </div>
-                    <div class="bg-white p-3 rounded-2xl border border-brand-100 shadow-sm">
+                    <div class="bg-white p-3 rounded-2xl border shadow-sm">
                         <p class="text-[10px] text-gray-400 font-bold uppercase">Total Orders</p>
                         <p class="text-base font-extrabold text-gray-900 mt-0.5" id="admin-ord-count">0 Orders</p>
                     </div>
                 </div>
             </div>
 
-            <!-- ADMIN MODULE 2: PRODUCTS -->
+            <!-- ADMIN PRODUCTS (CRUD) -->
             <div id="admin-sec-products" class="hidden space-y-3">
-                <div class="flex justify-between items-center bg-white p-3 rounded-2xl border border-brand-100">
-                    <h4 class="font-bold text-xs text-gray-900">Catalog Manager</h4>
-                    <button onclick="openProductModal()" class="bg-brand-500 text-white text-xs px-3 py-1.5 rounded-xl font-bold shadow-sm">+ Add Item</button>
+                <div class="flex justify-between items-center bg-white p-3 rounded-2xl border">
+                    <h4 class="font-bold text-xs">Manage Products</h4>
+                    <button onclick="openProductModal()" class="bg-brand-500 text-white text-xs px-3 py-1.5 rounded-xl font-bold">+ Add Item</button>
                 </div>
                 <div id="admin-products-list" class="space-y-2 max-h-80 overflow-y-auto"></div>
             </div>
 
-            <!-- ADMIN MODULE 3: ORDERS -->
+            <!-- ADMIN ORDERS -->
             <div id="admin-sec-orders" class="hidden space-y-2">
-                <h4 class="font-bold text-xs text-gray-900">Customer Orders Status</h4>
+                <h4 class="font-bold text-xs">Customer Orders Fulfillments</h4>
                 <div id="admin-orders-list" class="space-y-2 max-h-80 overflow-y-auto"></div>
             </div>
 
-            <!-- ADMIN MODULE 4: INVENTORY -->
+            <!-- ADMIN INVENTORY -->
             <div id="admin-sec-inventory" class="hidden space-y-2">
-                <h4 class="font-bold text-xs text-gray-900">Stock & Alerts</h4>
+                <h4 class="font-bold text-xs">Stock Management</h4>
                 <div id="admin-inventory-list" class="space-y-2"></div>
             </div>
-
-            <!-- ADMIN MODULE 5: CUSTOMERS -->
-            <div id="admin-sec-customers" class="hidden space-y-2">
-                <h4 class="font-bold text-xs text-gray-900">Customer Directory</h4>
-                <div id="admin-customers-list" class="space-y-2"></div>
-            </div>
-
         </div>
 
     </main>
 
-    <!-- CUSTOMER BOTTOM NAVIGATION BAR -->
+    <!-- CUSTOMER BOTTOM NAVIGATION -->
     <nav id="customer-nav" class="fixed bottom-0 inset-x-0 bg-white border-t border-brand-100 py-2.5 px-6 z-40 shadow-lg">
         <div class="max-w-md mx-auto flex justify-around items-center">
-            <button onclick="switchCustomerTab('shop')" id="nav-btn-shop" class="flex flex-col items-center text-brand-600 text-xs font-bold">
-                <i class="fa-solid fa-store text-base mb-0.5"></i> Shop
-            </button>
-            <button onclick="switchCustomerTab('wishlist')" id="nav-btn-wishlist" class="flex flex-col items-center text-gray-400 hover:text-brand-600 text-xs font-semibold">
-                <i class="fa-solid fa-heart text-base mb-0.5"></i> Wishlist
-            </button>
-            <button onclick="openCartDrawer()" class="relative flex flex-col items-center text-gray-400 hover:text-brand-600 text-xs font-semibold">
-                <i class="fa-solid fa-cart-shopping text-base mb-0.5"></i> Cart
-                <span id="cart-badge" class="absolute -top-1 -right-2 bg-brand-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
-            </button>
-            <button onclick="switchCustomerTab('profile')" id="nav-btn-profile" class="flex flex-col items-center text-gray-400 hover:text-brand-600 text-xs font-semibold">
-                <i class="fa-solid fa-user text-base mb-0.5"></i> Profile
-            </button>
+            <button onclick="switchCustomerTab('shop')" id="nav-btn-shop" class="flex flex-col items-center text-brand-600 text-xs font-bold"><i class="fa-solid fa-store text-base mb-0.5"></i> Shop</button>
+            <button onclick="switchCustomerTab('wishlist')" id="nav-btn-wishlist" class="flex flex-col items-center text-gray-400 hover:text-brand-600 text-xs font-semibold"><i class="fa-solid fa-heart text-base mb-0.5"></i> Wishlist</button>
+            <button onclick="openCartDrawer()" class="relative flex flex-col items-center text-gray-400 hover:text-brand-600 text-xs font-semibold"><i class="fa-solid fa-cart-shopping text-base mb-0.5"></i> Cart<span id="cart-badge" class="absolute -top-1 -right-2 bg-brand-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span></button>
+            <button onclick="switchCustomerTab('profile')" id="nav-btn-profile" class="flex flex-col items-center text-gray-400 hover:text-brand-600 text-xs font-semibold"><i class="fa-solid fa-user text-base mb-0.5"></i> Profile</button>
         </div>
     </nav>
 
-    <!-- SLIDING CART DRAWER -->
+    <!-- CART DRAWER -->
     <div id="cart-drawer" class="fixed inset-0 bg-black/50 z-50 hidden transition-opacity">
         <div class="absolute inset-y-0 right-0 max-w-xs w-full bg-white shadow-2xl flex flex-col p-4">
             <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="font-bold text-sm text-gray-900"><i class="fa-solid fa-bag-shopping text-brand-500 mr-1.5"></i> Your Shopping Bag</h3>
-                <button onclick="closeCartDrawer()" class="text-gray-400 hover:text-gray-600 text-sm p-1"><i class="fa-solid fa-xmark"></i></button>
+                <h3 class="font-bold text-sm">Shopping Bag</h3>
+                <button onclick="closeCartDrawer()" class="text-gray-400 text-sm"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div id="cart-items-container" class="flex-1 overflow-y-auto py-3 space-y-3"></div>
             <div class="border-t pt-3 space-y-2">
-                <div class="flex space-x-1.5">
-                    <input type="text" id="cart-coupon-input" placeholder="Promo Code (e.g. PINK10)" class="flex-1 text-xs border rounded-xl px-3 py-2 uppercase">
-                    <button onclick="applyCoupon()" class="bg-gray-900 text-white text-xs px-3 py-2 rounded-xl font-semibold">Apply</button>
-                </div>
+                <div class="flex space-x-1.5"><input type="text" id="cart-coupon-input" placeholder="Promo (PINK10)" class="flex-1 text-xs border rounded-xl px-3 py-2 uppercase"><button onclick="applyCoupon()" class="bg-gray-900 text-white text-xs px-3 py-2 rounded-xl font-semibold">Apply</button></div>
                 <div class="flex justify-between text-xs font-medium text-gray-500"><span>Subtotal</span><span id="cart-subtotal">$0.00</span></div>
-                <div id="discount-row" class="flex justify-between text-xs font-semibold text-emerald-600 hidden"><span>Discount</span><span id="cart-discount">-$0.00</span></div>
-                <div class="flex justify-between text-sm font-bold text-gray-900 pt-1 border-t"><span>Total</span><span id="cart-total" class="text-brand-600">$0.00</span></div>
+                <div class="flex justify-between text-sm font-bold pt-1 border-t"><span>Total</span><span id="cart-total" class="text-brand-600">$0.00</span></div>
                 <button onclick="openCheckoutModal()" class="w-full bg-brand-500 text-white font-bold text-xs py-3 rounded-2xl shadow-md">Proceed to Checkout 🌸</button>
             </div>
         </div>
     </div>
 
-    <!-- MAP ADDRESS PICKER MODAL -->
+    <!-- MAP PICKER MODAL -->
     <div id="map-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-4 space-y-3 shadow-2xl relative">
-            <button onclick="closeMapModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="font-bold text-xs text-gray-900"><i class="fa-solid fa-map-pin text-brand-500 mr-1"></i> Pin Delivery Location</h3>
-            <div id="map" class="h-56 w-full rounded-2xl border border-gray-200"></div>
-            <p class="text-[10px] text-gray-400">Tap on the map to drop a pin marker for delivery.</p>
-            <button onclick="savePinnedAddress()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-md">Confirm Location Pin 📍</button>
+            <button onclick="closeMapModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="font-bold text-xs">Pin Delivery Location on Map</h3>
+            <div id="map" class="h-56 w-full rounded-2xl border"></div>
+            <button onclick="savePinnedAddress()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl">Confirm Pinned Location 📍</button>
         </div>
     </div>
 
@@ -265,18 +209,16 @@
     <div id="admin-login-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative">
             <button onclick="closeAdminLoginModal()" class="absolute top-4 right-4 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="font-bold text-sm text-gray-900"><i class="fa-solid fa-user-shield text-brand-500 mr-1.5"></i> Admin Dashboard Login</h3>
-            <div class="space-y-2 text-xs">
-                <input type="email" id="admin-email" placeholder="Admin Email" class="w-full border rounded-xl px-3 py-2">
-                <input type="password" id="admin-password" placeholder="Password" class="w-full border rounded-xl px-3 py-2">
-            </div>
-            <button onclick="handleAdminLogin()" class="w-full bg-brand-500 text-white font-bold text-xs py-3 rounded-2xl shadow-md">Log In to Admin 🔑</button>
+            <h3 class="font-bold text-sm">Admin Dashboard Login</h3>
+            <input type="email" id="admin-email" placeholder="Admin Email" class="w-full border rounded-xl px-3 py-2 text-xs">
+            <input type="password" id="admin-password" placeholder="Password" class="w-full border rounded-xl px-3 py-2 text-xs">
+            <button onclick="handleAdminLogin()" class="w-full bg-brand-500 text-white font-bold text-xs py-3 rounded-2xl">Log In to Admin 🔑</button>
         </div>
     </div>
 
-    <!-- PRODUCT DETAIL & RATING MODAL -->
+    <!-- PRODUCT DETAIL MODAL -->
     <div id="product-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative max-h-[85vh] overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative">
             <button onclick="closeProductModal()" class="absolute top-4 right-4 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
             <div id="modal-product-content"></div>
         </div>
@@ -286,45 +228,38 @@
     <div id="checkout-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative">
             <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="font-bold text-sm text-gray-900"><i class="fa-solid fa-truck-fast text-brand-500 mr-1.5"></i> Delivery Address & Payment</h3>
-            <div class="space-y-2 text-xs">
-                <input type="text" id="checkout-name" placeholder="Full Name" class="w-full border rounded-xl px-3 py-2">
-                <input type="text" id="checkout-phone" placeholder="Phone Number" class="w-full border rounded-xl px-3 py-2">
-                <textarea id="checkout-address" placeholder="Delivery Address" rows="2" class="w-full border rounded-xl px-3 py-2"></textarea>
-                <button onclick="openMapModal()" class="text-xs text-brand-600 font-bold"><i class="fa-solid fa-location-crosshairs mr-1"></i> Pin on map</button>
-            </div>
-            <button onclick="submitOrder()" class="w-full bg-brand-500 text-white font-bold text-xs py-3 rounded-2xl shadow-md">Place Order Now ✨</button>
+            <h3 class="font-bold text-sm">Delivery Information</h3>
+            <input type="text" id="checkout-name" placeholder="Full Name" class="w-full border rounded-xl px-3 py-2 text-xs">
+            <input type="text" id="checkout-phone" placeholder="Phone Number" class="w-full border rounded-xl px-3 py-2 text-xs">
+            <textarea id="checkout-address" placeholder="Delivery Address" rows="2" class="w-full border rounded-xl px-3 py-2 text-xs"></textarea>
+            <button onclick="openMapModal()" class="text-xs text-brand-600 font-bold"><i class="fa-solid fa-location-crosshairs mr-1"></i> Pin on map</button>
+            <button onclick="submitOrder()" class="w-full bg-brand-500 text-white font-bold text-xs py-3 rounded-2xl">Place Order ✨</button>
         </div>
     </div>
 
-    <!-- ADD/EDIT PRODUCT MODAL -->
+    <!-- ADD PRODUCT MODAL -->
     <div id="admin-product-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative">
             <button onclick="closeAdminProductModal()" class="absolute top-4 right-4 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="font-bold text-sm text-gray-900" id="admin-modal-title">Add New Product</h3>
-            <input type="hidden" id="edit-product-id">
-            <div class="space-y-2 text-xs">
-                <input type="text" id="prod-name" placeholder="Product Name" class="w-full border rounded-xl px-3 py-2">
-                <select id="prod-category" class="w-full border rounded-xl px-3 py-2 bg-white">
-                    <option value="Hairpins">Hairpins</option>
-                    <option value="Necklaces">Necklaces</option>
-                    <option value="Rings">Rings</option>
-                    <option value="Earrings">Earrings</option>
-                    <option value="Phone Charms">Phone Charms</option>
-                </select>
-                <input type="number" step="0.01" id="prod-price" placeholder="Price ($)" class="w-full border rounded-xl px-3 py-2">
-                <input type="number" id="prod-stock" placeholder="Stock Quantity" class="w-full border rounded-xl px-3 py-2">
-                <input type="text" id="prod-image" placeholder="Image URL" class="w-full border rounded-xl px-3 py-2">
-            </div>
-            <button onclick="saveAdminProduct()" class="w-full bg-brand-500 text-white font-bold text-xs py-3 rounded-2xl shadow-md">Save Product</button>
+            <h3 class="font-bold text-sm">Add Product to Store</h3>
+            <input type="text" id="prod-name" placeholder="Product Name" class="w-full border rounded-xl px-3 py-2 text-xs">
+            <select id="prod-category" class="w-full border rounded-xl px-3 py-2 text-xs bg-white">
+                <option value="Hairpins">Hairpins</option>
+                <option value="Necklaces">Necklaces</option>
+                <option value="Rings">Rings</option>
+            </select>
+            <input type="number" step="0.01" id="prod-price" placeholder="Price ($)" class="w-full border rounded-xl px-3 py-2 text-xs">
+            <input type="number" id="prod-stock" placeholder="Stock Quantity" class="w-full border rounded-xl px-3 py-2 text-xs">
+            <input type="text" id="prod-image" placeholder="Image URL" class="w-full border rounded-xl px-3 py-2 text-xs">
+            <button onclick="saveAdminProduct()" class="w-full bg-brand-500 text-white font-bold text-xs py-3 rounded-2xl">Save to Database</button>
         </div>
     </div>
 
-    <!-- FIREBASE INTEGRATION LOGIC -->
+    <!-- FIREBASE & APP LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDz6snwoujsmp8IQ5-1c2_IL-JmEOx2tIM",
@@ -344,69 +279,73 @@
         window.firebaseDb = db;
         window.signInWithEmailAndPassword = signInWithEmailAndPassword;
 
-        // Real-time Firestore Synchronizer
+        // Sync Products Real-time
+        onSnapshot(collection(db, "products"), (snapshot) => {
+            let loadedProducts = [];
+            snapshot.forEach(doc => loadedProducts.push({ id: doc.id, ...doc.data() }));
+            if (loadedProducts.length > 0) {
+                window.products = loadedProducts;
+            } else {
+                // Seed initial products if collection is empty
+                initialSeed(db);
+            }
+            if (window.renderProducts) window.renderProducts();
+            if (window.renderAdminProducts) window.renderAdminProducts();
+            if (window.renderAdminInventory) window.renderAdminInventory();
+        });
+
+        // Sync Orders Real-time
         onSnapshot(collection(db, "orders"), (snapshot) => {
             let loadedOrders = [];
             snapshot.forEach(doc => loadedOrders.push({ id: doc.id, ...doc.data() }));
-            if (loadedOrders.length > 0) window.orders = loadedOrders;
+            window.orders = loadedOrders;
             if (window.renderAdminOrders) window.renderAdminOrders();
             if (window.updateAdminStats) window.updateAdminStats();
         });
 
-        // Auto Telegram Detection
+        async function initialSeed(db) {
+            const defaults = [
+                { name: 'Crystal Pearl Hairpin', category: 'Hairpins', price: 12.50, stock: 15, rating: 4.8, reviews: 12, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
+                { name: 'Dainty Butterfly Choker', category: 'Necklaces', price: 18.00, stock: 8, rating: 5.0, reviews: 9, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' }
+            ];
+            for (let p of defaults) {
+                await addDoc(collection(db, "products"), p);
+            }
+        }
+
+        // Telegram Auto-Login
         if (window.Telegram && window.Telegram.WebApp) {
             window.Telegram.WebApp.ready();
             window.Telegram.WebApp.expand();
             const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
             if (tgUser && tgUser.first_name) {
-                window.currentUser = {
-                    name: tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : ''),
-                    id: tgUser.id,
-                    photo: tgUser.photo_url || null
-                };
+                window.currentUser = { name: tgUser.first_name, id: tgUser.id };
                 document.getElementById('header-user-text').innerText = `Welcome, ${tgUser.first_name} ✨`;
                 document.getElementById('profile-name').innerText = window.currentUser.name;
             }
         }
     </script>
 
-    <!-- CORE APP FUNCTIONALITY -->
     <script>
         const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
-
-        let products = [
-            { id: '1', name: 'Crystal Pearl Hairpin', category: 'Hairpins', price: 12.50, stock: 15, rating: 4.8, reviews: 12, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
-            { id: '2', name: 'Dainty Butterfly Choker', category: 'Necklaces', price: 18.00, stock: 8, rating: 5.0, reviews: 9, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' },
-            { id: '3', name: 'Blush Bow Hair Claw', category: 'Hairpins', price: 9.99, stock: 24, rating: 4.6, reviews: 15, image: 'https://images.unsplash.com/photo-1620331311520-246422fd82f9?w=400&q=80' },
-            { id: '4', name: 'Gold Heart Signet Ring', category: 'Rings', price: 14.50, stock: 4, rating: 4.9, reviews: 7, image: 'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=400&q=80' }
-        ];
-
+        window.products = [];
+        window.orders = [];
         let cart = [];
-        let wishlist = ['1', '3'];
-        window.orders = [
-            { id: 'ORD-9821', customer: 'Sarah M.', total: 30.50, status: 'Processing', date: '2026-10-17' }
-        ];
-        let savedAddresses = ["123 Sparkle Way, Suite 4B, New York, NY"];
-        let coupons = [{ code: 'PINK10', discount: 10 }];
+        let wishlist = ['1'];
         let activeCategory = 'All';
         let appliedDiscount = 0;
-        let promoTimer = 10;
-        let map, marker;
-        window.currentUser = window.currentUser || null;
+        let savedAddresses = ["123 Sparkle Way, New York"];
+        let map, marker, promoTimer = 10;
 
-        // Auto-close Promo Popup Timer
         const promoInterval = setInterval(() => {
             promoTimer--;
             document.getElementById('promo-timer').innerText = promoTimer;
-            if (promoTimer <= 0) {
-                closePromoPopup();
-            }
+            if (promoTimer <= 0) closePromoPopup();
         }, 1000);
 
         function closePromoPopup() {
             clearInterval(promoInterval);
-            document.getElementById('promo-popup').classList.add('opacity-0', 'pointer-events-none');
-            setTimeout(() => document.getElementById('promo-popup').classList.add('hidden'), 300);
+            document.getElementById('promo-popup').classList.add('hidden');
         }
 
         function switchCustomerTab(tab) {
@@ -425,50 +364,38 @@
         function switchProfileSub(sub) {
             const container = document.getElementById('profile-sub-container');
             if (sub === 'orders') {
-                container.innerHTML = `<h5 class="font-bold text-gray-900 mb-2">Order Tracking Progress</h5>` +
-                    window.orders.map(o => `
-                        <div class="bg-gray-50 p-2.5 rounded-xl border mb-2 space-y-2">
-                            <div class="flex justify-between items-center">
-                                <span class="font-bold text-gray-900">${o.id}</span>
-                                <span class="text-[9px] bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full font-bold">${o.status}</span>
-                            </div>
-                            <div class="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
-                                <div class="bg-brand-500 h-full ${o.status === 'Processing' ? 'w-1/3' : o.status === 'Shipped' ? 'w-2/3' : 'w-full'}"></div>
-                            </div>
-                        </div>
-                    `).join('');
+                container.innerHTML = `<h5 class="font-bold mb-2">Track Orders</h5>` + window.orders.map(o => `
+                    <div class="bg-gray-50 p-2.5 rounded-xl border mb-2 space-y-1">
+                        <div class="flex justify-between font-bold"><span>${o.id}</span><span class="text-brand-600">$${o.total.toFixed(2)}</span></div>
+                        <p class="text-[10px] text-gray-400">Status: ${o.status}</p>
+                    </div>`).join('');
             } else if (sub === 'addresses') {
-                container.innerHTML = `<h5 class="font-bold text-gray-900 mb-2">Saved Delivery Locations</h5>` +
-                    savedAddresses.map(a => `<div class="p-2 bg-gray-50 rounded-xl mb-2 text-xs border">${a}</div>`).join('') +
-                    `<button onclick="openMapModal()" class="w-full bg-brand-500 text-white font-bold text-xs py-2 rounded-xl"><i class="fa-solid fa-map-pin mr-1"></i> Pin New Location on Map</button>`;
-            } else if (sub === 'reviews') {
-                container.innerHTML = `<h5 class="font-bold text-gray-900 mb-2">Product Ratings & Reviews</h5><p class="text-gray-500">Tap on any product in the store to write or check star ratings!</p>`;
+                container.innerHTML = `<h5 class="font-bold mb-2">Saved Addresses</h5>` + savedAddresses.map(a => `<div class="p-2 bg-gray-50 rounded-xl mb-2">${a}</div>`).join('') +
+                    `<button onclick="openMapModal()" class="w-full bg-brand-500 text-white font-bold text-xs py-2 rounded-xl mt-2">Pin New Location on Map</button>`;
             }
         }
 
         function renderProducts() {
             const searchVal = document.getElementById('search-input').value.toLowerCase();
-            let filtered = products.filter(p => (activeCategory === 'All' || p.category === activeCategory) && p.name.toLowerCase().includes(searchVal));
+            let filtered = window.products.filter(p => (activeCategory === 'All' || p.category === activeCategory) && p.name.toLowerCase().includes(searchVal));
             
             document.getElementById('product-grid').innerHTML = filtered.map(p => `
-                <div class="bg-white rounded-2xl p-2.5 border border-brand-100 shadow-sm flex flex-col justify-between">
+                <div class="bg-white rounded-2xl p-2.5 border shadow-sm flex flex-col justify-between">
                     <div>
                         <div class="relative rounded-xl overflow-hidden aspect-square bg-brand-50 mb-2 cursor-pointer" onclick="openProductDetail('${p.id}')">
                             <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full h-full object-cover">
-                            <button onclick="event.stopPropagation(); toggleWishlist('${p.id}')" class="absolute top-2 right-2 w-7 h-7 bg-white/80 rounded-full flex items-center justify-center text-xs ${wishlist.includes(p.id) ? 'text-red-500' : 'text-gray-400'}"><i class="fa-solid fa-heart"></i></button>
                         </div>
-                        <h4 class="font-bold text-xs text-gray-900 truncate">${p.name}</h4>
-                        <div class="flex items-center space-x-1 text-[10px] text-amber-500 font-bold mt-0.5">
-                            <i class="fa-solid fa-star"></i> <span>${p.rating} (${p.reviews})</span>
-                        </div>
+                        <h4 class="font-bold text-xs truncate">${p.name}</h4>
+                        <p class="text-[10px] text-amber-500 font-bold"><i class="fa-solid fa-star"></i> ${p.rating || 5.0}</p>
                     </div>
                     <div class="flex justify-between items-center mt-2 pt-2 border-t">
                         <span class="font-extrabold text-xs text-brand-600">$${p.price.toFixed(2)}</span>
                         <button onclick="addToCart('${p.id}')" class="bg-brand-500 text-white px-2.5 py-1.5 rounded-xl text-xs font-bold">+</button>
                     </div>
-                </div>
-            `).join('');
+                </div>`).join('');
         }
+
+        function filterCategory(cat) { activeCategory = cat; renderProducts(); }
 
         function openMapModal() {
             document.getElementById('map-modal').classList.remove('hidden');
@@ -476,7 +403,7 @@
                 if (!map) {
                     map = L.map('map').setView([11.5564, 104.9282], 13);
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-                    map.on('click', function(e) {
+                    map.on('click', e => {
                         if (marker) map.removeLayer(marker);
                         marker = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map);
                         window.pinnedCoords = `${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`;
@@ -487,32 +414,14 @@
 
         function closeMapModal() { document.getElementById('map-modal').classList.add('hidden'); }
         function savePinnedAddress() {
-            const loc = window.pinnedCoords ? `Pinned Map Location (${window.pinnedCoords})` : "Pinned Address, Downtown";
+            const loc = window.pinnedCoords ? `Pinned GPS (${window.pinnedCoords})` : "Pinned Location";
             savedAddresses.push(loc);
             document.getElementById('checkout-address').value = loc;
             closeMapModal();
-            alert('Location pinned and selected!');
         }
-
-        function filterCategory(cat) { activeCategory = cat; renderProducts(); }
-        function filterProducts() { renderProducts(); }
-
-        function renderWishlist() {
-            let favs = products.filter(p => wishlist.includes(p.id));
-            document.getElementById('wishlist-grid').innerHTML = favs.map(p => `
-                <div class="bg-white rounded-2xl p-2.5 border border-brand-100 shadow-sm flex flex-col justify-between">
-                    <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full aspect-square object-cover rounded-xl mb-2">
-                    <h4 class="font-bold text-xs text-gray-900 truncate">${p.name}</h4>
-                    <button onclick="addToCart('${p.id}')" class="w-full bg-brand-500 text-white py-1.5 rounded-xl text-xs font-bold mt-2">Move to Cart</button>
-                </div>
-            `).join('');
-        }
-
-        function toggleWishlist(id) { wishlist = wishlist.includes(id) ? wishlist.filter(i => i !== id) : [...wishlist, id]; renderProducts(); }
-        function loginWithTelegram() { window.currentUser = { name: 'Demo User', id: '123' }; alert('Logged in via Telegram!'); }
 
         function addToCart(id) {
-            const prod = products.find(p => p.id === id);
+            const prod = window.products.find(p => p.id === id);
             const existing = cart.find(item => item.id === id);
             if (existing) existing.qty += 1; else cart.push({ ...prod, qty: 1 });
             document.getElementById('cart-badge').innerText = cart.reduce((s, i) => s + i.qty, 0);
@@ -520,27 +429,20 @@
 
         function openCartDrawer() {
             document.getElementById('cart-items-container').innerHTML = cart.length === 0 ? 
-                `<p class="text-xs text-gray-400 text-center py-8">Your cart is empty 🛍️</p>` :
+                `<p class="text-xs text-gray-400 text-center py-8">Bag is empty</p>` :
                 cart.map((item, idx) => `
-                    <div class="flex items-center justify-between bg-brand-50/50 p-2.5 rounded-2xl border border-brand-100">
-                        <img src="${item.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-10 h-10 rounded-xl object-cover">
-                        <div class="flex-1 px-2"><h5 class="font-bold text-xs text-gray-900">${item.name}</h5><p class="text-xs text-brand-600 font-bold">$${item.price.toFixed(2)}</p></div>
-                        <div class="flex items-center space-x-2"><button onclick="updateQty(${idx},-1)" class="px-2 border rounded">-</button><span>${item.qty}</span><button onclick="updateQty(${idx},1)" class="px-2 border rounded">+</button></div>
-                    </div>
-                `).join('');
-            const subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-            document.getElementById('cart-subtotal').innerText = `$${subtotal.toFixed(2)}`;
-            document.getElementById('cart-total').innerText = `$${(subtotal - (subtotal * (appliedDiscount/100))).toFixed(2)}`;
+                    <div class="flex items-center justify-between bg-brand-50/50 p-2 rounded-xl border">
+                        <img src="${item.image}" class="w-10 h-10 rounded object-cover">
+                        <div class="flex-1 px-2"><h5 class="font-bold text-xs">${item.name}</h5><p class="text-xs text-brand-600 font-bold">$${item.price.toFixed(2)}</p></div>
+                        <span>${item.qty}</span>
+                    </div>`).join('');
+            const sub = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            document.getElementById('cart-subtotal').innerText = `$${sub.toFixed(2)}`;
+            document.getElementById('cart-total').innerText = `$${sub.toFixed(2)}`;
             document.getElementById('cart-drawer').classList.remove('hidden');
         }
 
         function closeCartDrawer() { document.getElementById('cart-drawer').classList.add('hidden'); }
-        function updateQty(idx, change) { cart[idx].qty += change; if (cart[idx].qty <= 0) cart.splice(idx, 1); openCartDrawer(); }
-        function applyCoupon() {
-            const found = coupons.find(c => c.code === document.getElementById('cart-coupon-input').value.toUpperCase().trim());
-            if (found) { appliedDiscount = found.discount; alert('Coupon Applied!'); openCartDrawer(); }
-        }
-
         function openCheckoutModal() { closeCartDrawer(); document.getElementById('checkout-modal').classList.remove('hidden'); }
         function closeCheckoutModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
 
@@ -548,26 +450,26 @@
             const name = document.getElementById('checkout-name').value;
             const phone = document.getElementById('checkout-phone').value;
             const address = document.getElementById('checkout-address').value;
-            if (!name || !phone || !address) return alert('Please fill in delivery details');
+            if (!name || !phone || !address) return alert('Fill delivery info');
 
             const newOrd = {
                 id: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
-                customer: name,
-                phone: phone,
-                address: address,
-                total: parseFloat(document.getElementById('cart-total').innerText.replace('$', '')),
-                status: 'Processing',
-                date: new Date().toISOString().split('T')[0]
+                customer: name, phone, address,
+                total: cart.reduce((s, i) => s + (i.price * i.qty), 0),
+                status: 'Processing', date: new Date().toISOString().split('T')[0]
             };
 
-            window.orders.unshift(newOrd);
+            await window.import?.('firebase/firestore').catch(() => {});
+            const { addDoc, collection } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+            await addDoc(collection(window.firebaseDb, "orders"), newOrd);
+
             cart = [];
             document.getElementById('cart-badge').innerText = '0';
             closeCheckoutModal();
-            alert('Order placed successfully! ✨');
-            updateAdminStats();
+            alert('Order placed successfully to database! ✨');
         }
 
+        // Admin Controllers
         function openAdminLoginModal() { document.getElementById('admin-login-modal').classList.remove('hidden'); }
         function closeAdminLoginModal() { document.getElementById('admin-login-modal').classList.add('hidden'); }
         async function handleAdminLogin() {
@@ -575,7 +477,7 @@
                 await window.signInWithEmailAndPassword(window.firebaseAuth, document.getElementById('admin-email').value, document.getElementById('admin-password').value);
                 closeAdminLoginModal();
                 enterAdminMode();
-            } catch (err) { alert('Admin login failed: ' + err.message); }
+            } catch (e) { alert('Admin Login Failed: ' + e.message); }
         }
 
         function enterAdminMode() {
@@ -592,83 +494,67 @@
         }
 
         function switchAdminNav(sec) {
-            ['dashboard', 'products', 'orders', 'inventory', 'customers'].forEach(s => {
+            ['dashboard', 'products', 'orders', 'inventory'].forEach(s => {
                 document.getElementById(`admin-sec-${s}`).classList.add('hidden');
                 document.getElementById(`adtab-${s}`).className = 'px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap';
             });
             document.getElementById(`admin-sec-${sec}`).classList.remove('hidden');
             document.getElementById(`adtab-${sec}`).className = 'px-3 py-1.5 bg-brand-500 text-white rounded-xl whitespace-nowrap';
-
-            if (sec === 'products') renderAdminProducts();
-            if (sec === 'orders') renderAdminOrders();
-            if (sec === 'inventory') renderAdminInventory();
-            if (sec === 'customers') renderAdminCustomers();
         }
 
-        function renderAdminProducts() {
-            document.getElementById('admin-products-list').innerHTML = products.map(p => `
-                <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border">
-                    <div class="flex items-center space-x-2"><img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-10 h-10 object-cover rounded-lg"><p class="font-bold text-xs">${p.name}</p></div>
-                    <button onclick="deleteProduct('${p.id}')" class="text-red-500 text-xs"><i class="fa-solid fa-trash"></i></button>
-                </div>
-            `).join('');
+        window.renderAdminProducts = function() {
+            document.getElementById('admin-products-list').innerHTML = window.products.map(p => `
+                <div class="flex justify-between items-center bg-white p-2.5 rounded-xl border text-xs">
+                    <span><b>${p.name}</b> ($${p.price})</span>
+                    <button onclick="deleteProduct('${p.id}')" class="text-red-500"><i class="fa-solid fa-trash"></i></button>
+                </div>`).join('');
         }
 
-        function renderAdminOrders() {
+        window.renderAdminOrders = function() {
             document.getElementById('admin-orders-list').innerHTML = window.orders.map(o => `
-                <div class="bg-white p-2.5 rounded-xl border text-xs flex justify-between items-center">
-                    <div><p class="font-bold">${o.id} - ${o.customer}</p><p class="text-[10px] text-gray-400">${o.address}</p></div>
-                    <span class="font-bold text-brand-600">$${o.total.toFixed(2)}</span>
-                </div>
-            `).join('');
+                <div class="bg-white p-2.5 rounded-xl border text-xs flex justify-between">
+                    <span><b>${o.id}</b> - ${o.customer}</span><span class="text-brand-600 font-bold">$${o.total.toFixed(2)}</span>
+                </div>`).join('');
         }
 
-        function updateAdminStats() {
+        window.updateAdminStats = function() {
             const rev = window.orders.reduce((sum, o) => sum + o.total, 0);
             document.getElementById('admin-rev-display').innerText = `$${rev.toFixed(2)}`;
             document.getElementById('admin-ord-count').innerText = `${window.orders.length} Orders`;
         }
 
-        function renderAdminInventory() {
-            document.getElementById('admin-inventory-list').innerHTML = products.map(p => `
-                <div class="bg-white p-2.5 rounded-xl border text-xs flex justify-between"><span>${p.name}</span><span class="font-bold">Stock: ${p.stock}</span></div>
-            `).join('');
-        }
-
-        function renderAdminCustomers() {
-            document.getElementById('admin-customers-list').innerHTML = `<div class="bg-white p-2.5 rounded-xl border text-xs"><p class="font-bold">Sarah M.</p><p class="text-gray-400">Total Spent: $140.00</p></div>`;
-        }
-
-        function deleteProduct(id) { products = products.filter(p => p.id !== id); renderAdminProducts(); }
         function openProductModal() { document.getElementById('admin-product-modal').classList.remove('hidden'); }
         function closeAdminProductModal() { document.getElementById('admin-product-modal').classList.add('hidden'); }
-        function saveAdminProduct() {
-            products.push({ id: String(Date.now()), name: document.getElementById('prod-name').value, category: document.getElementById('prod-category').value, price: parseFloat(document.getElementById('prod-price').value), stock: parseInt(document.getElementById('prod-stock').value), rating: 5.0, reviews: 1, image: document.getElementById('prod-image').value || FALLBACK_IMAGE });
+
+        async function saveAdminProduct() {
+            const { addDoc, collection } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+            await addDoc(collection(window.firebaseDb, "products"), {
+                name: document.getElementById('prod-name').value,
+                category: document.getElementById('prod-category').value,
+                price: parseFloat(document.getElementById('prod-price').value),
+                stock: parseInt(document.getElementById('prod-stock').value),
+                rating: 5.0, reviews: 0,
+                image: document.getElementById('prod-image').value || FALLBACK_IMAGE
+            });
             closeAdminProductModal();
-            renderAdminProducts();
+            alert('Product added to database successfully!');
+        }
+
+        async function deleteProduct(id) {
+            const { deleteDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+            await deleteDoc(doc(window.firebaseDb, "products", id));
         }
 
         function openProductDetail(id) {
-            const p = products.find(item => item.id === id);
+            const p = window.products.find(item => item.id === id);
             document.getElementById('modal-product-content').innerHTML = `
-                <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full h-40 object-cover rounded-xl mb-2">
-                <h4 class="font-bold text-sm text-gray-900">${p.name}</h4>
-                <div class="flex items-center justify-between my-1">
-                    <span class="text-xs text-brand-600 font-bold">$${p.price.toFixed(2)}</span>
-                    <span class="text-[10px] text-amber-500 font-bold"><i class="fa-solid fa-star"></i> ${p.rating} / 5 (${p.reviews} reviews)</span>
-                </div>
-                <div class="border-t pt-2 mt-2 space-y-1">
-                    <p class="text-[10px] font-bold text-gray-700">Customer Feedback:</p>
-                    <p class="text-[10px] text-gray-500 bg-gray-50 p-2 rounded-lg">"Super cute accessory! Highly recommended ✨"</p>
-                </div>
-                <button onclick="addToCart('${p.id}'); closeProductModal();" class="w-full bg-brand-500 text-white py-2 rounded-xl text-xs font-bold mt-3">Add to Bag 🌸</button>
-            `;
+                <img src="${p.image}" class="w-full h-40 object-cover rounded-xl mb-2">
+                <h4 class="font-bold text-sm">${p.name}</h4>
+                <p class="text-xs text-brand-600 font-bold">$${p.price.toFixed(2)}</p>
+                <button onclick="addToCart('${p.id}'); closeProductModal();" class="w-full bg-brand-500 text-white py-2 rounded-xl text-xs font-bold mt-3">Add to Bag 🌸</button>`;
             document.getElementById('product-modal').classList.remove('hidden');
         }
         function closeProductModal() { document.getElementById('product-modal').classList.add('hidden'); }
-
-        renderProducts();
-        updateAdminStats();
     </script>
 </body>
 </html>
