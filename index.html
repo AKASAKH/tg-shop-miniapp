@@ -40,11 +40,10 @@
                     <p class="text-xs text-brand-600 font-medium" id="user-welcome">Girl Accessories Shop</p>
                 </div>
             </div>
-            <div class="flex items-center space-x-2">
-                <!-- Admin Toggle / Login Trigger -->
-                <button onclick="openAdminLoginModal()" id="role-badge" class="text-xs bg-brand-100 text-brand-700 px-2.5 py-1.5 rounded-xl font-semibold border border-brand-200">
-                    <i class="fa-solid fa-user-shield mr-1"></i> <span id="role-text">Customer</span>
-                </button>
+            <!-- Live Indicator Badge -->
+            <div id="live-status-badge" class="flex items-center space-x-1.5 bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-full border border-emerald-100 text-[10px] font-bold">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>LIVE</span>
             </div>
         </div>
     </header>
@@ -66,18 +65,6 @@
             <button onclick="loginWithTelegram()" class="bg-brand-500 text-white text-xs font-semibold px-3 py-1.5 rounded-xl shadow-sm hover:bg-brand-600 transition">
                 <i class="fa-brands fa-telegram mr-1"></i> Telegram Login
             </button>
-        </section>
-
-        <!-- LOGGED IN USER PROFILE (Hidden until login) -->
-        <section id="user-profile-section" class="mb-4 bg-white rounded-2xl p-3 shadow-sm border border-brand-100 hidden flex items-center justify-between">
-            <div class="flex items-center space-x-2.5">
-                <div class="w-8 h-8 bg-brand-500 text-white rounded-xl flex items-center justify-center font-bold text-xs" id="user-avatar-initial">U</div>
-                <div>
-                    <p class="text-xs font-bold text-gray-900" id="user-display-name">Customer Name</p>
-                    <p class="text-[10px] text-emerald-600 font-medium"><i class="fa-solid fa-circle text-[8px] mr-1"></i> Connected via Telegram</p>
-                </div>
-            </div>
-            <button onclick="handleLogout()" class="text-xs text-gray-400 hover:text-red-500 p-1.5"><i class="fa-solid fa-right-from-bracket"></i></button>
         </section>
 
         <!-- CUSTOMER VIEW WRAPPER -->
@@ -159,24 +146,66 @@
 
     </main>
 
-    <!-- Bottom Navigation Bar for Customers -->
-    <nav id="customer-nav" class="fixed bottom-0 inset-x-0 bg-white border-t border-brand-100 py-2.5 px-6 z-40 shadow-lg">
-        <div class="max-w-md mx-auto flex justify-around items-center">
-            <button onclick="switchTab('shop')" class="flex flex-col items-center text-brand-600 text-xs font-semibold">
+    <!-- ENHANCED BOTTOM NAVIGATION BAR WITH TELEGRAM PROFILE & ADMIN BUTTONS -->
+    <nav id="customer-nav" class="fixed bottom-0 inset-x-0 bg-white border-t border-brand-100 py-2 px-4 z-40 shadow-lg">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <button onclick="switchTab('shop')" class="flex flex-col items-center text-brand-600 text-[11px] font-semibold">
                 <i class="fa-solid fa-store text-base mb-0.5"></i> Shop
             </button>
-            <button onclick="switchTab('wishlist')" class="flex flex-col items-center text-gray-400 hover:text-brand-600 text-xs">
+            <button onclick="switchTab('wishlist')" class="flex flex-col items-center text-gray-400 hover:text-brand-600 text-[11px]">
                 <i class="fa-solid fa-heart text-base mb-0.5"></i> Wishlist
             </button>
-            <button onclick="switchTab('orders')" class="flex flex-col items-center text-gray-400 hover:text-brand-600 text-xs">
-                <i class="fa-solid fa-box-archive text-base mb-0.5"></i> Orders
-            </button>
-            <button onclick="openCartDrawer()" class="relative flex flex-col items-center text-gray-400 hover:text-brand-600 text-xs">
+            <button onclick="openCartDrawer()" class="relative flex flex-col items-center text-gray-400 hover:text-brand-600 text-[11px]">
                 <i class="fa-solid fa-cart-shopping text-base mb-0.5"></i> Cart
                 <span id="cart-badge" class="absolute -top-1 -right-2 bg-brand-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
             </button>
+            
+            <!-- TELEGRAM PROFILE BUTTON (Opens Customer Dashboard) -->
+            <button onclick="openCustomerDashboard()" class="flex flex-col items-center text-gray-400 hover:text-brand-600 text-[11px] relative">
+                <div id="nav-profile-avatar" class="w-6 h-6 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-bold text-[10px] border border-brand-200 overflow-hidden mb-0.5 shadow-sm">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <span>Profile</span>
+            </button>
+
+            <!-- ADMIN DASHBOARD ACCESS BUTTON -->
+            <button onclick="openAdminLoginModal()" class="flex flex-col items-center text-gray-400 hover:text-brand-600 text-[11px]">
+                <div class="w-6 h-6 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center text-[10px] border border-gray-200 mb-0.5">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <span>Admin</span>
+            </button>
         </div>
     </nav>
+
+    <!-- CUSTOMER DASHBOARD MODAL -->
+    <div id="customer-dashboard-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative max-h-[85vh] overflow-y-auto">
+            <button onclick="closeCustomerDashboard()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+            
+            <div class="flex items-center space-x-3 border-b border-gray-100 pb-3">
+                <div id="dash-avatar" class="w-12 h-12 rounded-full bg-brand-500 text-white font-bold flex items-center justify-center text-base shadow-sm overflow-hidden border-2 border-brand-200">
+                    U
+                </div>
+                <div>
+                    <h3 id="dash-user-name" class="font-bold text-sm text-gray-900">Guest User</h3>
+                    <p id="dash-user-sub" class="text-xs text-brand-600 font-medium">Telegram Account Connected</p>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <h4 class="font-bold text-xs text-gray-900 uppercase tracking-wider"><i class="fa-solid fa-box-archive text-brand-500 mr-1"></i> Order History</h4>
+                <div id="customer-orders-list" class="space-y-2 max-h-40 overflow-y-auto">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+
+            <div class="pt-2 border-t border-gray-100 flex justify-between items-center text-xs">
+                <button onclick="loginWithTelegram()" class="text-brand-600 font-bold"><i class="fa-brands fa-telegram mr-1"></i> Switch Account</button>
+                <button onclick="handleLogout(); closeCustomerDashboard();" class="text-red-500 font-semibold">Log Out</button>
+            </div>
+        </div>
+    </div>
 
     <!-- ADMIN LOGIN MODAL -->
     <div id="admin-login-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
@@ -184,8 +213,8 @@
             <button onclick="closeAdminLoginModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
             <h3 class="font-bold text-sm text-gray-900"><i class="fa-solid fa-user-shield text-brand-500 mr-1.5"></i> Admin Dashboard Login</h3>
             <div class="space-y-2 text-xs">
-                <input type="email" id="admin-email" placeholder="Admin Email" class="w-full border border-gray-200 rounded-xl px-3 py-2">
-                <input type="password" id="admin-password" placeholder="Password" class="w-full border border-gray-200 rounded-xl px-3 py-2">
+                <input type="email" id="admin-email" placeholder="Admin Email" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-brand-500">
+                <input type="password" id="admin-password" placeholder="Password" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-brand-500">
             </div>
             <button onclick="handleAdminLogin()" class="w-full bg-brand-500 text-white font-bold text-xs py-3 rounded-2xl shadow-md hover:bg-brand-600 transition">Log In to Admin 🔑</button>
         </div>
@@ -305,13 +334,10 @@
                 window.currentUser = {
                     name: tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : ''),
                     username: tgUser.username || 'tg_user_' + tgUser.id,
+                    photo_url: tgUser.photo_url || null,
                     id: tgUser.id
                 };
-                document.getElementById('user-welcome').innerText = `Welcome, ${tgUser.first_name} ✨`;
-                document.getElementById('guest-banner').classList.add('hidden');
-                document.getElementById('user-profile-section').classList.remove('hidden');
-                document.getElementById('user-display-name').innerText = window.currentUser.name;
-                document.getElementById('user-avatar-initial').innerText = tgUser.first_name.charAt(0).toUpperCase();
+                updateProfileUI();
             }
         }
     </script>
@@ -340,6 +366,62 @@
         let appliedDiscount = 0;
 
         window.currentUser = window.currentUser || null;
+
+        function updateProfileUI() {
+            if (window.currentUser) {
+                document.getElementById('user-welcome').innerText = `Welcome, ${window.currentUser.name} ✨`;
+                document.getElementById('guest-banner').classList.add('hidden');
+                
+                const navAvatar = document.getElementById('nav-profile-avatar');
+                const dashAvatar = document.getElementById('dash-avatar');
+                
+                if (window.currentUser.photo_url) {
+                    navAvatar.innerHTML = `<img src="${window.currentUser.photo_url}" class="w-full h-full object-cover">`;
+                    dashAvatar.innerHTML = `<img src="${window.currentUser.photo_url}" class="w-full h-full object-cover">`;
+                } else {
+                    const init = window.currentUser.name.charAt(0).toUpperCase();
+                    navAvatar.innerHTML = init;
+                    dashAvatar.innerHTML = init;
+                }
+                
+                document.getElementById('dash-user-name').innerText = window.currentUser.name;
+                document.getElementById('dash-user-sub').innerText = `@${window.currentUser.username || 'telegram_user'}`;
+            }
+        }
+
+        function openCustomerDashboard() {
+            if (!window.currentUser) {
+                alert('Please log in with Telegram first! 🌸');
+                loginWithTelegram();
+                return;
+            }
+            renderCustomerOrders();
+            document.getElementById('customer-dashboard-modal').classList.remove('hidden');
+        }
+
+        function closeCustomerDashboard() {
+            document.getElementById('customer-dashboard-modal').classList.add('hidden');
+        }
+
+        function renderCustomerOrders() {
+            const container = document.getElementById('customer-orders-list');
+            if (orders.length === 0) {
+                container.innerHTML = `<p class="text-xs text-gray-400 py-2">No orders placed yet.</p>`;
+                return;
+            }
+            container.innerHTML = orders.map(o => `
+                <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 flex justify-between items-center text-xs">
+                    <div>
+                        <p class="font-bold text-gray-900">${o.id}</p>
+                        <p class="text-[10px] text-gray-400">${o.date}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-bold text-brand-600">$${o.total.toFixed(2)}</p>
+                        <span class="text-[9px] bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full font-semibold">${o.status}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
 
         function renderProducts() {
             const grid = document.getElementById('product-grid');
@@ -380,27 +462,24 @@
         function loginWithTelegram() {
             if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe?.user) {
                 const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
-                window.currentUser = { name: tgUser.first_name, id: tgUser.id };
-                document.getElementById('guest-banner').classList.add('hidden');
-                document.getElementById('user-profile-section').classList.remove('hidden');
-                document.getElementById('user-display-name').innerText = tgUser.first_name;
-                document.getElementById('user-avatar-initial').innerText = tgUser.first_name.charAt(0).toUpperCase();
-                alert(`Successfully logged in as ${tgUser.first_name} via Telegram! ✨`);
+                window.currentUser = {
+                    name: tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : ''),
+                    username: tgUser.username || 'tg_user_' + tgUser.id,
+                    photo_url: tgUser.photo_url || null,
+                    id: tgUser.id
+                };
             } else {
-                // Fallback simulation for browser testing
-                window.currentUser = { name: 'Demo Customer', id: '12345' };
-                document.getElementById('guest-banner').classList.add('hidden');
-                document.getElementById('user-profile-section').classList.remove('hidden');
-                document.getElementById('user-display-name').innerText = 'Demo Customer';
-                document.getElementById('user-avatar-initial').innerText = 'D';
-                alert('Logged in successfully via Telegram WebApp!');
+                window.currentUser = { name: 'Demo Customer', username: 'demogirl', photo_url: null, id: '12345' };
             }
+            updateProfileUI();
+            alert(`Logged in successfully as ${window.currentUser.name}! ✨`);
         }
 
         function handleLogout() {
             window.currentUser = null;
             document.getElementById('guest-banner').classList.remove('hidden');
-            document.getElementById('user-profile-section').classList.add('hidden');
+            document.getElementById('user-welcome').innerText = `Girl Accessories Shop`;
+            document.getElementById('nav-profile-avatar').innerHTML = `<i class="fa-solid fa-user"></i>`;
             alert('Logged out successfully.');
         }
 
@@ -691,8 +770,7 @@
         }
 
         function switchTab(tab) {
-            if (tab === 'wishlist') alert(`You have ${wishlist.length} saved items.`);
-            if (tab === 'orders') alert(`You have ${orders.length} order history records.`);
+            if (tab === 'wishlist') openCustomerDashboard();
         }
 
         renderProducts();
