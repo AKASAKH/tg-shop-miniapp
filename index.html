@@ -22,7 +22,7 @@
 <body class="bg-gray-50 text-gray-800 font-sans antialiased pb-24">
 
     <!-- PROMOTIONAL POPUP BANNER (SYNCED LIVE FROM DATABASE) -->
-    <div id="promo-popup" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300 hidden">
+    <div id="promo-popup" class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 transition-opacity duration-300 hidden">
         <div class="bg-white text-gray-900 rounded-2xl max-w-xs w-full p-5 space-y-3 shadow-xl relative text-center border border-gray-100">
             <button onclick="closePromoPopup()" class="absolute top-2.5 right-2.5 text-gray-400 hover:text-gray-600 w-6 h-6 rounded-full flex items-center justify-center text-xs">
                 <i class="fa-solid fa-xmark"></i>
@@ -147,7 +147,7 @@
                         <div class="flex-grow border-t border-gray-100"></div>
                     </div>
 
-                    <!-- TELEGRAM SIGN IN (Saves unique user record to database) -->
+                    <!-- TELEGRAM SIGN IN (Saves individual user record to database) -->
                     <button onclick="handleTelegramSignIn()" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs py-2 rounded-xl flex items-center justify-center space-x-1.5 shadow-xs">
                         <i class="fa-brands fa-telegram text-sm"></i>
                         <span>Continue with Telegram</span>
@@ -404,7 +404,6 @@
                 if (b.desc) document.getElementById('promo-desc-text').innerHTML = `Use code <span class="font-bold text-gray-800 underline">${b.code || 'PINK10'}</span> - ${b.desc}`;
                 if (b.code) document.getElementById('promo-code-text').innerText = b.code;
                 
-                // Show popup on open if active
                 const popup = document.getElementById('promo-popup');
                 if (popup && b.active !== false) {
                     popup.classList.remove('hidden');
@@ -451,7 +450,6 @@
         // TELEGRAM SIGN IN (Saves individual user record to database)
         window.handleTelegramSignIn = async function() {
             try {
-                // Mock or Telegram WebApp user session persistence
                 const tgId = "tg_" + Math.floor(100000 + Math.random() * 900000);
                 const tgEmail = `${tgId}@telegram.org`;
                 const userRef = doc(db, "users", tgId);
@@ -561,7 +559,6 @@
             alert('Order placed successfully! ✨');
         };
 
-        // AUTO-SEED CATALOG
         async function seedFullCatalog(db) {
             const catalog = [
                 { name: 'Pearl Butterfly Hairpin', category: 'Hairpins', price: 12.50, stock: 15, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
