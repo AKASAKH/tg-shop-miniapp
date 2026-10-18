@@ -94,10 +94,10 @@
                 <div id="wishlist-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
             </div>
 
-            <!-- PAGE: PROFILE & DASHBOARD ROUTER -->
+            <!-- PAGE: PROFILE & AUTHENTICATION / CUSTOMER DASHBOARD -->
             <div id="page-profile" class="hidden space-y-4 max-w-md mx-auto">
                 
-                <!-- CUSTOMER DASHBOARD VIEW (If logged in as Customer) -->
+                <!-- CUSTOMER DASHBOARD (Shown when logged in as customer) -->
                 <div id="customer-dashboard-view" class="space-y-3 hidden">
                     <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-200 flex items-center space-x-3">
                         <div class="w-12 h-12 rounded-full bg-brand-500 text-white font-bold flex items-center justify-center text-lg">C</div>
@@ -118,11 +118,11 @@
                     </div>
                 </div>
 
-                <!-- AUTH LOGIN / SIGNUP VIEW (If not logged in) -->
+                <!-- AUTH LOGIN / SIGNUP VIEW (Shown when guest) -->
                 <div id="profile-auth-box" class="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 space-y-4">
                     <div class="text-center space-y-1">
                         <h3 class="font-black text-base text-gray-900">Sign In / Sign Up 🌸</h3>
-                        <p class="text-xs text-gray-500">Access your customer or admin portal seamlessly</p>
+                        <p class="text-xs text-gray-500">Access customer store or admin dashboard seamlessly</p>
                     </div>
 
                     <!-- Auth Tabs -->
@@ -418,15 +418,12 @@
                 window.currentUser = user;
                 document.getElementById('session-user-badge').innerText = user.email || 'Active Session';
                 
-                // Check if user is Admin or Customer
                 const emailLower = (user.email || "").toLowerCase();
                 const isAdmin = emailLower.includes("admin") || user.uid === "NoIYk9Uwlc75YLdlpzx1";
 
                 if (isAdmin) {
-                    // Redirect Admin to Ecomora Admin Dashboard
                     enterAdminMode();
                 } else {
-                    // Redirect Customer to Customer Dashboard view under profile tab
                     document.getElementById('profile-auth-box').classList.add('hidden');
                     document.getElementById('customer-dashboard-view').classList.remove('hidden');
                     document.getElementById('cust-profile-name').innerText = user.displayName || user.email.split('@')[0];
