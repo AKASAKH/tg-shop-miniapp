@@ -131,6 +131,9 @@
                     <div class="text-center space-y-1">
                         <h3 class="font-black text-base text-gray-900">Sign In / Sign Up 🌸</h3>
                         <p class="text-xs text-gray-500">Access your customer or admin portal seamlessly</p>
+                        <p class="text-[11px] text-brand-600 font-bold bg-brand-50 py-1.5 px-3 rounded-xl mt-2 border border-brand-100">
+                            🔒 Default Admin: <span class="underline">admin@songsa.com</span> | Password: <span class="font-mono bg-white px-1.5 py-0.5 rounded text-gray-900 border">songsa2026</span>
+                        </p>
                     </div>
 
                     <!-- Auth Tabs -->
@@ -141,15 +144,15 @@
 
                     <!-- EMAIL LOGIN FORM -->
                     <div id="auth-form-login" class="space-y-2 text-xs">
-                        <input type="email" id="login-email" placeholder="Email (use an email containing 'admin' for Admin Dashboard)" class="w-full border rounded-xl px-3 py-2">
-                        <input type="password" id="login-password" placeholder="Password" class="w-full border rounded-xl px-3 py-2">
+                        <input type="email" id="login-email" placeholder="Email (admin@songsa.com)" class="w-full border rounded-xl px-3 py-2" value="admin@songsa.com">
+                        <input type="password" id="login-password" placeholder="Password (songsa2026)" class="w-full border rounded-xl px-3 py-2" value="songsa2026">
                         <button onclick="handleEmailLogin()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-sm">Log In ✨</button>
                     </div>
 
                     <!-- SIGN UP FORM -->
                     <div id="auth-form-signup" class="space-y-2 text-xs hidden">
                         <input type="text" id="signup-name" placeholder="Full Name" class="w-full border rounded-xl px-3 py-2">
-                        <input type="email" id="signup-email" placeholder="Email Address" class="w-full border rounded-xl px-3 py-2">
+                        <input type="email" id="signup-email" placeholder="Email Address (use @songsa.com for admin)" class="w-full border rounded-xl px-3 py-2">
                         <input type="password" id="signup-password" placeholder="Password (min 6 chars)" class="w-full border rounded-xl px-3 py-2">
                         <button onclick="handleEmailSignUp()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-sm">Create Account 🎉</button>
                     </div>
@@ -408,6 +411,25 @@
         window.firebaseDb = db;
         window.firebaseAuth = auth;
 
+        // Auto-provision admin@songsa.com in Firestore on startup if not present
+        async function ensureAdminAccountRecord() {
+            try {
+                const adminDocRef = doc(db, "admins", "admin_songsa");
+                const adminSnap = await getDoc(adminDocRef);
+                if (!adminSnap.exists()) {
+                    await setDoc(adminDocRef, {
+                        email: "admin@songsa.com",
+                        role: "super_admin",
+                        accessLevel: "full_store_management",
+                        createdAt: new Date().toISOString()
+                    });
+                }
+            } catch (e) {
+                console.log("Admin record sync note:", e);
+            }
+        }
+        ensureAdminAccountRecord();
+
         // SESSION PERSISTENCE & DASHBOARD ROUTING
         onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -415,7 +437,9 @@
                 document.getElementById('session-user-badge').innerText = user.email || 'Active Session';
                 
                 const emailLower = (user.email || "").toLowerCase();
-                const isAdmin = emailLower.includes("admin") || user.uid === "NoIYk9Uwlc75YLdlpzx1";
+                
+                // Automatically recognize any @songsa.com domain as full Admin
+                const isAdmin = emailLower.endsWith("@songsa.com") || emailLower.includes("admin") || user.uid === "NoIYk9Uwlc75YLdlpzx1";
 
                 if (isAdmin) {
                     enterAdminMode();
@@ -466,12 +490,25 @@
         });
 
         window.handleEmailLogin = async function() {
-            const email = document.getElementById('login-email').value;
+            const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
             try {
                 await signInWithEmailAndPassword(auth, email, password);
                 alert('Signed in successfully! ✨');
-            } catch (err) { alert('Login Failed: ' + err.message); }
+            } catch (err) {
+                // If admin@songsa.com doesn't exist yet in Firebase Auth, auto-create it for convenience
+                if (email.toLowerCase() === "admin@songsa.com") {
+                    try {
+                        await createUserWithEmailAndPassword(auth, email, password);
+                        alert('Admin account automatically provisioned and signed in! ✨');
+                        return;
+                    } catch (creationErr) {
+                        alert('Login Failed: ' + err.message);
+                        return;
+                    }
+                }
+                alert('Login Failed: ' + err.message);
+            }
         };
 
         window.handleEmailSignUp = async function() {
@@ -480,6 +517,11 @@
             const password = document.getElementById('signup-password').value;
             try {
                 await createUserWithEmailAndPassword(auth, email, password);
+                if (email.toLowerCase().endsWith("@songsa.com")) {
+                    await setDoc(doc(db, "admins", email.replace(/[@.]/g, '_')), {
+                        email, role: "admin", createdAt: new Date().toISOString()
+                    });
+                }
                 alert('Account created successfully! Welcome 🌸');
             } catch (err) { alert('Sign Up Failed: ' + err.message); }
         };
