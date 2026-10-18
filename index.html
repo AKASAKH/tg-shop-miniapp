@@ -62,9 +62,7 @@
             <button onclick="closePromoPopup()" class="absolute top-3 right-3 text-white/80 hover:text-white bg-black/20 w-8 h-8 rounded-full flex items-center justify-center text-xs">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto text-2xl backdrop-blur-md">
-                ✨
-            </div>
+            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto text-2xl backdrop-blur-md">✨</div>
             <div>
                 <span class="bg-white/20 text-[10px] uppercase font-extrabold px-3 py-1 rounded-full border border-white/30">Autumn Special Deal</span>
                 <h3 class="text-xl font-black mt-2">Get 30% OFF Your Order!</h3>
@@ -82,8 +80,6 @@
 
         <!-- ================= CUSTOMER DASHBOARD VIEWS ================= -->
         <div id="customer-view" class="space-y-4">
-
-            <!-- PAGE: SHOP -->
             <div id="page-shop" class="space-y-3">
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-xs"></i></span>
@@ -111,42 +107,22 @@
             <!-- PAGE: PROFILE -->
             <div id="page-profile" class="hidden space-y-4">
                 <div class="bg-white rounded-3xl p-4 shadow-sm border border-brand-100 flex items-center space-x-3">
-                    <div id="profile-avatar" class="w-12 h-12 rounded-full bg-brand-500 text-white font-bold flex items-center justify-center text-lg shadow-sm border-2 border-brand-200 overflow-hidden">
-                        U
-                    </div>
+                    <div id="profile-avatar" class="w-12 h-12 rounded-full bg-brand-500 text-white font-bold flex items-center justify-center text-lg shadow-sm border-2 border-brand-200 overflow-hidden">U</div>
                     <div class="flex-1">
                         <h3 id="profile-name" class="font-bold text-sm text-gray-900">Guest User</h3>
                         <p id="profile-status" class="text-xs text-brand-600 font-medium">Auto-Logged in via Telegram</p>
                     </div>
-                    <button onclick="loginWithTelegram()" class="text-xs bg-brand-100 text-brand-700 px-3 py-1.5 rounded-xl font-bold">Switch Account</button>
                 </div>
-
-                <div class="bg-white rounded-3xl p-3 shadow-sm border border-brand-100 grid grid-cols-2 gap-2 text-xs">
-                    <button onclick="switchProfileSub('orders')" class="p-3 bg-brand-50 rounded-2xl flex flex-col items-center justify-center text-center font-bold text-gray-800">
-                        <i class="fa-solid fa-box-archive text-brand-500 text-lg mb-1"></i> My Orders
-                    </button>
-                    <button onclick="switchProfileSub('addresses')" class="p-3 bg-brand-50 rounded-2xl flex flex-col items-center justify-center text-center font-bold text-gray-800">
-                        <i class="fa-solid fa-location-dot text-brand-500 text-lg mb-1"></i> Addresses
-                    </button>
-                    <button onclick="switchProfileSub('payments')" class="p-3 bg-brand-50 rounded-2xl flex flex-col items-center justify-center text-center font-bold text-gray-800">
-                        <i class="fa-solid fa-credit-card text-brand-500 text-lg mb-1"></i> Payments
-                    </button>
-                    <button onclick="switchProfileSub('reviews')" class="p-3 bg-brand-50 rounded-2xl flex flex-col items-center justify-center text-center font-bold text-gray-800">
-                        <i class="fa-solid fa-star text-brand-500 text-lg mb-1"></i> Reviews
-                    </button>
-                </div>
-
                 <div id="profile-sub-container" class="bg-white rounded-3xl p-4 shadow-sm border border-brand-100 text-xs"></div>
             </div>
-
         </div>
 
-        <!-- ================= ADMIN PANEL ================= -->
+        <!-- ================= FULL ADMIN PANEL ================= -->
         <div id="admin-view" class="hidden space-y-4">
             <div class="flex justify-between items-center bg-white p-3.5 rounded-3xl border border-brand-100 shadow-sm">
                 <div>
                     <h3 class="font-bold text-xs text-gray-900">Store Management Console</h3>
-                    <p class="text-[10px] text-brand-600 font-medium" id="admin-status-lbl">Admin Session Active (UID: NoIYk9Uwlc75YLdlpzx1)</p>
+                    <p class="text-[10px] text-brand-600 font-medium" id="admin-status-lbl">Admin Session Active</p>
                 </div>
                 <!-- ICON-ONLY EXIT BUTTON -->
                 <button onclick="exitAdminMode()" class="w-8 h-8 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center hover:bg-gray-200 transition">
@@ -154,7 +130,7 @@
                 </button>
             </div>
 
-            <!-- Admin SOP Navigation Modules -->
+            <!-- Admin SOP Navigation -->
             <div class="bg-white rounded-2xl p-2 shadow-sm border border-brand-100 flex overflow-x-auto space-x-1 text-xs scrollbar-none font-semibold">
                 <button onclick="switchAdminNav('dashboard')" id="adtab-dashboard" class="px-3 py-1.5 bg-brand-500 text-white rounded-xl whitespace-nowrap">Dashboard</button>
                 <button onclick="switchAdminNav('products')" id="adtab-products" class="px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap">Products</button>
@@ -185,9 +161,9 @@
                 <div id="admin-products-list" class="space-y-2 max-h-80 overflow-y-auto"></div>
             </div>
 
-            <!-- MODULE 3: ORDERS -->
+            <!-- MODULE 3: ORDERS WORKFLOW (View, Confirm, Process, Ship, Cancel) -->
             <div id="admin-sec-orders" class="hidden space-y-2">
-                <h4 class="font-bold text-xs text-gray-900">Orders Lifecycle Management</h4>
+                <h4 class="font-bold text-xs text-gray-900">Order Management & Workflow</h4>
                 <div id="admin-orders-list" class="space-y-3 max-h-96 overflow-y-auto"></div>
             </div>
 
@@ -236,7 +212,7 @@
     <div id="admin-product-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative">
             <button onclick="closeAdminProductModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="font-bold text-sm text-gray-900" id="admin-modal-title">Add New Product</h3>
+            <h3 class="font-bold text-sm text-gray-900">Add New Product</h3>
             <div class="space-y-2 text-xs">
                 <input type="text" id="prod-name" placeholder="Product Name" class="w-full border rounded-xl px-3 py-2">
                 <select id="prod-category" class="w-full border rounded-xl px-3 py-2 bg-white">
@@ -254,7 +230,7 @@
         </div>
     </div>
 
-    <!-- FIREBASE MODULE LOGIC -->
+    <!-- FIREBASE MODULE & LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -277,38 +253,29 @@
         window.firebaseAuth = auth;
         window.firebaseDb = db;
 
-        // Monitor Auth State for UID: NoIYk9Uwlc75YLdlpzx1
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 window.adminUser = user;
-                console.log("Admin logged in successfully. UID:", user.uid);
-                if (document.getElementById('admin-status-lbl')) {
-                    document.getElementById('admin-status-lbl').innerText = `Logged in as Admin (${user.email})`;
-                }
+                console.log("Logged in:", user.email);
             } else {
                 window.adminUser = null;
             }
         });
 
-        // Global Action Functions with Authenticated Scope
         window.handleAdminLogin = async function() {
             const email = document.getElementById('admin-email').value;
             const password = document.getElementById('admin-password').value;
             try {
-                const creds = await signInWithEmailAndPassword(auth, email, password);
-                alert(`Login successful! Logged in UID: ${creds.user.uid}`);
+                await signInWithEmailAndPassword(auth, email, password);
+                alert('Admin Login Successful! ✨');
                 closeAdminLoginModal();
                 enterAdminMode();
             } catch (err) {
-                alert('Admin Login Failed: ' + err.message);
+                alert('Login Failed: ' + err.message);
             }
         };
 
         window.saveAdminProduct = async function() {
-            if (!auth.currentUser) {
-                return alert("Permission Denied: Please click 'Admin Portal' and log in first.");
-            }
-
             const name = document.getElementById('prod-name').value;
             const category = document.getElementById('prod-category').value;
             const price = parseFloat(document.getElementById('prod-price').value);
@@ -329,16 +296,29 @@
                     image
                 });
                 closeAdminProductModal();
-                alert('Product added successfully to Firestore database!');
+                alert('Product successfully added to Firestore database! ✨');
             } catch (err) {
                 alert('Error saving product: ' + err.message);
             }
         };
 
         window.deleteProduct = async function(id) {
-            if (!auth.currentUser) return alert("Please log in as Admin first.");
-            if (confirm("Delete product?")) {
-                await deleteDoc(doc(db, "products", id));
+            if (confirm("Delete this product?")) {
+                try {
+                    await deleteDoc(doc(db, "products", id));
+                    alert('Product deleted.');
+                } catch (err) {
+                    alert('Error: ' + err.message);
+                }
+            }
+        };
+
+        window.updateOrderStatus = async function(orderId, newStatus) {
+            try {
+                await updateDoc(doc(db, "orders", orderId), { status: newStatus });
+                alert(`Order status updated to: ${newStatus}`);
+            } catch (err) {
+                alert('Error updating order: ' + err.message);
             }
         };
 
@@ -349,6 +329,7 @@
             window.products = loaded;
             if (window.renderProducts) window.renderProducts();
             if (window.renderAdminProducts) window.renderAdminProducts();
+            if (window.renderAdminInventory) window.renderAdminInventory();
         });
 
         onSnapshot(collection(db, "orders"), (snapshot) => {
@@ -356,10 +337,11 @@
             snapshot.forEach(doc => loaded.push({ id: doc.id, ...doc.data() }));
             window.orders = loaded;
             if (window.renderAdminOrders) window.renderAdminOrders();
+            if (window.updateAdminStats) window.updateAdminStats();
         });
     </script>
 
-    <!-- CORE UI CONTROLE SCRIPT -->
+    <!-- CORE UI CONTROLLER -->
     <script>
         const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
         window.products = [];
@@ -388,12 +370,17 @@
 
         function switchAdminNav(sec) {
             ['dashboard', 'products', 'orders', 'inventory'].forEach(s => {
-                document.getElementById(`admin-sec-${s}`).classList.add('hidden');
+                const el = document.getElementById(`admin-sec-${s}`);
+                if(el) el.classList.add('hidden');
+                const btn = document.getElementById(`adtab-${s}`);
+                if(btn) btn.className = 'px-3 py-1.5 text-gray-500 rounded-xl whitespace-nowrap';
             });
             document.getElementById(`admin-sec-${sec}`).classList.remove('hidden');
+            document.getElementById(`adtab-${sec}`).className = 'px-3 py-1.5 bg-brand-500 text-white rounded-xl whitespace-nowrap';
 
             if (sec === 'products') renderAdminProducts();
             if (sec === 'orders') renderAdminOrders();
+            if (sec === 'inventory') renderAdminInventory();
         }
 
         window.renderProducts = function() {
@@ -424,11 +411,35 @@
 
         window.renderAdminOrders = function() {
             document.getElementById('admin-orders-list').innerHTML = window.orders.map(o => `
-                <div class="bg-white p-3 rounded-2xl border border-brand-100 text-xs flex justify-between items-center">
-                    <div><b>${o.id}</b> - ${o.customer}</div>
-                    <span class="text-brand-600 font-bold">$${o.total}</span>
+                <div class="bg-white p-3 rounded-2xl border border-brand-100 shadow-sm space-y-2 text-xs">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-gray-900">${o.id} - ${o.customer}</span>
+                        <span class="font-bold text-brand-600">$${Number(o.total || 0).toFixed(2)}</span>
+                    </div>
+                    <p class="text-[10px] text-gray-500"><i class="fa-solid fa-location-dot mr-1"></i>${o.address || 'No address'}</p>
+                    <div class="flex justify-between items-center pt-1 border-t border-gray-100">
+                        <span class="font-semibold text-gray-600">Status: <b class="text-brand-600">${o.status}</b></span>
+                        <div class="flex space-x-1">
+                            <button onclick="updateOrderStatus('${o.id}', 'Confirmed')" class="bg-blue-50 text-blue-600 px-2 py-1 rounded-lg font-bold text-[10px]">Confirm</button>
+                            <button onclick="updateOrderStatus('${o.id}', 'Processing Item')" class="bg-amber-50 text-amber-600 px-2 py-1 rounded-lg font-bold text-[10px]">Process</button>
+                            <button onclick="updateOrderStatus('${o.id}', 'Shipped')" class="bg-emerald-50 text-emerald-600 px-2 py-1 rounded-lg font-bold text-[10px]">Ship 🚚</button>
+                            <button onclick="updateOrderStatus('${o.id}', 'Cancelled')" class="bg-red-50 text-red-600 px-2 py-1 rounded-lg font-bold text-[10px]">Cancel ❌</button>
+                        </div>
+                    </div>
                 </div>
             `).join('');
+        };
+
+        window.renderAdminInventory = function() {
+            document.getElementById('admin-inventory-list').innerHTML = window.products.map(p => `
+                <div class="bg-white p-2.5 rounded-xl border text-xs flex justify-between"><span>${p.name}</span><span class="font-bold">Stock: ${p.stock || 10}</span></div>
+            `).join('');
+        };
+
+        window.updateAdminStats = function() {
+            const rev = window.orders.reduce((sum, o) => sum + Number(o.total || 0), 0);
+            document.getElementById('admin-rev-display').innerText = `$${rev.toFixed(2)}`;
+            document.getElementById('admin-ord-count').innerText = `${window.orders.length} Orders`;
         };
     </script>
 </body>
