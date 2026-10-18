@@ -21,6 +21,25 @@
 </head>
 <body class="bg-brand-50 text-gray-800 font-sans antialiased pb-24">
 
+    <!-- PROMOTIONAL POPUP BANNER -->
+    <div id="promo-popup" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-gradient-to-br from-brand-500 to-brand-700 text-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative text-center">
+            <button onclick="closePromoPopup()" class="absolute top-3 right-3 text-white/80 hover:text-white bg-black/20 w-8 h-8 rounded-full flex items-center justify-center text-xs">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto text-2xl backdrop-blur-md">✨</div>
+            <div>
+                <span class="bg-white/20 text-[10px] uppercase font-extrabold px-3 py-1 rounded-full border border-white/30">Autumn Special Deal</span>
+                <h3 class="text-xl font-black mt-2">Get 30% OFF Your Order!</h3>
+                <p class="text-xs text-brand-100 mt-1">Use coupon code <span class="font-bold underline text-white">PINK10</span> during checkout.</p>
+            </div>
+            <div class="pt-2 flex flex-col space-y-2">
+                <button onclick="closePromoPopup()" class="w-full bg-white text-brand-600 font-extrabold text-xs py-3 rounded-2xl shadow-lg">Start Shopping Now 🌸</button>
+                <p class="text-[10px] text-brand-200 font-medium">Auto-closing in <span id="promo-timer" class="font-bold">10</span> seconds...</p>
+            </div>
+        </div>
+    </div>
+
     <!-- HEADER -->
     <header class="bg-white border-b border-brand-100 sticky top-0 z-40 shadow-sm">
         <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
@@ -147,7 +166,7 @@
 
             <!-- TAB 4: INVENTORY -->
             <div id="admin-sec-inventory" class="hidden space-y-2">
-                <h4 class="font-bold text-xs text-gray-900">Stock & Low-Stock Alerts</h4>
+                <h4 class="font-bold text-xs text-gray-900">Actual Stock & Low-Stock Alerts</h4>
                 <div id="admin-inventory-list" class="space-y-2 max-h-80 overflow-y-auto"></div>
             </div>
 
@@ -335,6 +354,14 @@
             alert(`Order status updated to: ${status}`);
         };
 
+        window.updateProductStock = async function(docId, currentStock) {
+            const newStock = prompt("Enter new actual stock quantity:", currentStock);
+            if (newStock !== null && !isNaN(newStock)) {
+                await updateDoc(doc(db, "products", docId), { stock: parseInt(newStock) });
+                alert("Inventory stock updated successfully!");
+            }
+        };
+
         window.saveAdminCoupon = async function() {
             const code = document.getElementById('coup-code').value.toUpperCase();
             const discount = parseFloat(document.getElementById('coup-discount').value);
@@ -358,6 +385,14 @@
             let sub = cart.reduce((s, i) => s + (i.price * i.qty), 0);
             let finalTotal = sub * discountMultiplier;
 
+            // Automatically deduct actual stock from inventory when order is placed
+            for (let item of cart) {
+                if (item.id) {
+                    const newStock = Math.max(0, (item.stock || 10) - item.qty);
+                    await updateDoc(doc(db, "products", item.id), { stock: newStock });
+                }
+            }
+
             await addDoc(collection(db, "orders"), {
                 orderNum: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
                 customer: name, phone, address, total: finalTotal, status: 'Processing', date: new Date().toISOString().split('T')[0]
@@ -366,7 +401,7 @@
             discountMultiplier = 1;
             document.getElementById('cart-badge').innerText = '0';
             closeCheckoutModal();
-            alert('Order placed and synced live to database! ✨');
+            alert('Order placed and actual inventory updated live! ✨');
         };
     </script>
 
@@ -380,6 +415,23 @@
         let wishlist = [];
         let activeCategory = 'All';
         let discountMultiplier = 1;
+        let promoTimer = 10;
+
+        const promoInterval = setInterval(() => {
+            promoTimer--;
+            const timerEl = document.getElementById('promo-timer');
+            if(timerEl) timerEl.innerText = promoTimer;
+            if (promoTimer <= 0) closePromoPopup();
+        }, 1000);
+
+        function closePromoPopup() {
+            clearInterval(promoInterval);
+            const popup = document.getElementById('promo-popup');
+            if(popup) {
+                popup.classList.add('opacity-0', 'pointer-events-none');
+                setTimeout(() => popup.classList.add('hidden'), 300);
+            }
+        }
 
         function switchCustomerTab(tab) {
             ['shop', 'wishlist', 'profile'].forEach(t => {
@@ -423,7 +475,7 @@
                             <button onclick="toggleWishlist('${p.id}')" class="absolute top-2 right-2 w-7 h-7 bg-white/80 rounded-full flex items-center justify-center text-xs ${wishlist.includes(p.id) ? 'text-red-500' : 'text-gray-400'}"><i class="fa-solid fa-heart"></i></button>
                         </div>
                         <h4 class="font-bold text-xs text-gray-900 truncate">${p.name}</h4>
-                        <p class="text-[10px] text-gray-400">Stock: ${p.stock || 10}</p>
+                        <p class="text-[10px] text-gray-400">Stock: ${p.stock ?? 10}</p>
                     </div>
                     <div class="flex justify-between items-center mt-2 pt-2 border-t">
                         <span class="font-extrabold text-xs text-brand-600">$${Number(p.price || 0).toFixed(2)}</span>
@@ -560,8 +612,11 @@
         window.renderAdminInventory = function() {
             document.getElementById('admin-inventory-list').innerHTML = window.products.map(p => `
                 <div class="bg-white p-2.5 rounded-xl border text-xs flex justify-between items-center">
-                    <span>${p.name}</span>
-                    <span class="font-bold px-2 py-1 rounded-lg ${p.stock < 5 ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}">Stock: ${p.stock || 10}</span>
+                    <span><b>${p.name}</b></span>
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold px-2 py-1 rounded-lg ${(p.stock ?? 10) < 5 ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}">Actual Stock: ${p.stock ?? 10}</span>
+                        <button onclick="updateProductStock('${p.id}', ${p.stock ?? 10})" class="bg-gray-100 text-gray-700 px-2 py-1 rounded-lg font-bold">Edit</button>
+                    </div>
                 </div>
             `).join('');
         };
