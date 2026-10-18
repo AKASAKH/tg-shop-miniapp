@@ -30,7 +30,7 @@
                 <span class="bg-brand-500 text-white p-2 rounded-xl text-sm shadow-sm"><i class="fa-solid fa-gem"></i></span>
                 <div>
                     <h1 class="font-bold text-gray-900 leading-tight">Sparkle & Bloom</h1>
-                    <p class="text-[10px] text-brand-600 font-medium" id="header-user-text">Girl Accessories Shop</p>
+                    <p class="text-[10px] text-brand-600 font-medium">Girl Accessories Shop</p>
                 </div>
             </div>
             <div class="flex items-center space-x-2">
@@ -73,7 +73,7 @@
                 <div class="bg-white rounded-3xl p-4 shadow-sm border border-brand-100 flex items-center space-x-3">
                     <div class="w-12 h-12 rounded-full bg-brand-500 text-white font-bold flex items-center justify-center text-lg">U</div>
                     <div>
-                        <h3 id="profile-name" class="font-bold text-sm text-gray-900">Guest User</h3>
+                        <h3 class="font-bold text-sm text-gray-900">Guest User</h3>
                         <p class="text-xs text-brand-600 font-medium">Telegram Connected</p>
                     </div>
                 </div>
@@ -162,7 +162,7 @@
     <!-- ADMIN LOGIN MODAL -->
     <div id="admin-login-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative">
-            <button onclick="closeAdminLoginModal()" class="absolute top-4 right-4 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
+            <button onclick="closeAdminLoginModal()" class="absolute top-4 right-4"><i class="fa-solid fa-xmark"></i></button>
             <h3 class="font-bold text-sm text-gray-900">Admin Portal Login</h3>
             <div class="space-y-2 text-xs">
                 <input type="email" id="admin-email" placeholder="Admin Email" class="w-full border rounded-xl px-3 py-2">
@@ -175,7 +175,7 @@
     <!-- CHECKOUT MODAL -->
     <div id="checkout-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative">
-            <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
+            <button onclick="closeCheckoutModal()" class="absolute top-4 right-4"><i class="fa-solid fa-xmark"></i></button>
             <h3 class="font-bold text-sm text-gray-900">Delivery Information</h3>
             <div class="space-y-2 text-xs">
                 <input type="text" id="checkout-name" placeholder="Full Name" class="w-full border rounded-xl px-3 py-2">
@@ -254,8 +254,8 @@
             if (confirm("Delete product?")) await deleteDoc(doc(db, "products", id));
         };
 
-        window.updateOrderStatus = async function(id, status) {
-            await updateDoc(doc(db, "orders", id), { status });
+        window.updateOrderStatus = async function(docId, status) {
+            await updateDoc(doc(db, "orders", docId), { status });
             alert(`Order updated to: ${status}`);
         };
 
@@ -267,7 +267,7 @@
 
             const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
             await addDoc(collection(db, "orders"), {
-                id: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
+                orderNum: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
                 customer: name, phone, address, total, status: 'Processing', date: new Date().toISOString().split('T')[0]
             });
             cart = [];
@@ -278,7 +278,7 @@
 
         onSnapshot(collection(db, "products"), (snapshot) => {
             window.products = [];
-            snapshot.forEach(doc => window.products.push({ id: doc.id, ...doc.data() }));
+            snapshot.forEach(docSnap => window.products.push({ id: docSnap.id, ...docSnap.data() }));
             if (window.renderProducts) window.renderProducts();
             if (window.renderAdminProducts) window.renderAdminProducts();
             if (window.renderAdminInventory) window.renderAdminInventory();
@@ -286,7 +286,10 @@
 
         onSnapshot(collection(db, "orders"), (snapshot) => {
             window.orders = [];
-            snapshot.forEach(doc => window.orders.push({ id: doc.id, ...doc.data() }));
+            // Preserve Firestore document ID as 'docId' and order fields as-is
+            snapshot.forEach(docSnap => {
+                window.orders.push({ docId: docSnap.id, ...docSnap.data() });
+            });
             if (window.renderAdminOrders) window.renderAdminOrders();
             if (window.updateAdminStats) window.updateAdminStats();
         });
@@ -397,16 +400,16 @@
             document.getElementById('admin-orders-list').innerHTML = window.orders.map(o => `
                 <div class="bg-white p-3 rounded-2xl border shadow-sm space-y-2 text-xs">
                     <div class="flex justify-between items-center">
-                        <span class="font-bold">${o.id} - ${o.customer}</span>
+                        <span class="font-bold">${o.orderNum || o.id || 'ORD'} - ${o.customer}</span>
                         <span class="font-bold text-brand-600">$${Number(o.total || 0).toFixed(2)}</span>
                     </div>
                     <p class="text-[10px] text-gray-500"><i class="fa-solid fa-location-dot mr-1"></i>${o.address}</p>
                     <div class="flex justify-between items-center pt-1 border-t">
                         <span>Status: <b class="text-brand-600">${o.status}</b></span>
                         <div class="flex space-x-1">
-                            <button onclick="updateOrderStatus('${o.id}', 'Confirmed')" class="bg-blue-50 text-blue-600 px-2 py-1 rounded-lg font-bold text-[10px]">Confirm</button>
-                            <button onclick="updateOrderStatus('${o.id}', 'Shipped')" class="bg-emerald-50 text-emerald-600 px-2 py-1 rounded-lg font-bold text-[10px]">Ship 🚚</button>
-                            <button onclick="updateOrderStatus('${o.id}', 'Cancelled')" class="bg-red-50 text-red-600 px-2 py-1 rounded-lg font-bold text-[10px]">Cancel ❌</button>
+                            <button onclick="updateOrderStatus('${o.docId}', 'Confirmed')" class="bg-blue-50 text-blue-600 px-2 py-1 rounded-lg font-bold text-[10px]">Confirm</button>
+                            <button onclick="updateOrderStatus('${o.docId}', 'Shipped')" class="bg-emerald-50 text-emerald-600 px-2 py-1 rounded-lg font-bold text-[10px]">Ship 🚚</button>
+                            <button onclick="updateOrderStatus('${o.docId}', 'Cancelled')" class="bg-red-50 text-red-600 px-2 py-1 rounded-lg font-bold text-[10px]">Cancel ❌</button>
                         </div>
                     </div>
                 </div>
