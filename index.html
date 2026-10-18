@@ -94,27 +94,35 @@
                 <div id="wishlist-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
             </div>
 
-            <!-- PAGE: PROFILE & AUTHENTICATION / CUSTOMER DASHBOARD -->
+            <!-- PAGE: PROFILE & DASHBOARD ROUTER -->
             <div id="page-profile" class="hidden space-y-4 max-w-md mx-auto">
                 
-                <!-- CUSTOMER DASHBOARD (Shown when logged in as customer) -->
-                <div id="customer-dashboard-view" class="space-y-3 hidden">
+                <!-- CUSTOMER PERSONAL DASHBOARD (Shown when logged in as customer) -->
+                <div id="customer-dashboard-view" class="space-y-4 hidden">
                     <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-200 flex items-center space-x-3">
                         <div class="w-12 h-12 rounded-full bg-brand-500 text-white font-bold flex items-center justify-center text-lg">C</div>
                         <div class="flex-1">
                             <h3 id="cust-profile-name" class="font-bold text-sm text-gray-900">Customer Dashboard</h3>
-                            <p class="text-xs text-brand-600 font-medium">Welcome back, Shopper!</p>
+                            <p class="text-xs text-brand-600 font-medium">Shopping & Personal Account</p>
                         </div>
                         <button onclick="handleSignOut()" class="text-xs bg-gray-100 text-gray-600 px-3 py-1.5 rounded-xl font-bold hover:bg-gray-200">Sign Out</button>
                     </div>
-                    <div class="bg-white rounded-3xl p-4 shadow-sm border border-gray-200 text-xs space-y-2">
-                        <h4 class="font-bold text-gray-900">Quick Actions</h4>
-                        <button onclick="switchCustomerTab('shop')" class="w-full text-left p-2.5 bg-brand-50 hover:bg-brand-100 rounded-xl font-bold text-brand-700 flex justify-between items-center">
-                            <span>Browse Catalog</span> <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                        <button onclick="switchCustomerTab('wishlist')" class="w-full text-left p-2.5 bg-gray-50 hover:bg-gray-100 rounded-xl font-bold text-gray-700 flex justify-between items-center">
-                            <span>View Wishlist</span> <i class="fa-solid fa-arrow-right"></i>
-                        </button>
+
+                    <div class="bg-white rounded-3xl p-4 shadow-sm border border-gray-200 text-xs space-y-3">
+                        <h4 class="font-bold text-gray-900 text-sm border-b pb-2">My Personal Account Features</h4>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="switchCustomerTab('shop')" class="p-3 bg-brand-50 rounded-2xl text-left font-bold text-gray-800 hover:bg-brand-100">
+                                <i class="fa-solid fa-store text-brand-500 mr-1.5"></i> Browse Shop
+                            </button>
+                            <button onclick="switchCustomerTab('wishlist')" class="p-3 bg-brand-50 rounded-2xl text-left font-bold text-gray-800 hover:bg-brand-100">
+                                <i class="fa-solid fa-heart text-brand-500 mr-1.5"></i> Wishlist
+                            </button>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded-2xl space-y-1">
+                            <p class="font-bold text-gray-900">Active Order Tracking</p>
+                            <p class="text-[11px] text-gray-500">Your recent orders and delivery status sync live here.</p>
+                            <div id="customer-my-orders-list" class="space-y-2 pt-2"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -122,7 +130,7 @@
                 <div id="profile-auth-box" class="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 space-y-4">
                     <div class="text-center space-y-1">
                         <h3 class="font-black text-base text-gray-900">Sign In / Sign Up 🌸</h3>
-                        <p class="text-xs text-gray-500">Access customer store or admin dashboard seamlessly</p>
+                        <p class="text-xs text-gray-500">Access your customer or admin portal seamlessly</p>
                     </div>
 
                     <!-- Auth Tabs -->
@@ -133,7 +141,7 @@
 
                     <!-- EMAIL LOGIN FORM -->
                     <div id="auth-form-login" class="space-y-2 text-xs">
-                        <input type="email" id="login-email" placeholder="Email (use admin email for Admin Dashboard)" class="w-full border rounded-xl px-3 py-2">
+                        <input type="email" id="login-email" placeholder="Email (use an email containing 'admin' for Admin Dashboard)" class="w-full border rounded-xl px-3 py-2">
                         <input type="password" id="login-password" placeholder="Password" class="w-full border rounded-xl px-3 py-2">
                         <button onclick="handleEmailLogin()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-sm">Log In ✨</button>
                     </div>
@@ -169,7 +177,7 @@
             <!-- TOP DASHBOARD NAVIGATION BAR -->
             <div class="bg-white p-4 rounded-3xl border border-gray-200 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="flex items-center space-x-3">
-                    <span class="font-black text-lg text-gray-900 flex items-center"><i class="fa-solid fa-chart-line text-brand-500 mr-2"></i> Ecomora Admin Dashboard</span>
+                    <span class="font-black text-lg text-gray-900 flex items-center"><i class="fa-solid fa-chart-line text-brand-500 mr-2"></i> Ecomora Admin Dashboard (Full Store Management)</span>
                 </div>
                 <!-- Dashboard Sub-Tabs -->
                 <div class="flex items-center space-x-1 overflow-x-auto text-xs font-semibold scrollbar-none">
@@ -412,7 +420,7 @@
         window.firebaseDb = db;
         window.firebaseAuth = auth;
 
-        // SESSION PERSISTENCE & DASHBOARD ROUTING
+        // SESSION PERSISTENCE & DASHBOARD ROUTING (REMEMBER DEVICE)
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 window.currentUser = user;
@@ -427,6 +435,7 @@
                     document.getElementById('profile-auth-box').classList.add('hidden');
                     document.getElementById('customer-dashboard-view').classList.remove('hidden');
                     document.getElementById('cust-profile-name').innerText = user.displayName || user.email.split('@')[0];
+                    if (window.renderCustomerOrders) window.renderCustomerOrders();
                 }
             } else {
                 window.currentUser = null;
@@ -458,6 +467,7 @@
             snapshot.forEach(docSnap => window.orders.push({ docId: docSnap.id, ...docSnap.data() }));
             if (window.renderAdminOrders) window.renderAdminOrders();
             if (window.renderEcomoraDash) window.renderEcomoraDash();
+            if (window.renderCustomerOrders) window.renderCustomerOrders();
         });
 
         // REAL-TIME SYNC: COUPONS
@@ -472,7 +482,7 @@
             const password = document.getElementById('login-password').value;
             try {
                 await signInWithEmailAndPassword(auth, email, password);
-                alert('Signed in successfully! Redirecting... ✨');
+                alert('Signed in successfully! Redirecting to your dashboard... ✨');
             } catch (err) { alert('Login Failed: ' + err.message); }
         };
 
@@ -724,7 +734,23 @@
             document.getElementById(`nav-btn-${tab}`).className = 'flex flex-col items-center text-brand-600 text-xs font-bold';
             if (tab === 'shop') renderProducts();
             if (tab === 'wishlist') renderWishlist();
+            if (tab === 'profile') renderCustomerOrders();
         }
+
+        window.renderCustomerOrders = function() {
+            const listEl = document.getElementById('customer-my-orders-list');
+            if (!listEl) return;
+            listEl.innerHTML = window.orders.length === 0 ? `<p class="text-gray-400 text-[10px]">No orders placed yet.</p>` :
+                window.orders.map(o => `
+                    <div class="bg-white p-2.5 rounded-xl border flex justify-between items-center text-xs">
+                        <div>
+                            <span class="font-bold text-gray-900">${o.orderNum}</span>
+                            <p class="text-[10px] text-gray-500">${o.date} • <b class="text-brand-600">${o.status}</b></p>
+                        </div>
+                        <span class="font-extrabold text-brand-600">$${Number(o.total || 0).toFixed(2)}</span>
+                    </div>
+                `).join('');
+        };
 
         function renderProducts() {
             const grid = document.getElementById('product-grid');
