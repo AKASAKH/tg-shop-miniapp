@@ -337,7 +337,6 @@
                 window.currentUser = user;
                 document.getElementById('session-user-badge').innerText = user.email || 'Active User';
                 
-                // Always store an individual user document inside the 'users' collection
                 const userRef = doc(db, "users", user.uid);
                 const userSnap = await getDoc(userRef);
                 
@@ -393,7 +392,7 @@
             if (window.renderCustomerOrders) window.renderCustomerOrders();
         });
 
-        // REAL-TIME SYNC: BANNER (Renders live on app open and after saves)
+        // REAL-TIME SYNC: BANNER
         onSnapshot(doc(db, "settings", "banner"), (docSnap) => {
             if (docSnap.exists()) {
                 const b = docSnap.data();
@@ -402,7 +401,6 @@
                 if (b.desc) document.getElementById('promo-desc-text').innerHTML = `${b.desc} (Code: <span class="font-bold underline">${b.code || 'PINK10'}</span>)`;
                 if (b.code) document.getElementById('promo-code-text').innerText = b.code;
 
-                // Populate input values inside admin manager for convenience
                 if (document.getElementById('cust-promo-tag')) {
                     document.getElementById('cust-promo-tag').value = b.tag || '';
                     document.getElementById('cust-promo-title').value = b.title || '';
@@ -452,7 +450,7 @@
             } catch (err) { alert('Sign Up Failed: ' + err.message); }
         };
 
-        // TELEGRAM SIGN IN (Creates individual user record in database)
+        // TELEGRAM SIGN IN
         window.handleTelegramSignIn = async function() {
             try {
                 const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
@@ -488,7 +486,6 @@
             alert('Signed out successfully.');
         };
 
-        // SAVE NEW PRODUCT TO DATABASE
         window.saveAdminProduct = async function() {
             const name = document.getElementById('prod-name').value;
             const category = document.getElementById('prod-category').value;
@@ -505,7 +502,6 @@
             alert('New product saved to database successfully! ✨');
         };
 
-        // SAVE BANNER TO DATABASE (`settings/banner`)
         window.saveAdminBannerSettings = async function() {
             const tag = document.getElementById('cust-promo-tag').value;
             const title = document.getElementById('cust-promo-title').value;
@@ -541,6 +537,7 @@
             }
         };
 
+        // SUBMIT ORDER (Stores customer's userId)
         window.submitOrder = async function() {
             const name = document.getElementById('checkout-name').value;
             const phone = document.getElementById('checkout-phone').value;
@@ -556,10 +553,18 @@
                 }
             }
 
+            // Write order with the user's explicit UID
             await addDoc(collection(db, "orders"), {
                 orderNum: `#${Math.floor(202520 + Math.random() * 100)}`,
-                customer: name, phone, address, total: sub, status: 'In Progress', date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+                userId: window.currentUser ? window.currentUser.uid : 'guest',
+                customer: name, 
+                phone, 
+                address, 
+                total: sub, 
+                status: 'In Progress', 
+                date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
             });
+
             cart = [];
             document.getElementById('cart-badge').innerText = '0';
             closeCheckoutModal();
@@ -617,11 +622,18 @@
             if (tab === 'profile') renderCustomerOrders();
         }
 
+        // RENDER CUSTOMER-SPECIFIC ORDER HISTORY
         window.renderCustomerOrders = function() {
             const listEl = document.getElementById('customer-my-orders-list');
             if (!listEl) return;
-            listEl.innerHTML = window.orders.length === 0 ? `<p class="text-gray-400 text-[11px]">No orders placed yet.</p>` :
-                window.orders.map(o => `
+
+            // Only show orders belonging to the currently authenticated user
+            const myOrders = window.orders.filter(o => 
+                window.currentUser && o.userId === window.currentUser.uid
+            );
+
+            listEl.innerHTML = myOrders.length === 0 ? `<p class="text-gray-400 text-[11px]">No orders placed yet.</p>` :
+                myOrders.map(o => `
                     <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 flex justify-between items-center text-[11px]">
                         <div>
                             <span class="font-bold text-gray-900">${o.orderNum}</span>
@@ -736,6 +748,7 @@
             if (sec === 'inventory') renderAdminInventory();
         }
 
+        // ADMIN OVERVIEW (Calculates total orders & revenue across all users)
         window.renderEcomoraDash = function() {
             const rev = window.orders.reduce((sum, o) => sum + Number(o.total || 0), 0);
             document.getElementById('dash-total-revenue').innerText = `$${rev.toFixed(2)}`;
@@ -763,6 +776,7 @@
             `).join('');
         };
 
+        // ADMIN ALL ORDERS LIST
         window.renderAdminOrders = function() {
             document.getElementById('admin-orders-full-list').innerHTML = window.orders.map(o => `
                 <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 space-y-1.5 text-xs">
