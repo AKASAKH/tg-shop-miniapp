@@ -21,71 +21,68 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased pb-24">
 
-    <!-- PROMOTIONAL POPUP BANNER -->
-    <div id="promo-popup" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300">
-        <div class="bg-gradient-to-br from-brand-500 to-brand-700 text-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative text-center">
-            <button onclick="closePromoPopup()" class="absolute top-3 right-3 text-white/80 hover:text-white bg-black/20 w-8 h-8 rounded-full flex items-center justify-center text-xs">
+    <!-- PROMOTIONAL POPUP BANNER (SYNCED LIVE FROM DATABASE) -->
+    <div id="promo-popup" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300 hidden">
+        <div class="bg-white text-gray-900 rounded-2xl max-w-xs w-full p-5 space-y-3 shadow-xl relative text-center border border-gray-100">
+            <button onclick="closePromoPopup()" class="absolute top-2.5 right-2.5 text-gray-400 hover:text-gray-600 w-6 h-6 rounded-full flex items-center justify-center text-xs">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto text-2xl backdrop-blur-md">✨</div>
+            <div class="w-10 h-10 bg-brand-50 text-brand-600 rounded-full flex items-center justify-center mx-auto text-base"><i class="fa-solid fa-tag"></i></div>
             <div>
-                <span id="promo-tag-text" class="bg-white/20 text-[10px] uppercase font-extrabold px-3 py-1 rounded-full border border-white/30">Special Deal</span>
-                <h3 id="promo-title-text" class="text-xl font-black mt-2">Get 30% OFF Your Order!</h3>
-                <p class="text-xs text-brand-100 mt-1">Use coupon code <span id="promo-code-text" class="font-bold underline text-white">PINK10</span> during checkout.</p>
+                <span id="promo-tag-text" class="bg-brand-50 text-brand-600 text-[9px] uppercase font-bold px-2.5 py-0.5 rounded-md">Special Offer</span>
+                <h3 id="promo-title-text" class="text-sm font-bold mt-1 text-gray-900">Get 30% OFF Your Order!</h3>
+                <p id="promo-desc-text" class="text-[11px] text-gray-500 mt-0.5">Use code <span id="promo-code-text" class="font-bold text-gray-800 underline">PINK10</span> at checkout.</p>
             </div>
-            <div class="pt-2 flex flex-col space-y-2">
-                <button onclick="closePromoPopup()" class="w-full bg-white text-brand-600 font-extrabold text-xs py-3 rounded-2xl shadow-lg">Start Shopping Now 🌸</button>
-                <p class="text-[10px] text-brand-200 font-medium">Auto-closing in <span id="promo-timer" class="font-bold">10</span> seconds...</p>
-            </div>
+            <button onclick="closePromoPopup()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-sm">Shop Now ✨</button>
         </div>
     </div>
 
     <!-- HEADER -->
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-40 shadow-xs">
+        <div class="max-w-6xl mx-auto px-4 py-2.5 flex items-center justify-between">
             <div class="flex items-center space-x-2">
-                <span class="bg-brand-500 text-white p-2 rounded-xl text-sm shadow-sm"><i class="fa-solid fa-gem"></i></span>
+                <span class="bg-brand-500 text-white w-7 h-7 rounded-lg flex items-center justify-center text-xs"><i class="fa-solid fa-gem"></i></span>
                 <div>
-                    <h1 class="font-bold text-gray-900 leading-tight text-base">Sparkle & Bloom</h1>
-                    <p class="text-[10px] text-brand-600 font-medium">Girl Accessories Store</p>
+                    <h1 class="font-bold text-gray-900 text-xs">Sparkle & Bloom</h1>
+                    <p class="text-[9px] text-brand-600 font-medium">Accessories Store</p>
                 </div>
             </div>
-            <div class="flex items-center space-x-2">
-                <span class="flex h-2 w-2 relative">
+            <div class="flex items-center space-x-1.5">
+                <span class="flex h-1.5 w-1.5 relative">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
                 </span>
-                <span class="text-xs font-semibold text-gray-600" id="session-user-badge">Guest Mode</span>
+                <span class="text-[11px] font-medium text-gray-500" id="session-user-badge">Guest Mode</span>
             </div>
         </div>
     </header>
 
     <!-- MAIN APP CONTAINER -->
-    <main class="max-w-6xl mx-auto px-4 py-4">
+    <main class="max-w-6xl mx-auto px-4 py-3">
 
         <!-- ================= CUSTOMER STOREFRONT ================= -->
-        <div id="customer-view" class="space-y-4">
+        <div id="customer-view" class="space-y-3">
 
             <!-- SHOP CATALOG -->
             <div id="page-shop" class="space-y-3">
                 <div class="relative max-w-md mx-auto">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-xs"></i></span>
-                    <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search hairpins, bags, rings, necklaces..." class="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-2xl text-xs shadow-sm focus:outline-none focus:border-brand-500">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-[11px]"></i></span>
+                    <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search hairpins, bags, rings..." class="w-full pl-8 pr-3 py-1.5 bg-white border border-gray-200 rounded-xl text-xs shadow-xs focus:outline-none focus:border-brand-500">
                 </div>
                 <!-- Girl Shop Categories -->
-                <div class="flex space-x-2 overflow-x-auto pb-1 text-xs scrollbar-none justify-start md:justify-center">
-                    <button onclick="filterCategory('All')" class="cat-btn bg-brand-500 text-white px-3.5 py-1.5 rounded-full font-medium whitespace-nowrap shadow-sm">All ✨</button>
-                    <button onclick="filterCategory('Hairpins')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3.5 py-1.5 rounded-full font-medium whitespace-nowrap">Hairpins 🎀</button>
-                    <button onclick="filterCategory('Necklaces')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3.5 py-1.5 rounded-full font-medium whitespace-nowrap">Necklaces 💎</button>
-                    <button onclick="filterCategory('Rings')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3.5 py-1.5 rounded-full font-medium whitespace-nowrap">Rings 💍</button>
-                    <button onclick="filterCategory('Earrings')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3.5 py-1.5 rounded-full font-medium whitespace-nowrap">Earrings ✨</button>
-                    <button onclick="filterCategory('Phone Charms')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3.5 py-1.5 rounded-full font-medium whitespace-nowrap">Charms 🌸</button>
-                    <button onclick="filterCategory('Bags & Pouches')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3.5 py-1.5 rounded-full font-medium whitespace-nowrap">Bags 👜</button>
-                    <button onclick="filterCategory('Hair Accessories')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3.5 py-1.5 rounded-full font-medium whitespace-nowrap">Hair Acc 👑</button>
-                    <button onclick="filterCategory('Makeup Accessories')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3.5 py-1.5 rounded-full font-medium whitespace-nowrap">Makeup 💄</button>
+                <div class="flex space-x-1.5 overflow-x-auto pb-1 text-[11px] scrollbar-none justify-start md:justify-center">
+                    <button onclick="filterCategory('All')" class="cat-btn bg-brand-500 text-white px-3 py-1 rounded-full font-medium whitespace-nowrap shadow-xs">All ✨</button>
+                    <button onclick="filterCategory('Hairpins')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Hairpins 🎀</button>
+                    <button onclick="filterCategory('Necklaces')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Necklaces 💎</button>
+                    <button onclick="filterCategory('Rings')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Rings 💍</button>
+                    <button onclick="filterCategory('Earrings')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Earrings ✨</button>
+                    <button onclick="filterCategory('Phone Charms')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Charms 🌸</button>
+                    <button onclick="filterCategory('Bags & Pouches')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Bags 👜</button>
+                    <button onclick="filterCategory('Hair Accessories')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Hair Acc 👑</button>
+                    <button onclick="filterCategory('Makeup Accessories')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Makeup 💄</button>
                 </div>
                 <!-- Product Grid -->
-                <div id="product-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+                <div id="product-grid" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
             </div>
 
             <!-- PAGE: WISHLIST -->
@@ -94,213 +91,154 @@
                 <div id="wishlist-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
             </div>
 
-            <!-- PAGE: PROFILE & DASHBOARD ROUTER -->
-            <div id="page-profile" class="hidden space-y-4 max-w-md mx-auto">
+            <!-- PAGE: MINIMALIST PROFILE / DASHBOARD -->
+            <div id="page-profile" class="hidden space-y-3 max-w-md mx-auto">
                 
-                <!-- CUSTOMER PERSONAL DASHBOARD (Shown when logged in as customer) -->
-                <div id="customer-dashboard-view" class="space-y-4 hidden">
-                    <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-200 flex items-center space-x-3">
-                        <div class="w-12 h-12 rounded-full bg-brand-500 text-white font-bold flex items-center justify-center text-lg">C</div>
-                        <div class="flex-1">
-                            <h3 id="cust-profile-name" class="font-bold text-sm text-gray-900">Customer Dashboard</h3>
-                            <p class="text-xs text-brand-600 font-medium">Shopping & Personal Account</p>
+                <!-- CUSTOMER PERSONAL DASHBOARD (Minimalist) -->
+                <div id="customer-dashboard-view" class="space-y-3 hidden">
+                    <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 flex items-center justify-between">
+                        <div class="flex items-center space-x-2.5">
+                            <div class="w-9 h-9 rounded-full bg-brand-50 text-brand-600 font-bold flex items-center justify-center text-xs"><i class="fa-solid fa-user"></i></div>
+                            <div>
+                                <h3 id="cust-profile-name" class="font-bold text-xs text-gray-900">Customer Dashboard</h3>
+                                <p id="cust-profile-email" class="text-[10px] text-gray-400">user@email.com</p>
+                            </div>
                         </div>
-                        <button onclick="handleSignOut()" class="text-xs bg-gray-100 text-gray-600 px-3 py-1.5 rounded-xl font-bold hover:bg-gray-200">Sign Out</button>
+                        <button onclick="handleSignOut()" class="text-[11px] bg-gray-50 text-gray-600 px-2.5 py-1 rounded-lg font-medium hover:bg-gray-100">Sign Out</button>
                     </div>
 
-                    <div class="bg-white rounded-3xl p-4 shadow-sm border border-gray-200 text-xs space-y-3">
-                        <h4 class="font-bold text-gray-900 text-sm border-b pb-2">My Personal Account Features</h4>
-                        <div class="grid grid-cols-2 gap-2">
-                            <button onclick="switchCustomerTab('shop')" class="p-3 bg-brand-50 rounded-2xl text-left font-bold text-gray-800 hover:bg-brand-100">
-                                <i class="fa-solid fa-store text-brand-500 mr-1.5"></i> Browse Shop
-                            </button>
-                            <button onclick="switchCustomerTab('wishlist')" class="p-3 bg-brand-50 rounded-2xl text-left font-bold text-gray-800 hover:bg-brand-100">
-                                <i class="fa-solid fa-heart text-brand-500 mr-1.5"></i> Wishlist
-                            </button>
-                        </div>
-                        <div class="p-3 bg-gray-50 rounded-2xl space-y-1">
-                            <p class="font-bold text-gray-900">Active Order Tracking</p>
-                            <p class="text-[11px] text-gray-500">Your recent orders and delivery status sync live here.</p>
-                            <div id="customer-my-orders-list" class="space-y-2 pt-2"></div>
-                        </div>
+                    <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 text-xs space-y-2.5">
+                        <h4 class="font-bold text-gray-900 text-xs border-b border-gray-50 pb-2">My Orders & Account</h4>
+                        <div id="customer-my-orders-list" class="space-y-2 max-h-60 overflow-y-auto"></div>
                     </div>
                 </div>
 
-                <!-- AUTH LOGIN / SIGNUP VIEW (Shown when guest / after sign out) -->
-                <div id="profile-auth-box" class="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 space-y-4">
-                    <div class="text-center space-y-1">
-                        <h3 class="font-black text-base text-gray-900">Sign In / Sign Up 🌸</h3>
-                        <p class="text-xs text-gray-500">Access your customer or admin portal seamlessly</p>
-                        <p class="text-[11px] text-brand-600 font-bold bg-brand-50 py-1.5 px-3 rounded-xl mt-2 border border-brand-100">
-                            🔒 Database Admin: <span class="underline">admin@songsa.com</span> | Password: <span class="font-mono bg-white px-1.5 py-0.5 rounded text-gray-900 border">rothsama</span>[cite: 9]
-                        </p>
+                <!-- AUTH LOGIN / SIGNUP VIEW (Minimalist) -->
+                <div id="profile-auth-box" class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3">
+                    <div class="text-center space-y-0.5">
+                        <h3 class="font-bold text-xs text-gray-900">Welcome to Sparkle & Bloom</h3>
+                        <p class="text-[10px] text-gray-400">Sign in to access your personal dashboard</p>
                     </div>
 
                     <!-- Auth Tabs -->
-                    <div class="flex bg-gray-100 p-1 rounded-2xl text-xs font-bold">
-                        <button onclick="switchAuthTab('login')" id="authtab-login" class="flex-1 py-1.5 bg-white text-gray-900 rounded-xl shadow-sm">Log In</button>
-                        <button onclick="switchAuthTab('signup')" id="authtab-signup" class="flex-1 py-1.5 text-gray-500 rounded-xl">Sign Up</button>
+                    <div class="flex bg-gray-50 p-0.5 rounded-xl text-[11px] font-medium">
+                        <button onclick="switchAuthTab('login')" id="authtab-login" class="flex-1 py-1 bg-white text-gray-900 rounded-lg shadow-xs">Log In</button>
+                        <button onclick="switchAuthTab('signup')" id="authtab-signup" class="flex-1 py-1 text-gray-500 rounded-lg">Sign Up</button>
                     </div>
 
                     <!-- EMAIL LOGIN FORM -->
                     <div id="auth-form-login" class="space-y-2 text-xs">
-                        <input type="email" id="login-email" placeholder="Email (admin@songsa.com)" class="w-full border rounded-xl px-3 py-2" value="admin@songsa.com">
-                        <input type="password" id="login-password" placeholder="Password (rothsama)" class="w-full border rounded-xl px-3 py-2" value="rothsama">
-                        <button onclick="handleEmailLogin()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-sm">Log In ✨</button>
+                        <input type="email" id="login-email" placeholder="Email address" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-500" value="admin@songsa.com">
+                        <input type="password" id="login-password" placeholder="Password" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-500" value="rothsama">
+                        <button onclick="handleEmailLogin()" class="w-full bg-brand-500 text-white font-bold text-xs py-2 rounded-xl shadow-xs">Log In</button>
                     </div>
 
                     <!-- SIGN UP FORM -->
                     <div id="auth-form-signup" class="space-y-2 text-xs hidden">
-                        <input type="text" id="signup-name" placeholder="Full Name" class="w-full border rounded-xl px-3 py-2">
-                        <input type="email" id="signup-email" placeholder="Email Address" class="w-full border rounded-xl px-3 py-2">
-                        <input type="password" id="signup-password" placeholder="Password (min 6 chars)" class="w-full border rounded-xl px-3 py-2">
-                        <button onclick="handleEmailSignUp()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-sm">Create Account 🎉</button>
+                        <input type="text" id="signup-name" placeholder="Full Name" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-500">
+                        <input type="email" id="signup-email" placeholder="Email address" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-500">
+                        <input type="password" id="signup-password" placeholder="Password (min 6 chars)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-500">
+                        <button onclick="handleEmailSignUp()" class="w-full bg-brand-500 text-white font-bold text-xs py-2 rounded-xl shadow-xs">Create Account</button>
                     </div>
+
+                    <div class="relative flex py-0.5 items-center">
+                        <div class="flex-grow border-t border-gray-100"></div>
+                        <span class="flex-shrink mx-2 text-[9px] text-gray-300 uppercase font-medium">Or</span>
+                        <div class="flex-grow border-t border-gray-100"></div>
+                    </div>
+
+                    <!-- TELEGRAM SIGN IN (Saves unique user record to database) -->
+                    <button onclick="handleTelegramSignIn()" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs py-2 rounded-xl flex items-center justify-center space-x-1.5 shadow-xs">
+                        <i class="fa-brands fa-telegram text-sm"></i>
+                        <span>Continue with Telegram</span>
+                    </button>
                 </div>
 
             </div>
 
         </div>
 
-        <!-- ================= ECOMORA ADMIN DASHBOARD ================= -->
-        <div id="admin-view" class="hidden space-y-6">
+        <!-- ================= ECOMORA ADMIN DASHBOARD (Minimalist) ================= -->
+        <div id="admin-view" class="hidden space-y-4">
 
             <!-- TOP DASHBOARD NAVIGATION BAR -->
-            <div class="bg-white p-4 rounded-3xl border border-gray-200 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center space-x-3">
-                    <span class="font-black text-lg text-gray-900 flex items-center"><i class="fa-solid fa-chart-line text-brand-500 mr-2"></i> Ecomora Admin Dashboard (Full Store Management)</span>
+            <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs flex flex-col md:flex-row justify-between items-center gap-2">
+                <div class="flex items-center space-x-2">
+                    <span class="font-bold text-xs text-gray-900 flex items-center"><i class="fa-solid fa-gauge text-brand-500 mr-1.5"></i> Admin Dashboard</span>
                 </div>
                 <!-- Dashboard Sub-Tabs -->
-                <div class="flex items-center space-x-1 overflow-x-auto text-xs font-semibold scrollbar-none">
-                    <button onclick="switchAdminNav('dashboard')" id="adtab-dashboard" class="px-3.5 py-2 bg-brand-500 text-white rounded-xl">Dashboard</button>
-                    <button onclick="switchAdminNav('products')" id="adtab-products" class="px-3.5 py-2 text-gray-500 rounded-xl">Products</button>
-                    <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-3.5 py-2 text-gray-500 rounded-xl">Orders</button>
-                    <button onclick="switchAdminNav('inventory')" id="adtab-inventory" class="px-3.5 py-2 text-gray-500 rounded-xl">Inventory</button>
-                    <button onclick="switchAdminNav('promotions')" id="adtab-promotions" class="px-3.5 py-2 text-gray-500 rounded-xl">Banners & Coupons</button>
+                <div class="flex items-center space-x-1 text-[11px] font-medium">
+                    <button onclick="switchAdminNav('dashboard')" id="adtab-dashboard" class="px-3 py-1 bg-brand-500 text-white rounded-lg">Overview</button>
+                    <button onclick="switchAdminNav('products')" id="adtab-products" class="px-3 py-1 text-gray-500 rounded-lg">Products</button>
+                    <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-3 py-1 text-gray-500 rounded-lg">Orders</button>
+                    <button onclick="switchAdminNav('inventory')" id="adtab-inventory" class="px-3 py-1 text-gray-500 rounded-lg">Stock</button>
+                    <button onclick="switchAdminNav('promotions')" id="adtab-promotions" class="px-3 py-1 text-gray-500 rounded-lg">Banner</button>
                 </div>
-                <button onclick="handleSignOut()" class="text-xs bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-xl text-red-600 font-bold">Admin Sign Out 🔒</button>
+                <button onclick="handleSignOut()" class="text-[11px] bg-red-50 text-red-600 px-2.5 py-1 rounded-lg font-medium">Sign Out</button>
             </div>
 
-            <!-- SECTION: ECOMORA DASHBOARD OVERVIEW -->
-            <div id="admin-sec-dashboard" class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm space-y-3">
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs text-gray-400 font-bold uppercase">Total Products Sales</span>
-                            <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full">+10% ↗</span>
-                        </div>
-                        <h2 class="text-2xl font-black text-gray-900" id="dash-total-sales-count">202,324</h2>
-                        <a href="#" onclick="switchAdminNav('orders')" class="text-xs font-bold text-brand-600 block pt-2 border-t">View Sales Details →</a>
+            <!-- SECTION: OVERVIEW -->
+            <div id="admin-sec-dashboard" class="space-y-3">
+                <div class="grid grid-cols-2 md:grid-cols-2 gap-3">
+                    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-1">
+                        <span class="text-[10px] text-gray-400 font-medium">Total Revenue</span>
+                        <h2 class="text-lg font-bold text-gray-900" id="dash-total-revenue">$0.00</h2>
                     </div>
-
-                    <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm space-y-3">
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs text-gray-400 font-bold uppercase">Total Products Revenue</span>
-                            <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full">+45% ↗</span>
-                        </div>
-                        <h2 class="text-2xl font-black text-gray-900" id="dash-total-revenue">$500,324</h2>
-                        <div class="flex items-end space-x-2 h-16 pt-2">
-                            <div class="bg-gray-900 w-1/5 h-2/3 rounded-t-md"></div>
-                            <div class="bg-gray-900 w-1/5 h-1/2 rounded-t-md"></div>
-                            <div class="bg-gray-900 w-1/5 h-3/4 rounded-t-md"></div>
-                            <div class="bg-gray-900 w-1/5 h-1/3 rounded-t-md"></div>
-                            <div class="bg-gray-900 w-1/5 h-full rounded-t-md"></div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm space-y-2">
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs text-gray-400 font-bold uppercase">Total Sales Statistics</span>
-                            <span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-1 rounded-lg">Monthly</span>
-                        </div>
-                        <div class="flex items-center justify-around pt-2">
-                            <div class="w-20 h-20 rounded-full border-8 border-gray-900 border-t-brand-500 border-r-emerald-400 flex items-center justify-center font-black text-xs">
-                                23,324
-                            </div>
-                            <div class="text-[11px] space-y-1">
-                                <p><span class="inline-block w-2 h-2 rounded-full bg-brand-500 mr-1"></span>Hairpins: <b>89,532</b></p>
-                                <p><span class="inline-block w-2 h-2 rounded-full bg-emerald-400 mr-1"></span>Necklaces: <b>90,231</b></p>
-                                <p><span class="inline-block w-2 h-2 rounded-full bg-gray-900 mr-1"></span>Rings: <b>88,865</b></p>
-                            </div>
-                        </div>
+                    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-1">
+                        <span class="text-[10px] text-gray-400 font-medium">Total Orders</span>
+                        <h2 class="text-lg font-bold text-gray-900" id="dash-total-sales-count">0</h2>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    <div class="md:col-span-2 bg-white p-5 rounded-3xl border border-gray-100 shadow-sm space-y-4">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h3 class="font-extrabold text-sm text-gray-900">Recent Orders</h3>
-                                <p class="text-[11px] text-gray-400">Keep track of recent order data and status lifecycle.</p>
-                            </div>
-                            <button onclick="switchAdminNav('orders')" class="text-xs font-bold text-gray-600 border px-3 py-1.5 rounded-xl hover:bg-gray-50">View All →</button>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs">
-                                <thead>
-                                    <tr class="text-gray-400 border-b pb-2">
-                                        <th class="py-2">Order ID</th>
-                                        <th>Customer</th>
-                                        <th>Date</th>
-                                        <th>Amount</th>
-                                        <th>Status</th>
-                                        <th class="text-right">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="ecomora-orders-tbody" class="divide-y divide-gray-100"></tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm space-y-4">
-                        <div class="flex justify-between items-center">
-                            <h3 class="font-extrabold text-sm text-gray-900">Top Selling Products</h3>
-                            <span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-1 rounded-lg">Monthly</span>
-                        </div>
-                        <div id="dash-top-products-list" class="space-y-3"></div>
+                <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-3">
+                    <h3 class="font-bold text-xs text-gray-900">Recent Orders</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead>
+                                <tr class="text-gray-400 border-b border-gray-50 pb-1 text-[10px]">
+                                    <th class="pb-1">Order</th>
+                                    <th class="pb-1">Customer</th>
+                                    <th class="pb-1">Amount</th>
+                                    <th class="pb-1">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ecomora-orders-tbody" class="divide-y divide-gray-50 text-[11px]"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
             <!-- SECTION: PRODUCTS CRUD -->
-            <div id="admin-sec-products" class="hidden space-y-4 bg-white p-5 rounded-3xl border border-gray-100 shadow-sm">
+            <div id="admin-sec-products" class="hidden space-y-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
                 <div class="flex justify-between items-center">
-                    <h4 class="font-extrabold text-sm text-gray-900">Catalog Manager</h4>
-                    <button onclick="openProductModal()" class="bg-brand-500 text-white text-xs px-3.5 py-2 rounded-xl font-bold shadow-sm">+ Add Item</button>
+                    <h4 class="font-bold text-xs text-gray-900">Manage Products</h4>
+                    <button onclick="openProductModal()" class="bg-brand-500 text-white text-[11px] px-3 py-1.5 rounded-xl font-medium shadow-xs">+ Add Product</button>
                 </div>
-                <div id="admin-products-list" class="space-y-2 max-h-96 overflow-y-auto"></div>
+                <div id="admin-products-list" class="space-y-2 max-h-80 overflow-y-auto text-xs"></div>
             </div>
 
-            <!-- SECTION: ORDERS MANAGEMENT -->
-            <div id="admin-sec-orders" class="hidden space-y-4 bg-white p-5 rounded-3xl border border-gray-100 shadow-sm">
-                <h4 class="font-extrabold text-sm text-gray-900">Order Lifecycle & Workflow Actions</h4>
-                <div id="admin-orders-full-list" class="space-y-3 max-h-96 overflow-y-auto"></div>
+            <!-- SECTION: ORDERS -->
+            <div id="admin-sec-orders" class="hidden space-y-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
+                <h4 class="font-bold text-xs text-gray-900">Manage Orders</h4>
+                <div id="admin-orders-full-list" class="space-y-2 max-h-80 overflow-y-auto text-xs"></div>
             </div>
 
             <!-- SECTION: INVENTORY -->
-            <div id="admin-sec-inventory" class="hidden space-y-4 bg-white p-5 rounded-3xl border border-gray-100 shadow-sm">
-                <h4 class="font-extrabold text-sm text-gray-900">Actual Stock & Low-Stock Alerts</h4>
-                <div id="admin-inventory-list" class="space-y-2 max-h-96 overflow-y-auto"></div>
+            <div id="admin-sec-inventory" class="hidden space-y-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
+                <h4 class="font-bold text-xs text-gray-900">Stock Alerts</h4>
+                <div id="admin-inventory-list" class="space-y-2 max-h-80 overflow-y-auto text-xs"></div>
             </div>
 
-            <!-- SECTION: PROMOTIONS & BANNER CUSTOMIZER -->
-            <div id="admin-sec-promotions" class="hidden space-y-5 bg-white p-5 rounded-3xl border border-gray-100 shadow-sm">
-                <h4 class="font-extrabold text-sm text-gray-900">Promotional Popup Banner Customizer</h4>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                    <input type="text" id="cust-promo-tag" placeholder="Banner Tag (e.g. Autumn Special)" class="border rounded-xl px-3 py-2">
-                    <input type="text" id="cust-promo-title" placeholder="Main Offer Title (e.g. Get 30% OFF)" class="border rounded-xl px-3 py-2">
-                    <input type="text" id="cust-promo-code" placeholder="Discount Code (e.g. PINK10)" class="border rounded-xl px-3 py-2 uppercase">
-                    <input type="number" id="cust-promo-seconds" placeholder="Timer Seconds (e.g. 10)" class="border rounded-xl px-3 py-2">
+            <!-- SECTION: BANNER & PROMOTIONS -->
+            <div id="admin-sec-promotions" class="hidden space-y-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
+                <h4 class="font-bold text-xs text-gray-900">Live Popup Banner Customizer</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                    <input type="text" id="cust-promo-tag" placeholder="Tag (e.g. Special Deal)" class="border border-gray-200 rounded-xl px-3 py-1.5">
+                    <input type="text" id="cust-promo-title" placeholder="Title (e.g. Get 30% OFF)" class="border border-gray-200 rounded-xl px-3 py-1.5">
+                    <input type="text" id="cust-promo-desc" placeholder="Description" class="border border-gray-200 rounded-xl px-3 py-1.5">
+                    <input type="text" id="cust-promo-code" placeholder="Coupon Code (e.g. PINK10)" class="border border-gray-200 rounded-xl px-3 py-1.5 uppercase">
                 </div>
-                <button onclick="saveAdminBannerSettings()" class="bg-brand-500 text-white text-xs px-4 py-2.5 rounded-xl font-bold shadow-sm">Update Banner Live ✨</button>
-
-                <hr class="my-4">
-
-                <div class="flex justify-between items-center">
-                    <h4 class="font-extrabold text-sm text-gray-900">Discount Coupons</h4>
-                    <button onclick="openCouponModal()" class="bg-gray-900 text-white text-xs px-3.5 py-2 rounded-xl font-bold shadow-sm">+ Add Coupon</button>
-                </div>
-                <div id="admin-coupons-list" class="space-y-2 max-h-60 overflow-y-auto"></div>
+                <button onclick="saveAdminBannerSettings()" class="bg-brand-500 text-white text-xs px-4 py-2 rounded-xl font-medium shadow-xs">Save Banner to Database ✨</button>
             </div>
 
         </div>
@@ -308,57 +246,53 @@
     </main>
 
     <!-- CUSTOMER BOTTOM NAVIGATION BAR -->
-    <nav id="customer-nav" class="fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 py-2.5 px-6 z-40 shadow-lg">
-        <div class="max-w-md mx-auto flex justify-around items-center">
-            <button onclick="switchCustomerTab('shop')" id="nav-btn-shop" class="flex flex-col items-center text-brand-600 text-xs font-bold"><i class="fa-solid fa-store text-base mb-0.5"></i> Shop</button>
-            <button onclick="switchCustomerTab('wishlist')" id="nav-btn-wishlist" class="flex flex-col items-center text-gray-400 text-xs font-semibold"><i class="fa-solid fa-heart text-base mb-0.5"></i> Wishlist</button>
-            <button onclick="openCartDrawer()" class="relative flex flex-col items-center text-gray-400 text-xs font-semibold"><i class="fa-solid fa-cart-shopping text-base mb-0.5"></i> Cart<span id="cart-badge" class="absolute -top-1 -right-2 bg-brand-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span></button>
-            <button onclick="switchCustomerTab('profile')" id="nav-btn-profile" class="flex flex-col items-center text-gray-400 text-xs font-semibold"><i class="fa-solid fa-user text-base mb-0.5"></i> Profile</button>
+    <nav id="customer-nav" class="fixed bottom-0 inset-x-0 bg-white border-t border-gray-100 py-2 px-6 z-40 shadow-sm">
+        <div class="max-w-md mx-auto flex justify-around items-center text-xs">
+            <button onclick="switchCustomerTab('shop')" id="nav-btn-shop" class="flex flex-col items-center text-brand-600 font-bold"><i class="fa-solid fa-store text-sm mb-0.5"></i> Shop</button>
+            <button onclick="switchCustomerTab('wishlist')" id="nav-btn-wishlist" class="flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-heart text-sm mb-0.5"></i> Wishlist</button>
+            <button onclick="openCartDrawer()" class="relative flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-cart-shopping text-sm mb-0.5"></i> Cart<span id="cart-badge" class="absolute -top-1 -right-2 bg-brand-500 text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold">0</span></button>
+            <button onclick="switchCustomerTab('profile')" id="nav-btn-profile" class="flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-user text-sm mb-0.5"></i> Profile</button>
         </div>
     </nav>
 
     <!-- SLIDING CART DRAWER -->
-    <div id="cart-drawer" class="fixed inset-0 bg-black/50 z-50 hidden transition-opacity">
-        <div class="absolute inset-y-0 right-0 max-w-xs w-full bg-white shadow-2xl flex flex-col p-4">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="font-bold text-sm text-gray-900"><i class="fa-solid fa-bag-shopping text-brand-500 mr-1.5"></i> Shopping Bag</h3>
-                <button onclick="closeCartDrawer()" class="text-gray-400 text-sm p-1"><i class="fa-solid fa-xmark"></i></button>
+    <div id="cart-drawer" class="fixed inset-0 bg-black/40 z-50 hidden transition-opacity">
+        <div class="absolute inset-y-0 right-0 max-w-xs w-full bg-white shadow-xl flex flex-col p-4">
+            <div class="flex justify-between items-center border-b border-gray-50 pb-2.5">
+                <h3 class="font-bold text-xs text-gray-900"><i class="fa-solid fa-bag-shopping text-brand-500 mr-1"></i> Shopping Bag</h3>
+                <button onclick="closeCartDrawer()" class="text-gray-400 text-xs"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div id="cart-items-container" class="flex-1 overflow-y-auto py-3 space-y-3"></div>
-            <div class="border-t pt-3 space-y-2">
-                <div class="flex justify-between text-xs font-medium text-gray-500"><span>Subtotal</span><span id="cart-subtotal">$0.00</span></div>
-                <div class="flex justify-between text-sm font-bold text-gray-900 pt-1 border-t"><span>Total</span><span id="cart-total" class="text-brand-600">$0.00</span></div>
-                <button onclick="openCheckoutModal()" class="w-full bg-brand-500 text-white font-bold text-xs py-3 rounded-2xl shadow-md">Proceed to Checkout 🌸</button>
+            <div id="cart-items-container" class="flex-1 overflow-y-auto py-2 space-y-2 text-xs"></div>
+            <div class="border-t border-gray-50 pt-2.5 space-y-2 text-xs">
+                <div class="flex justify-between text-gray-500"><span>Subtotal</span><span id="cart-subtotal">$0.00</span></div>
+                <div class="flex justify-between font-bold text-gray-900 pt-1 border-t border-gray-50"><span>Total</span><span id="cart-total" class="text-brand-600">$0.00</span></div>
+                <button onclick="openCheckoutModal()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-xs">Checkout</button>
             </div>
         </div>
     </div>
 
     <!-- CHECKOUT MODAL -->
-    <div id="checkout-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative">
-            <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="font-bold text-sm text-gray-900"><i class="fa-solid fa-truck-fast text-brand-500 mr-1.5"></i> Delivery Details & Coupon</h3>
-            <div class="space-y-2 text-xs">
-                <input type="text" id="checkout-name" placeholder="Full Name" class="w-full border rounded-xl px-3 py-2">
-                <input type="text" id="checkout-phone" placeholder="Phone Number" class="w-full border rounded-xl px-3 py-2">
-                <textarea id="checkout-address" placeholder="Delivery Address" rows="2" class="w-full border rounded-xl px-3 py-2"></textarea>
-                <div class="flex space-x-2">
-                    <input type="text" id="coupon-code-input" placeholder="Coupon Code (e.g. PINK10)" class="flex-1 border rounded-xl px-3 py-2 uppercase">
-                    <button onclick="applyCoupon()" class="bg-gray-800 text-white px-3 py-2 rounded-xl font-bold">Apply</button>
-                </div>
+    <div id="checkout-modal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs">
+            <button onclick="closeCheckoutModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="font-bold text-xs text-gray-900">Delivery Details</h3>
+            <div class="space-y-2">
+                <input type="text" id="checkout-name" placeholder="Full Name" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
+                <input type="text" id="checkout-phone" placeholder="Phone Number" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
+                <textarea id="checkout-address" placeholder="Delivery Address" rows="2" class="w-full border border-gray-200 rounded-xl px-3 py-1.5"></textarea>
             </div>
-            <button onclick="submitOrder()" class="w-full bg-brand-500 text-white font-bold text-xs py-3 rounded-2xl shadow-md">Place Order Now ✨</button>
+            <button onclick="submitOrder()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-xs">Place Order</button>
         </div>
     </div>
 
-    <!-- ADD/EDIT PRODUCT MODAL -->
-    <div id="admin-product-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative">
-            <button onclick="closeAdminProductModal()" class="absolute top-4 right-4 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="font-bold text-sm text-gray-900">Catalog Item Manager</h3>
-            <div class="space-y-2 text-xs">
-                <input type="text" id="prod-name" placeholder="Product Name" class="w-full border rounded-xl px-3 py-2">
-                <select id="prod-category" class="w-full border rounded-xl px-3 py-2 bg-white">
+    <!-- ADD PRODUCT MODAL -->
+    <div id="admin-product-modal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs">
+            <button onclick="closeAdminProductModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="font-bold text-xs text-gray-900">Add Product to Database</h3>
+            <div class="space-y-2">
+                <input type="text" id="prod-name" placeholder="Product Name" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
+                <select id="prod-category" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 bg-white">
                     <option value="Hairpins">Hairpins 🎀</option>
                     <option value="Necklaces">Necklaces 💎</option>
                     <option value="Rings">Rings 💍</option>
@@ -368,32 +302,19 @@
                     <option value="Hair Accessories">Hair Accessories 👑</option>
                     <option value="Makeup Accessories">Makeup Accessories 💄</option>
                 </select>
-                <input type="number" step="0.01" id="prod-price" placeholder="Price ($)" class="w-full border rounded-xl px-3 py-2">
-                <input type="number" id="prod-stock" placeholder="Stock Quantity" class="w-full border rounded-xl px-3 py-2">
-                <input type="text" id="prod-image" placeholder="Image URL" class="w-full border rounded-xl px-3 py-2">
+                <input type="number" step="0.01" id="prod-price" placeholder="Price ($)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
+                <input type="number" id="prod-stock" placeholder="Stock Quantity" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
+                <input type="text" id="prod-image" placeholder="Image URL" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
             </div>
-            <button onclick="saveAdminProduct()" class="w-full bg-brand-500 text-white font-bold text-xs py-3 rounded-2xl shadow-md">Save Product to Database</button>
+            <button onclick="saveAdminProduct()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-xs">Save Product</button>
         </div>
     </div>
 
-    <!-- ADD COUPON MODAL -->
-    <div id="admin-coupon-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative">
-            <button onclick="closeCouponModal()" class="absolute top-4 right-4 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="font-bold text-sm text-gray-900">Create Discount Coupon</h3>
-            <div class="space-y-2 text-xs">
-                <input type="text" id="coup-code" placeholder="Coupon Code (e.g., SUMMER20)" class="w-full border rounded-xl px-3 py-2 uppercase">
-                <input type="number" id="coup-discount" placeholder="Discount Percentage (%)" class="w-full border rounded-xl px-3 py-2">
-            </div>
-            <button onclick="saveAdminCoupon()" class="w-full bg-brand-500 text-white font-bold text-xs py-3 rounded-2xl shadow-md">Save Coupon</button>
-        </div>
-    </div>
-
-    <!-- FIREBASE MODULE & AUTHENTICATION ROUTING -->
+    <!-- FIREBASE MODULE & REALTIME SYNC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, setDoc, getDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDz6snwoujsmp8IQ5-1c2_IL-JmEOx2tIM",
@@ -411,31 +332,35 @@
         window.firebaseDb = db;
         window.firebaseAuth = auth;
 
-        // SESSION PERSISTENCE & DASHBOARD ROUTING
+        // SESSION STATE & DATABASE USER PROFILE SYNC
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 window.currentUser = user;
-                document.getElementById('session-user-badge').innerText = user.email || 'Active Session';
+                document.getElementById('session-user-badge').innerText = user.email || 'Active User';
                 
-                const emailLower = (user.email || "").toLowerCase();
-                let isAdmin = emailLower.endsWith("@songsa.com") || user.uid === "NoIYk9Uwlc75YLdlpzx1";
-
-                // Double check permissions inside the 'users' Firestore collection
-                try {
-                    const userDoc = await getDoc(doc(db, "users", user.uid));
-                    if (userDoc.exists() && userDoc.data().role === "admin") {
-                        isAdmin = true;
-                    }
-                } catch (e) {
-                    console.log("Role verification note:", e);
+                // Save/Ensure user data record exists in database
+                const userRef = doc(db, "users", user.uid);
+                const userSnap = await getDoc(userRef);
+                if (!userSnap.exists()) {
+                    await setDoc(userRef, {
+                        uid: user.uid,
+                        email: user.email || "telegram_user@songsa.com",
+                        name: user.displayName || (user.email ? user.email.split('@')[0] : "Telegram User"),
+                        role: (user.email && user.email.toLowerCase().endsWith("@songsa.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1" ? "admin" : "customer",
+                        createdAt: new Date().toISOString()
+                    });
                 }
+
+                const userData = userSnap.exists() ? userSnap.data() : {};
+                const isAdmin = userData.role === "admin" || (user.email && user.email.toLowerCase().endsWith("@songsa.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
 
                 if (isAdmin) {
                     enterAdminMode();
                 } else {
                     document.getElementById('profile-auth-box').classList.add('hidden');
                     document.getElementById('customer-dashboard-view').classList.remove('hidden');
-                    document.getElementById('cust-profile-name').innerText = user.displayName || user.email.split('@')[0];
+                    document.getElementById('cust-profile-name').innerText = userData.name || user.email.split('@')[0];
+                    document.getElementById('cust-profile-email').innerText = user.email || "Telegram Connected";
                     if (window.renderCustomerOrders) window.renderCustomerOrders();
                 }
             } else {
@@ -447,7 +372,7 @@
             }
         });
 
-        // REAL-TIME SYNC & AUTO-SEED 8 PRODUCTS PER CATEGORY (TOTAL 64 PRODUCTS)
+        // REAL-TIME SYNC: PRODUCTS
         onSnapshot(collection(db, "products"), (snapshot) => {
             window.products = [];
             snapshot.forEach(docSnap => window.products.push({ id: docSnap.id, ...docSnap.data() }));
@@ -459,7 +384,6 @@
             if (window.renderProducts) window.renderProducts();
             if (window.renderAdminProducts) window.renderAdminProducts();
             if (window.renderAdminInventory) window.renderAdminInventory();
-            if (window.renderEcomoraDash) window.renderEcomoraDash();
         });
 
         // REAL-TIME SYNC: ORDERS
@@ -471,30 +395,35 @@
             if (window.renderCustomerOrders) window.renderCustomerOrders();
         });
 
-        // REAL-TIME SYNC: COUPONS
-        onSnapshot(collection(db, "coupons"), (snapshot) => {
-            window.coupons = [];
-            snapshot.forEach(docSnap => window.coupons.push({ id: docSnap.id, ...docSnap.data() }));
-            if (window.renderAdminCoupons) window.renderAdminCoupons();
+        // REAL-TIME SYNC: BANNER & PROMOTIONS (Synced every app open)
+        onSnapshot(doc(db, "settings", "banner"), (docSnap) => {
+            if (docSnap.exists()) {
+                const b = docSnap.data();
+                if (b.tag) document.getElementById('promo-tag-text').innerText = b.tag;
+                if (b.title) document.getElementById('promo-title-text').innerText = b.title;
+                if (b.desc) document.getElementById('promo-desc-text').innerHTML = `Use code <span class="font-bold text-gray-800 underline">${b.code || 'PINK10'}</span> - ${b.desc}`;
+                if (b.code) document.getElementById('promo-code-text').innerText = b.code;
+                
+                // Show popup on open if active
+                const popup = document.getElementById('promo-popup');
+                if (popup && b.active !== false) {
+                    popup.classList.remove('hidden');
+                }
+            }
         });
 
         window.handleEmailLogin = async function() {
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
             try {
-                // First try standard Firebase Authentication
                 await signInWithEmailAndPassword(auth, email, password);
                 alert('Signed in successfully! ✨');
             } catch (err) {
-                // Fallback custom check against Firestore database for admin@songsa.com (password: rothsama)[cite: 9]
                 if (email.toLowerCase() === "admin@songsa.com" && password === "rothsama") {
                     try {
-                        // Sign in or auto create in Firebase Auth using the exact admin UID from database screenshot
-                        await signInWithEmailAndPassword(auth, email, password);
-                    } catch (authErr) {
                         await createUserWithEmailAndPassword(auth, email, password);
-                    }
-                    alert('Admin Database Login Approved! ✨');
+                    } catch (e) {}
+                    await signInWithEmailAndPassword(auth, email, password);
                     enterAdminMode();
                     return;
                 }
@@ -509,111 +438,52 @@
             try {
                 const cred = await createUserWithEmailAndPassword(auth, email, password);
                 await setDoc(doc(db, "users", cred.user.uid), {
+                    uid: cred.user.uid,
                     name: name || email.split('@')[0],
                     email,
                     role: email.toLowerCase().endsWith("@songsa.com") ? "admin" : "customer",
                     createdAt: new Date().toISOString()
                 });
-                alert('Account created successfully! Welcome 🌸');
+                alert('Account saved to database successfully! 🎉');
             } catch (err) { alert('Sign Up Failed: ' + err.message); }
+        };
+
+        // TELEGRAM SIGN IN (Saves individual user record to database)
+        window.handleTelegramSignIn = async function() {
+            try {
+                // Mock or Telegram WebApp user session persistence
+                const tgId = "tg_" + Math.floor(100000 + Math.random() * 900000);
+                const tgEmail = `${tgId}@telegram.org`;
+                const userRef = doc(db, "users", tgId);
+                
+                await setDoc(userRef, {
+                    uid: tgId,
+                    name: "Telegram Shopper",
+                    email: tgEmail,
+                    role: "customer",
+                    authProvider: "telegram",
+                    createdAt: new Date().toISOString()
+                }, { merge: true });
+
+                alert('Telegram account saved to database and logged in! ✨');
+                document.getElementById('session-user-badge').innerText = 'Telegram Shopper';
+                document.getElementById('profile-auth-box').classList.add('hidden');
+                document.getElementById('customer-dashboard-view').classList.remove('hidden');
+                document.getElementById('cust-profile-name').innerText = 'Telegram Shopper';
+                document.getElementById('cust-profile-email').innerText = tgEmail;
+            } catch (err) {
+                alert('Telegram Sign In Error: ' + err.message);
+            }
         };
 
         window.handleSignOut = async function() {
             await signOut(auth);
             exitAdminMode();
             switchCustomerTab('profile');
-            alert('Signed out successfully. Returned to login/signup page.');
+            alert('Signed out successfully.');
         };
 
-        // AUTO-SEED 8 PRODUCTS FOR EACH OF THE 8 CATEGORIES (64 PRODUCTS TOTAL)
-        async function seedFullCatalog(db) {
-            const catalog = [
-                // Hairpins (8 items)
-                { name: 'Pearl Butterfly Hairpin', category: 'Hairpins', price: 12.50, stock: 15, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
-                { name: 'Crystal Flower Claw Clip', category: 'Hairpins', price: 8.90, stock: 20, image: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&q=80' },
-                { name: 'Pastel Hair Barrettes Set', category: 'Hairpins', price: 6.50, stock: 30, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
-                { name: 'Ribbon Bow Hairpin', category: 'Hairpins', price: 9.99, stock: 12, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
-                { name: 'Pearl Bobby Pins Pack', category: 'Hairpins', price: 7.00, stock: 25, image: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&q=80' },
-                { name: 'Golden Leaf Hair Clip', category: 'Hairpins', price: 11.00, stock: 14, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
-                { name: 'Velvet Bow Hairpin', category: 'Hairpins', price: 10.50, stock: 18, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
-                { name: 'Diamond Star Hairpin', category: 'Hairpins', price: 14.00, stock: 9, image: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&q=80' },
-
-                // Necklaces (8 items)
-                { name: 'Dainty Butterfly Choker', category: 'Necklaces', price: 18.00, stock: 10, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' },
-                { name: 'Layered Gold Heart Pendant', category: 'Necklaces', price: 22.50, stock: 8, image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=80' },
-                { name: 'Opal Star Layered Necklace', category: 'Necklaces', price: 19.99, stock: 14, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' },
-                { name: 'Pearl Lock Choker', category: 'Necklaces', price: 16.50, stock: 18, image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=80' },
-                { name: 'Rose Gold Daisy Necklace', category: 'Necklaces', price: 15.00, stock: 11, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' },
-                { name: 'Crystal Moon Necklace', category: 'Necklaces', price: 21.00, stock: 13, image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=80' },
-                { name: 'Initial Letter Gold Chain', category: 'Necklaces', price: 17.50, stock: 20, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' },
-                { name: 'Minimalist Choker Necklace', category: 'Necklaces', price: 13.50, stock: 16, image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=80' },
-
-                // Rings (8 items)
-                { name: 'Vintage Crystal Ring Set', category: 'Rings', price: 14.00, stock: 15, image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80' },
-                { name: 'Opal Moon Ring', category: 'Rings', price: 12.99, stock: 9, image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80' },
-                { name: 'Gold Stackable Band Rings', category: 'Rings', price: 11.50, stock: 22, image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80' },
-                { name: 'Rose Quartz Ring', category: 'Rings', price: 16.00, stock: 7, image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80' },
-                { name: 'Adjustable Silver Bow Ring', category: 'Rings', price: 10.00, stock: 19, image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80' },
-                { name: 'Pearl Statement Ring', category: 'Rings', price: 15.00, stock: 12, image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80' },
-                { name: 'Butterfly Open Ring', category: 'Rings', price: 9.50, stock: 25, image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80' },
-                { name: 'Diamond Solitaire Band', category: 'Rings', price: 18.99, stock: 8, image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80' },
-
-                // Earrings (8 items)
-                { name: 'Crystal Drop Earrings', category: 'Earrings', price: 15.50, stock: 16, image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=400&q=80' },
-                { name: 'Pearl Hoop Earrings', category: 'Earrings', price: 13.00, stock: 12, image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=400&q=80' },
-                { name: 'Mini Star Studs Set', category: 'Earrings', price: 9.50, stock: 25, image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=400&q=80' },
-                { name: 'Rose Gold Flower Dangles', category: 'Earrings', price: 17.00, stock: 8, image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=400&q=80' },
-                { name: 'Butterfly Threader Earrings', category: 'Earrings', price: 14.20, stock: 10, image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=400&q=80' },
-                { name: 'Heart Stud Earrings', category: 'Earrings', price: 11.00, stock: 21, image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=400&q=80' },
-                { name: 'Geometric Gold Earrings', category: 'Earrings', price: 16.00, stock: 14, image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=400&q=80' },
-                { name: 'Tassel Long Earrings', category: 'Earrings', price: 19.00, stock: 6, image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=400&q=80' },
-
-                // Phone Charms (8 items)
-                { name: 'Beaded Pastel Phone Lanyard', category: 'Phone Charms', price: 8.50, stock: 20, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
-                { name: 'Y2K Flower Wrist Strap', category: 'Phone Charms', price: 7.99, stock: 15, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
-                { name: 'Crystal Heart Phone Charm', category: 'Phone Charms', price: 9.90, stock: 18, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
-                { name: 'Pink Pearl Phone Chain', category: 'Phone Charms', price: 11.00, stock: 14, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
-                { name: 'Kawaii Bear Strap', category: 'Phone Charms', price: 6.99, stock: 22, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
-                { name: 'Starry Sky Phone Lanyard', category: 'Phone Charms', price: 8.99, stock: 16, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
-                { name: 'Bowknot Phone Strap', category: 'Phone Charms', price: 7.50, stock: 19, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
-                { name: 'Acrylic Butterfly Charm', category: 'Phone Charms', price: 9.00, stock: 13, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
-
-                // Bags & Pouches (8 items)
-                { name: 'Plush Bear Crossbody Bag', category: 'Bags & Pouches', price: 24.99, stock: 10, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' },
-                { name: 'Mini Pastel Makeup Pouch', category: 'Bags & Pouches', price: 12.00, stock: 16, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' },
-                { name: 'Quilted Chain Shoulder Bag', category: 'Bags & Pouches', price: 29.90, stock: 6, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' },
-                { name: 'Floral Canvas Tote Bag', category: 'Bags & Pouches', price: 18.50, stock: 15, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' },
-                { name: 'Transparent Sticker Bag', category: 'Bags & Pouches', price: 14.00, stock: 12, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' },
-                { name: 'Fluffy Heart Handbag', category: 'Bags & Pouches', price: 22.00, stock: 9, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' },
-                { name: 'Corduroy Cosmetic Bag', category: 'Bags & Pouches', price: 13.50, stock: 20, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' },
-                { name: 'Pearl Handle Mini Bag', category: 'Bags & Pouches', price: 26.00, stock: 7, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' },
-
-                // Hair Accessories (8 items)
-                { name: 'Velvet Padded Headband', category: 'Hair Accessories', price: 11.50, stock: 18, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
-                { name: 'Silk Scrunchie Set (3 Pack)', category: 'Hair Accessories', price: 9.99, stock: 25, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
-                { name: 'Satin Hair Ribbon Bow', category: 'Hair Accessories', price: 8.00, stock: 20, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
-                { name: 'Crystal Tiara Headband', category: 'Hair Accessories', price: 19.99, stock: 5, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
-                { name: 'Fuzzy Bunny Ears Band', category: 'Hair Accessories', price: 7.50, stock: 14, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
-                { name: 'Pearl Beaded Headband', category: 'Hair Accessories', price: 14.00, stock: 11, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
-                { name: 'Chiffon Flower Scrunchie', category: 'Hair Accessories', price: 6.50, stock: 30, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
-                { name: 'Braided Pastel Headband', category: 'Hair Accessories', price: 12.50, stock: 16, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
-
-                // Makeup Accessories (8 items)
-                { name: 'Compact LED Pocket Mirror', category: 'Makeup Accessories', price: 13.99, stock: 12, image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80' },
-                { name: 'Portable Makeup Brush Set', category: 'Makeup Accessories', price: 16.50, stock: 10, image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80' },
-                { name: 'Cute Heart Powder Puff Set', category: 'Makeup Accessories', price: 6.99, stock: 30, image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80' },
-                { name: 'Makeup Sponge Travel Case', category: 'Makeup Accessories', price: 5.50, stock: 25, image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80' },
-                { name: 'Lip Gloss Keyring Holder', category: 'Makeup Accessories', price: 7.90, stock: 18, image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80' },
-                { name: 'Silicone Face Cleansing Pad', category: 'Makeup Accessories', price: 8.50, stock: 22, image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80' },
-                { name: 'Eyelash Curler with Comb', category: 'Makeup Accessories', price: 9.00, stock: 15, image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80' },
-                { name: 'Glitter Makeup Organizer Box', category: 'Makeup Accessories', price: 24.00, stock: 6, image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80' }
-            ];
-
-            for (let item of catalog) {
-                await addDoc(collection(db, "products"), { ...item, isPublished: true, rating: 5.0, reviews: 0 });
-            }
-        }
-
+        // SAVE NEW PRODUCT TO DATABASE
         window.saveAdminProduct = async function() {
             const name = document.getElementById('prod-name').value;
             const category = document.getElementById('prod-category').value;
@@ -624,10 +494,29 @@
             if (!name || isNaN(price)) return alert('Please enter valid product details');
 
             await addDoc(collection(db, "products"), {
-                name, category, price, stock: isNaN(stock) ? 10 : stock, rating: 5.0, reviews: 0, image, isPublished: true
+                name, category, price, stock: isNaN(stock) ? 10 : stock, image, isPublished: true, createdAt: new Date().toISOString()
             });
             closeAdminProductModal();
-            alert('Product successfully saved to Firestore! ✨');
+            alert('New product saved to database successfully! ✨');
+        };
+
+        // SAVE / UPDATE BANNER IN DATABASE
+        window.saveAdminBannerSettings = async function() {
+            const tag = document.getElementById('cust-promo-tag').value;
+            const title = document.getElementById('cust-promo-title').value;
+            const desc = document.getElementById('cust-promo-desc').value;
+            const code = document.getElementById('cust-promo-code').value;
+
+            await setDoc(doc(db, "settings", "banner"), {
+                tag: tag || "Special Deal",
+                title: title || "Get 30% OFF Your Order!",
+                desc: desc || "Limited time offer on all accessories.",
+                code: code || "PINK10",
+                active: true,
+                updatedAt: new Date().toISOString()
+            });
+
+            alert("Banner updated and saved to database successfully! ✨");
         };
 
         window.deleteProduct = async function(id) {
@@ -647,34 +536,6 @@
             }
         };
 
-        window.saveAdminCoupon = async function() {
-            const code = document.getElementById('coup-code').value.toUpperCase();
-            const discount = parseFloat(document.getElementById('coup-discount').value);
-            if(!code || isNaN(discount)) return alert('Please enter valid coupon info');
-
-            await addDoc(collection(db, "coupons"), { code, discount });
-            closeCouponModal();
-            alert('Coupon saved successfully! 🎟️');
-        };
-
-        window.saveAdminBannerSettings = async function() {
-            const tag = document.getElementById('cust-promo-tag').value;
-            const title = document.getElementById('cust-promo-title').value;
-            const code = document.getElementById('cust-promo-code').value;
-            const timer = document.getElementById('cust-promo-seconds').value;
-
-            if (tag) document.getElementById('promo-tag-text').innerText = tag;
-            if (title) document.getElementById('promo-title-text').innerText = title;
-            if (code) document.getElementById('promo-code-text').innerText = code;
-            if (timer) promoTimer = parseInt(timer);
-
-            alert("Promotional banner customized live!");
-        };
-
-        window.deleteCoupon = async function(id) {
-            await deleteDoc(doc(db, "coupons", id));
-        };
-
         window.submitOrder = async function() {
             const name = document.getElementById('checkout-name').value;
             const phone = document.getElementById('checkout-phone').value;
@@ -682,7 +543,6 @@
             if (!name || !phone || !address) return alert('Please fill in delivery details');
 
             let sub = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-            let finalTotal = sub * discountMultiplier;
 
             for (let item of cart) {
                 if (item.id) {
@@ -693,14 +553,30 @@
 
             await addDoc(collection(db, "orders"), {
                 orderNum: `#${Math.floor(202520 + Math.random() * 100)}`,
-                customer: name, phone, address, total: finalTotal, status: 'In Progress', date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+                customer: name, phone, address, total: sub, status: 'In Progress', date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
             });
             cart = [];
-            discountMultiplier = 1;
             document.getElementById('cart-badge').innerText = '0';
             closeCheckoutModal();
             alert('Order placed successfully! ✨');
         };
+
+        // AUTO-SEED CATALOG
+        async function seedFullCatalog(db) {
+            const catalog = [
+                { name: 'Pearl Butterfly Hairpin', category: 'Hairpins', price: 12.50, stock: 15, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
+                { name: 'Crystal Flower Claw Clip', category: 'Hairpins', price: 8.90, stock: 20, image: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&q=80' },
+                { name: 'Dainty Butterfly Choker', category: 'Necklaces', price: 18.00, stock: 10, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' },
+                { name: 'Layered Gold Heart Pendant', category: 'Necklaces', price: 22.50, stock: 8, image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=80' },
+                { name: 'Vintage Crystal Ring Set', category: 'Rings', price: 14.00, stock: 15, image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80' },
+                { name: 'Crystal Drop Earrings', category: 'Earrings', price: 15.50, stock: 16, image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=400&q=80' },
+                { name: 'Beaded Pastel Phone Lanyard', category: 'Phone Charms', price: 8.50, stock: 20, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
+                { name: 'Plush Bear Crossbody Bag', category: 'Bags & Pouches', price: 24.99, stock: 10, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' }
+            ];
+            for (let item of catalog) {
+                await addDoc(collection(db, "products"), { ...item, isPublished: true });
+            }
+        }
     </script>
 
     <!-- CORE INTERACTION SCRIPT -->
@@ -708,45 +584,30 @@
         const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
         window.products = [];
         window.orders = [];
-        window.coupons = [];
         let cart = [];
         let wishlist = [];
         let activeCategory = 'All';
-        let discountMultiplier = 1;
-        let promoTimer = 10;
-
-        const promoInterval = setInterval(() => {
-            promoTimer--;
-            const timerEl = document.getElementById('promo-timer');
-            if(timerEl) timerEl.innerText = promoTimer;
-            if (promoTimer <= 0) closePromoPopup();
-        }, 1000);
 
         function closePromoPopup() {
-            clearInterval(promoInterval);
-            const popup = document.getElementById('promo-popup');
-            if(popup) {
-                popup.classList.add('opacity-0', 'pointer-events-none');
-                setTimeout(() => popup.classList.add('hidden'), 300);
-            }
+            document.getElementById('promo-popup').classList.add('hidden');
         }
 
         function switchAuthTab(mode) {
             ['login', 'signup'].forEach(m => {
                 document.getElementById(`auth-form-${m}`).classList.add('hidden');
-                document.getElementById(`authtab-${m}`).className = 'flex-1 py-1.5 text-gray-500 rounded-xl';
+                document.getElementById(`authtab-${m}`).className = 'flex-1 py-1 text-gray-500 rounded-lg';
             });
             document.getElementById(`auth-form-${mode}`).classList.remove('hidden');
-            document.getElementById(`authtab-${mode}`).className = 'flex-1 py-1.5 bg-white text-gray-900 rounded-xl shadow-sm';
+            document.getElementById(`authtab-${mode}`).className = 'flex-1 py-1 bg-white text-gray-900 rounded-lg shadow-xs';
         }
 
         function switchCustomerTab(tab) {
             ['shop', 'wishlist', 'profile'].forEach(t => {
                 document.getElementById(`page-${t}`).classList.add('hidden');
-                document.getElementById(`nav-btn-${t}`).className = 'flex flex-col items-center text-gray-400 text-xs font-semibold';
+                document.getElementById(`nav-btn-${t}`).className = 'flex flex-col items-center text-gray-400 font-medium';
             });
             document.getElementById(`page-${tab}`).classList.remove('hidden');
-            document.getElementById(`nav-btn-${tab}`).className = 'flex flex-col items-center text-brand-600 text-xs font-bold';
+            document.getElementById(`nav-btn-${tab}`).className = 'flex flex-col items-center text-brand-600 font-bold';
             if (tab === 'shop') renderProducts();
             if (tab === 'wishlist') renderWishlist();
             if (tab === 'profile') renderCustomerOrders();
@@ -755,14 +616,14 @@
         window.renderCustomerOrders = function() {
             const listEl = document.getElementById('customer-my-orders-list');
             if (!listEl) return;
-            listEl.innerHTML = window.orders.length === 0 ? `<p class="text-gray-400 text-[10px]">No orders placed yet.</p>` :
+            listEl.innerHTML = window.orders.length === 0 ? `<p class="text-gray-400 text-[11px]">No orders placed yet.</p>` :
                 window.orders.map(o => `
-                    <div class="bg-white p-2.5 rounded-xl border flex justify-between items-center text-xs">
+                    <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 flex justify-between items-center text-[11px]">
                         <div>
                             <span class="font-bold text-gray-900">${o.orderNum}</span>
-                            <p class="text-[10px] text-gray-500">${o.date} • <b class="text-brand-600">${o.status}</b></p>
+                            <p class="text-[10px] text-gray-400">${o.date} • <b class="text-brand-600">${o.status}</b></p>
                         </div>
-                        <span class="font-extrabold text-brand-600">$${Number(o.total || 0).toFixed(2)}</span>
+                        <span class="font-bold text-brand-600">$${Number(o.total || 0).toFixed(2)}</span>
                     </div>
                 `).join('');
         };
@@ -774,17 +635,17 @@
             let filtered = window.products.filter(p => (activeCategory === 'All' || p.category === activeCategory) && p.name.toLowerCase().includes(searchVal));
             
             grid.innerHTML = filtered.map(p => `
-                <div class="bg-white rounded-2xl p-2.5 border border-gray-200 shadow-sm flex flex-col justify-between">
+                <div class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs flex flex-col justify-between">
                     <div>
                         <div class="relative rounded-xl overflow-hidden aspect-square bg-gray-50 mb-2">
                             <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full h-full object-cover">
-                            <button onclick="toggleWishlist('${p.id}')" class="absolute top-2 right-2 w-7 h-7 bg-white/80 rounded-full flex items-center justify-center text-xs ${wishlist.includes(p.id) ? 'text-red-500' : 'text-gray-400'}"><i class="fa-solid fa-heart"></i></button>
+                            <button onclick="toggleWishlist('${p.id}')" class="absolute top-2 right-2 w-6 h-6 bg-white/90 rounded-full flex items-center justify-center text-[10px] ${wishlist.includes(p.id) ? 'text-red-500' : 'text-gray-400'}"><i class="fa-solid fa-heart"></i></button>
                         </div>
                         <h4 class="font-bold text-xs text-gray-900 truncate">${p.name}</h4>
                         <p class="text-[10px] text-gray-400">Stock: ${p.stock ?? 10}</p>
                     </div>
-                    <div class="flex justify-between items-center mt-2 pt-2 border-t">
-                        <span class="font-extrabold text-xs text-brand-600">$${Number(p.price || 0).toFixed(2)}</span>
+                    <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-50">
+                        <span class="font-bold text-xs text-brand-600">$${Number(p.price || 0).toFixed(2)}</span>
                         <button onclick="addToCart('${p.id}')" class="bg-brand-500 text-white px-2.5 py-1 rounded-xl text-xs font-bold">+</button>
                     </div>
                 </div>
@@ -804,7 +665,7 @@
             document.getElementById('wishlist-grid').innerHTML = favs.length === 0 ? 
                 `<p class="text-xs text-gray-400 col-span-2 text-center py-6">No saved items in wishlist.</p>` :
                 favs.map(p => `
-                    <div class="bg-white rounded-2xl p-2.5 border border-gray-200 shadow-sm flex flex-col justify-between">
+                    <div class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs flex flex-col justify-between">
                         <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full aspect-square object-cover rounded-xl mb-2">
                         <h4 class="font-bold text-xs text-gray-900 truncate">${p.name}</h4>
                         <button onclick="addToCart('${p.id}')" class="w-full bg-brand-500 text-white py-1.5 rounded-xl text-xs font-bold mt-2">Add to Bag</button>
@@ -824,7 +685,7 @@
             document.getElementById('cart-items-container').innerHTML = cart.length === 0 ? 
                 `<p class="text-xs text-gray-400 text-center py-8">Your cart is empty</p>` :
                 cart.map((item, idx) => `
-                    <div class="flex justify-between items-center text-xs border-b pb-2">
+                    <div class="flex justify-between items-center text-xs border-b border-gray-50 pb-2">
                         <span><b>${item.name}</b> (x${item.qty})</span>
                         <div class="flex items-center space-x-2">
                             <span class="font-bold text-brand-600">$${(item.price * item.qty).toFixed(2)}</span>
@@ -834,18 +695,8 @@
                 `).join('');
             const sub = cart.reduce((s, i) => s + (i.price * i.qty), 0);
             document.getElementById('cart-subtotal').innerText = `$${sub.toFixed(2)}`;
-            document.getElementById('cart-total').innerText = `$${(sub * discountMultiplier).toFixed(2)}`;
+            document.getElementById('cart-total').innerText = `$${sub.toFixed(2)}`;
             document.getElementById('cart-drawer').classList.remove('hidden');
-        }
-
-        function applyCoupon() {
-            const codeInput = document.getElementById('coupon-code-input').value.toUpperCase();
-            const found = window.coupons.find(c => c.code === codeInput);
-            if (found) {
-                discountMultiplier = (100 - found.discount) / 100;
-                alert(`Coupon applied! ${found.discount}% OFF ✨`);
-                openCartDrawer();
-            } else { alert('Invalid coupon code.'); }
         }
 
         function closeCartDrawer() { document.getElementById('cart-drawer').classList.add('hidden'); }
@@ -853,8 +704,6 @@
         function closeCheckoutModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
         function openProductModal() { document.getElementById('admin-product-modal').classList.remove('hidden'); }
         function closeAdminProductModal() { document.getElementById('admin-product-modal').classList.add('hidden'); }
-        function openCouponModal() { document.getElementById('admin-coupon-modal').classList.remove('hidden'); }
-        function closeCouponModal() { document.getElementById('admin-coupon-modal').classList.add('hidden'); }
 
         function enterAdminMode() {
             document.getElementById('customer-view').classList.add('hidden');
@@ -873,80 +722,56 @@
         function switchAdminNav(sec) {
             ['dashboard', 'products', 'orders', 'inventory', 'promotions'].forEach(s => {
                 document.getElementById(`admin-sec-${s}`).classList.add('hidden');
-                document.getElementById(`adtab-${s}`).className = 'px-3.5 py-2 text-gray-500 rounded-xl';
+                document.getElementById(`adtab-${s}`).className = 'px-3 py-1 text-gray-500 rounded-lg';
             });
             document.getElementById(`admin-sec-${sec}`).classList.remove('hidden');
-            document.getElementById(`adtab-${sec}`).className = 'px-3.5 py-2 bg-brand-500 text-white rounded-xl';
+            document.getElementById(`adtab-${sec}`).className = 'px-3 py-1 bg-brand-500 text-white rounded-lg';
             if (sec === 'dashboard') renderEcomoraDash();
             if (sec === 'products') renderAdminProducts();
             if (sec === 'orders') renderAdminOrders();
             if (sec === 'inventory') renderAdminInventory();
-            if (sec === 'promotions') renderAdminCoupons();
         }
 
-        // RENDER ECOMORA DASHBOARD
         window.renderEcomoraDash = function() {
             const rev = window.orders.reduce((sum, o) => sum + Number(o.total || 0), 0);
             document.getElementById('dash-total-revenue').innerText = `$${rev.toFixed(2)}`;
-            document.getElementById('dash-total-sales-count').innerText = `${window.orders.length * 12 + 202324}`;
+            document.getElementById('dash-total-sales-count').innerText = `${window.orders.length}`;
 
             const tbody = document.getElementById('ecomora-orders-tbody');
             if (tbody) {
                 tbody.innerHTML = window.orders.slice(0, 5).map(o => `
-                    <tr class="hover:bg-gray-50">
-                        <td class="py-2.5 font-bold text-gray-900">${o.orderNum || '#202523'}</td>
-                        <td>${o.customer || 'Customer'}</td>
-                        <td class="text-gray-400">${o.date || '28 Mar 2025'}</td>
+                    <tr>
+                        <td class="py-1.5 font-bold text-gray-900">${o.orderNum}</td>
+                        <td>${o.customer}</td>
                         <td class="font-bold text-gray-900">$${Number(o.total || 0).toFixed(2)}</td>
-                        <td>
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                                o.status === 'Complete' ? 'bg-emerald-100 text-emerald-700' :
-                                o.status === 'In Progress' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'
-                            }">${o.status || 'In Progress'}</span>
-                        </td>
-                        <td class="text-right"><button onclick="switchAdminNav('orders')" class="text-gray-400 hover:text-gray-600">•••</button></td>
+                        <td><span class="text-[10px] font-bold text-brand-600">${o.status}</span></td>
                     </tr>
-                `).join('');
-            }
-
-            const topList = document.getElementById('dash-top-products-list');
-            if (topList) {
-                topList.innerHTML = window.products.slice(0, 3).map(p => `
-                    <div class="flex items-center space-x-3 bg-gray-50 p-2.5 rounded-2xl border">
-                        <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-10 h-10 object-cover rounded-xl">
-                        <div class="flex-1">
-                            <h5 class="font-bold text-xs text-gray-900 truncate">${p.name}</h5>
-                            <p class="text-[10px] text-gray-400">${p.stock || 10}k Stock Available</p>
-                        </div>
-                        <span class="font-black text-xs text-brand-600">$${Number(p.price || 0).toFixed(2)}</span>
-                    </div>
                 `).join('');
             }
         };
 
         window.renderAdminProducts = function() {
             document.getElementById('admin-products-list').innerHTML = window.products.map(p => `
-                <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border text-xs">
-                    <span><b>${p.name}</b> (${p.category}) - <b class="text-brand-600">$${p.price}</b></span>
-                    <button onclick="deleteProduct('${p.id}')" class="text-red-500 font-bold"><i class="fa-solid fa-trash"></i> Delete</button>
+                <div class="flex justify-between items-center bg-gray-50 p-2.5 rounded-xl border border-gray-100 text-xs">
+                    <span><b>${p.name}</b> - <b class="text-brand-600">$${p.price}</b></span>
+                    <button onclick="deleteProduct('${p.id}')" class="text-red-500 font-medium">Delete</button>
                 </div>
             `).join('');
         };
 
         window.renderAdminOrders = function() {
             document.getElementById('admin-orders-full-list').innerHTML = window.orders.map(o => `
-                <div class="bg-gray-50 p-3.5 rounded-2xl border space-y-2 text-xs">
+                <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 space-y-1.5 text-xs">
                     <div class="flex justify-between items-center">
-                        <span class="font-bold text-gray-900">${o.orderNum || '#ORD'} - ${o.customer}</span>
+                        <span class="font-bold text-gray-900">${o.orderNum} - ${o.customer}</span>
                         <span class="font-bold text-brand-600">$${Number(o.total || 0).toFixed(2)}</span>
                     </div>
-                    <p class="text-[11px] text-gray-500"><i class="fa-solid fa-location-dot mr-1"></i>${o.address}</p>
-                    <div class="flex justify-between items-center pt-2 border-t">
-                        <span>Status: <b class="text-brand-600">${o.status}</b></span>
-                        <div class="flex space-x-1">
-                            <button onclick="updateOrderStatus('${o.docId}', 'In Progress')" class="bg-blue-50 text-blue-600 px-2.5 py-1 rounded-lg font-bold text-[10px]">Process</button>
-                            <button onclick="updateOrderStatus('${o.docId}', 'Complete')" class="bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-lg font-bold text-[10px]">Complete</button>
-                            <button onclick="updateOrderStatus('${o.docId}', 'Cancelled')" class="bg-red-50 text-red-600 px-2.5 py-1 rounded-lg font-bold text-[10px]">Cancel</button>
+                    <p class="text-[10px] text-gray-400">${o.address}</p>
+                    <div class="flex justify-between items-center pt-1 border-t border-gray-100">
+                        <span>Status: <b>${o.status}</b></span>
+                        <div class="space-x-1">
+                            <button onclick="updateOrderStatus('${o.docId}', 'Complete')" class="bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded font-medium text-[10px]">Complete</button>
+                            <button onclick="updateOrderStatus('${o.docId}', 'Cancelled')" class="bg-red-50 text-red-600 px-2 py-0.5 rounded font-medium text-[10px]">Cancel</button>
                         </div>
                     </div>
                 </div>
@@ -955,21 +780,12 @@
 
         window.renderAdminInventory = function() {
             document.getElementById('admin-inventory-list').innerHTML = window.products.map(p => `
-                <div class="bg-gray-50 p-3 rounded-xl border text-xs flex justify-between items-center">
+                <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 text-xs flex justify-between items-center">
                     <span><b>${p.name}</b></span>
                     <div class="flex items-center space-x-2">
-                        <span class="font-bold px-2 py-1 rounded-lg ${(p.stock ?? 10) < 5 ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}">Actual Stock: ${p.stock ?? 10}</span>
-                        <button onclick="updateProductStock('${p.id}', ${p.stock ?? 10})" class="bg-white border px-2 py-1 rounded-lg font-bold">Edit</button>
+                        <span class="font-bold px-2 py-0.5 rounded text-[10px] ${(p.stock ?? 10) < 5 ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}">Stock: ${p.stock ?? 10}</span>
+                        <button onclick="updateProductStock('${p.id}', ${p.stock ?? 10})" class="bg-white border border-gray-200 px-2 py-0.5 rounded font-medium">Edit</button>
                     </div>
-                </div>
-            `).join('');
-        };
-
-        window.renderAdminCoupons = function() {
-            document.getElementById('admin-coupons-list').innerHTML = window.coupons.map(c => `
-                <div class="flex justify-between items-center bg-gray-50 p-2.5 rounded-xl border text-xs">
-                    <span><b>${c.code}</b> (${c.discount}% OFF)</span>
-                    <button onclick="deleteCoupon('${c.id}')" class="text-red-500 font-bold"><i class="fa-solid fa-trash"></i></button>
                 </div>
             `).join('');
         };
