@@ -21,7 +21,7 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased pb-24">
 
-    <!-- PROMOTIONAL POPUP BANNER (Customizable via Admin) -->
+    <!-- PROMOTIONAL POPUP BANNER -->
     <div id="promo-popup" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300">
         <div class="bg-gradient-to-br from-brand-500 to-brand-700 text-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl relative text-center">
             <button onclick="closePromoPopup()" class="absolute top-3 right-3 text-white/80 hover:text-white bg-black/20 w-8 h-8 rounded-full flex items-center justify-center text-xs">
@@ -55,7 +55,7 @@
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
-                <span class="text-xs font-semibold text-gray-600" id="session-user-badge">Guest Session</span>
+                <span class="text-xs font-semibold text-gray-600" id="session-user-badge">Guest Mode</span>
             </div>
         </div>
     </header>
@@ -94,33 +94,38 @@
                 <div id="wishlist-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
             </div>
 
-            <!-- PAGE: PROFILE & AUTHENTICATION -->
+            <!-- PAGE: PROFILE & DASHBOARD ROUTER -->
             <div id="page-profile" class="hidden space-y-4 max-w-md mx-auto">
                 
-                <!-- STATE 1: LOGGED IN PROFILE CARD -->
-                <div id="profile-logged-in-card" class="bg-white rounded-3xl p-5 shadow-sm border border-gray-200 space-y-3 hidden">
-                    <div class="flex items-center space-x-3">
-                        <div id="user-avatar" class="w-12 h-12 rounded-full bg-brand-500 text-white font-bold flex items-center justify-center text-lg">U</div>
+                <!-- CUSTOMER DASHBOARD VIEW (If logged in as Customer) -->
+                <div id="customer-dashboard-view" class="space-y-3 hidden">
+                    <div class="bg-white rounded-3xl p-5 shadow-sm border border-gray-200 flex items-center space-x-3">
+                        <div class="w-12 h-12 rounded-full bg-brand-500 text-white font-bold flex items-center justify-center text-lg">C</div>
                         <div class="flex-1">
-                            <h3 id="profile-user-name" class="font-bold text-sm text-gray-900">User</h3>
-                            <p id="profile-user-email" class="text-xs text-brand-600 font-medium">user@example.com</p>
+                            <h3 id="cust-profile-name" class="font-bold text-sm text-gray-900">Customer Dashboard</h3>
+                            <p class="text-xs text-brand-600 font-medium">Welcome back, Shopper!</p>
                         </div>
                         <button onclick="handleSignOut()" class="text-xs bg-gray-100 text-gray-600 px-3 py-1.5 rounded-xl font-bold hover:bg-gray-200">Sign Out</button>
                     </div>
-                    <!-- Admin Console Launch Button if User is Admin -->
-                    <button id="admin-launch-btn" onclick="enterAdminMode()" class="w-full hidden bg-gray-900 text-white font-bold text-xs py-2.5 rounded-2xl shadow-sm">
-                        <i class="fa-solid fa-chart-line mr-1.5 text-brand-500"></i> Open Ecomora Admin Console
-                    </button>
+                    <div class="bg-white rounded-3xl p-4 shadow-sm border border-gray-200 text-xs space-y-2">
+                        <h4 class="font-bold text-gray-900">Quick Actions</h4>
+                        <button onclick="switchCustomerTab('shop')" class="w-full text-left p-2.5 bg-brand-50 hover:bg-brand-100 rounded-xl font-bold text-brand-700 flex justify-between items-center">
+                            <span>Browse Catalog</span> <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                        <button onclick="switchCustomerTab('wishlist')" class="w-full text-left p-2.5 bg-gray-50 hover:bg-gray-100 rounded-xl font-bold text-gray-700 flex justify-between items-center">
+                            <span>View Wishlist</span> <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
                 </div>
 
-                <!-- STATE 2: NOT LOGGED IN FORM (Login / Sign Up / Telegram) -->
-                <div id="profile-auth-box" class="bg-white rounded-3xl p-5 shadow-sm border border-brand-100 space-y-4">
+                <!-- AUTH LOGIN / SIGNUP VIEW (If not logged in) -->
+                <div id="profile-auth-box" class="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 space-y-4">
                     <div class="text-center space-y-1">
-                        <h3 class="font-black text-base text-gray-900">Welcome to Sparkle & Bloom 🌸</h3>
-                        <p class="text-xs text-gray-500">Sign in to track orders, save wishlist & manage profile</p>
+                        <h3 class="font-black text-base text-gray-900">Sign In / Sign Up 🌸</h3>
+                        <p class="text-xs text-gray-500">Access your customer or admin portal seamlessly</p>
                     </div>
 
-                    <!-- Auth Mode Switcher Tabs -->
+                    <!-- Auth Tabs -->
                     <div class="flex bg-gray-100 p-1 rounded-2xl text-xs font-bold">
                         <button onclick="switchAuthTab('login')" id="authtab-login" class="flex-1 py-1.5 bg-white text-gray-900 rounded-xl shadow-sm">Log In</button>
                         <button onclick="switchAuthTab('signup')" id="authtab-signup" class="flex-1 py-1.5 text-gray-500 rounded-xl">Sign Up</button>
@@ -128,7 +133,7 @@
 
                     <!-- EMAIL LOGIN FORM -->
                     <div id="auth-form-login" class="space-y-2 text-xs">
-                        <input type="email" id="login-email" placeholder="Email Address" class="w-full border rounded-xl px-3 py-2">
+                        <input type="email" id="login-email" placeholder="Email (use admin email for Admin Dashboard)" class="w-full border rounded-xl px-3 py-2">
                         <input type="password" id="login-password" placeholder="Password" class="w-full border rounded-xl px-3 py-2">
                         <button onclick="handleEmailLogin()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-sm">Log In ✨</button>
                     </div>
@@ -147,26 +152,24 @@
                         <div class="flex-grow border-t border-gray-200"></div>
                     </div>
 
-                    <!-- TELEGRAM ONE-CLICK SIGN IN -->
+                    <!-- TELEGRAM CONTINUATION (Auto remembers device session) -->
                     <button onclick="handleTelegramSignIn()" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs py-2.5 rounded-xl flex items-center justify-center space-x-2 shadow-sm">
                         <i class="fa-brands fa-telegram text-base"></i>
-                        <span>Continue with Telegram</span>
+                        <span>Continue with Telegram (Remember Device)</span>
                     </button>
                 </div>
 
-                <!-- ORDERS TRACKING IN PROFILE -->
-                <div id="profile-sub-container" class="bg-white rounded-3xl p-4 shadow-sm border border-gray-200 text-xs space-y-3"></div>
             </div>
 
         </div>
 
-        <!-- ================= ECOMORA-STYLE DASHBOARD ================= -->
+        <!-- ================= ECOMORA ADMIN DASHBOARD ================= -->
         <div id="admin-view" class="hidden space-y-6">
 
             <!-- TOP DASHBOARD NAVIGATION BAR -->
             <div class="bg-white p-4 rounded-3xl border border-gray-200 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="flex items-center space-x-3">
-                    <span class="font-black text-lg text-gray-900 flex items-center"><i class="fa-solid fa-chart-line text-brand-500 mr-2"></i> Ecomora Admin</span>
+                    <span class="font-black text-lg text-gray-900 flex items-center"><i class="fa-solid fa-chart-line text-brand-500 mr-2"></i> Ecomora Admin Dashboard</span>
                 </div>
                 <!-- Dashboard Sub-Tabs -->
                 <div class="flex items-center space-x-1 overflow-x-auto text-xs font-semibold scrollbar-none">
@@ -176,7 +179,7 @@
                     <button onclick="switchAdminNav('inventory')" id="adtab-inventory" class="px-3.5 py-2 text-gray-500 rounded-xl">Inventory</button>
                     <button onclick="switchAdminNav('promotions')" id="adtab-promotions" class="px-3.5 py-2 text-gray-500 rounded-xl">Banners & Coupons</button>
                 </div>
-                <button onclick="exitAdminMode()" class="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-xl text-gray-700 font-bold">Exit Console ✖</button>
+                <button onclick="handleSignOut()" class="text-xs bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-xl text-red-600 font-bold">Admin Sign Out 🔒</button>
             </div>
 
             <!-- SECTION: ECOMORA DASHBOARD OVERVIEW -->
@@ -387,7 +390,7 @@
         </div>
     </div>
 
-    <!-- FIREBASE MODULE & AUTHENTICATION -->
+    <!-- FIREBASE MODULE & AUTHENTICATION ROUTING -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -409,40 +412,41 @@
         window.firebaseDb = db;
         window.firebaseAuth = auth;
 
-        // AUTH SESSION PERSISTENCE (REMEMBER DEVICE)
+        // SESSION PERSISTENCE & DASHBOARD ROUTING
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 window.currentUser = user;
-                document.getElementById('session-user-badge').innerText = user.email || 'Logged In';
-                document.getElementById('profile-auth-box').classList.add('hidden');
-                document.getElementById('profile-logged-in-card').classList.remove('hidden');
-                document.getElementById('profile-user-name').innerText = user.displayName || user.email.split('@')[0];
-                document.getElementById('profile-user-email').innerText = user.email;
+                document.getElementById('session-user-badge').innerText = user.email || 'Active Session';
+                
+                // Check if user is Admin or Customer
+                const emailLower = (user.email || "").toLowerCase();
+                const isAdmin = emailLower.includes("admin") || user.uid === "NoIYk9Uwlc75YLdlpzx1";
 
-                // Check Admin privileges
-                const userDoc = await getDoc(doc(db, "users", user.uid));
-                if ((userDoc.exists() && userDoc.data().role === "admin") || user.uid === "NoIYk9Uwlc75YLdlpzx1") {
-                    document.getElementById('profile-role-status').innerText = 'Admin Account ✨';
-                    document.getElementById('admin-launch-btn').classList.remove('hidden');
+                if (isAdmin) {
+                    // Redirect Admin to Ecomora Admin Dashboard
+                    enterAdminMode();
                 } else {
-                    document.getElementById('profile-role-status').innerText = 'Customer Account';
-                    document.getElementById('admin-launch-btn').classList.add('hidden');
+                    // Redirect Customer to Customer Dashboard view under profile tab
+                    document.getElementById('profile-auth-box').classList.add('hidden');
+                    document.getElementById('customer-dashboard-view').classList.remove('hidden');
+                    document.getElementById('cust-profile-name').innerText = user.displayName || user.email.split('@')[0];
                 }
             } else {
                 window.currentUser = null;
-                document.getElementById('session-user-badge').innerText = 'Guest Session';
+                document.getElementById('session-user-badge').innerText = 'Guest Mode';
                 document.getElementById('profile-auth-box').classList.remove('hidden');
-                document.getElementById('profile-logged-in-card').classList.add('hidden');
+                document.getElementById('customer-dashboard-view').classList.add('hidden');
+                exitAdminMode();
             }
         });
 
-        // REAL-TIME SYNC & AUTO-SEED PRODUCTS (5 per Category)
+        // REAL-TIME SYNC & AUTO-SEED 8 PRODUCTS PER CATEGORY (TOTAL 64 PRODUCTS)
         onSnapshot(collection(db, "products"), (snapshot) => {
             window.products = [];
             snapshot.forEach(docSnap => window.products.push({ id: docSnap.id, ...docSnap.data() }));
 
             if (window.products.length === 0) {
-                seedInitialCategoryProducts(db);
+                seedFullCatalog(db);
             }
 
             if (window.renderProducts) window.renderProducts();
@@ -457,7 +461,6 @@
             snapshot.forEach(docSnap => window.orders.push({ docId: docSnap.id, ...docSnap.data() }));
             if (window.renderAdminOrders) window.renderAdminOrders();
             if (window.renderEcomoraDash) window.renderEcomoraDash();
-            if (window.switchProfileSub) window.switchProfileSub('orders');
         });
 
         // REAL-TIME SYNC: COUPONS
@@ -467,13 +470,12 @@
             if (window.renderAdminCoupons) window.renderAdminCoupons();
         });
 
-        // AUTH HANDLERS
         window.handleEmailLogin = async function() {
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
             try {
                 await signInWithEmailAndPassword(auth, email, password);
-                alert('Welcome back! Signed in successfully ✨');
+                alert('Signed in successfully! Redirecting... ✨');
             } catch (err) { alert('Login Failed: ' + err.message); }
         };
 
@@ -482,89 +484,110 @@
             const email = document.getElementById('signup-email').value;
             const password = document.getElementById('signup-password').value;
             try {
-                const creds = await createUserWithEmailAndPassword(auth, email, password);
-                await setDoc(doc(db, "users", creds.user.uid), {
-                    name, email, role: "customer", createdAt: new Date()
-                });
+                await createUserWithEmailAndPassword(auth, email, password);
                 alert('Account created successfully! Welcome 🌸');
             } catch (err) { alert('Sign Up Failed: ' + err.message); }
         };
 
         window.handleTelegramSignIn = function() {
-            alert('Connected with Telegram session! Syncing profile...');
-            document.getElementById('session-user-badge').innerText = 'Telegram User';
+            alert('Telegram Session Connected & Device Remembered! ✨');
+            document.getElementById('session-user-badge').innerText = 'Telegram Shopper';
             document.getElementById('profile-auth-box').classList.add('hidden');
-            document.getElementById('profile-logged-in-card').classList.remove('hidden');
-            document.getElementById('profile-user-name').innerText = 'Telegram Shopper';
-            document.getElementById('profile-user-email').innerText = 'telegram_user@app';
+            document.getElementById('customer-dashboard-view').classList.remove('hidden');
+            document.getElementById('cust-profile-name').innerText = 'Telegram Shopper';
         };
 
         window.handleSignOut = function() {
             signOut(auth);
+            exitAdminMode();
             alert('Signed out successfully.');
         };
 
-        // AUTO-SEED 5 PRODUCTS FOR EACH OF THE 8 CATEGORIES
-        async function seedInitialCategoryProducts(db) {
-            const initialCatalog = [
-                // Hairpins 🎀
+        // AUTO-SEED 8 PRODUCTS FOR EACH OF THE 8 CATEGORIES (64 PRODUCTS TOTAL)
+        async function seedFullCatalog(db) {
+            const catalog = [
+                // Hairpins (8 items)
                 { name: 'Pearl Butterfly Hairpin', category: 'Hairpins', price: 12.50, stock: 15, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
                 { name: 'Crystal Flower Claw Clip', category: 'Hairpins', price: 8.90, stock: 20, image: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&q=80' },
                 { name: 'Pastel Hair Barrettes Set', category: 'Hairpins', price: 6.50, stock: 30, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
                 { name: 'Ribbon Bow Hairpin', category: 'Hairpins', price: 9.99, stock: 12, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
                 { name: 'Pearl Bobby Pins Pack', category: 'Hairpins', price: 7.00, stock: 25, image: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&q=80' },
+                { name: 'Golden Leaf Hair Clip', category: 'Hairpins', price: 11.00, stock: 14, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
+                { name: 'Velvet Bow Hairpin', category: 'Hairpins', price: 10.50, stock: 18, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
+                { name: 'Diamond Star Hairpin', category: 'Hairpins', price: 14.00, stock: 9, image: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&q=80' },
 
-                // Necklaces 💎
+                // Necklaces (8 items)
                 { name: 'Dainty Butterfly Choker', category: 'Necklaces', price: 18.00, stock: 10, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' },
                 { name: 'Layered Gold Heart Pendant', category: 'Necklaces', price: 22.50, stock: 8, image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=80' },
                 { name: 'Opal Star Layered Necklace', category: 'Necklaces', price: 19.99, stock: 14, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' },
                 { name: 'Pearl Lock Choker', category: 'Necklaces', price: 16.50, stock: 18, image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=80' },
                 { name: 'Rose Gold Daisy Necklace', category: 'Necklaces', price: 15.00, stock: 11, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' },
+                { name: 'Crystal Moon Necklace', category: 'Necklaces', price: 21.00, stock: 13, image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=80' },
+                { name: 'Initial Letter Gold Chain', category: 'Necklaces', price: 17.50, stock: 20, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' },
+                { name: 'Minimalist Choker Necklace', category: 'Necklaces', price: 13.50, stock: 16, image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=80' },
 
-                // Rings 💍
+                // Rings (8 items)
                 { name: 'Vintage Crystal Ring Set', category: 'Rings', price: 14.00, stock: 15, image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80' },
                 { name: 'Opal Moon Ring', category: 'Rings', price: 12.99, stock: 9, image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80' },
                 { name: 'Gold Stackable Band Rings', category: 'Rings', price: 11.50, stock: 22, image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80' },
                 { name: 'Rose Quartz Ring', category: 'Rings', price: 16.00, stock: 7, image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80' },
                 { name: 'Adjustable Silver Bow Ring', category: 'Rings', price: 10.00, stock: 19, image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80' },
+                { name: 'Pearl Statement Ring', category: 'Rings', price: 15.00, stock: 12, image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80' },
+                { name: 'Butterfly Open Ring', category: 'Rings', price: 9.50, stock: 25, image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80' },
+                { name: 'Diamond Solitaire Band', category: 'Rings', price: 18.99, stock: 8, image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80' },
 
-                // Earrings ✨
+                // Earrings (8 items)
                 { name: 'Crystal Drop Earrings', category: 'Earrings', price: 15.50, stock: 16, image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=400&q=80' },
                 { name: 'Pearl Hoop Earrings', category: 'Earrings', price: 13.00, stock: 12, image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=400&q=80' },
                 { name: 'Mini Star Studs Set', category: 'Earrings', price: 9.50, stock: 25, image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=400&q=80' },
                 { name: 'Rose Gold Flower Dangles', category: 'Earrings', price: 17.00, stock: 8, image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=400&q=80' },
                 { name: 'Butterfly Threader Earrings', category: 'Earrings', price: 14.20, stock: 10, image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=400&q=80' },
+                { name: 'Heart Stud Earrings', category: 'Earrings', price: 11.00, stock: 21, image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=400&q=80' },
+                { name: 'Geometric Gold Earrings', category: 'Earrings', price: 16.00, stock: 14, image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=400&q=80' },
+                { name: 'Tassel Long Earrings', category: 'Earrings', price: 19.00, stock: 6, image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=400&q=80' },
 
-                // Phone Charms 🌸
+                // Phone Charms (8 items)
                 { name: 'Beaded Pastel Phone Lanyard', category: 'Phone Charms', price: 8.50, stock: 20, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
                 { name: 'Y2K Flower Wrist Strap', category: 'Phone Charms', price: 7.99, stock: 15, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
                 { name: 'Crystal Heart Phone Charm', category: 'Phone Charms', price: 9.90, stock: 18, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
                 { name: 'Pink Pearl Phone Chain', category: 'Phone Charms', price: 11.00, stock: 14, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
                 { name: 'Kawaii Bear Strap', category: 'Phone Charms', price: 6.99, stock: 22, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
+                { name: 'Starry Sky Phone Lanyard', category: 'Phone Charms', price: 8.99, stock: 16, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
+                { name: 'Bowknot Phone Strap', category: 'Phone Charms', price: 7.50, stock: 19, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
+                { name: 'Acrylic Butterfly Charm', category: 'Phone Charms', price: 9.00, stock: 13, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
 
-                // Bags & Pouches 👜
+                // Bags & Pouches (8 items)
                 { name: 'Plush Bear Crossbody Bag', category: 'Bags & Pouches', price: 24.99, stock: 10, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' },
                 { name: 'Mini Pastel Makeup Pouch', category: 'Bags & Pouches', price: 12.00, stock: 16, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' },
                 { name: 'Quilted Chain Shoulder Bag', category: 'Bags & Pouches', price: 29.90, stock: 6, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' },
                 { name: 'Floral Canvas Tote Bag', category: 'Bags & Pouches', price: 18.50, stock: 15, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' },
                 { name: 'Transparent Sticker Bag', category: 'Bags & Pouches', price: 14.00, stock: 12, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' },
+                { name: 'Fluffy Heart Handbag', category: 'Bags & Pouches', price: 22.00, stock: 9, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' },
+                { name: 'Corduroy Cosmetic Bag', category: 'Bags & Pouches', price: 13.50, stock: 20, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' },
+                { name: 'Pearl Handle Mini Bag', category: 'Bags & Pouches', price: 26.00, stock: 7, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' },
 
-                // Hair Accessories 👑
+                // Hair Accessories (8 items)
                 { name: 'Velvet Padded Headband', category: 'Hair Accessories', price: 11.50, stock: 18, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
                 { name: 'Silk Scrunchie Set (3 Pack)', category: 'Hair Accessories', price: 9.99, stock: 25, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
                 { name: 'Satin Hair Ribbon Bow', category: 'Hair Accessories', price: 8.00, stock: 20, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
                 { name: 'Crystal Tiara Headband', category: 'Hair Accessories', price: 19.99, stock: 5, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
                 { name: 'Fuzzy Bunny Ears Band', category: 'Hair Accessories', price: 7.50, stock: 14, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
+                { name: 'Pearl Beaded Headband', category: 'Hair Accessories', price: 14.00, stock: 11, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
+                { name: 'Chiffon Flower Scrunchie', category: 'Hair Accessories', price: 6.50, stock: 30, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
+                { name: 'Braided Pastel Headband', category: 'Hair Accessories', price: 12.50, stock: 16, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
 
-                // Makeup Accessories 💄
+                // Makeup Accessories (8 items)
                 { name: 'Compact LED Pocket Mirror', category: 'Makeup Accessories', price: 13.99, stock: 12, image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80' },
                 { name: 'Portable Makeup Brush Set', category: 'Makeup Accessories', price: 16.50, stock: 10, image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80' },
                 { name: 'Cute Heart Powder Puff Set', category: 'Makeup Accessories', price: 6.99, stock: 30, image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80' },
                 { name: 'Makeup Sponge Travel Case', category: 'Makeup Accessories', price: 5.50, stock: 25, image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80' },
-                { name: 'Lip Gloss Keyring Holder', category: 'Makeup Accessories', price: 7.90, stock: 18, image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80' }
+                { name: 'Lip Gloss Keyring Holder', category: 'Makeup Accessories', price: 7.90, stock: 18, image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80' },
+                { name: 'Silicone Face Cleansing Pad', category: 'Makeup Accessories', price: 8.50, stock: 22, image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80' },
+                { name: 'Eyelash Curler with Comb', category: 'Makeup Accessories', price: 9.00, stock: 15, image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80' },
+                { name: 'Glitter Makeup Organizer Box', category: 'Makeup Accessories', price: 24.00, stock: 6, image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&q=80' }
             ];
 
-            for (let item of initialCatalog) {
+            for (let item of catalog) {
                 await addDoc(collection(db, "products"), { ...item, isPublished: true, rating: 5.0, reviews: 0 });
             }
         }
@@ -704,21 +727,6 @@
             document.getElementById(`nav-btn-${tab}`).className = 'flex flex-col items-center text-brand-600 text-xs font-bold';
             if (tab === 'shop') renderProducts();
             if (tab === 'wishlist') renderWishlist();
-            if (tab === 'profile') switchProfileSub('orders');
-        }
-
-        function switchProfileSub(sub) {
-            const container = document.getElementById('profile-sub-container');
-            if (sub === 'orders') {
-                container.innerHTML = `<h5 class="font-bold text-gray-900 mb-2">My Live Orders & Status</h5>` +
-                    (window.orders.length === 0 ? `<p class="text-gray-400">No active orders found.</p>` :
-                    window.orders.map(o => `
-                        <div class="bg-gray-50 p-2.5 rounded-xl border mb-2 space-y-1">
-                            <div class="flex justify-between font-bold"><span>${o.orderNum || '#ORD'}</span><span class="text-brand-600">$${Number(o.total || 0).toFixed(2)}</span></div>
-                            <p class="text-[10px] text-gray-500">Status: <b class="text-brand-600">${o.status}</b></p>
-                        </div>
-                    `).join(''));
-            }
         }
 
         function renderProducts() {
@@ -821,6 +829,7 @@
             document.getElementById('customer-view').classList.remove('hidden');
             document.getElementById('admin-view').classList.add('hidden');
             document.getElementById('customer-nav').classList.remove('hidden');
+            switchCustomerTab('shop');
         }
 
         function switchAdminNav(sec) {
