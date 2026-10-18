@@ -126,7 +126,7 @@
                     </div>
                 </div>
 
-                <!-- AUTH LOGIN / SIGNUP VIEW (Shown when guest) -->
+                <!-- AUTH LOGIN / SIGNUP VIEW (Shown when guest / after sign out) -->
                 <div id="profile-auth-box" class="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 space-y-4">
                     <div class="text-center space-y-1">
                         <h3 class="font-black text-base text-gray-900">Sign In / Sign Up 🌸</h3>
@@ -153,18 +153,6 @@
                         <input type="password" id="signup-password" placeholder="Password (min 6 chars)" class="w-full border rounded-xl px-3 py-2">
                         <button onclick="handleEmailSignUp()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-sm">Create Account 🎉</button>
                     </div>
-
-                    <div class="relative flex py-1 items-center">
-                        <div class="flex-grow border-t border-gray-200"></div>
-                        <span class="flex-shrink mx-2 text-[10px] text-gray-400 uppercase font-bold">Or Instant</span>
-                        <div class="flex-grow border-t border-gray-200"></div>
-                    </div>
-
-                    <!-- TELEGRAM CONTINUATION (Auto remembers device session) -->
-                    <button onclick="handleTelegramSignIn()" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs py-2.5 rounded-xl flex items-center justify-center space-x-2 shadow-sm">
-                        <i class="fa-brands fa-telegram text-base"></i>
-                        <span>Continue with Telegram (Remember Device)</span>
-                    </button>
                 </div>
 
             </div>
@@ -420,7 +408,7 @@
         window.firebaseDb = db;
         window.firebaseAuth = auth;
 
-        // SESSION PERSISTENCE & DASHBOARD ROUTING (REMEMBER DEVICE)
+        // SESSION PERSISTENCE & DASHBOARD ROUTING
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 window.currentUser = user;
@@ -482,7 +470,7 @@
             const password = document.getElementById('login-password').value;
             try {
                 await signInWithEmailAndPassword(auth, email, password);
-                alert('Signed in successfully! Redirecting to your dashboard... ✨');
+                alert('Signed in successfully! ✨');
             } catch (err) { alert('Login Failed: ' + err.message); }
         };
 
@@ -496,18 +484,11 @@
             } catch (err) { alert('Sign Up Failed: ' + err.message); }
         };
 
-        window.handleTelegramSignIn = function() {
-            alert('Telegram Session Connected & Device Remembered! ✨');
-            document.getElementById('session-user-badge').innerText = 'Telegram Shopper';
-            document.getElementById('profile-auth-box').classList.add('hidden');
-            document.getElementById('customer-dashboard-view').classList.remove('hidden');
-            document.getElementById('cust-profile-name').innerText = 'Telegram Shopper';
-        };
-
-        window.handleSignOut = function() {
-            signOut(auth);
+        window.handleSignOut = async function() {
+            await signOut(auth);
             exitAdminMode();
-            alert('Signed out successfully.');
+            switchCustomerTab('profile');
+            alert('Signed out successfully. Returned to login/signup page.');
         };
 
         // AUTO-SEED 8 PRODUCTS FOR EACH OF THE 8 CATEGORIES (64 PRODUCTS TOTAL)
