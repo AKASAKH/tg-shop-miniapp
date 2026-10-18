@@ -22,7 +22,7 @@
 <body class="bg-gray-50 text-gray-800 font-sans antialiased pb-24">
 
     <!-- PROMOTIONAL POPUP BANNER (SYNCED LIVE FROM DATABASE) -->
-    <div id="promo-popup" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 transition-opacity duration-300 hidden">
+    <div id="promo-popup" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300 hidden">
         <div class="bg-white text-gray-900 rounded-2xl max-w-xs w-full p-5 space-y-3 shadow-xl relative text-center border border-gray-100">
             <button onclick="closePromoPopup()" class="absolute top-2.5 right-2.5 text-gray-400 hover:text-gray-600 w-6 h-6 rounded-full flex items-center justify-center text-xs">
                 <i class="fa-solid fa-xmark"></i>
@@ -297,7 +297,7 @@
                     <option value="Rings">Rings 💍</option>
                     <option value="Earrings">Earrings ✨</option>
                     <option value="Phone Charms">Phone Charms 🌸</option>
-                    <option value="Bags & Pouches">Bags & Pouches 👜</option>
+                    <option value="Bags & Pouches">Bags & Pouches m👜</option>
                     <option value="Hair Accessories">Hair Accessories 👑</option>
                     <option value="Makeup Accessories">Makeup Accessories 💄</option>
                 </select>
@@ -392,13 +392,14 @@
             if (window.renderCustomerOrders) window.renderCustomerOrders();
         });
 
-        // REAL-TIME SYNC: BANNER
+        // REAL-TIME SYNC: BANNER (Triggers popup display automatically on open & save)
         onSnapshot(doc(db, "settings", "banner"), (docSnap) => {
+            const popup = document.getElementById('promo-popup');
             if (docSnap.exists()) {
                 const b = docSnap.data();
                 if (b.tag) document.getElementById('promo-tag-text').innerText = b.tag;
                 if (b.title) document.getElementById('promo-title-text').innerText = b.title;
-                if (b.desc) document.getElementById('promo-desc-text').innerHTML = `${b.desc} (Code: <span class="font-bold underline">${b.code || 'PINK10'}</span>)`;
+                if (b.desc) document.getElementById('promo-desc-text').innerText = b.desc;
                 if (b.code) document.getElementById('promo-code-text').innerText = b.code;
 
                 if (document.getElementById('cust-promo-tag')) {
@@ -408,10 +409,12 @@
                     document.getElementById('cust-promo-code').value = b.code || '';
                 }
 
-                const popup = document.getElementById('promo-popup');
                 if (popup && b.active !== false) {
                     popup.classList.remove('hidden');
                 }
+            } else {
+                // Display default banner if none exists yet in Firestore
+                if (popup) popup.classList.remove('hidden');
             }
         });
 
@@ -502,6 +505,7 @@
             alert('New product saved to database successfully! ✨');
         };
 
+        // SAVE BANNER DYNAMICALLY
         window.saveAdminBannerSettings = async function() {
             const tag = document.getElementById('cust-promo-tag').value;
             const title = document.getElementById('cust-promo-title').value;
@@ -511,13 +515,15 @@
             await setDoc(doc(db, "settings", "banner"), {
                 tag: tag || "Special Offer",
                 title: title || "Get 30% OFF Your Order!",
-                desc: desc || "Use special discount coupon during checkout.",
+                desc: desc || "Use code at checkout.",
                 code: code || "PINK10",
                 active: true,
                 updatedAt: new Date().toISOString()
             });
 
-            alert("Banner settings saved to database & updated live! ✨");
+            // Immediately force banner popup to open after saving
+            document.getElementById('promo-popup').classList.remove('hidden');
+            alert("Banner updated, saved to database, and displayed live! ✨");
         };
 
         window.deleteProduct = async function(id) {
@@ -537,7 +543,7 @@
             }
         };
 
-        // SUBMIT ORDER (Stores customer's userId)
+        // SUBMIT ORDER
         window.submitOrder = async function() {
             const name = document.getElementById('checkout-name').value;
             const phone = document.getElementById('checkout-phone').value;
@@ -553,7 +559,6 @@
                 }
             }
 
-            // Write order with the user's explicit UID
             await addDoc(collection(db, "orders"), {
                 orderNum: `#${Math.floor(202520 + Math.random() * 100)}`,
                 userId: window.currentUser ? window.currentUser.uid : 'guest',
@@ -622,12 +627,10 @@
             if (tab === 'profile') renderCustomerOrders();
         }
 
-        // RENDER CUSTOMER-SPECIFIC ORDER HISTORY
         window.renderCustomerOrders = function() {
             const listEl = document.getElementById('customer-my-orders-list');
             if (!listEl) return;
 
-            // Only show orders belonging to the currently authenticated user
             const myOrders = window.orders.filter(o => 
                 window.currentUser && o.userId === window.currentUser.uid
             );
@@ -748,7 +751,6 @@
             if (sec === 'inventory') renderAdminInventory();
         }
 
-        // ADMIN OVERVIEW (Calculates total orders & revenue across all users)
         window.renderEcomoraDash = function() {
             const rev = window.orders.reduce((sum, o) => sum + Number(o.total || 0), 0);
             document.getElementById('dash-total-revenue').innerText = `$${rev.toFixed(2)}`;
@@ -776,7 +778,6 @@
             `).join('');
         };
 
-        // ADMIN ALL ORDERS LIST
         window.renderAdminOrders = function() {
             document.getElementById('admin-orders-full-list').innerHTML = window.orders.map(o => `
                 <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 space-y-1.5 text-xs">
