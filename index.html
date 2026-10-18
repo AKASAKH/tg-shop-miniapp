@@ -22,7 +22,7 @@
 <body class="bg-gray-50 text-gray-800 font-sans antialiased pb-24">
 
     <!-- PROMOTIONAL POPUP BANNER (SYNCED LIVE FROM DATABASE) -->
-    <div id="promo-popup" class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 transition-opacity duration-300 hidden">
+    <div id="promo-popup" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 transition-opacity duration-300 hidden">
         <div class="bg-white text-gray-900 rounded-2xl max-w-xs w-full p-5 space-y-3 shadow-xl relative text-center border border-gray-100">
             <button onclick="closePromoPopup()" class="absolute top-2.5 right-2.5 text-gray-400 hover:text-gray-600 w-6 h-6 rounded-full flex items-center justify-center text-xs">
                 <i class="fa-solid fa-xmark"></i>
@@ -33,7 +33,7 @@
                 <h3 id="promo-title-text" class="text-sm font-bold mt-1 text-gray-900">Get 30% OFF Your Order!</h3>
                 <p id="promo-desc-text" class="text-[11px] text-gray-500 mt-0.5">Use code <span id="promo-code-text" class="font-bold text-gray-800 underline">PINK10</span> at checkout.</p>
             </div>
-            <button onclick="closePromoPopup()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-sm">Shop Now ✨</button>
+            <button onclick="closePromoPopup()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-xs">Shop Now ✨</button>
         </div>
     </div>
 
@@ -69,7 +69,7 @@
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-[11px]"></i></span>
                     <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search hairpins, bags, rings..." class="w-full pl-8 pr-3 py-1.5 bg-white border border-gray-200 rounded-xl text-xs shadow-xs focus:outline-none focus:border-brand-500">
                 </div>
-                <!-- Girl Shop Categories -->
+                <!-- Categories -->
                 <div class="flex space-x-1.5 overflow-x-auto pb-1 text-[11px] scrollbar-none justify-start md:justify-center">
                     <button onclick="filterCategory('All')" class="cat-btn bg-brand-500 text-white px-3 py-1 rounded-full font-medium whitespace-nowrap shadow-xs">All ✨</button>
                     <button onclick="filterCategory('Hairpins')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Hairpins 🎀</button>
@@ -94,7 +94,7 @@
             <!-- PAGE: MINIMALIST PROFILE / DASHBOARD -->
             <div id="page-profile" class="hidden space-y-3 max-w-md mx-auto">
                 
-                <!-- CUSTOMER PERSONAL DASHBOARD (Minimalist) -->
+                <!-- CUSTOMER DASHBOARD -->
                 <div id="customer-dashboard-view" class="space-y-3 hidden">
                     <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 flex items-center justify-between">
                         <div class="flex items-center space-x-2.5">
@@ -113,7 +113,7 @@
                     </div>
                 </div>
 
-                <!-- AUTH LOGIN / SIGNUP VIEW (Minimalist) -->
+                <!-- AUTH FORM -->
                 <div id="profile-auth-box" class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3">
                     <div class="text-center space-y-0.5">
                         <h3 class="font-bold text-xs text-gray-900">Welcome to Sparkle & Bloom</h3>
@@ -126,14 +126,14 @@
                         <button onclick="switchAuthTab('signup')" id="authtab-signup" class="flex-1 py-1 text-gray-500 rounded-lg">Sign Up</button>
                     </div>
 
-                    <!-- EMAIL LOGIN FORM -->
+                    <!-- LOGIN -->
                     <div id="auth-form-login" class="space-y-2 text-xs">
                         <input type="email" id="login-email" placeholder="Email address" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-500" value="admin@songsa.com">
                         <input type="password" id="login-password" placeholder="Password" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-500" value="rothsama">
                         <button onclick="handleEmailLogin()" class="w-full bg-brand-500 text-white font-bold text-xs py-2 rounded-xl shadow-xs">Log In</button>
                     </div>
 
-                    <!-- SIGN UP FORM -->
+                    <!-- SIGN UP -->
                     <div id="auth-form-signup" class="space-y-2 text-xs hidden">
                         <input type="text" id="signup-name" placeholder="Full Name" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-500">
                         <input type="email" id="signup-email" placeholder="Email address" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-500">
@@ -147,7 +147,7 @@
                         <div class="flex-grow border-t border-gray-100"></div>
                     </div>
 
-                    <!-- TELEGRAM SIGN IN (Saves individual user record to database) -->
+                    <!-- TELEGRAM SIGN IN -->
                     <button onclick="handleTelegramSignIn()" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs py-2 rounded-xl flex items-center justify-center space-x-1.5 shadow-xs">
                         <i class="fa-brands fa-telegram text-sm"></i>
                         <span>Continue with Telegram</span>
@@ -158,15 +158,14 @@
 
         </div>
 
-        <!-- ================= ECOMORA ADMIN DASHBOARD (Minimalist) ================= -->
+        <!-- ================= ECOMORA ADMIN DASHBOARD ================= -->
         <div id="admin-view" class="hidden space-y-4">
 
-            <!-- TOP DASHBOARD NAVIGATION BAR -->
+            <!-- NAVIGATION -->
             <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs flex flex-col md:flex-row justify-between items-center gap-2">
                 <div class="flex items-center space-x-2">
                     <span class="font-bold text-xs text-gray-900 flex items-center"><i class="fa-solid fa-gauge text-brand-500 mr-1.5"></i> Admin Dashboard</span>
                 </div>
-                <!-- Dashboard Sub-Tabs -->
                 <div class="flex items-center space-x-1 text-[11px] font-medium">
                     <button onclick="switchAdminNav('dashboard')" id="adtab-dashboard" class="px-3 py-1 bg-brand-500 text-white rounded-lg">Overview</button>
                     <button onclick="switchAdminNav('products')" id="adtab-products" class="px-3 py-1 text-gray-500 rounded-lg">Products</button>
@@ -177,7 +176,7 @@
                 <button onclick="handleSignOut()" class="text-[11px] bg-red-50 text-red-600 px-2.5 py-1 rounded-lg font-medium">Sign Out</button>
             </div>
 
-            <!-- SECTION: OVERVIEW -->
+            <!-- OVERVIEW -->
             <div id="admin-sec-dashboard" class="space-y-3">
                 <div class="grid grid-cols-2 md:grid-cols-2 gap-3">
                     <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-1">
@@ -208,7 +207,7 @@
                 </div>
             </div>
 
-            <!-- SECTION: PRODUCTS CRUD -->
+            <!-- PRODUCTS -->
             <div id="admin-sec-products" class="hidden space-y-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
                 <div class="flex justify-between items-center">
                     <h4 class="font-bold text-xs text-gray-900">Manage Products</h4>
@@ -217,19 +216,19 @@
                 <div id="admin-products-list" class="space-y-2 max-h-80 overflow-y-auto text-xs"></div>
             </div>
 
-            <!-- SECTION: ORDERS -->
+            <!-- ORDERS -->
             <div id="admin-sec-orders" class="hidden space-y-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
                 <h4 class="font-bold text-xs text-gray-900">Manage Orders</h4>
                 <div id="admin-orders-full-list" class="space-y-2 max-h-80 overflow-y-auto text-xs"></div>
             </div>
 
-            <!-- SECTION: INVENTORY -->
+            <!-- INVENTORY -->
             <div id="admin-sec-inventory" class="hidden space-y-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
                 <h4 class="font-bold text-xs text-gray-900">Stock Alerts</h4>
                 <div id="admin-inventory-list" class="space-y-2 max-h-80 overflow-y-auto text-xs"></div>
             </div>
 
-            <!-- SECTION: BANNER & PROMOTIONS -->
+            <!-- BANNER MANAGER -->
             <div id="admin-sec-promotions" class="hidden space-y-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
                 <h4 class="font-bold text-xs text-gray-900">Live Popup Banner Customizer</h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
@@ -245,7 +244,7 @@
 
     </main>
 
-    <!-- CUSTOMER BOTTOM NAVIGATION BAR -->
+    <!-- BOTTOM NAV -->
     <nav id="customer-nav" class="fixed bottom-0 inset-x-0 bg-white border-t border-gray-100 py-2 px-6 z-40 shadow-sm">
         <div class="max-w-md mx-auto flex justify-around items-center text-xs">
             <button onclick="switchCustomerTab('shop')" id="nav-btn-shop" class="flex flex-col items-center text-brand-600 font-bold"><i class="fa-solid fa-store text-sm mb-0.5"></i> Shop</button>
@@ -255,7 +254,7 @@
         </div>
     </nav>
 
-    <!-- SLIDING CART DRAWER -->
+    <!-- CART DRAWER -->
     <div id="cart-drawer" class="fixed inset-0 bg-black/40 z-50 hidden transition-opacity">
         <div class="absolute inset-y-0 right-0 max-w-xs w-full bg-white shadow-xl flex flex-col p-4">
             <div class="flex justify-between items-center border-b border-gray-50 pb-2.5">
@@ -310,7 +309,7 @@
         </div>
     </div>
 
-    <!-- FIREBASE MODULE & REALTIME SYNC -->
+    <!-- FIREBASE MODULE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -332,21 +331,23 @@
         window.firebaseDb = db;
         window.firebaseAuth = auth;
 
-        // SESSION STATE & DATABASE USER PROFILE SYNC
+        // AUTH STATE & AUTOMATIC INDIVIDUAL USER RECORD CREATION
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 window.currentUser = user;
                 document.getElementById('session-user-badge').innerText = user.email || 'Active User';
                 
-                // Save/Ensure user data record exists in database
+                // Always store an individual user document inside the 'users' collection
                 const userRef = doc(db, "users", user.uid);
                 const userSnap = await getDoc(userRef);
+                
                 if (!userSnap.exists()) {
                     await setDoc(userRef, {
                         uid: user.uid,
-                        email: user.email || "telegram_user@songsa.com",
-                        name: user.displayName || (user.email ? user.email.split('@')[0] : "Telegram User"),
+                        email: user.email || `${user.uid}@telegram.org`,
+                        name: user.displayName || (user.email ? user.email.split('@')[0] : "Shopper"),
                         role: (user.email && user.email.toLowerCase().endsWith("@songsa.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1" ? "admin" : "customer",
+                        authProvider: user.email ? "email" : "telegram",
                         createdAt: new Date().toISOString()
                     });
                 }
@@ -359,8 +360,8 @@
                 } else {
                     document.getElementById('profile-auth-box').classList.add('hidden');
                     document.getElementById('customer-dashboard-view').classList.remove('hidden');
-                    document.getElementById('cust-profile-name').innerText = userData.name || user.email.split('@')[0];
-                    document.getElementById('cust-profile-email').innerText = user.email || "Telegram Connected";
+                    document.getElementById('cust-profile-name').innerText = userData.name || (user.email ? user.email.split('@')[0] : "Customer");
+                    document.getElementById('cust-profile-email').innerText = user.email || "Telegram User";
                     if (window.renderCustomerOrders) window.renderCustomerOrders();
                 }
             } else {
@@ -377,10 +378,7 @@
             window.products = [];
             snapshot.forEach(docSnap => window.products.push({ id: docSnap.id, ...docSnap.data() }));
 
-            if (window.products.length === 0) {
-                seedFullCatalog(db);
-            }
-
+            if (window.products.length === 0) seedFullCatalog(db);
             if (window.renderProducts) window.renderProducts();
             if (window.renderAdminProducts) window.renderAdminProducts();
             if (window.renderAdminInventory) window.renderAdminInventory();
@@ -395,15 +393,23 @@
             if (window.renderCustomerOrders) window.renderCustomerOrders();
         });
 
-        // REAL-TIME SYNC: BANNER & PROMOTIONS (Synced every app open)
+        // REAL-TIME SYNC: BANNER (Renders live on app open and after saves)
         onSnapshot(doc(db, "settings", "banner"), (docSnap) => {
             if (docSnap.exists()) {
                 const b = docSnap.data();
                 if (b.tag) document.getElementById('promo-tag-text').innerText = b.tag;
                 if (b.title) document.getElementById('promo-title-text').innerText = b.title;
-                if (b.desc) document.getElementById('promo-desc-text').innerHTML = `Use code <span class="font-bold text-gray-800 underline">${b.code || 'PINK10'}</span> - ${b.desc}`;
+                if (b.desc) document.getElementById('promo-desc-text').innerHTML = `${b.desc} (Code: <span class="font-bold underline">${b.code || 'PINK10'}</span>)`;
                 if (b.code) document.getElementById('promo-code-text').innerText = b.code;
-                
+
+                // Populate input values inside admin manager for convenience
+                if (document.getElementById('cust-promo-tag')) {
+                    document.getElementById('cust-promo-tag').value = b.tag || '';
+                    document.getElementById('cust-promo-title').value = b.title || '';
+                    document.getElementById('cust-promo-desc').value = b.desc || '';
+                    document.getElementById('cust-promo-code').value = b.code || '';
+                }
+
                 const popup = document.getElementById('promo-popup');
                 if (popup && b.active !== false) {
                     popup.classList.remove('hidden');
@@ -419,9 +425,7 @@
                 alert('Signed in successfully! ✨');
             } catch (err) {
                 if (email.toLowerCase() === "admin@songsa.com" && password === "rothsama") {
-                    try {
-                        await createUserWithEmailAndPassword(auth, email, password);
-                    } catch (e) {}
+                    try { await createUserWithEmailAndPassword(auth, email, password); } catch (e) {}
                     await signInWithEmailAndPassword(auth, email, password);
                     enterAdminMode();
                     return;
@@ -441,33 +445,36 @@
                     name: name || email.split('@')[0],
                     email,
                     role: email.toLowerCase().endsWith("@songsa.com") ? "admin" : "customer",
+                    authProvider: "email",
                     createdAt: new Date().toISOString()
                 });
                 alert('Account saved to database successfully! 🎉');
             } catch (err) { alert('Sign Up Failed: ' + err.message); }
         };
 
-        // TELEGRAM SIGN IN (Saves individual user record to database)
+        // TELEGRAM SIGN IN (Creates individual user record in database)
         window.handleTelegramSignIn = async function() {
             try {
-                const tgId = "tg_" + Math.floor(100000 + Math.random() * 900000);
-                const tgEmail = `${tgId}@telegram.org`;
+                const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+                const tgId = tgUser ? `tg_${tgUser.id}` : "tg_" + Math.floor(100000 + Math.random() * 900000);
+                const tgName = tgUser ? `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() : "Telegram Shopper";
+                const tgEmail = tgUser?.username ? `${tgUser.username}@telegram.org` : `${tgId}@telegram.org`;
+
                 const userRef = doc(db, "users", tgId);
-                
                 await setDoc(userRef, {
                     uid: tgId,
-                    name: "Telegram Shopper",
+                    name: tgName || "Telegram Shopper",
                     email: tgEmail,
                     role: "customer",
                     authProvider: "telegram",
                     createdAt: new Date().toISOString()
                 }, { merge: true });
 
-                alert('Telegram account saved to database and logged in! ✨');
-                document.getElementById('session-user-badge').innerText = 'Telegram Shopper';
+                alert('Telegram account saved to database! ✨');
+                document.getElementById('session-user-badge').innerText = tgName;
                 document.getElementById('profile-auth-box').classList.add('hidden');
                 document.getElementById('customer-dashboard-view').classList.remove('hidden');
-                document.getElementById('cust-profile-name').innerText = 'Telegram Shopper';
+                document.getElementById('cust-profile-name').innerText = tgName;
                 document.getElementById('cust-profile-email').innerText = tgEmail;
             } catch (err) {
                 alert('Telegram Sign In Error: ' + err.message);
@@ -498,7 +505,7 @@
             alert('New product saved to database successfully! ✨');
         };
 
-        // SAVE / UPDATE BANNER IN DATABASE
+        // SAVE BANNER TO DATABASE (`settings/banner`)
         window.saveAdminBannerSettings = async function() {
             const tag = document.getElementById('cust-promo-tag').value;
             const title = document.getElementById('cust-promo-title').value;
@@ -506,15 +513,15 @@
             const code = document.getElementById('cust-promo-code').value;
 
             await setDoc(doc(db, "settings", "banner"), {
-                tag: tag || "Special Deal",
+                tag: tag || "Special Offer",
                 title: title || "Get 30% OFF Your Order!",
-                desc: desc || "Limited time offer on all accessories.",
+                desc: desc || "Use special discount coupon during checkout.",
                 code: code || "PINK10",
                 active: true,
                 updatedAt: new Date().toISOString()
             });
 
-            alert("Banner updated and saved to database successfully! ✨");
+            alert("Banner settings saved to database & updated live! ✨");
         };
 
         window.deleteProduct = async function(id) {
