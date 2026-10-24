@@ -265,7 +265,7 @@
 
     </main>
 
-    <!-- CUSTOMER PRODUCT DETAIL MODAL (Opens when clicking any product card) -->
+    <!-- CUSTOMER PRODUCT DETAIL MODAL -->
     <div id="product-detail-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 transition-opacity">
         <div class="bg-white rounded-3xl max-w-sm w-full p-4 space-y-3 shadow-2xl relative text-xs overflow-hidden border border-gray-100">
             <button onclick="closeProductDetailModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10">
@@ -387,6 +387,35 @@
 
         window.firebaseDb = db;
         window.firebaseAuth = auth;
+
+        // TELEGRAM BOT API CREDENTIALS FOR AUTO-POSTING TO @songsashop CHANNEL
+        const TELEGRAM_BOT_TOKEN = "8799522797:AAG5hhzhfDjXxftdlkJ7zVgcDQqhV7hR-4k";
+        const TELEGRAM_CHANNEL_ID = "@songsashop";
+
+        // Helper function to send broadcast posts to Telegram Channel
+        async function postToTelegramChannel(photoUrl, captionText) {
+            try {
+                const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
+                await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHANNEL_ID,
+                        photo: photoUrl || "https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80",
+                        caption: captionText,
+                        parse_mode: 'HTML',
+                        reply_markup: {
+                            inline_keyboard: [
+                                [{ text: "Shop Now 🛍️", url: "https://t.me/songsashop" }]
+                            ]
+                        }
+                    })
+                });
+                console.log('Successfully posted update to @songsashop Telegram Channel!');
+            } catch (err) {
+                console.error('Failed to post to Telegram Channel:', err);
+            }
+        }
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -538,13 +567,24 @@
             }
         };
 
+        // SIGN OUT & IMMEDIATE REDIRECT TO HOME STOREFRONT
         window.handleSignOut = async function() {
-            await signOut(auth);
-            exitAdminMode();
-            switchCustomerTab('profile');
-            alert('Signed out successfully.');
+            try {
+                await signOut(auth);
+                window.currentUser = null;
+                document.getElementById('session-user-badge').innerText = 'Guest Mode';
+                document.getElementById('profile-auth-box').classList.remove('hidden');
+                document.getElementById('customer-dashboard-view').classList.add('hidden');
+                
+                exitAdminMode();
+                switchCustomerTab('shop');
+                alert('Signed out successfully.');
+            } catch (err) {
+                alert('Sign Out Error: ' + err.message);
+            }
         };
 
+        // SAVE PRODUCT & AUTO-POST NEW ARRIVALS TO TELEGRAM CHANNEL
         window.saveAdminProduct = async function() {
             const prodId = document.getElementById('prod-id').value;
             const name = document.getElementById('prod-name').value;
@@ -552,14 +592,14 @@
             const category = document.getElementById('prod-category').value;
             const price = parseFloat(document.getElementById('prod-price').value);
             const stock = parseInt(document.getElementById('prod-stock').value);
-            const image = document.getElementById('prod-image').value.trim();
+            const image = document.getElementById('prod-image').value.trim() || 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
 
             if (!name || isNaN(price)) return alert('Please enter valid product details.');
 
             const productData = {
                 name, sku, category, price,
                 stock: isNaN(stock) ? 10 : stock,
-                image: image || 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80',
+                image,
                 isPublished: true,
                 updatedAt: new Date().toISOString()
             };
@@ -570,7 +610,18 @@
             } else {
                 productData.createdAt = new Date().toISOString();
                 await addDoc(collection(db, "products"), productData);
-                alert('New product added to database successfully! ✨');
+                
+                // AUTO-POST NEW PRODUCT TO TELEGRAM CHANNEL
+                const caption = `<b>✨ NEW ARRIVAL AT SPARKLE & BLOOM! ✨</b>\n\n` +
+                                `<b>${name}</b>\n` +
+                                `🏷️ Category: ${category}\n` +
+                                `🔢 SKU: <code>${sku}</code>\n` +
+                                `💰 Price: <b>$${price.toFixed(2)}</b>\n` +
+                                `📦 In Stock: ${productData.stock} units\n\n` +
+                                `🛍️ <i>Shop now in our Telegram Mini App!</i>`;
+                
+                postToTelegramChannel(image, caption);
+                alert('New product saved & posted to @songsashop Telegram Channel! 🎉');
             }
 
             closeAdminProductModal();
@@ -583,6 +634,7 @@
             }
         };
 
+        // SAVE BANNER & AUTO-POST PROMOTIONS TO TELEGRAM CHANNEL
         window.saveAdminBannerSettings = async function() {
             const bannerId = document.getElementById('cust-promo-id').value;
             const tag = document.getElementById('cust-promo-tag').value || "Special Offer";
@@ -602,9 +654,18 @@
 
             await setDoc(doc(db, "settings", "banner"), { ...bannerData, bannerId: docId, active: true });
 
+            // AUTO-POST PROMOTION TO TELEGRAM CHANNEL
+            const promoCaption = `<b>🎉 NEW SPECIAL PROMOTION! 🎉</b>\n\n` +
+                                 `<b>${title}</b> (${tag})\n` +
+                                 `${desc}\n\n` +
+                                 `🎟️ Coupon Code: <b>${code}</b>\n` +
+                                 `✨ <i>Open our Mini App to claim your discount now!</i>`;
+
+            postToTelegramChannel("https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80", promoCaption);
+
             clearBannerForm();
             document.getElementById('promo-popup').classList.remove('hidden');
-            alert("Banner saved to history & published live! ✨");
+            alert("Banner activated & broadcasted to @songsashop Channel! ✨");
         };
 
         window.renewBanner = async function(id) {
@@ -785,7 +846,6 @@
                 }).join('');
         };
 
-        // RENDER PRODUCTS WITH CLICKABLE DETAILS MODAL
         function renderProducts() {
             const grid = document.getElementById('product-grid');
             if (!grid) return;
@@ -794,7 +854,6 @@
             
             grid.innerHTML = filtered.map(p => `
                 <div class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs flex flex-col justify-between hover:border-brand-500/30 transition-all">
-                    <!-- Click image/title to open details view modal -->
                     <div onclick="openProductDetailModal('${p.id}')" class="cursor-pointer">
                         <div class="relative rounded-xl overflow-hidden aspect-square bg-gray-50 mb-2">
                             <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full h-full object-cover">
@@ -811,7 +870,6 @@
             `).join('');
         }
 
-        // OPEN PRODUCT DETAILS MODAL FOR CUSTOMERS
         function openProductDetailModal(id) {
             const p = window.products.find(item => item.id === id);
             if (!p) return;
