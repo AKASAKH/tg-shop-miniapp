@@ -2,11 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sparkle & Bloom - Accessories Shop</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Prevent double-tap zoom across web and mobile browsers */
+        html, body, button, a, img, input {
+            touch-action: manipulation;
+        }
+    </style>
     <script>
         tailwind.config = {
             theme: {
@@ -19,9 +25,9 @@
         }
     </script>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans antialiased pb-24">
+<body class="bg-gray-50 text-gray-800 font-sans antialiased pb-24 select-none">
 
-    <!-- PROMOTIONAL POPUP BANNER (SYNCED LIVE FROM DATABASE) -->
+    <!-- PROMOTIONAL POPUP BANNER -->
     <div id="promo-popup" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300 hidden">
         <div class="bg-white text-gray-900 rounded-2xl max-w-xs w-full p-5 space-y-3 shadow-xl relative text-center border border-gray-100">
             <button onclick="closePromoPopup()" class="absolute top-2.5 right-2.5 text-gray-400 hover:text-gray-600 w-6 h-6 rounded-full flex items-center justify-center text-xs">
@@ -207,7 +213,7 @@
                 </div>
             </div>
 
-            <!-- PRODUCTS (CRUD: ADD, EDIT, DELETE) -->
+            <!-- PRODUCTS -->
             <div id="admin-sec-products" class="hidden space-y-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
                 <div class="flex justify-between items-center">
                     <h4 class="font-bold text-xs text-gray-900">Manage Products Catalog</h4>
@@ -259,6 +265,40 @@
 
     </main>
 
+    <!-- CUSTOMER PRODUCT DETAIL MODAL (Opens when clicking any product card) -->
+    <div id="product-detail-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-4 space-y-3 shadow-2xl relative text-xs overflow-hidden border border-gray-100">
+            <button onclick="closeProductDetailModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <div class="relative w-full aspect-square bg-gray-50 rounded-2xl overflow-hidden">
+                <img id="view-prod-image" src="" class="w-full h-full object-cover">
+                <span id="view-prod-category" class="absolute bottom-2 left-2 bg-white/90 backdrop-blur-md text-gray-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-xs">Category</span>
+            </div>
+
+            <div class="space-y-1">
+                <div class="flex justify-between items-start">
+                    <h3 id="view-prod-name" class="font-bold text-sm text-gray-900 leading-snug">Product Title</h3>
+                    <span id="view-prod-price" class="font-bold text-sm text-brand-600">$0.00</span>
+                </div>
+                <p id="view-prod-sku" class="text-[10px] text-gray-400 font-mono">SKU: N/A</p>
+                <p id="view-prod-desc" class="text-[11px] text-gray-500 pt-1 leading-relaxed">High-quality accessories crafted with care for everyday elegance.</p>
+            </div>
+
+            <div class="flex items-center justify-between border-t border-gray-50 pt-3">
+                <div class="text-[10px] text-gray-400">
+                    <span>Stock Status: </span>
+                    <b id="view-prod-stock" class="text-emerald-600 font-bold">10 available</b>
+                </div>
+                <button id="view-prod-add-btn" class="bg-brand-500 text-white font-bold text-xs px-4 py-2 rounded-xl shadow-xs flex items-center space-x-1.5">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span>Add to Bag</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- BOTTOM NAV -->
     <nav id="customer-nav" class="fixed bottom-0 inset-x-0 bg-white border-t border-gray-100 py-2 px-6 z-40 shadow-sm">
         <div class="max-w-md mx-auto flex justify-around items-center text-xs">
@@ -307,6 +347,7 @@
             <input type="hidden" id="prod-id" value="">
             <div class="space-y-2">
                 <input type="text" id="prod-name" placeholder="Product Name" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
+                <input type="text" id="prod-sku" placeholder="SKU Code (e.g. HRP-PRL-001)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 uppercase">
                 <select id="prod-category" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 bg-white">
                     <option value="Hairpins">Hairpins 🎀</option>
                     <option value="Necklaces">Necklaces 💎</option>
@@ -347,7 +388,6 @@
         window.firebaseDb = db;
         window.firebaseAuth = auth;
 
-        // AUTH STATE & AUTOMATIC USER PROFILE CREATION
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 window.currentUser = user;
@@ -505,21 +545,19 @@
             alert('Signed out successfully.');
         };
 
-        // ADMIN PRODUCT CRUD: ADD OR EDIT PRODUCT
         window.saveAdminProduct = async function() {
             const prodId = document.getElementById('prod-id').value;
             const name = document.getElementById('prod-name').value;
+            const sku = document.getElementById('prod-sku').value.trim() || `SKU-${Math.floor(1000 + Math.random() * 9000)}`;
             const category = document.getElementById('prod-category').value;
             const price = parseFloat(document.getElementById('prod-price').value);
             const stock = parseInt(document.getElementById('prod-stock').value);
             const image = document.getElementById('prod-image').value.trim();
 
-            if (!name || isNaN(price)) return alert('Please enter valid product name and price.');
+            if (!name || isNaN(price)) return alert('Please enter valid product details.');
 
             const productData = {
-                name,
-                category,
-                price,
+                name, sku, category, price,
                 stock: isNaN(stock) ? 10 : stock,
                 image: image || 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80',
                 isPublished: true,
@@ -642,14 +680,14 @@
 
         async function seedFullCatalog(db) {
             const catalog = [
-                { name: 'Pearl Butterfly Hairpin', category: 'Hairpins', price: 12.50, stock: 15, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
-                { name: 'Crystal Flower Claw Clip', category: 'Hairpins', price: 8.90, stock: 20, image: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&q=80' },
-                { name: 'Dainty Butterfly Choker', category: 'Necklaces', price: 18.00, stock: 10, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' },
-                { name: 'Layered Gold Heart Pendant', category: 'Necklaces', price: 22.50, stock: 8, image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=80' },
-                { name: 'Vintage Crystal Ring Set', category: 'Rings', price: 14.00, stock: 15, image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80' },
-                { name: 'Crystal Drop Earrings', category: 'Earrings', price: 15.50, stock: 16, image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=400&q=80' },
-                { name: 'Beaded Pastel Phone Lanyard', category: 'Phone Charms', price: 8.50, stock: 20, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
-                { name: 'Plush Bear Crossbody Bag', category: 'Bags & Pouches', price: 24.99, stock: 10, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' }
+                { name: 'Pearl Butterfly Hairpin', sku: 'HRP-PRL-BTF-001', category: 'Hairpins', price: 12.50, stock: 15, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
+                { name: 'Crystal Flower Claw Clip', sku: 'HRP-CRS-FLW-002', category: 'Hairpins', price: 8.90, stock: 20, image: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&q=80' },
+                { name: 'Dainty Butterfly Choker', sku: 'NCK-DNT-BTF-001', category: 'Necklaces', price: 18.00, stock: 10, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' },
+                { name: 'Layered Gold Heart Pendant', sku: 'NCK-LYR-GLD-002', category: 'Necklaces', price: 22.50, stock: 8, image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=80' },
+                { name: 'Vintage Crystal Ring Set', sku: 'RNG-VTG-CRS-001', category: 'Rings', price: 14.00, stock: 15, image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80' },
+                { name: 'Crystal Drop Earrings', sku: 'ERG-CRS-DRP-001', category: 'Earrings', price: 15.50, stock: 16, image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=400&q=80' },
+                { name: 'Beaded Pastel Phone Lanyard', sku: 'PHN-BDD-PST-001', category: 'Phone Charms', price: 8.50, stock: 20, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
+                { name: 'Plush Bear Crossbody Bag', sku: 'BAG-PLS-BER-001', category: 'Bags & Pouches', price: 24.99, stock: 10, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' }
             ];
             for (let item of catalog) {
                 await addDoc(collection(db, "products"), { ...item, isPublished: true });
@@ -747,6 +785,7 @@
                 }).join('');
         };
 
+        // RENDER PRODUCTS WITH CLICKABLE DETAILS MODAL
         function renderProducts() {
             const grid = document.getElementById('product-grid');
             if (!grid) return;
@@ -754,21 +793,47 @@
             let filtered = window.products.filter(p => (activeCategory === 'All' || p.category === activeCategory) && p.name.toLowerCase().includes(searchVal));
             
             grid.innerHTML = filtered.map(p => `
-                <div class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs flex flex-col justify-between">
-                    <div>
+                <div class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs flex flex-col justify-between hover:border-brand-500/30 transition-all">
+                    <!-- Click image/title to open details view modal -->
+                    <div onclick="openProductDetailModal('${p.id}')" class="cursor-pointer">
                         <div class="relative rounded-xl overflow-hidden aspect-square bg-gray-50 mb-2">
                             <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full h-full object-cover">
-                            <button onclick="toggleWishlist('${p.id}')" class="absolute top-2 right-2 w-6 h-6 bg-white/90 rounded-full flex items-center justify-center text-[10px] ${wishlist.includes(p.id) ? 'text-red-500' : 'text-gray-400'}"><i class="fa-solid fa-heart"></i></button>
+                            <button onclick="event.stopPropagation(); toggleWishlist('${p.id}')" class="absolute top-2 right-2 w-6 h-6 bg-white/90 rounded-full flex items-center justify-center text-[10px] ${wishlist.includes(p.id) ? 'text-red-500' : 'text-gray-400'}"><i class="fa-solid fa-heart"></i></button>
                         </div>
                         <h4 class="font-bold text-xs text-gray-900 truncate">${p.name}</h4>
                         <p class="text-[10px] text-gray-400">Stock: ${p.stock ?? 10}</p>
                     </div>
                     <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-50">
                         <span class="font-bold text-xs text-brand-600">$${Number(p.price || 0).toFixed(2)}</span>
-                        <button onclick="addToCart('${p.id}')" class="bg-brand-500 text-white px-2.5 py-1 rounded-xl text-xs font-bold">+</button>
+                        <button onclick="event.stopPropagation(); addToCart('${p.id}')" class="bg-brand-500 text-white px-2.5 py-1 rounded-xl text-xs font-bold">+</button>
                     </div>
                 </div>
             `).join('');
+        }
+
+        // OPEN PRODUCT DETAILS MODAL FOR CUSTOMERS
+        function openProductDetailModal(id) {
+            const p = window.products.find(item => item.id === id);
+            if (!p) return;
+
+            document.getElementById('view-prod-image').src = p.image || FALLBACK_IMAGE;
+            document.getElementById('view-prod-category').innerText = p.category || 'Accessories';
+            document.getElementById('view-prod-name').innerText = p.name || 'Product';
+            document.getElementById('view-prod-price').innerText = `$${Number(p.price || 0).toFixed(2)}`;
+            document.getElementById('view-prod-sku').innerText = `SKU: ${p.sku || 'N/A'}`;
+            document.getElementById('view-prod-stock').innerText = `${p.stock ?? 10} units in stock`;
+
+            const addBtn = document.getElementById('view-prod-add-btn');
+            addBtn.onclick = function() {
+                addToCart(p.id);
+                closeProductDetailModal();
+            };
+
+            document.getElementById('product-detail-modal').classList.remove('hidden');
+        }
+
+        function closeProductDetailModal() {
+            document.getElementById('product-detail-modal').classList.add('hidden');
         }
 
         function filterCategory(cat) { activeCategory = cat; renderProducts(); }
@@ -784,10 +849,10 @@
             document.getElementById('wishlist-grid').innerHTML = favs.length === 0 ? 
                 `<p class="text-xs text-gray-400 col-span-2 text-center py-6">No saved items in wishlist.</p>` :
                 favs.map(p => `
-                    <div class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs flex flex-col justify-between">
+                    <div onclick="openProductDetailModal('${p.id}')" class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs flex flex-col justify-between cursor-pointer">
                         <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full aspect-square object-cover rounded-xl mb-2">
                         <h4 class="font-bold text-xs text-gray-900 truncate">${p.name}</h4>
-                        <button onclick="addToCart('${p.id}')" class="w-full bg-brand-500 text-white py-1.5 rounded-xl text-xs font-bold mt-2">Add to Bag</button>
+                        <button onclick="event.stopPropagation(); addToCart('${p.id}')" class="w-full bg-brand-500 text-white py-1.5 rounded-xl text-xs font-bold mt-2">Add to Bag</button>
                     </div>
                 `).join('');
         }
@@ -821,8 +886,7 @@
         function closeCartDrawer() { document.getElementById('cart-drawer').classList.add('hidden'); }
         function openCheckoutModal() { closeCartDrawer(); document.getElementById('checkout-modal').classList.remove('hidden'); }
         function closeCheckoutModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
-        
-        // ADMIN PRODUCT MODAL CONTROLLERS (ADD / EDIT)
+
         function openProductModal(id = null) {
             if (id) {
                 const p = window.products.find(item => item.id === id);
@@ -830,6 +894,7 @@
                 document.getElementById('product-modal-title').innerText = "Edit Product";
                 document.getElementById('prod-id').value = p.id;
                 document.getElementById('prod-name').value = p.name || '';
+                document.getElementById('prod-sku').value = p.sku || '';
                 document.getElementById('prod-category').value = p.category || 'Hairpins';
                 document.getElementById('prod-price').value = p.price || '';
                 document.getElementById('prod-stock').value = p.stock || 10;
@@ -838,6 +903,7 @@
                 document.getElementById('product-modal-title').innerText = "Add Product to Database";
                 document.getElementById('prod-id').value = '';
                 document.getElementById('prod-name').value = '';
+                document.getElementById('prod-sku').value = '';
                 document.getElementById('prod-category').value = 'Hairpins';
                 document.getElementById('prod-price').value = '';
                 document.getElementById('prod-stock').value = '10';
@@ -894,7 +960,6 @@
             }
         };
 
-        // ADMIN PRODUCTS LIST WITH EDIT & DELETE BUTTONS
         window.renderAdminProducts = function() {
             const listEl = document.getElementById('admin-products-list');
             if (!listEl) return;
