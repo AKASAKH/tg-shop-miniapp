@@ -477,23 +477,33 @@
             if (window.renderCustomerOrders) window.renderCustomerOrders();
         });
 
-        // REAL-TIME SYNC: ACTIVE BANNER
+        // REAL-TIME SYNC: ACTIVE BANNER (FORCED VISIBILITY WITH DEFAULTS)
         onSnapshot(doc(db, "settings", "banner"), (docSnap) => {
             const popup = document.getElementById('promo-popup');
+            
+            let tag = "Special Offer";
+            let title = "Get 30% OFF Your Order!";
+            let desc = "Use code PINK10 at checkout.";
+            let code = "PINK10";
+
             if (docSnap.exists()) {
                 const b = docSnap.data();
                 window.activeBannerId = b.bannerId;
-                if (b.tag) document.getElementById('promo-tag-text').innerText = b.tag;
-                if (b.title) document.getElementById('promo-title-text').innerText = b.title;
-                if (b.desc) document.getElementById('promo-desc-text').innerText = b.desc;
-                if (b.code) document.getElementById('promo-code-text').innerText = b.code;
+                if (b.tag) tag = b.tag;
+                if (b.title) title = b.title;
+                if (b.desc) desc = b.desc;
+                if (b.code) code = b.code;
+            }
 
-                if (popup && b.active !== false) {
-                    popup.classList.remove('hidden');
-                }
-            } else if (popup) {
+            document.getElementById('promo-tag-text').innerText = tag;
+            document.getElementById('promo-title-text').innerText = title;
+            document.getElementById('promo-desc-text').innerText = desc;
+            document.getElementById('promo-code-text').innerText = code;
+
+            if (popup) {
                 popup.classList.remove('hidden');
             }
+
             if (window.renderBannerHistory) window.renderBannerHistory();
         });
 
