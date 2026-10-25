@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Song Sa Shop - Management Portal</title>
+    <title>Song Sa Shop - Inventory & Store Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,7 +24,7 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased pb-24 select-none">
 
-    <!-- PROMOTIONAL POPUP BANNER (Auto-closes in 10s) -->
+    <!-- PROMOTIONAL POPUP BANNER (ONLY FOR CUSTOMERS - Auto-closes in 10s) -->
     <div id="promo-popup" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300 hidden">
         <div class="bg-white text-gray-900 rounded-2xl max-w-xs w-full p-5 space-y-3 shadow-xl relative text-center border border-gray-100">
             <button onclick="closePromoPopup()" class="absolute top-2.5 right-2.5 text-gray-400 hover:text-gray-600 w-6 h-6 rounded-full flex items-center justify-center text-xs">
@@ -134,17 +134,17 @@
             </div>
         </div>
 
-        <!-- ================= PRODUCTION ADMIN DASHBOARD (Figma Styled) ================= -->
+        <!-- ================= ADMIN INVENTORY & MANAGEMENT PORTAL ================= -->
         <div id="admin-view" class="hidden space-y-4">
 
-            <!-- Top Header Bar -->
+            <!-- Top Bar -->
             <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs flex justify-between items-center">
                 <div class="flex items-center space-x-2">
-                    <span class="font-bold text-xs text-gray-900 flex items-center"><i class="fa-solid fa-store text-brand-500 mr-1.5"></i> Song Sa Store Owner Portal</span>
+                    <span class="font-bold text-xs text-gray-900 flex items-center"><i class="fa-solid fa-boxes-stacked text-brand-500 mr-1.5"></i> Song Sa Inventory & Stock Control</span>
                 </div>
                 <div class="flex items-center space-x-2">
                     <button onclick="openProductModal()" class="bg-brand-500 hover:bg-brand-600 text-white text-xs px-3 py-1.5 rounded-xl font-bold shadow-xs flex items-center space-x-1">
-                        <i class="fa-solid fa-plus text-[10px]"></i><span>Add product</span>
+                        <i class="fa-solid fa-plus text-[10px]"></i><span>Add Product</span>
                     </button>
                     <button onclick="handleSignOut()" class="text-xs bg-red-50 text-red-600 px-3 py-1.5 rounded-xl font-medium">Sign Out</button>
                 </div>
@@ -152,61 +152,37 @@
 
             <!-- Navigation Tabs -->
             <div class="flex space-x-1 border-b border-gray-200 text-xs font-semibold overflow-x-auto">
-                <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-brand-500 text-brand-600">Products</button>
+                <button onclick="switchAdminNav('inventory')" id="adtab-inventory" class="px-4 py-2 border-b-2 border-brand-500 text-brand-600">Inventory & Stock</button>
                 <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Orders</button>
-                <button onclick="switchAdminNav('inventory')" id="adtab-inventory" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Stock Management</button>
                 <button onclick="switchAdminNav('promotions')" id="adtab-promotions" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Banners & History</button>
             </div>
 
-            <!-- SECTION: PRODUCTS (Figma Style Table & Metrics) -->
-            <div id="admin-sec-products" class="space-y-4">
-                <!-- Metrics Grid -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-1">
-                        <span class="text-[10px] text-gray-400 font-medium">TOTAL PRODUCTS</span>
-                        <h2 class="text-xl font-bold text-gray-900" id="stat-total-products">0</h2>
-                        <span class="text-[10px] text-emerald-600 font-medium">+Active Live</span>
-                    </div>
-                    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-1">
-                        <span class="text-[10px] text-gray-400 font-medium">TOTAL REVENUE</span>
-                        <h2 class="text-xl font-bold text-gray-900" id="stat-total-revenue">$0.00</h2>
-                        <span class="text-[10px] text-emerald-600 font-medium">+Verified Sales</span>
-                    </div>
-                    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-1">
-                        <span class="text-[10px] text-gray-400 font-medium">TOTAL ORDERS</span>
-                        <h2 class="text-xl font-bold text-gray-900" id="stat-total-orders">0</h2>
-                        <span class="text-[10px] text-brand-600 font-medium">Database Tracked</span>
-                    </div>
-                    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-1">
-                        <span class="text-[10px] text-gray-400 font-medium">STORE CHANNEL</span>
-                        <h2 class="text-xl font-bold text-gray-900">@songsashop</h2>
-                        <span class="text-[10px] text-sky-600 font-medium">Auto-Post Active</span>
-                    </div>
-                </div>
-
-                <!-- Product Table Container -->
+            <!-- SECTION: INVENTORY (Stock Control Table matching StockMind UI) -->
+            <div id="admin-sec-inventory" class="space-y-4">
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden">
                     <div class="p-3 border-b border-gray-100 flex flex-col md:flex-row justify-between items-center gap-2">
-                        <input type="text" id="admin-search-products" oninput="renderAdminProducts()" placeholder="Search by product name or SKU..." class="w-full md:w-72 px-3 py-1.5 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-brand-500">
-                        <div class="flex space-x-1 text-[11px]">
-                            <button onclick="filterAdminProductStatus('All')" class="px-3 py-1 bg-gray-100 text-gray-800 rounded-lg font-bold">All</button>
-                            <button onclick="filterAdminProductStatus('Published')" class="px-3 py-1 text-gray-500 rounded-lg">Published</button>
-                            <button onclick="filterAdminProductStatus('Low Stock')" class="px-3 py-1 text-gray-500 rounded-lg">Low Stock</button>
+                        <div class="relative w-full md:w-72">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-[11px]"></i></span>
+                            <input type="text" id="admin-search-inventory" oninput="renderAdminInventory()" placeholder="Search products..." class="w-full pl-8 pr-3 py-1.5 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-brand-500">
                         </div>
+                        <button onclick="filterLowStock()" id="low-stock-filter-btn" class="border border-gray-200 px-3 py-1.5 rounded-xl text-xs text-gray-600 font-medium hover:bg-gray-50">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-500 mr-1"></i> Low Stock Alert
+                        </button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs">
                             <thead>
                                 <tr class="text-gray-400 border-b border-gray-100 text-[10px] bg-gray-50/50">
                                     <th class="p-3">Product Name</th>
-                                    <th class="p-3">SKU & Date</th>
-                                    <th class="p-3">Price</th>
+                                    <th class="p-3">SKU</th>
+                                    <th class="p-3">Category</th>
                                     <th class="p-3">Stock</th>
-                                    <th class="p-3">Status</th>
+                                    <th class="p-3">Reorder Pt</th>
+                                    <th class="p-3">Price</th>
                                     <th class="p-3 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="admin-products-table-body" class="divide-y divide-gray-50 text-[11px]"></tbody>
+                            <tbody id="admin-inventory-table-body" class="divide-y divide-gray-50 text-[11px]"></tbody>
                         </table>
                     </div>
                 </div>
@@ -218,16 +194,10 @@
                 <div id="admin-orders-full-list" class="space-y-2 max-h-96 overflow-y-auto text-xs"></div>
             </div>
 
-            <!-- SECTION: INVENTORY -->
-            <div id="admin-sec-inventory" class="hidden space-y-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
-                <h4 class="font-bold text-xs text-gray-900">Stock Management & Alerts</h4>
-                <div id="admin-inventory-list" class="space-y-2 max-h-96 overflow-y-auto text-xs"></div>
-            </div>
-
             <!-- SECTION: BANNER MANAGER -->
             <div id="admin-sec-promotions" class="hidden space-y-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
                 <div class="space-y-2">
-                    <h4 class="font-bold text-xs text-gray-900">Create or Edit Banner (Auto-closes in 10s on App Load)</h4>
+                    <h4 class="font-bold text-xs text-gray-900">Create or Edit Customer Pop-up Banner</h4>
                     <input type="hidden" id="cust-promo-id" value="">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
                         <input type="text" id="cust-promo-tag" placeholder="Tag (e.g. Special Offer)" class="border border-gray-200 rounded-xl px-3 py-1.5">
@@ -236,13 +206,13 @@
                         <input type="text" id="cust-promo-code" placeholder="Coupon Code (e.g. PINK10)" class="border border-gray-200 rounded-xl px-3 py-1.5 uppercase">
                     </div>
                     <div class="flex space-x-2">
-                        <button onclick="saveAdminBannerSettings()" class="bg-brand-500 text-white text-xs px-4 py-2 rounded-xl font-medium shadow-xs">Save Banner & Activate Live ✨</button>
+                        <button onclick="saveAdminBannerSettings()" class="bg-brand-500 text-white text-xs px-4 py-2 rounded-xl font-medium shadow-xs">Save Banner & Publish Live ✨</button>
                         <button onclick="clearBannerForm()" class="bg-gray-100 text-gray-600 text-xs px-3 py-2 rounded-xl font-medium">Clear Form</button>
                     </div>
                 </div>
                 <hr class="border-gray-100 my-2">
                 <div class="space-y-2">
-                    <h4 class="font-bold text-xs text-gray-900">Banner Update History (Database)</h4>
+                    <h4 class="font-bold text-xs text-gray-900">Banner History (Database Log)</h4>
                     <div id="admin-banner-history-list" class="space-y-2 max-h-60 overflow-y-auto text-xs"></div>
                 </div>
             </div>
@@ -265,7 +235,7 @@
                     <span id="view-prod-price" class="font-bold text-sm text-brand-600">$0.00</span>
                 </div>
                 <p id="view-prod-sku" class="text-[10px] text-gray-400 font-mono">SKU: N/A</p>
-                <p id="view-prod-desc" class="text-[11px] text-gray-500 pt-1 leading-relaxed">High-quality accessories and cosmetics crafted for everyday elegance.</p>
+                <p id="view-prod-desc" class="text-[11px] text-gray-500 pt-1 leading-relaxed">High-quality cosmetics and accessories crafted with care.</p>
             </div>
             <div class="flex items-center justify-between border-t border-gray-50 pt-3">
                 <div class="text-[10px] text-gray-400"><span>Stock Status: </span><b id="view-prod-stock" class="text-emerald-600 font-bold">10 available</b></div>
@@ -322,7 +292,7 @@
             <input type="hidden" id="prod-id" value="">
             <div class="space-y-2">
                 <input type="text" id="prod-name" placeholder="Product Name" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                <input type="text" id="prod-sku" placeholder="SKU Code (e.g. KMI662266)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 uppercase">
+                <input type="text" id="prod-sku" placeholder="SKU Code (e.g. DAIRY-001)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 uppercase">
                 <select id="prod-category" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 bg-white">
                     <option value="Hairpins">Hairpins 🎀</option>
                     <option value="Cosmetics">Cosmetics 💄</option>
@@ -331,6 +301,7 @@
                 </select>
                 <input type="number" step="0.01" id="prod-price" placeholder="Price ($)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
                 <input type="number" id="prod-stock" placeholder="Stock Quantity" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
+                <input type="number" id="prod-reorder" placeholder="Reorder Point (e.g. 15)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5" value="10">
                 <input type="text" id="prod-image" placeholder="Image URL (.jpg / .png)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
             </div>
             <button onclick="saveAdminProduct()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-xs">Save Product</button>
@@ -421,7 +392,6 @@
             snapshot.forEach(docSnap => window.products.push({ id: docSnap.id, ...docSnap.data() }));
             if (window.products.length === 0) seedFullCatalog(db);
             if (window.renderProducts) window.renderProducts();
-            if (window.renderAdminProducts) window.renderAdminProducts();
             if (window.renderAdminInventory) window.renderAdminInventory();
         });
 
@@ -429,11 +399,10 @@
             window.orders = [];
             snapshot.forEach(docSnap => window.orders.push({ docId: docSnap.id, ...docSnap.data() }));
             if (window.renderAdminOrders) window.renderAdminOrders();
-            if (window.renderAdminProducts) window.renderAdminProducts();
             if (window.renderCustomerOrders) window.renderCustomerOrders();
         });
 
-        // ACTIVE BANNER WITH 10-SECOND AUTO CLOSE TIMER
+        // ACTIVE BANNER SYNC (POPUP ONLY SHOWS FOR CUSTOMERS, AUTO-CLOSES IN 10s)
         let popupTimerInterval = null;
         onSnapshot(doc(db, "settings", "banner"), (docSnap) => {
             const popup = document.getElementById('promo-popup');
@@ -451,7 +420,9 @@
             document.getElementById('promo-desc-text').innerText = desc;
             document.getElementById('promo-code-text').innerText = code;
 
-            if (popup) {
+            // Only display popup banner if NOT in admin mode
+            const isAdminMode = !document.getElementById('admin-view').classList.contains('hidden');
+            if (popup && !isAdminMode) {
                 popup.classList.remove('hidden');
                 startPopupAutoCloseTimer();
             }
@@ -548,10 +519,11 @@
         window.saveAdminProduct = async function() {
             const prodId = document.getElementById('prod-id').value;
             const name = document.getElementById('prod-name').value;
-            const sku = document.getElementById('prod-sku').value.trim() || `KMI${Math.floor(100000 + Math.random() * 900000)}`;
+            const sku = document.getElementById('prod-sku').value.trim() || `SKU-${Math.floor(1000 + Math.random() * 9000)}`;
             const category = document.getElementById('prod-category').value;
             const price = parseFloat(document.getElementById('prod-price').value);
             const stock = parseInt(document.getElementById('prod-stock').value);
+            const reorder = parseInt(document.getElementById('prod-reorder').value) || 10;
             const image = document.getElementById('prod-image').value.trim() || 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
 
             if (!name || isNaN(price)) return alert('Please enter valid product details.');
@@ -559,6 +531,7 @@
             const productData = {
                 name, sku, category, price,
                 stock: isNaN(stock) ? 10 : stock,
+                reorderPt: isNaN(reorder) ? 10 : reorder,
                 image, isPublished: true, updatedAt: new Date().toISOString()
             };
 
@@ -568,7 +541,7 @@
             } else {
                 productData.createdAt = new Date().toISOString();
                 await addDoc(collection(db, "products"), productData);
-                postToTelegramChannel(image, `<b>✨ NEW ARRIVAL AT SONG SA SHOP! ✨</b>\n\n<b>${name}</b>\n🏷️ Category: ${category}\n🔢 SKU: <code>${sku}</code>\n💰 Price: <b>$${price.toFixed(2)}</b>\n📦 In Stock: ${productData.stock}\n\n🛍️ <i>Shop now in our Telegram Mini App!</i>`);
+                postToTelegramChannel(image, `<b>✨ NEW ARRIVAL AT SONG SA SHOP! ✨</b>\n\n<b>${name}</b>\n🏷️ Category: ${category}\n🔢 SKU: <code>${sku}</code>\n💰 Price: <b>$${price.toFixed(2)}</b>\n📦 Stock: ${productData.stock}\n\n🛍️ <i>Shop now in our Telegram Mini App!</i>`);
                 alert('New product saved & posted to @songsashop! 🎉');
             }
             closeAdminProductModal();
@@ -599,8 +572,6 @@
             await setDoc(doc(db, "settings", "banner"), { ...bannerData, bannerId: docId, active: true });
             postToTelegramChannel("https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80", `<b>🎉 NEW PROMOTION! 🎉</b>\n\n<b>${title}</b> (${tag})\n${desc}\n\n🎟️ Code: <b>${code}</b>`);
             clearBannerForm();
-            document.getElementById('promo-popup').classList.remove('hidden');
-            startPopupAutoCloseTimer();
             alert("Banner saved & published live! ✨");
         };
 
@@ -608,8 +579,6 @@
             const b = window.banners.find(item => item.id === id);
             if (!b) return;
             await setDoc(doc(db, "settings", "banner"), { tag: b.tag, title: b.title, desc: b.desc, code: b.code, bannerId: id, active: true, renewedAt: new Date().toISOString() });
-            document.getElementById('promo-popup').classList.remove('hidden');
-            startPopupAutoCloseTimer();
             alert(`Banner "${b.title}" renewed! ✨`);
         };
 
@@ -656,7 +625,7 @@
             }
 
             await addDoc(collection(db, "orders"), {
-                orderNum: `#KMI${Math.floor(100000 + Math.random() * 900000)}`,
+                orderNum: `#SONG${Math.floor(100000 + Math.random() * 900000)}`,
                 userId: window.currentUser ? window.currentUser.uid : 'guest',
                 customer: name, phone, address, total: sub, status: 'In Progress', 
                 date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -670,8 +639,10 @@
 
         async function seedFullCatalog(db) {
             const catalog = [
-                { name: 'Airpods Pro Max 2024', sku: 'KMI662266', category: 'Accessories', price: 10120.00, stock: 120, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
-                { name: 'Nike New Model Shoes', sku: 'KMI662211', category: 'Bags', price: 10120.00, stock: 10, image: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&q=80' }
+                { name: 'Organic Whole Milk (1 Gal)', sku: 'DAIRY-001', category: 'Hairpins', price: 5.99, stock: 42, reorderPt: 20, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
+                { name: 'Free-Range Eggs (Dozen)', sku: 'DAIRY-002', category: 'Cosmetics', price: 4.99, stock: 8, reorderPt: 15, image: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&q=80' },
+                { name: 'Sourdough Bread Loaf', sku: 'BAKERY-001', category: 'Accessories', price: 6.49, stock: 18, reorderPt: 10, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' },
+                { name: 'Baby Spinach (5oz bag)', sku: 'PRODUCE-002', category: 'Bags', price: 3.49, stock: 3, reorderPt: 15, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' }
             ];
             for (let item of catalog) await addDoc(collection(db, "products"), { ...item, isPublished: true });
         }
@@ -681,7 +652,7 @@
     <script>
         const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
         window.products = []; window.orders = []; window.banners = [];
-        let cart = []; let wishlist = []; let activeCategory = 'All'; let adminProductFilter = 'All';
+        let cart = []; let wishlist = []; let activeCategory = 'All'; let lowStockFilterActive = false;
 
         function closePromoPopup() {
             if (popupTimerInterval) clearInterval(popupTimerInterval);
@@ -749,7 +720,7 @@
                             <div class="flex justify-between items-center pt-1 border-t border-gray-100">
                                 <span class="text-[9px] text-gray-400">${b.updatedAt ? new Date(b.updatedAt).toLocaleDateString() : ''}</span>
                                 <div class="space-x-1 text-[10px]">
-                                    <button onclick="renewBanner('${b.id}')" class="bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded font-bold">Renew Live</button>
+                                    <button onclick="renewBanner('${b.id}')" class="bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded font-bold">Publish Live</button>
                                     <button onclick="editBanner('${b.id}')" class="bg-white border border-gray-200 text-gray-700 px-2 py-0.5 rounded">Edit</button>
                                     <button onclick="deleteBannerHistory('${b.id}')" class="bg-red-50 text-red-600 px-2 py-0.5 rounded">Delete</button>
                                 </div>
@@ -856,18 +827,20 @@
                 document.getElementById('prod-id').value = p.id;
                 document.getElementById('prod-name').value = p.name || '';
                 document.getElementById('prod-sku').value = p.sku || '';
-                document.getElementById('prod-category').value = p.category || 'Accessories';
+                document.getElementById('prod-category').value = p.category || 'Hairpins';
                 document.getElementById('prod-price').value = p.price || '';
                 document.getElementById('prod-stock').value = p.stock || 10;
+                document.getElementById('prod-reorder').value = p.reorderPt || 10;
                 document.getElementById('prod-image').value = p.image || '';
             } else {
                 document.getElementById('product-modal-title').innerText = "Add Product to Database";
                 document.getElementById('prod-id').value = '';
                 document.getElementById('prod-name').value = '';
                 document.getElementById('prod-sku').value = '';
-                document.getElementById('prod-category').value = 'Accessories';
+                document.getElementById('prod-category').value = 'Hairpins';
                 document.getElementById('prod-price').value = '';
                 document.getElementById('prod-stock').value = '10';
+                document.getElementById('prod-reorder').value = '10';
                 document.getElementById('prod-image').value = '';
             }
             document.getElementById('admin-product-modal').classList.remove('hidden');
@@ -879,7 +852,9 @@
             document.getElementById('customer-view').classList.add('hidden');
             document.getElementById('admin-view').classList.remove('hidden');
             document.getElementById('customer-nav').classList.add('hidden');
-            switchAdminNav('products');
+            // Ensure pop-up banner is hidden for admins
+            document.getElementById('promo-popup').classList.add('hidden');
+            switchAdminNav('inventory');
         }
 
         function exitAdminMode() {
@@ -890,68 +865,66 @@
         }
 
         function switchAdminNav(sec) {
-            ['products', 'orders', 'inventory', 'promotions'].forEach(s => {
+            ['inventory', 'orders', 'promotions'].forEach(s => {
                 document.getElementById(`admin-sec-${s}`).classList.add('hidden');
                 document.getElementById(`adtab-${s}`).className = 'px-4 py-2 border-b-2 border-transparent text-gray-500 font-semibold';
             });
             document.getElementById(`admin-sec-${sec}`).classList.remove('hidden');
             document.getElementById(`adtab-${sec}`).className = 'px-4 py-2 border-b-2 border-brand-500 text-brand-600 font-semibold';
-            if (sec === 'products') renderAdminProducts();
-            if (sec === 'orders') renderAdminOrders();
             if (sec === 'inventory') renderAdminInventory();
+            if (sec === 'orders') renderAdminOrders();
             if (sec === 'promotions') renderBannerHistory();
         }
 
-        function filterAdminProductStatus(status) {
-            adminProductFilter = status;
-            renderAdminProducts();
+        function filterLowStock() {
+            lowStockFilterActive = !lowStockFilterActive;
+            const btn = document.getElementById('low-stock-filter-btn');
+            if (lowStockFilterActive) {
+                btn.className = "border border-brand-500 bg-brand-50 px-3 py-1.5 rounded-xl text-xs text-brand-600 font-bold";
+            } else {
+                btn.className = "border border-gray-200 px-3 py-1.5 rounded-xl text-xs text-gray-600 font-medium hover:bg-gray-50";
+            }
+            renderAdminInventory();
         }
 
-        // FIGMA-STYLED PRODUCTION ADMIN PRODUCTS TABLE & METRICS
-        window.renderAdminProducts = function() {
-            const rev = window.orders.reduce((sum, o) => sum + Number(o.total || 0), 0);
-            document.getElementById('stat-total-revenue').innerText = `$${rev.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-            document.getElementById('stat-total-products').innerText = window.products.length;
-            document.getElementById('stat-total-orders').innerText = window.orders.length;
-
-            const tbody = document.getElementById('admin-products-table-body');
+        // STOCK CONTROL INVENTORY TABLE MATCHING REFERENCE
+        window.renderAdminInventory = function() {
+            const tbody = document.getElementById('admin-inventory-table-body');
             if (!tbody) return;
 
-            const searchVal = document.getElementById('admin-search-products').value.toLowerCase();
-            let filtered = window.products.filter(p => 
-                (p.name.toLowerCase().includes(searchVal) || (p.sku && p.sku.toLowerCase().includes(searchVal))) &&
-                (adminProductFilter === 'All' || (adminProductFilter === 'Published' && p.isPublished) || (adminProductFilter === 'Low Stock' && (p.stock ?? 10) < 5))
-            );
+            const searchVal = document.getElementById('admin-search-inventory').value.toLowerCase();
+            let filtered = window.products.filter(p => {
+                const matchesSearch = p.name.toLowerCase().includes(searchVal) || (p.sku && p.sku.toLowerCase().includes(searchVal));
+                const stockVal = p.stock ?? 10;
+                const reorderVal = p.reorderPt ?? 10;
+                const isLow = stockVal <= reorderVal;
+                if (lowStockFilterActive && !isLow) return false;
+                return matchesSearch;
+            });
 
-            tbody.innerHTML = filtered.length === 0 ? `<tr><td colspan="6" class="p-4 text-center text-gray-400">No products found.</td></tr>` :
+            tbody.innerHTML = filtered.length === 0 ? `<tr><td colspan="7" class="p-4 text-center text-gray-400">No inventory products found.</td></tr>` :
                 filtered.map(p => {
                     const stockVal = p.stock ?? 10;
-                    let statusBadge = stockVal === 0 ? 
-                        `<span class="bg-amber-100 text-amber-700 font-bold px-2 py-0.5 rounded-full text-[9px]">out Stock</span>` :
-                        `<span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-full text-[9px]">Published</span>`;
+                    const reorderVal = p.reorderPt ?? 10;
+                    const isLow = stockVal <= reorderVal;
                     
                     return `
                         <tr class="hover:bg-gray-50/50">
                             <td class="p-3 flex items-center space-x-2">
                                 <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-8 h-8 rounded-lg object-cover">
-                                <div>
-                                    <b class="text-gray-900">${p.name}</b>
-                                    <p class="text-[10px] text-gray-400">${p.category}</p>
-                                </div>
+                                <b class="text-gray-900">${p.name}</b>
                             </td>
-                            <td class="p-3">
-                                <span class="font-mono font-medium">#${p.sku || 'KMI662266'}</span>
-                                <p class="text-[10px] text-gray-400">${p.createdAt ? new Date(p.createdAt).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) : 'Jan 01, 2026'}</p>
+                            <td class="p-3 font-mono font-medium">${p.sku || 'SKU-001'}</td>
+                            <td class="p-3"><span class="bg-gray-100 px-2 py-0.5 rounded text-gray-600">${p.category || 'General'}</span></td>
+                            <td class="p-3 font-bold">
+                                ${stockVal} 
+                                ${isLow ? `<span class="text-red-500 ml-1" title="Low stock warning!">⚠️</span>` : ''}
                             </td>
-                            <td class="p-3">
-                                <b class="text-gray-900">$${Number(p.price || 0).toFixed(2)}</b>
-                                <p class="text-[10px] text-gray-400">Sell Price</p>
-                            </td>
-                            <td class="p-3 font-medium">${stockVal},120</td>
-                            <td class="p-3">${statusBadge}</td>
+                            <td class="p-3 text-gray-500">${reorderVal}</td>
+                            <td class="p-3 font-bold text-gray-900">$${Number(p.price || 0).toFixed(2)}</td>
                             <td class="p-3 text-right space-x-1">
-                                <button onclick="openProductModal('${p.id}')" class="bg-white border border-gray-200 text-gray-700 px-2.5 py-1 rounded-lg font-medium">Edit</button>
-                                <button onclick="deleteProduct('${p.id}')" class="bg-red-50 text-red-600 px-2.5 py-1 rounded-lg font-medium">Delete</button>
+                                <button onclick="openProductModal('${p.id}')" class="bg-white border border-gray-200 text-gray-700 px-2 py-1 rounded font-medium">Edit</button>
+                                <button onclick="deleteProduct('${p.id}')" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-xmark"></i></button>
                             </td>
                         </tr>
                     `;
@@ -976,18 +949,6 @@
                         </div>
                     </div>
                 `).join('');
-        };
-
-        window.renderAdminInventory = function() {
-            document.getElementById('admin-inventory-list').innerHTML = window.products.map(p => `
-                <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 text-xs flex justify-between items-center">
-                    <span><b>${p.name}</b> <span class="text-gray-400">(SKU: ${p.sku || 'N/A'})</span></span>
-                    <div class="flex items-center space-x-2">
-                        <span class="font-bold px-2 py-0.5 rounded text-[10px] ${(p.stock ?? 10) < 5 ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}">Stock: ${p.stock ?? 10}</span>
-                        <button onclick="updateProductStock('${p.id}', ${p.stock ?? 10})" class="bg-white border border-gray-200 px-2 py-0.5 rounded font-medium">Update Stock</button>
-                    </div>
-                </div>
-            `).join('');
         };
     </script>
 </body>
