@@ -24,7 +24,7 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased pb-24 select-none">
 
-    <!-- PROMOTIONAL POPUP BANNER (ONLY FOR CUSTOMERS - Auto-closes in 10s) -->
+    <!-- PROMOTIONAL POPUP BANNER (AUTOMATIC ON OPEN - AUTO-CLOSES IN 10s) -->
     <div id="promo-popup" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300 hidden">
         <div class="bg-white text-gray-900 rounded-2xl max-w-xs w-full p-5 space-y-3 shadow-xl relative text-center border border-gray-100">
             <button onclick="closePromoPopup()" class="absolute top-2.5 right-2.5 text-gray-400 hover:text-gray-600 w-6 h-6 rounded-full flex items-center justify-center text-xs">
@@ -162,8 +162,8 @@
             <div id="admin-sec-orders" class="space-y-4">
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden p-4 space-y-4">
                     <div class="space-y-1">
-                        <h2 class="text-sm font-bold text-gray-900">Orders Management[cite: 3]</h2>
-                        <p class="text-[11px] text-gray-400">Track and manage all customer orders[cite: 3]</p>
+                        <h2 class="text-sm font-bold text-gray-900">Orders Management</h2>
+                        <p class="text-[11px] text-gray-400">Track and manage all customer orders</p>
                     </div>
                     <div class="flex flex-col md:flex-row justify-between items-center gap-3 bg-gray-50/60 p-3 rounded-2xl">
                         <div class="relative w-full md:w-72">
@@ -459,7 +459,6 @@
 
         let popupTimerInterval = null;
         onSnapshot(doc(db, "settings", "banner"), (docSnap) => {
-            const popup = document.getElementById('promo-popup');
             let tag = "Special Offer", title = "Get 30% OFF Your Order!", desc = "Use code PINK10 at checkout.", code = "PINK10";
             if (docSnap.exists()) {
                 const b = docSnap.data();
@@ -475,6 +474,7 @@
             document.getElementById('promo-code-text').innerText = code;
 
             const isAdminMode = !document.getElementById('admin-view').classList.contains('hidden');
+            const popup = document.getElementById('promo-popup');
             if (popup && !isAdminMode) {
                 popup.classList.remove('hidden');
                 startPopupAutoCloseTimer();
@@ -536,23 +536,32 @@
             } catch (err) { alert('Sign Up Failed: ' + err.message); }
         };
 
+        // TELEGRAM SIGN-IN WITH EXISTING ACCOUNT CHECK
         window.handleTelegramSignIn = async function() {
             try {
                 const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-                const tgId = tgUser ? `tg_${tgUser.id}` : "tg_" + Math.floor(100000 + Math.random() * 900000);
+                const tgId = tgUser ? `tg_${tgUser.id}` : "tg_demo";
                 const tgName = tgUser ? `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() : "Telegram Shopper";
                 const tgEmail = tgUser?.username ? `${tgUser.username}@telegram.org` : `${tgId}@telegram.org`;
 
-                await setDoc(doc(db, "users", tgId), {
-                    uid: tgId, name: tgName, email: tgEmail, role: "customer", authProvider: "telegram", createdAt: new Date().toISOString()
-                }, { merge: true });
+                // Check if user already exists in database
+                const userRef = doc(db, "users", tgId);
+                const userSnap = await getDoc(userRef);
 
-                alert('Telegram account saved! ✨');
-                document.getElementById('session-user-badge').innerText = tgName;
+                if (!userSnap.exists()) {
+                    alert('No existing account found with Telegram!\n\nPlease sign up with your Email first before logging in.');
+                    switchAuthTab('signup');
+                    return;
+                }
+
+                // If user exists, complete login
+                const userData = userSnap.data();
+                alert(`Welcome back, ${userData.name || tgName}! ✨`);
+                document.getElementById('session-user-badge').innerText = userData.name || tgName;
                 document.getElementById('profile-auth-box').classList.add('hidden');
                 document.getElementById('customer-dashboard-view').classList.remove('hidden');
-                document.getElementById('cust-profile-name').innerText = tgName;
-                document.getElementById('cust-profile-email').innerText = tgEmail;
+                document.getElementById('cust-profile-name').innerText = userData.name || tgName;
+                document.getElementById('cust-profile-email').innerText = userData.email || tgEmail;
             } catch (err) { alert('Telegram Sign In Error: ' + err.message); }
         };
 
