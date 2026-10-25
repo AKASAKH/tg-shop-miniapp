@@ -28,7 +28,7 @@
 <body class="bg-gray-50 text-gray-800 font-sans antialiased pb-24 select-none">
 
     <!-- PROMOTIONAL POPUP BANNER -->
-    <div id="promo-popup" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300 hidden">
+    <div id="promo-popup" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300">
         <div class="bg-white text-gray-900 rounded-2xl max-w-xs w-full p-5 space-y-3 shadow-xl relative text-center border border-gray-100">
             <button onclick="closePromoPopup()" class="absolute top-2.5 right-2.5 text-gray-400 hover:text-gray-600 w-6 h-6 rounded-full flex items-center justify-center text-xs">
                 <i class="fa-solid fa-xmark"></i>
@@ -391,8 +391,11 @@
         // TELEGRAM BOT API CREDENTIALS FOR AUTO-POSTING TO @songsashop CHANNEL
         const TELEGRAM_BOT_TOKEN = "8799522797:AAG5hhzhfDjXxftdlkJ7zVgcDQqhV7hR-4k";
         const TELEGRAM_CHANNEL_ID = "@songsashop";
+        
+        // DIRECT MINI APP URL FOR TELEGRAM CHANNEL BUTTON (Replace with your actual Bot/MiniApp link if needed, e.g. https://t.me/your_bot/app)
+        const TELEGRAM_MINIAPP_URL = "https://t.me/songsashop"; 
 
-        // Helper function to send broadcast posts to Telegram Channel
+        // Helper function to send broadcast posts to Telegram Channel with Mini App Button
         async function postToTelegramChannel(photoUrl, captionText) {
             try {
                 const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
@@ -406,7 +409,7 @@
                         parse_mode: 'HTML',
                         reply_markup: {
                             inline_keyboard: [
-                                [{ text: "Shop Now 🛍️", url: "https://t.me/songsashop" }]
+                                [{ text: "Shop Now 🛍️", url: TELEGRAM_MINIAPP_URL }]
                             ]
                         }
                     })
@@ -477,7 +480,7 @@
             if (window.renderCustomerOrders) window.renderCustomerOrders();
         });
 
-        // REAL-TIME SYNC: ACTIVE BANNER (FORCED VISIBILITY WITH DEFAULTS)
+        // REAL-TIME SYNC: ACTIVE BANNER (FORCED VISIBILITY ON OPEN)
         onSnapshot(doc(db, "settings", "banner"), (docSnap) => {
             const popup = document.getElementById('promo-popup');
             
@@ -501,7 +504,7 @@
             document.getElementById('promo-code-text').innerText = code;
 
             if (popup) {
-                popup.classList.remove('hidden');
+                popup.classList.remove('hidden'); // Force popup open on load
             }
 
             if (window.renderBannerHistory) window.renderBannerHistory();
@@ -577,7 +580,6 @@
             }
         };
 
-        // SIGN OUT & IMMEDIATE REDIRECT TO HOME STOREFRONT
         window.handleSignOut = async function() {
             try {
                 await signOut(auth);
@@ -594,7 +596,6 @@
             }
         };
 
-        // SAVE PRODUCT & AUTO-POST NEW ARRIVALS TO TELEGRAM CHANNEL
         window.saveAdminProduct = async function() {
             const prodId = document.getElementById('prod-id').value;
             const name = document.getElementById('prod-name').value;
@@ -621,7 +622,6 @@
                 productData.createdAt = new Date().toISOString();
                 await addDoc(collection(db, "products"), productData);
                 
-                // AUTO-POST NEW PRODUCT TO TELEGRAM CHANNEL
                 const caption = `<b>✨ NEW ARRIVAL AT SPARKLE & BLOOM! ✨</b>\n\n` +
                                 `<b>${name}</b>\n` +
                                 `🏷️ Category: ${category}\n` +
@@ -644,7 +644,6 @@
             }
         };
 
-        // SAVE BANNER & AUTO-POST PROMOTIONS TO TELEGRAM CHANNEL
         window.saveAdminBannerSettings = async function() {
             const bannerId = document.getElementById('cust-promo-id').value;
             const tag = document.getElementById('cust-promo-tag').value || "Special Offer";
@@ -664,7 +663,6 @@
 
             await setDoc(doc(db, "settings", "banner"), { ...bannerData, bannerId: docId, active: true });
 
-            // AUTO-POST PROMOTION TO TELEGRAM CHANNEL
             const promoCaption = `<b>🎉 NEW SPECIAL PROMOTION! 🎉</b>\n\n` +
                                  `<b>${title}</b> (${tag})\n` +
                                  `${desc}\n\n` +
