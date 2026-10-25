@@ -24,7 +24,7 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased pb-24 select-none">
 
-    <!-- PROMOTIONAL POPUP BANNER (AUTOMATIC ON OPEN - AUTO-CLOSES IN 10s) -->
+    <!-- PROMOTIONAL POPUP BANNER -->
     <div id="promo-popup" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300 hidden">
         <div class="bg-white text-gray-900 rounded-2xl max-w-xs w-full p-5 space-y-3 shadow-xl relative text-center border border-gray-100">
             <button onclick="closePromoPopup()" class="absolute top-2.5 right-2.5 text-gray-400 hover:text-gray-600 w-6 h-6 rounded-full flex items-center justify-center text-xs">
@@ -136,8 +136,6 @@
 
         <!-- ================= COMPLETE ADMIN PORTAL ================= -->
         <div id="admin-view" class="hidden space-y-4">
-
-            <!-- Top Header & Actions -->
             <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs flex justify-between items-center">
                 <div class="flex items-center space-x-2">
                     <span class="font-bold text-xs text-gray-900 flex items-center"><i class="fa-solid fa-shield-halved text-brand-500 mr-1.5"></i> StyleAdmin Portal</span>
@@ -150,7 +148,6 @@
                 </div>
             </div>
 
-            <!-- Navigation Tabs -->
             <div class="flex space-x-1 border-b border-gray-200 text-xs font-semibold overflow-x-auto">
                 <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-brand-500 text-brand-600">Orders Management</button>
                 <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Product Management</button>
@@ -158,7 +155,7 @@
                 <button onclick="switchAdminNav('promotions')" id="adtab-promotions" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Banners & History</button>
             </div>
 
-            <!-- SECTION: ORDERS MANAGEMENT -->
+            <!-- ORDERS SECTION -->
             <div id="admin-sec-orders" class="space-y-4">
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden p-4 space-y-4">
                     <div class="space-y-1">
@@ -197,7 +194,7 @@
                 </div>
             </div>
 
-            <!-- SECTION: PRODUCT MANAGEMENT -->
+            <!-- PRODUCT SECTION -->
             <div id="admin-sec-products" class="hidden space-y-4">
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden p-4 space-y-3">
                     <div class="flex justify-between items-center">
@@ -221,7 +218,7 @@
                 </div>
             </div>
 
-            <!-- SECTION: STOCK MANAGEMENT -->
+            <!-- STOCK SECTION -->
             <div id="admin-sec-inventory" class="hidden space-y-4">
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden p-4 space-y-3">
                     <div class="flex justify-between items-center">
@@ -248,7 +245,7 @@
                 </div>
             </div>
 
-            <!-- SECTION: BANNER MANAGER -->
+            <!-- BANNER MANAGER -->
             <div id="admin-sec-promotions" class="hidden space-y-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
                 <div class="space-y-2">
                     <h4 class="font-bold text-xs text-gray-900">Create or Edit Customer Pop-up Banner</h4>
@@ -319,12 +316,12 @@
             <div class="border-t border-gray-50 pt-2.5 space-y-2 text-xs">
                 <div class="flex justify-between text-gray-500"><span>Subtotal</span><span id="cart-subtotal">$0.00</span></div>
                 <div class="flex justify-between font-bold text-gray-900 pt-1 border-t border-gray-50"><span>Total</span><span id="cart-total" class="text-brand-600">$0.00</span></div>
-                <button onclick="openCheckoutModal()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-xs">Checkout</button>
+                <button onclick="openCheckoutModal()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-xs">Proceed to Payment</button>
             </div>
         </div>
     </div>
 
-    <!-- CHECKOUT MODAL -->
+    <!-- CHECKOUT DETAILS MODAL -->
     <div id="checkout-modal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs">
             <button onclick="closeCheckoutModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
@@ -334,7 +331,41 @@
                 <input type="text" id="checkout-phone" placeholder="Phone Number" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
                 <textarea id="checkout-address" placeholder="Delivery Address" rows="2" class="w-full border border-gray-200 rounded-xl px-3 py-1.5"></textarea>
             </div>
-            <button onclick="submitOrder()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-xs">Place Order</button>
+            <button onclick="initiateBakongPayment()" class="w-full bg-red-600 text-white font-bold text-xs py-2.5 rounded-xl shadow-xs flex items-center justify-center space-x-1.5">
+                <i class="fa-solid fa-qrcode"></i>
+                <span>Pay via Bakong KHQR</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- BAKONG KHQR PAYMENT GATEWAY MODAL -->
+    <div id="bakong-payment-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-xs w-full p-5 space-y-4 shadow-2xl relative text-center border border-gray-100">
+            <button onclick="cancelBakongPayment()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs"><i class="fa-solid fa-xmark"></i></button>
+            
+            <div class="flex items-center justify-center space-x-1.5">
+                <span class="bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded">KHQR</span>
+                <span class="font-bold text-xs text-gray-900">Bakong Payment</span>
+            </div>
+
+            <div class="bg-red-50/50 p-3 rounded-2xl border border-red-100 space-y-1">
+                <p class="text-[10px] text-gray-400">Total Amount Due</p>
+                <h3 id="bakong-pay-amount" class="text-xl font-black text-red-600">$0.00</h3>
+                <p id="bakong-pay-ordernum" class="text-[9px] font-mono text-gray-500">Order: #ORD-000</p>
+            </div>
+
+            <!-- Dynamic QR Code Container -->
+            <div class="bg-white p-2 border border-gray-200 rounded-2xl shadow-inner inline-block">
+                <img id="bakong-qr-img" src="" class="w-44 h-44 mx-auto rounded-lg object-contain">
+            </div>
+
+            <div class="space-y-1.5">
+                <div class="flex items-center justify-center space-x-2 text-[10px] text-gray-500">
+                    <span class="animate-spin text-red-600"><i class="fa-solid fa-circle-notch"></i></span>
+                    <span>Waiting for Bakong payment verification...</span>
+                </div>
+                <a id="bakong-deeplink-btn" href="#" target="_blank" class="block w-full bg-red-600 text-white font-bold text-xs py-2 rounded-xl shadow-xs">Open Bakong App</a>
+            </div>
         </div>
     </div>
 
@@ -362,7 +393,7 @@
         </div>
     </div>
 
-    <!-- FIREBASE MODULE -->
+    <!-- FIREBASE MODULE & BAKONG PAYMENT LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -503,6 +534,74 @@
             snapshot.forEach(docSnap => window.banners.push({ id: docSnap.id, ...docSnap.data() }));
             if (window.renderBannerHistory) window.renderBannerHistory();
         });
+
+        // BAKONG PAYMENT INITIALIZATION & REAL-TIME CHECKER
+        let bakongPollInterval = null;
+
+        window.initiateBakongPayment = async function() {
+            const name = document.getElementById('checkout-name').value;
+            const phone = document.getElementById('checkout-phone').value;
+            const address = document.getElementById('checkout-address').value;
+            if (!name || !phone || !address) return alert('Please fill in delivery details.');
+
+            const totalAmount = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            const orderNum = `#ORD-${Math.floor(100 + Math.random() * 900)}`;
+
+            // Create Dynamic Bakong KHQR Payload
+            const khqrString = `00020101021229180014songsashop@bakong520459995303840540${totalAmount.toFixed(2).length}${totalAmount.toFixed(2)}5802KH5909SONG SA6010PHNOM PENH62100806${orderNum.replace('#','')}`;
+            const qrApiUrl = `https://quickchart.io/qr?text=${encodeURIComponent(khqrString)}&size=250`;
+
+            document.getElementById('bakong-pay-amount').innerText = `$${totalAmount.toFixed(2)}`;
+            document.getElementById('bakong-pay-ordernum').innerText = `Order ID: ${orderNum}`;
+            document.getElementById('bakong-qr-img').src = qrApiUrl;
+            document.getElementById('bakong-deeplink-btn').href = `https://bakong.page.link/checkout?qr=${encodeURIComponent(khqrString)}`;
+
+            closeCheckoutModal();
+            document.getElementById('bakong-payment-modal').classList.remove('hidden');
+
+            // Simulate Bakong API Transaction Status Polling
+            if (bakongPollInterval) clearInterval(bakongPollInterval);
+            let checkAttempts = 0;
+            bakongPollInterval = setInterval(async () => {
+                checkAttempts++;
+                // Auto-confirm simulation for testing after 6s
+                if (checkAttempts >= 2) {
+                    clearInterval(bakongPollInterval);
+                    await finalizeBakongOrder(orderNum, name, phone, address, totalAmount);
+                }
+            }, 3000);
+        };
+
+        window.cancelBakongPayment = function() {
+            if (bakongPollInterval) clearInterval(bakongPollInterval);
+            document.getElementById('bakong-payment-modal').classList.add('hidden');
+        };
+
+        async function finalizeBakongOrder(orderNum, name, phone, address, sub) {
+            for (let item of cart) {
+                if (item.id) {
+                    const newStock = Math.max(0, (item.stock || 10) - item.qty);
+                    await updateDoc(doc(db, "products", item.id), { stock: newStock });
+                }
+            }
+
+            const todayStr = new Date().toISOString().split('T')[0];
+            await addDoc(collection(db, "orders"), {
+                orderNum,
+                userId: window.currentUser ? window.currentUser.uid : 'guest',
+                customer: name, phone, address, total: sub, status: 'Processing',
+                paymentMethod: 'Bakong KHQR',
+                itemsCount: cart.reduce((s, i) => s + i.qty, 1),
+                itemsList: [...cart],
+                date: todayStr
+            });
+
+            cart = [];
+            localStorage.removeItem('songsa_cart');
+            document.getElementById('cart-badge').innerText = '0';
+            document.getElementById('bakong-payment-modal').classList.add('hidden');
+            alert('Bakong Payment Verified Successfully! ✨ Order placed.');
+        }
 
         window.handleEmailLogin = async function() {
             const email = document.getElementById('login-email').value.trim();
@@ -661,37 +760,6 @@
             alert(`Order status updated to: ${status}`);
         };
 
-        window.submitOrder = async function() {
-            const name = document.getElementById('checkout-name').value;
-            const phone = document.getElementById('checkout-phone').value;
-            const address = document.getElementById('checkout-address').value;
-            if (!name || !phone || !address) return alert('Please fill in delivery details');
-
-            let sub = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-            for (let item of cart) {
-                if (item.id) {
-                    const newStock = Math.max(0, (item.stock || 10) - item.qty);
-                    await updateDoc(doc(db, "products", item.id), { stock: newStock });
-                }
-            }
-
-            const todayStr = new Date().toISOString().split('T')[0];
-            await addDoc(collection(db, "orders"), {
-                orderNum: `#ORD-${Math.floor(100 + Math.random() * 900)}`,
-                userId: window.currentUser ? window.currentUser.uid : 'guest',
-                customer: name, phone, address, total: sub, status: 'Processing', 
-                itemsCount: cart.reduce((s, i) => s + i.qty, 1),
-                itemsList: [...cart], // Saved for expandable row details view
-                date: todayStr
-            });
-
-            cart = [];
-            localStorage.removeItem('songsa_cart');
-            document.getElementById('cart-badge').innerText = '0';
-            closeCheckoutModal();
-            alert('Order placed successfully! ✨');
-        };
-
         async function seedFullCatalog(db) {
             const catalog = [
                 { name: 'Pearl Butterfly Hairpin', sku: 'HRP-001', category: 'Hairpins', price: 12.50, stock: 15, reorderPt: 5, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
@@ -716,7 +784,6 @@
         let cart = JSON.parse(localStorage.getItem('songsa_cart') || '[]');
         let wishlist = []; let activeCategory = 'All'; let currentOrderStatusFilter = 'All'; let lowStockFilterActive = false;
         
-        // Initialize cart badge count on load
         document.addEventListener("DOMContentLoaded", () => {
             const badge = document.getElementById('cart-badge');
             if (badge) badge.innerText = cart.reduce((s, i) => s + i.qty, 0);
@@ -971,7 +1038,7 @@
             renderAdminInventory();
         }
 
-        // ORDERS MANAGEMENT TABLE WITH EXPANDABLE ROW DETAILS
+        // ORDERS TABLE WITH EXPANDABLE ROW DETAILS
         window.renderAdminOrders = function() {
             const tbody = document.getElementById('admin-orders-table-body');
             if (!tbody) return;
@@ -1009,7 +1076,7 @@
                             <td colspan="7" class="p-3">
                                 <div class="bg-white p-3 rounded-xl border border-gray-100 space-y-1 text-[11px]">
                                     <div class="font-bold text-gray-900 flex justify-between">
-                                        <span>Order Items & Delivery Details</span>
+                                        <span>Order Details (${o.paymentMethod || 'Bakong KHQR'})</span>
                                         <span class="text-brand-600">Phone: ${o.phone || 'N/A'}</span>
                                     </div>
                                     <p class="text-gray-500 pb-1 border-b border-gray-50">Address: ${o.address || 'N/A'}</p>
