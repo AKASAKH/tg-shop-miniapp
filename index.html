@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Song Sa Shop - Inventory & Store Portal</title>
+    <title>Song Sa Shop - Product & Inventory Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -134,13 +134,13 @@
             </div>
         </div>
 
-        <!-- ================= ADMIN INVENTORY & MANAGEMENT PORTAL ================= -->
+        <!-- ================= ADMIN PORTAL (Product & Inventory Management) ================= -->
         <div id="admin-view" class="hidden space-y-4">
 
             <!-- Top Bar -->
             <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs flex justify-between items-center">
                 <div class="flex items-center space-x-2">
-                    <span class="font-bold text-xs text-gray-900 flex items-center"><i class="fa-solid fa-boxes-stacked text-brand-500 mr-1.5"></i> Song Sa Inventory & Stock Control</span>
+                    <span class="font-bold text-xs text-gray-900 flex items-center"><i class="fa-solid fa-store text-brand-500 mr-1.5"></i> Song Sa Admin Portal</span>
                 </div>
                 <div class="flex items-center space-x-2">
                     <button onclick="openProductModal()" class="bg-brand-500 hover:bg-brand-600 text-white text-xs px-3 py-1.5 rounded-xl font-bold shadow-xs flex items-center space-x-1">
@@ -152,18 +152,44 @@
 
             <!-- Navigation Tabs -->
             <div class="flex space-x-1 border-b border-gray-200 text-xs font-semibold overflow-x-auto">
-                <button onclick="switchAdminNav('inventory')" id="adtab-inventory" class="px-4 py-2 border-b-2 border-brand-500 text-brand-600">Inventory & Stock</button>
+                <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-brand-500 text-brand-600">Product Management</button>
+                <button onclick="switchAdminNav('inventory')" id="adtab-inventory" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Inventory & Stock</button>
                 <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Orders</button>
                 <button onclick="switchAdminNav('promotions')" id="adtab-promotions" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Banners & History</button>
             </div>
 
-            <!-- SECTION: INVENTORY (Stock Control Table matching StockMind UI) -->
-            <div id="admin-sec-inventory" class="space-y-4">
+            <!-- SECTION: PRODUCT MANAGEMENT -->
+            <div id="admin-sec-products" class="space-y-4">
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden">
+                    <div class="p-3 border-b border-gray-100 flex justify-between items-center gap-2">
+                        <input type="text" id="admin-search-products" oninput="renderAdminProducts()" placeholder="Search products in catalog..." class="w-full md:w-72 px-3 py-1.5 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-brand-500">
+                        <span class="text-[11px] text-gray-400 font-medium">Manage catalog details & pricing</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead>
+                                <tr class="text-gray-400 border-b border-gray-100 text-[10px] bg-gray-50/50">
+                                    <th class="p-3">Product Name</th>
+                                    <th class="p-3">SKU</th>
+                                    <th class="p-3">Category</th>
+                                    <th class="p-3">Price</th>
+                                    <th class="p-3">Stock Status</th>
+                                    <th class="p-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-products-table-body" class="divide-y divide-gray-50 text-[11px]"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: INVENTORY & STOCK CONTROL -->
+            <div id="admin-sec-inventory" class="hidden space-y-4">
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden">
                     <div class="p-3 border-b border-gray-100 flex flex-col md:flex-row justify-between items-center gap-2">
                         <div class="relative w-full md:w-72">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-[11px]"></i></span>
-                            <input type="text" id="admin-search-inventory" oninput="renderAdminInventory()" placeholder="Search products..." class="w-full pl-8 pr-3 py-1.5 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-brand-500">
+                            <input type="text" id="admin-search-inventory" oninput="renderAdminInventory()" placeholder="Search stock..." class="w-full pl-8 pr-3 py-1.5 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-brand-500">
                         </div>
                         <button onclick="filterLowStock()" id="low-stock-filter-btn" class="border border-gray-200 px-3 py-1.5 rounded-xl text-xs text-gray-600 font-medium hover:bg-gray-50">
                             <i class="fa-solid fa-triangle-exclamation text-amber-500 mr-1"></i> Low Stock Alert
@@ -292,7 +318,7 @@
             <input type="hidden" id="prod-id" value="">
             <div class="space-y-2">
                 <input type="text" id="prod-name" placeholder="Product Name" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                <input type="text" id="prod-sku" placeholder="SKU Code (e.g. DAIRY-001)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 uppercase">
+                <input type="text" id="prod-sku" placeholder="SKU Code (e.g. SKU-001)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 uppercase">
                 <select id="prod-category" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 bg-white">
                     <option value="Hairpins">Hairpins 🎀</option>
                     <option value="Cosmetics">Cosmetics 💄</option>
@@ -301,7 +327,7 @@
                 </select>
                 <input type="number" step="0.01" id="prod-price" placeholder="Price ($)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
                 <input type="number" id="prod-stock" placeholder="Stock Quantity" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                <input type="number" id="prod-reorder" placeholder="Reorder Point (e.g. 15)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5" value="10">
+                <input type="number" id="prod-reorder" placeholder="Reorder Point (e.g. 10)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5" value="10">
                 <input type="text" id="prod-image" placeholder="Image URL (.jpg / .png)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
             </div>
             <button onclick="saveAdminProduct()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-xs">Save Product</button>
@@ -392,6 +418,7 @@
             snapshot.forEach(docSnap => window.products.push({ id: docSnap.id, ...docSnap.data() }));
             if (window.products.length === 0) seedFullCatalog(db);
             if (window.renderProducts) window.renderProducts();
+            if (window.renderAdminProducts) window.renderAdminProducts();
             if (window.renderAdminInventory) window.renderAdminInventory();
         });
 
@@ -420,7 +447,6 @@
             document.getElementById('promo-desc-text').innerText = desc;
             document.getElementById('promo-code-text').innerText = code;
 
-            // Only display popup banner if NOT in admin mode
             const isAdminMode = !document.getElementById('admin-view').classList.contains('hidden');
             if (popup && !isAdminMode) {
                 popup.classList.remove('hidden');
@@ -639,10 +665,10 @@
 
         async function seedFullCatalog(db) {
             const catalog = [
-                { name: 'Organic Whole Milk (1 Gal)', sku: 'DAIRY-001', category: 'Hairpins', price: 5.99, stock: 42, reorderPt: 20, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
-                { name: 'Free-Range Eggs (Dozen)', sku: 'DAIRY-002', category: 'Cosmetics', price: 4.99, stock: 8, reorderPt: 15, image: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&q=80' },
-                { name: 'Sourdough Bread Loaf', sku: 'BAKERY-001', category: 'Accessories', price: 6.49, stock: 18, reorderPt: 10, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' },
-                { name: 'Baby Spinach (5oz bag)', sku: 'PRODUCE-002', category: 'Bags', price: 3.49, stock: 3, reorderPt: 15, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' }
+                { name: 'Pearl Butterfly Hairpin', sku: 'HRP-001', category: 'Hairpins', price: 12.50, stock: 15, reorderPt: 5, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
+                { name: 'Matte Pink Lipstick', sku: 'COS-001', category: 'Cosmetics', price: 18.90, stock: 20, reorderPt: 8, image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&q=80' },
+                { name: 'Dainty Butterfly Choker', sku: 'ACC-001', category: 'Accessories', price: 15.00, stock: 4, reorderPt: 10, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' },
+                { name: 'Plush Crossbody Bag', sku: 'BAG-001', category: 'Bags', price: 24.99, stock: 12, reorderPt: 5, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' }
             ];
             for (let item of catalog) await addDoc(collection(db, "products"), { ...item, isPublished: true });
         }
@@ -852,9 +878,8 @@
             document.getElementById('customer-view').classList.add('hidden');
             document.getElementById('admin-view').classList.remove('hidden');
             document.getElementById('customer-nav').classList.add('hidden');
-            // Ensure pop-up banner is hidden for admins
             document.getElementById('promo-popup').classList.add('hidden');
-            switchAdminNav('inventory');
+            switchAdminNav('products');
         }
 
         function exitAdminMode() {
@@ -865,12 +890,13 @@
         }
 
         function switchAdminNav(sec) {
-            ['inventory', 'orders', 'promotions'].forEach(s => {
+            ['products', 'inventory', 'orders', 'promotions'].forEach(s => {
                 document.getElementById(`admin-sec-${s}`).classList.add('hidden');
                 document.getElementById(`adtab-${s}`).className = 'px-4 py-2 border-b-2 border-transparent text-gray-500 font-semibold';
             });
             document.getElementById(`admin-sec-${sec}`).classList.remove('hidden');
             document.getElementById(`adtab-${sec}`).className = 'px-4 py-2 border-b-2 border-brand-500 text-brand-600 font-semibold';
+            if (sec === 'products') renderAdminProducts();
             if (sec === 'inventory') renderAdminInventory();
             if (sec === 'orders') renderAdminOrders();
             if (sec === 'promotions') renderBannerHistory();
@@ -887,7 +913,34 @@
             renderAdminInventory();
         }
 
-        // STOCK CONTROL INVENTORY TABLE MATCHING REFERENCE
+        // PRODUCT MANAGEMENT TABLE
+        window.renderAdminProducts = function() {
+            const tbody = document.getElementById('admin-products-table-body');
+            if (!tbody) return;
+
+            const searchVal = document.getElementById('admin-search-products').value.toLowerCase();
+            let filtered = window.products.filter(p => p.name.toLowerCase().includes(searchVal) || (p.sku && p.sku.toLowerCase().includes(searchVal)));
+
+            tbody.innerHTML = filtered.length === 0 ? `<tr><td colspan="6" class="p-4 text-center text-gray-400">No products found in catalog.</td></tr>` :
+                filtered.map(p => `
+                    <tr class="hover:bg-gray-50/50">
+                        <td class="p-3 flex items-center space-x-2">
+                            <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-8 h-8 rounded-lg object-cover">
+                            <b class="text-gray-900">${p.name}</b>
+                        </td>
+                        <td class="p-3 font-mono font-medium">${p.sku || 'SKU-001'}</td>
+                        <td class="p-3"><span class="bg-gray-100 px-2 py-0.5 rounded text-gray-600">${p.category || 'General'}</span></td>
+                        <td class="p-3 font-bold text-gray-900">$${Number(p.price || 0).toFixed(2)}</td>
+                        <td class="p-3"><span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-full text-[9px]">Published</span></td>
+                        <td class="p-3 text-right space-x-1">
+                            <button onclick="openProductModal('${p.id}')" class="bg-white border border-gray-200 text-gray-700 px-2.5 py-1 rounded-lg font-medium">Edit</button>
+                            <button onclick="deleteProduct('${p.id}')" class="bg-red-50 text-red-600 px-2.5 py-1 rounded-lg font-medium">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+        };
+
+        // STOCK CONTROL INVENTORY TABLE
         window.renderAdminInventory = function() {
             const tbody = document.getElementById('admin-inventory-table-body');
             if (!tbody) return;
