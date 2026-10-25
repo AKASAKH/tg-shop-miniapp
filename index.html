@@ -27,7 +27,7 @@
     <!-- PROMOTIONAL POPUP BANNER -->
     <div id="promo-popup" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300 hidden">
         <div class="bg-white text-gray-900 rounded-2xl max-w-xs w-full p-5 space-y-3 shadow-xl relative text-center border border-gray-100">
-            <button onclick="closePromoPopup()" class="absolute top-2.5 right-2.5 text-gray-400 hover:text-gray-600 w-6 h-6 rounded-full flex items-center justify-center text-xs">
+            <button onclick="closePromoPopup()" class="absolute top-2.5 right-2.5 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs">
                 <i class="fa-solid fa-xmark"></i>
             </button>
             <div class="w-10 h-10 bg-brand-50 text-brand-600 rounded-full flex items-center justify-center mx-auto text-base"><i class="fa-solid fa-tag"></i></div>
@@ -37,7 +37,7 @@
                 <p id="promo-desc-text" class="text-[11px] text-gray-500 mt-0.5">Use code <span id="promo-code-text" class="font-bold text-gray-800 underline">PINK10</span> at checkout.</p>
                 <p class="text-[9px] text-gray-400 mt-2">Closing automatically in <span id="popup-timer" class="font-bold">10</span>s</p>
             </div>
-            <button onclick="closePromoPopup()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-xs">Shop Now ✨</button>
+            <button onclick="closePromoPopup()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs active:scale-95 transition-transform">Shop Now ✨</button>
         </div>
     </div>
 
@@ -69,14 +69,14 @@
             <div id="page-shop" class="space-y-3">
                 <div class="relative max-w-md mx-auto">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-[11px]"></i></span>
-                    <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search products..." class="w-full pl-8 pr-3 py-1.5 bg-white border border-gray-200 rounded-xl text-xs shadow-xs focus:outline-none focus:border-brand-500">
+                    <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search products..." class="w-full pl-8 pr-3 py-2 bg-white border border-gray-200 rounded-xl text-xs shadow-xs focus:outline-none focus:border-brand-500">
                 </div>
                 <div class="flex space-x-1.5 overflow-x-auto pb-1 text-[11px] scrollbar-none justify-start md:justify-center">
-                    <button onclick="filterCategory('All')" class="cat-btn bg-brand-500 text-white px-3 py-1 rounded-full font-medium whitespace-nowrap shadow-xs">All ✨</button>
-                    <button onclick="filterCategory('Hairpins')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Hairpins 🎀</button>
-                    <button onclick="filterCategory('Cosmetics')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Cosmetics 💄</button>
-                    <button onclick="filterCategory('Accessories')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Accessories 💎</button>
-                    <button onclick="filterCategory('Bags')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Bags 👜</button>
+                    <button onclick="filterCategory('All')" class="cat-btn bg-brand-500 text-white px-3 py-1.5 rounded-full font-medium whitespace-nowrap shadow-xs min-h-[36px]">All ✨</button>
+                    <button onclick="filterCategory('Hairpins')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Hairpins 🎀</button>
+                    <button onclick="filterCategory('Cosmetics')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Cosmetics 💄</button>
+                    <button onclick="filterCategory('Accessories')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Accessories 💎</button>
+                    <button onclick="filterCategory('Bags')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Bags 👜</button>
                 </div>
                 <div id="product-grid" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
             </div>
@@ -105,49 +105,49 @@
                                 <span class="text-[9px] bg-brand-50 text-brand-600 px-2 py-0.5 rounded-md font-semibold mt-0.5 inline-block">Customer account</span>
                             </div>
                         </div>
-                        <button onclick="openProfileEditModal()" class="text-gray-400 hover:text-gray-600 p-2"><i class="fa-solid fa-pen text-xs"></i></button>
+                        <button onclick="openProfileEditModal()" class="text-gray-400 hover:text-gray-600 p-2 min-h-[44px] flex items-center"><i class="fa-solid fa-pen text-xs"></i></button>
                     </div>
 
                     <!-- Profile Menu Options Card -->
                     <div class="bg-white rounded-2xl shadow-xs border border-gray-100 overflow-hidden text-xs divide-y divide-gray-50">
-                        <button onclick="openProfileSection('personal')" class="w-full p-3.5 flex items-center justify-between hover:bg-gray-50 text-left">
+                        <button onclick="openProfileSection('personal')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 active:bg-gray-100 transition-colors text-left">
                             <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-user text-brand-500 w-4"></i><span>Personal Information</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
-                        <button onclick="openProfileSection('orders')" class="w-full p-3.5 flex items-center justify-between hover:bg-gray-50 text-left">
+                        <button onclick="openProfileSection('orders')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 active:bg-gray-100 transition-colors text-left">
                             <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-box-archive text-brand-500 w-4"></i><span>My Orders</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
-                        <button onclick="openProfileSection('addresses')" class="w-full p-3.5 flex items-center justify-between hover:bg-gray-50 text-left">
+                        <button onclick="openProfileSection('addresses')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 active:bg-gray-100 transition-colors text-left">
                             <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-location-dot text-brand-500 w-4"></i><span>Delivery Addresses</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
-                        <button onclick="openProfileSection('favorites')" class="w-full p-3.5 flex items-center justify-between hover:bg-gray-50 text-left">
+                        <button onclick="openProfileSection('favorites')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 active:bg-gray-100 transition-colors text-left">
                             <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-heart text-brand-500 w-4"></i><span>My Favorites</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
-                        <button onclick="openProfileSection('payments')" class="w-full p-3.5 flex items-center justify-between hover:bg-gray-50 text-left">
+                        <button onclick="openProfileSection('payments')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 active:bg-gray-100 transition-colors text-left">
                             <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-wallet text-brand-500 w-4"></i><span>Payment Methods</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
-                        <button onclick="openProfileSection('notifications')" class="w-full p-3.5 flex items-center justify-between hover:bg-gray-50 text-left">
+                        <button onclick="openProfileSection('notifications')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 active:bg-gray-100 transition-colors text-left">
                             <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-bell text-brand-500 w-4"></i><span>Notifications</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
-                        <button onclick="openProfileSection('support')" class="w-full p-3.5 flex items-center justify-between hover:bg-gray-50 text-left">
+                        <button onclick="openProfileSection('support')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 active:bg-gray-100 transition-colors text-left">
                             <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-circle-question text-brand-500 w-4"></i><span>Help & Support</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
-                        <button onclick="openProfileSection('settings')" class="w-full p-3.5 flex items-center justify-between hover:bg-gray-50 text-left">
+                        <button onclick="openProfileSection('settings')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 active:bg-gray-100 transition-colors text-left">
                             <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-gear text-brand-500 w-4"></i><span>Settings</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
                     </div>
 
-                    <button onclick="handleSignOut()" class="w-full bg-white border border-gray-200 text-red-600 font-bold text-xs py-2.5 rounded-xl shadow-xs">Log out or close the Mini App</button>
+                    <button onclick="handleSignOut()" class="w-full bg-white border border-gray-200 text-red-600 font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs active:bg-red-50 transition-colors">Log out or close the Mini App</button>
                 </div>
 
-                <!-- AUTH BOX (CLEAN, NO PRE-FILLED CREDENTIALS) -->
+                <!-- AUTH BOX -->
                 <div id="profile-auth-box" class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3">
                     <div class="text-center space-y-0.5">
                         <h3 class="font-bold text-xs text-gray-900">Welcome to Song Sa Shop</h3>
@@ -158,17 +158,17 @@
                         <button onclick="switchAuthTab('signup')" id="authtab-signup" class="flex-1 py-1 text-gray-500 rounded-lg">Sign Up</button>
                     </div>
                     <div id="auth-form-login" class="space-y-2 text-xs">
-                        <input type="email" id="login-email" placeholder="Email address" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-500">
-                        <input type="password" id="login-password" placeholder="Password" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-500">
-                        <button onclick="handleEmailLogin()" class="w-full bg-brand-500 text-white font-bold text-xs py-2 rounded-xl shadow-xs">Log In</button>
+                        <input type="email" id="login-email" placeholder="Email address" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-brand-500">
+                        <input type="password" id="login-password" placeholder="Password" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-brand-500">
+                        <button onclick="handleEmailLogin()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Log In</button>
                     </div>
                     <div id="auth-form-signup" class="space-y-2 text-xs hidden">
-                        <input type="text" id="signup-name" placeholder="Full Name" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-500">
-                        <input type="email" id="signup-email" placeholder="Email address" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-500">
-                        <input type="password" id="signup-password" placeholder="Password (min 6 chars)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-500">
-                        <button onclick="handleEmailSignUp()" class="w-full bg-brand-500 text-white font-bold text-xs py-2 rounded-xl shadow-xs">Create Account</button>
+                        <input type="text" id="signup-name" placeholder="Full Name" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-brand-500">
+                        <input type="email" id="signup-email" placeholder="Email address" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-brand-500">
+                        <input type="password" id="signup-password" placeholder="Password (min 6 chars)" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-brand-500">
+                        <button onclick="handleEmailSignUp()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Create Account</button>
                     </div>
-                    <button onclick="handleTelegramSignIn()" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs py-2 rounded-xl flex items-center justify-center space-x-1.5 shadow-xs">
+                    <button onclick="handleTelegramSignIn()" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl flex items-center justify-center space-x-1.5 shadow-xs">
                         <i class="fa-brands fa-telegram text-sm"></i>
                         <span>Continue with Telegram</span>
                     </button>
@@ -183,10 +183,10 @@
                     <span class="font-bold text-xs text-gray-900 flex items-center"><i class="fa-solid fa-shield-halved text-brand-500 mr-1.5"></i> StyleAdmin Portal</span>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <button onclick="openProductModal()" class="bg-brand-500 hover:bg-brand-600 text-white text-xs px-3 py-1.5 rounded-xl font-bold shadow-xs flex items-center space-x-1">
+                    <button onclick="openProductModal()" class="bg-brand-500 hover:bg-brand-600 text-white text-xs px-3 py-2 min-h-[40px] rounded-xl font-bold shadow-xs flex items-center space-x-1">
                         <i class="fa-solid fa-plus text-[10px]"></i><span>Add Product</span>
                     </button>
-                    <button onclick="handleSignOut()" class="text-xs bg-red-50 text-red-600 px-3 py-1.5 rounded-xl font-medium">Sign Out</button>
+                    <button onclick="handleSignOut()" class="text-xs bg-red-50 text-red-600 px-3 py-2 min-h-[40px] rounded-xl font-medium">Sign Out</button>
                 </div>
             </div>
 
@@ -314,12 +314,12 @@
 
     </main>
 
-    <!-- PROFILE SUB-SECTION MODAL -->
+    <!-- PROFILE SUB-SECTION MODAL WITH DATABASE LINKING -->
     <div id="profile-sub-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative text-xs border border-gray-100">
             <button onclick="closeProfileSubModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs"><i class="fa-solid fa-xmark"></i></button>
             <h3 id="profile-modal-title" class="font-bold text-sm text-gray-900">Section Title</h3>
-            <div id="profile-modal-body" class="space-y-3 max-h-60 overflow-y-auto"></div>
+            <div id="profile-modal-body" class="space-y-3 max-h-72 overflow-y-auto"></div>
         </div>
     </div>
 
@@ -341,7 +341,7 @@
             </div>
             <div class="flex items-center justify-between border-t border-gray-50 pt-3">
                 <div class="text-[10px] text-gray-400"><span>Stock Status: </span><b id="view-prod-stock" class="text-emerald-600 font-bold">10 available</b></div>
-                <button id="view-prod-add-btn" class="bg-brand-500 text-white font-bold text-xs px-4 py-2 rounded-xl shadow-xs flex items-center space-x-1.5"><i class="fa-solid fa-cart-shopping"></i><span>Add to Bag</span></button>
+                <button id="view-prod-add-btn" class="bg-brand-500 text-white font-bold text-xs px-4 py-2.5 min-h-[44px] rounded-xl shadow-xs flex items-center space-x-1.5"><i class="fa-solid fa-cart-shopping"></i><span>Add to Bag</span></button>
             </div>
         </div>
     </div>
@@ -367,7 +367,7 @@
             <div class="border-t border-gray-50 pt-2.5 space-y-2 text-xs">
                 <div class="flex justify-between text-gray-500"><span>Subtotal</span><span id="cart-subtotal">$0.00</span></div>
                 <div class="flex justify-between font-bold text-gray-900 pt-1 border-t border-gray-50"><span>Total</span><span id="cart-total" class="text-brand-600">$0.00</span></div>
-                <button onclick="openCheckoutModal()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-xs">Proceed to Payment</button>
+                <button onclick="openCheckoutModal()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Proceed to Payment</button>
             </div>
         </div>
     </div>
@@ -382,7 +382,7 @@
                 <input type="text" id="checkout-phone" placeholder="Phone Number" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
                 <textarea id="checkout-address" placeholder="Delivery Address" rows="2" class="w-full border border-gray-200 rounded-xl px-3 py-1.5"></textarea>
             </div>
-            <button onclick="initiateBakongPayment()" class="w-full bg-red-600 text-white font-bold text-xs py-2.5 rounded-xl shadow-xs flex items-center justify-center space-x-1.5">
+            <button onclick="initiateBakongPayment()" class="w-full bg-red-600 text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs flex items-center justify-center space-x-1.5">
                 <i class="fa-solid fa-qrcode"></i>
                 <span>Pay via Bakong KHQR</span>
             </button>
@@ -414,7 +414,7 @@
                     <span class="animate-spin text-red-600"><i class="fa-solid fa-circle-notch"></i></span>
                     <span>Waiting for Bakong payment verification...</span>
                 </div>
-                <a id="bakong-deeplink-btn" href="#" target="_blank" class="block w-full bg-red-600 text-white font-bold text-xs py-2 rounded-xl shadow-xs">Open Bakong App</a>
+                <a id="bakong-deeplink-btn" href="#" target="_blank" class="block w-full bg-red-600 text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Open Bakong App</a>
             </div>
         </div>
     </div>
@@ -439,11 +439,11 @@
                 <input type="number" id="prod-reorder" placeholder="Reorder Point (e.g. 10)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5" value="10">
                 <input type="text" id="prod-image" placeholder="Image URL (.jpg / .png)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
             </div>
-            <button onclick="saveAdminProduct()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-xs">Save Product</button>
+            <button onclick="saveAdminProduct()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Save Product</button>
         </div>
     </div>
 
-    <!-- FIREBASE MODULE & PROFILE DATABASE SYNC -->
+    <!-- FIREBASE MODULE & REALTIME DATABASE LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -497,7 +497,7 @@
                         email: user.email || `${user.uid}@telegram.org`,
                         name: user.displayName || (user.email ? user.email.split('@')[0] : "Shopper"),
                         phone: "+855 00 000 000",
-                        address: "Phnom Penh, Cambodia",
+                        addresses: ["Phnom Penh, Cambodia"],
                         role: (user.email && user.email.toLowerCase().endsWith("@songsa.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1" ? "admin" : "customer",
                         authProvider: user.email ? "email" : "telegram",
                         createdAt: new Date().toISOString()
@@ -589,7 +589,7 @@
             if (window.renderBannerHistory) window.renderBannerHistory();
         });
 
-        // BAKONG PAYMENT & PROFILE UPDATER
+        // BAKONG PAYMENT & DATABASE ORDER CREATION
         let bakongPollInterval = null;
         window.initiateBakongPayment = async function() {
             const name = document.getElementById('checkout-name').value;
@@ -659,9 +659,7 @@
             try {
                 await signInWithEmailAndPassword(auth, email, password);
                 alert('Signed in successfully! ✨');
-            } catch (err) {
-                alert('Login Failed: ' + err.message);
-            }
+            } catch (err) { alert('Login Failed: ' + err.message); }
         };
 
         window.handleEmailSignUp = async function() {
@@ -672,7 +670,7 @@
                 const cred = await createUserWithEmailAndPassword(auth, email, password);
                 await setDoc(doc(db, "users", cred.user.uid), {
                     uid: cred.user.uid, name: name || email.split('@')[0], email,
-                    phone: "+855 00 000 000", address: "Phnom Penh, Cambodia",
+                    phone: "+855 00 000 000", addresses: ["Phnom Penh, Cambodia"],
                     role: email.toLowerCase().endsWith("@songsa.com") ? "admin" : "customer",
                     authProvider: "email", createdAt: new Date().toISOString()
                 });
@@ -823,7 +821,7 @@
         }
     </script>
 
-    <!-- CORE INTERACTION SCRIPT & PROFILE MAPPING LOGIC -->
+    <!-- CORE INTERACTION SCRIPT & ENHANCED DYNAMIC PROFILE SECTIONS -->
     <script>
         const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
         window.products = []; window.orders = []; window.banners = [];
@@ -868,7 +866,7 @@
             if (tab === 'wishlist') renderWishlist();
         }
 
-        // DYNAMIC PROFILE SECTION MODAL LINKED TO DATABASE
+        // DYNAMIC PROFILE SECTION MODAL WITH EMPTY STATES & ACTIONS
         window.openProfileSection = function(section) {
             const modal = document.getElementById('profile-sub-modal');
             const titleEl = document.getElementById('profile-modal-title');
@@ -878,78 +876,129 @@
             const uData = window.currentUserData || {};
 
             if (section === 'personal') {
-                titleEl.innerText = "Personal Information (Database Sync)";
+                titleEl.innerText = "Personal Information";
                 bodyEl.innerHTML = `
-                    <div class="space-y-2">
-                        <label class="text-[10px] text-gray-400">Full Name</label>
-                        <input type="text" id="prof-edit-name" value="${uData.name || ''}" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                        <label class="text-[10px] text-gray-400">Phone Number</label>
-                        <input type="text" id="prof-edit-phone" value="${uData.phone || ''}" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                        <button onclick="savePersonalProfile()" class="w-full bg-brand-500 text-white font-bold py-2 rounded-xl mt-2">Save Changes to Database</button>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase">Full Name</label>
+                            <input type="text" id="prof-edit-name" value="${uData.name || ''}" placeholder="Enter your full name" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase">Phone Number</label>
+                            <input type="text" id="prof-edit-phone" value="${uData.phone || ''}" placeholder="+855 00 000 000" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
+                        </div>
+                        <button onclick="savePersonalProfile()" class="w-full bg-brand-500 text-white font-bold py-2.5 min-h-[44px] rounded-xl mt-2 shadow-xs">Save Changes to Database</button>
                     </div>
                 `;
             } else if (section === 'orders') {
                 titleEl.innerText = "My Orders History";
                 const myOrders = window.orders.filter(o => window.currentUser && o.userId === window.currentUser.uid);
-                bodyEl.innerHTML = myOrders.length === 0 ? `<p class="text-gray-400">No orders found in database.</p>` :
-                    myOrders.map(o => `
-                        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 flex justify-between items-center">
+                
+                bodyEl.innerHTML = myOrders.length === 0 ? `
+                    <div class="text-center py-6 space-y-2">
+                        <div class="w-12 h-12 bg-gray-50 text-gray-300 rounded-full flex items-center justify-center mx-auto text-xl"><i class="fa-solid fa-box-open"></i></div>
+                        <p class="text-xs text-gray-500 font-medium">No order history found.</p>
+                        <button onclick="closeProfileSubModal(); switchCustomerTab('shop');" class="bg-brand-50 text-brand-600 font-bold text-xs px-4 py-2 rounded-xl border border-brand-100">Explore Store</button>
+                    </div>
+                ` : myOrders.map(o => {
+                    let stBg = o.status === 'Shipped' ? 'bg-emerald-50 text-emerald-600' : o.status === 'Cancelled' ? 'bg-pink-50 text-pink-600' : 'bg-blue-50 text-blue-600';
+                    return `
+                        <div class="bg-gray-50 p-3 rounded-2xl border border-gray-100 flex justify-between items-center text-xs">
                             <div>
                                 <span class="font-bold text-gray-900">${o.orderNum}</span>
-                                <p class="text-[10px] text-gray-400">${o.date} • <b class="text-brand-600">${o.status}</b></p>
+                                <p class="text-[10px] text-gray-400 mt-0.5">${o.date} • <span class="px-2 py-0.5 rounded-full font-bold text-[9px] ${stBg}">${o.status}</span></p>
                             </div>
                             <span class="font-bold text-brand-600">$${Number(o.total || 0).toFixed(2)}</span>
                         </div>
-                    `).join('');
+                    `;
+                }).join('');
+
             } else if (section === 'addresses') {
                 titleEl.innerText = "Delivery Addresses";
+                const addrs = uData.addresses || (uData.address ? [uData.address] : []);
+                
                 bodyEl.innerHTML = `
-                    <div class="space-y-2">
-                        <input type="text" id="new-delivery-addr" placeholder="Enter new address" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                        <button onclick="saveDeliveryAddress()" class="w-full bg-brand-500 text-white font-bold py-2 rounded-xl">Add Address to Profile</button>
-                        <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 mt-2">
-                            <p class="font-bold text-gray-800">Primary Address:</p>
-                            <p class="text-gray-500">${uData.address || 'No address saved'}</p>
+                    <div class="space-y-3">
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-bold text-gray-500 uppercase">Add New Address</label>
+                            <div class="flex space-x-1.5">
+                                <input type="text" id="new-delivery-addr" placeholder="Street, City, Cambodia..." class="flex-1 border border-gray-200 rounded-xl px-3 py-2">
+                                <button onclick="addNewAddressToDB()" class="bg-brand-500 text-white font-bold px-3 py-2 rounded-xl"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                        </div>
+                        <div class="space-y-2 pt-2 border-t border-gray-50">
+                            <p class="font-bold text-gray-800 text-[11px]">Saved Addresses:</p>
+                            ${addrs.length === 0 ? `<p class="text-gray-400 text-xs py-2">No saved addresses.</p>` :
+                                addrs.map((addr, idx) => `
+                                    <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 flex justify-between items-center">
+                                        <span class="text-gray-700 font-medium text-xs truncate max-w-[200px]">${addr}</span>
+                                        <button onclick="removeAddressFromDB(${idx})" class="text-red-400 hover:text-red-600 p-1"><i class="fa-solid fa-trash-can"></i></button>
+                                    </div>
+                                `).join('')
+                            }
                         </div>
                     </div>
                 `;
             } else if (section === 'favorites') {
                 titleEl.innerText = "My Favorites";
                 let favs = window.products.filter(p => wishlist.includes(p.id));
-                bodyEl.innerHTML = favs.length === 0 ? `<p class="text-gray-400">No favorite items saved.</p>` :
-                    favs.map(p => `<div class="flex justify-between items-center bg-gray-50 p-2 rounded-xl"><span>${p.name}</span><b class="text-brand-600">$${p.price}</b></div>`).join('');
+                bodyEl.innerHTML = favs.length === 0 ? `
+                    <div class="text-center py-6 space-y-2">
+                        <div class="w-12 h-12 bg-pink-50 text-pink-300 rounded-full flex items-center justify-center mx-auto text-xl"><i class="fa-solid fa-heart"></i></div>
+                        <p class="text-xs text-gray-500 font-medium">Your wishlist is currently empty.</p>
+                        <button onclick="closeProfileSubModal(); switchCustomerTab('shop');" class="bg-brand-50 text-brand-600 font-bold text-xs px-4 py-2 rounded-xl border border-brand-100">Browse Catalog</button>
+                    </div>
+                ` : favs.map(p => `
+                    <div class="flex justify-between items-center bg-gray-50 p-2.5 rounded-2xl border border-gray-100">
+                        <div class="flex items-center space-x-2">
+                            <img src="${p.image}" class="w-8 h-8 rounded-lg object-cover">
+                            <span class="font-bold text-gray-800">${p.name}</span>
+                        </div>
+                        <b class="text-brand-600">$${Number(p.price || 0).toFixed(2)}</b>
+                    </div>
+                `).join('');
+
             } else if (section === 'payments') {
                 titleEl.innerText = "Payment Methods";
                 bodyEl.innerHTML = `
-                    <div class="bg-red-50 p-3 rounded-xl border border-red-100 space-y-1">
-                        <span class="bg-red-600 text-white text-[9px] font-bold px-2 py-0.5 rounded">Active Gateway</span>
-                        <h4 class="font-bold text-gray-900">Bakong KHQR</h4>
-                        <p class="text-[10px] text-gray-500">Linked to Song Sa Shop merchant account (@songsashop).</p>
+                    <div class="bg-red-50/60 p-3.5 rounded-2xl border border-red-100 space-y-1.5">
+                        <span class="bg-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded uppercase">Default Gateway</span>
+                        <h4 class="font-bold text-gray-900 text-xs">Bakong KHQR Payment</h4>
+                        <p class="text-[10px] text-gray-500">Fully integrated real-time dynamic QR payment gateway linked to @songsashop.</p>
                     </div>
                 `;
             } else if (section === 'notifications') {
-                titleEl.innerText = "Notification Preferences";
+                titleEl.innerText = "Notifications";
                 bodyEl.innerHTML = `
                     <div class="space-y-2 text-xs">
-                        <label class="flex items-center space-x-2"><input type="checkbox" checked class="rounded text-brand-500"><span>Order Status Alerts</span></label>
-                        <label class="flex items-center space-x-2"><input type="checkbox" checked class="rounded text-brand-500"><span>Special Promotional Banners</span></label>
-                        <button onclick="alert('Notification settings saved!')" class="w-full bg-brand-500 text-white py-2 rounded-xl mt-2 font-bold">Save Preferences</button>
+                        <label class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border border-gray-100 cursor-pointer">
+                            <span class="font-medium text-gray-700">Order Updates & Status</span>
+                            <input type="checkbox" checked class="accent-brand-500 w-4 h-4">
+                        </label>
+                        <label class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border border-gray-100 cursor-pointer">
+                            <span class="font-medium text-gray-700">Promotions & Disount Alerts</span>
+                            <input type="checkbox" checked class="accent-brand-500 w-4 h-4">
+                        </label>
+                        <button onclick="alert('Preferences updated!'); closeProfileSubModal();" class="w-full bg-brand-500 text-white py-2.5 font-bold rounded-xl mt-2">Save Preferences</button>
                     </div>
                 `;
             } else if (section === 'support') {
                 titleEl.innerText = "Help & Support";
                 bodyEl.innerHTML = `
-                    <div class="space-y-2 text-center">
-                        <p class="text-gray-600">Need assistance with your order or cosmetics?</p>
-                        <a href="https://t.me/songsashop" target="_blank" class="block w-full bg-sky-500 text-white font-bold py-2.5 rounded-xl"><i class="fa-brands fa-telegram mr-1"></i> Contact Support on Telegram</a>
+                    <div class="space-y-3 text-center">
+                        <p class="text-gray-500 text-xs">Have questions regarding your orders or product availability?</p>
+                        <a href="https://t.me/songsashop" target="_blank" class="block w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 rounded-xl shadow-xs"><i class="fa-brands fa-telegram mr-1.5"></i> Chat on Telegram (@songsashop)</a>
                     </div>
                 `;
             } else if (section === 'settings') {
                 titleEl.innerText = "Account Settings";
                 bodyEl.innerHTML = `
-                    <div class="space-y-2 text-xs">
-                        <p class="text-gray-500">Connected account: <b>${window.currentUser ? window.currentUser.email : 'Guest'}</b></p>
-                        <button onclick="handleSignOut(); closeProfileSubModal();" class="w-full bg-red-50 text-red-600 font-bold py-2 rounded-xl">Sign Out of Account</button>
+                    <div class="space-y-3 text-xs">
+                        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                            <p class="text-gray-400 text-[10px]">Logged in as:</p>
+                            <p class="font-bold text-gray-800">${window.currentUser ? window.currentUser.email : 'Guest Mode'}</p>
+                        </div>
+                        <button onclick="handleSignOut(); closeProfileSubModal();" class="w-full bg-red-50 text-red-600 font-bold py-2.5 rounded-xl border border-red-100">Sign Out</button>
                     </div>
                 `;
             }
@@ -967,18 +1016,32 @@
                 window.currentUserData.name = newName;
                 window.currentUserData.phone = newPhone;
                 document.getElementById('cust-profile-name').innerText = newName;
-                alert('Personal information updated in database! ✨');
+                alert('Personal profile synchronized to database! ✨');
                 closeProfileSubModal();
             }
         };
 
-        window.saveDeliveryAddress = async function() {
-            const newAddr = document.getElementById('new-delivery-addr').value;
+        window.addNewAddressToDB = async function() {
+            const inputEl = document.getElementById('new-delivery-addr');
+            const newAddr = inputEl.value.trim();
             if (newAddr && window.currentUser) {
-                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { address: newAddr });
+                let currentAddrs = window.currentUserData.addresses || [];
+                currentAddrs.push(newAddr);
+                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { addresses: currentAddrs, address: newAddr });
+                window.currentUserData.addresses = currentAddrs;
                 window.currentUserData.address = newAddr;
-                alert('Delivery address updated successfully! ✨');
-                closeProfileSubModal();
+                alert('Address saved! ✨');
+                openProfileSection('addresses');
+            }
+        };
+
+        window.removeAddressFromDB = async function(index) {
+            if (window.currentUser && confirm("Remove this address?")) {
+                let currentAddrs = window.currentUserData.addresses || [];
+                currentAddrs.splice(index, 1);
+                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { addresses: currentAddrs });
+                window.currentUserData.addresses = currentAddrs;
+                openProfileSection('addresses');
             }
         };
 
@@ -1029,7 +1092,7 @@
                     </div>
                     <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-50">
                         <span class="font-bold text-xs text-brand-600">$${Number(p.price || 0).toFixed(2)}</span>
-                        <button onclick="event.stopPropagation(); addToCart('${p.id}')" class="bg-brand-500 text-white px-2.5 py-1 rounded-xl text-xs font-bold">+</button>
+                        <button onclick="event.stopPropagation(); addToCart('${p.id}')" class="bg-brand-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold active:scale-95 transition-transform">+</button>
                     </div>
                 </div>
             `).join('');
@@ -1066,7 +1129,7 @@
                     <div onclick="openProductDetailModal('${p.id}')" class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs flex flex-col justify-between cursor-pointer">
                         <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full aspect-square object-cover rounded-xl mb-2">
                         <h4 class="font-bold text-xs text-gray-900 truncate">${p.name}</h4>
-                        <button onclick="event.stopPropagation(); addToCart('${p.id}')" class="w-full bg-brand-500 text-white py-1.5 rounded-xl text-xs font-bold mt-2">Add to Bag</button>
+                        <button onclick="event.stopPropagation(); addToCart('${p.id}')" class="w-full bg-brand-500 text-white py-2 min-h-[40px] rounded-xl text-xs font-bold mt-2">Add to Bag</button>
                     </div>
                 `).join('');
         }
