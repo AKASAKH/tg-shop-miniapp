@@ -536,7 +536,6 @@
             } catch (err) { alert('Sign Up Failed: ' + err.message); }
         };
 
-        // TELEGRAM SIGN-IN WITH EXISTING ACCOUNT CHECK
         window.handleTelegramSignIn = async function() {
             try {
                 const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
@@ -544,7 +543,6 @@
                 const tgName = tgUser ? `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() : "Telegram Shopper";
                 const tgEmail = tgUser?.username ? `${tgUser.username}@telegram.org` : `${tgId}@telegram.org`;
 
-                // Check if user already exists in database
                 const userRef = doc(db, "users", tgId);
                 const userSnap = await getDoc(userRef);
 
@@ -554,7 +552,6 @@
                     return;
                 }
 
-                // If user exists, complete login
                 const userData = userSnap.data();
                 alert(`Welcome back, ${userData.name || tgName}! ✨`);
                 document.getElementById('session-user-badge').innerText = userData.name || tgName;
@@ -684,10 +681,12 @@
                 userId: window.currentUser ? window.currentUser.uid : 'guest',
                 customer: name, phone, address, total: sub, status: 'Processing', 
                 itemsCount: cart.reduce((s, i) => s + i.qty, 1),
+                itemsList: [...cart], // Saved for expandable row details view
                 date: todayStr
             });
 
             cart = [];
+            localStorage.removeItem('songsa_cart');
             document.getElementById('cart-badge').innerText = '0';
             closeCheckoutModal();
             alert('Order placed successfully! ✨');
@@ -703,8 +702,8 @@
             for (let item of catalog) await addDoc(collection(db, "products"), { ...item, isPublished: true });
 
             const sampleOrders = [
-                { orderNum: '#ORD-001', customer: 'Emma Thompson', itemsCount: 3, status: 'Processing', total: 156.00, date: '2024-01-15', address: '123 Main St', phone: '123456789' },
-                { orderNum: '#ORD-002', customer: 'James Rodriguez', itemsCount: 1, status: 'Shipped', total: 89.50, date: '2024-01-15', address: '456 Park Ave', phone: '987654321' }
+                { orderNum: '#ORD-001', customer: 'Emma Thompson', itemsCount: 3, status: 'Processing', total: 156.00, date: '2024-01-15', address: '123 Main St', phone: '123456789', itemsList: [{name: 'Pearl Butterfly Hairpin', qty: 3, price: 52.00}] },
+                { orderNum: '#ORD-002', customer: 'James Rodriguez', itemsCount: 1, status: 'Shipped', total: 89.50, date: '2024-01-15', address: '456 Park Ave', phone: '987654321', itemsList: [{name: 'Matte Pink Lipstick', qty: 1, price: 89.50}] }
             ];
             for (let ord of sampleOrders) await addDoc(collection(db, "orders"), ord);
         }
@@ -714,7 +713,14 @@
     <script>
         const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
         window.products = []; window.orders = []; window.banners = [];
-        let cart = []; let wishlist = []; let activeCategory = 'All'; let currentOrderStatusFilter = 'All'; let lowStockFilterActive = false;
+        let cart = JSON.parse(localStorage.getItem('songsa_cart') || '[]');
+        let wishlist = []; let activeCategory = 'All'; let currentOrderStatusFilter = 'All'; let lowStockFilterActive = false;
+        
+        // Initialize cart badge count on load
+        document.addEventListener("DOMContentLoaded", () => {
+            const badge = document.getElementById('cart-badge');
+            if (badge) badge.innerText = cart.reduce((s, i) => s + i.qty, 0);
+        });
 
         function closePromoPopup() {
             if (popupTimerInterval) clearInterval(popupTimerInterval);
@@ -855,6 +861,7 @@
             const prod = window.products.find(p => p.id === id);
             const existing = cart.find(i => i.id === id);
             if (existing) existing.qty += 1; else cart.push({ ...prod, qty: 1 });
+            localStorage.setItem('songsa_cart', JSON.stringify(cart));
             document.getElementById('cart-badge').innerText = cart.reduce((s, i) => s + i.qty, 0);
             alert('Item added to bag! 🛍️');
         }
@@ -867,7 +874,7 @@
                         <span><b>${item.name}</b> (x${item.qty})</span>
                         <div class="flex items-center space-x-2">
                             <span class="font-bold text-brand-600">$${(item.price * item.qty).toFixed(2)}</span>
-                            <button onclick="cart.splice(${idx},1);openCartDrawer()" class="text-red-500"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="cart.splice(${idx},1);localStorage.setItem('songsa_cart', JSON.stringify(cart));openCartDrawer();document.getElementById('cart-badge').innerText=cart.reduce((s,i)=>s+i.qty,0)" class="text-red-500"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
                 `).join('');
@@ -964,7 +971,7 @@
             renderAdminInventory();
         }
 
-        // ORDERS MANAGEMENT TABLE
+        // ORDERS MANAGEMENT TABLE WITH EXPANDABLE ROW DETAILS
         window.renderAdminOrders = function() {
             const tbody = document.getElementById('admin-orders-table-body');
             if (!tbody) return;
@@ -985,7 +992,7 @@
                     if (o.status === 'Cancelled') badgeColor = 'bg-pink-600 text-white';
 
                     return `
-                        <tr class="hover:bg-gray-50/50">
+                        <tr class="hover:bg-gray-50/50 border-b border-gray-50">
                             <td class="p-3 font-mono font-bold text-gray-900">${o.orderNum}</td>
                             <td class="p-3 font-medium text-gray-800">${o.customer}</td>
                             <td class="p-3 text-gray-500">${o.itemsCount || 1} items</td>
@@ -993,19 +1000,39 @@
                             <td class="p-3 font-bold text-gray-900">$${Number(o.total || 0).toFixed(2)}</td>
                             <td class="p-3 text-gray-500">${o.date || '2024-01-15'}</td>
                             <td class="p-3 text-right space-x-2">
-                                <button onclick="viewOrderDetails('${o.docId}')" title="View" class="text-gray-400 hover:text-gray-600"><i class="fa-regular fa-eye"></i></button>
-                                <button onclick="promptChangeStatus('${o.docId}', '${o.status}')" title="Edit Status" class="text-gray-400 hover:text-brand-600"><i class="fa-regular fa-pen-to-square"></i></button>
-                                <button onclick="deleteOrder('${o.docId}')" title="Delete" class="text-gray-400 hover:text-red-600"><i class="fa-regular fa-trash-can"></i></button>
+                                <button onclick="toggleOrderExpand('${o.docId}')" title="View Items" class="text-gray-400 hover:text-brand-600"><i class="fa-regular fa-eye text-xs"></i></button>
+                                <button onclick="promptChangeStatus('${o.docId}', '${o.status}')" title="Edit Status" class="text-gray-400 hover:text-brand-600"><i class="fa-regular fa-pen-to-square text-xs"></i></button>
+                                <button onclick="deleteOrder('${o.docId}')" title="Delete" class="text-gray-400 hover:text-red-600"><i class="fa-regular fa-trash-can text-xs"></i></button>
+                            </td>
+                        </tr>
+                        <tr id="expand-row-${o.docId}" class="hidden bg-gray-50/80">
+                            <td colspan="7" class="p-3">
+                                <div class="bg-white p-3 rounded-xl border border-gray-100 space-y-1 text-[11px]">
+                                    <div class="font-bold text-gray-900 flex justify-between">
+                                        <span>Order Items & Delivery Details</span>
+                                        <span class="text-brand-600">Phone: ${o.phone || 'N/A'}</span>
+                                    </div>
+                                    <p class="text-gray-500 pb-1 border-b border-gray-50">Address: ${o.address || 'N/A'}</p>
+                                    <ul class="space-y-1 pt-1">
+                                        ${(o.itemsList || [{name: 'General Items', qty: o.itemsCount || 1, price: o.total}]).map(i => `
+                                            <li class="flex justify-between text-gray-700">
+                                                <span>• ${i.name} (x${i.qty || 1})</span>
+                                                <span class="font-bold">$${Number((i.price || o.total) * (i.qty || 1)).toFixed(2)}</span>
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                </div>
                             </td>
                         </tr>
                     `;
                 }).join('');
         };
 
-        window.viewOrderDetails = function(docId) {
-            const o = window.orders.find(item => item.docId === docId);
-            if (!o) return;
-            alert(`Order ID: ${o.orderNum}\nCustomer: ${o.customer}\nPhone: ${o.phone || 'N/A'}\nAddress: ${o.address || 'N/A'}\nStatus: ${o.status}\nTotal: $${Number(o.total || 0).toFixed(2)}`);
+        window.toggleOrderExpand = function(docId) {
+            const row = document.getElementById(`expand-row-${docId}`);
+            if (row) {
+                row.classList.toggle('hidden');
+            }
         };
 
         window.promptChangeStatus = async function(docId, currentStatus) {
