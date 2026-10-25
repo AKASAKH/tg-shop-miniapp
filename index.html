@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Song Sa Shop - Orders Management</title>
+    <title>Song Sa Shop - Complete Admin & Store Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -134,17 +134,17 @@
             </div>
         </div>
 
-        <!-- ================= ADMIN ORDERS MANAGEMENT PORTAL ================= -->
+        <!-- ================= COMPLETE ADMIN PORTAL ================= -->
         <div id="admin-view" class="hidden space-y-4">
 
-            <!-- Top Header & Navigation -->
+            <!-- Top Header & Actions -->
             <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs flex justify-between items-center">
                 <div class="flex items-center space-x-2">
-                    <span class="font-bold text-xs text-gray-900 flex items-center"><i class="fa-solid fa-list-check text-brand-500 mr-1.5"></i> StyleAdmin Orders Management</span>
+                    <span class="font-bold text-xs text-gray-900 flex items-center"><i class="fa-solid fa-shield-halved text-brand-500 mr-1.5"></i> StyleAdmin Portal</span>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <button onclick="exportOrdersCSV()" class="bg-brand-500 hover:bg-brand-600 text-white text-xs px-3 py-1.5 rounded-xl font-bold shadow-xs flex items-center space-x-1">
-                        <i class="fa-solid fa-download text-[10px]"></i><span>Export Orders</span>
+                    <button onclick="openProductModal()" class="bg-brand-500 hover:bg-brand-600 text-white text-xs px-3 py-1.5 rounded-xl font-bold shadow-xs flex items-center space-x-1">
+                        <i class="fa-solid fa-plus text-[10px]"></i><span>Add Product</span>
                     </button>
                     <button onclick="handleSignOut()" class="text-xs bg-red-50 text-red-600 px-3 py-1.5 rounded-xl font-medium">Sign Out</button>
                 </div>
@@ -153,20 +153,18 @@
             <!-- Navigation Tabs -->
             <div class="flex space-x-1 border-b border-gray-200 text-xs font-semibold overflow-x-auto">
                 <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-brand-500 text-brand-600">Orders Management</button>
-                <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Products Catalog</button>
+                <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Product Management</button>
+                <button onclick="switchAdminNav('inventory')" id="adtab-inventory" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Stock Management</button>
                 <button onclick="switchAdminNav('promotions')" id="adtab-promotions" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Banners & History</button>
             </div>
 
-            <!-- SECTION: ORDERS MANAGEMENT TABLE -->
+            <!-- SECTION: ORDERS MANAGEMENT -->
             <div id="admin-sec-orders" class="space-y-4">
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden p-4 space-y-4">
-                    
                     <div class="space-y-1">
-                        <h2 class="text-sm font-bold text-gray-900">Orders Management</h2>
-                        <p class="text-[11px] text-gray-400">Track and manage all customer orders</p>
+                        <h2 class="text-sm font-bold text-gray-900">Orders Management[cite: 3]</h2>
+                        <p class="text-[11px] text-gray-400">Track and manage all customer orders[cite: 3]</p>
                     </div>
-
-                    <!-- Filter Bar & Search -->
                     <div class="flex flex-col md:flex-row justify-between items-center gap-3 bg-gray-50/60 p-3 rounded-2xl">
                         <div class="relative w-full md:w-72">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-[11px]"></i></span>
@@ -180,8 +178,6 @@
                             <button onclick="filterOrderStatus('Cancelled')" id="ordfilt-Cancelled" class="px-3 py-1 bg-white border border-gray-200 text-gray-600 rounded-xl">Cancelled</button>
                         </div>
                     </div>
-
-                    <!-- Orders Table -->
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs">
                             <thead>
@@ -201,14 +197,54 @@
                 </div>
             </div>
 
-            <!-- SECTION: PRODUCTS CATALOG -->
+            <!-- SECTION: PRODUCT MANAGEMENT -->
             <div id="admin-sec-products" class="hidden space-y-4">
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden p-4 space-y-3">
                     <div class="flex justify-between items-center">
-                        <h2 class="text-sm font-bold text-gray-900">Products Catalog</h2>
+                        <h2 class="text-sm font-bold text-gray-900">Product Management</h2>
                         <button onclick="openProductModal()" class="bg-brand-500 text-white text-xs px-3 py-1.5 rounded-xl font-bold">+ Add Product</button>
                     </div>
-                    <div id="admin-products-list" class="space-y-2 max-h-96 overflow-y-auto text-xs"></div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead>
+                                <tr class="text-gray-400 border-b border-gray-100 text-[10px] bg-gray-50/50">
+                                    <th class="p-3">Product Name</th>
+                                    <th class="p-3">SKU</th>
+                                    <th class="p-3">Category</th>
+                                    <th class="p-3">Price</th>
+                                    <th class="p-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-products-table-body" class="divide-y divide-gray-50 text-[11px]"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: STOCK MANAGEMENT -->
+            <div id="admin-sec-inventory" class="hidden space-y-4">
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden p-4 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-sm font-bold text-gray-900">Stock Management</h2>
+                        <button onclick="filterLowStock()" id="low-stock-filter-btn" class="border border-gray-200 px-3 py-1.5 rounded-xl text-xs text-gray-600 font-medium hover:bg-gray-50">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-500 mr-1"></i> Low Stock Alert
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead>
+                                <tr class="text-gray-400 border-b border-gray-100 text-[10px] bg-gray-50/50">
+                                    <th class="p-3">Product Name</th>
+                                    <th class="p-3">SKU</th>
+                                    <th class="p-3">Category</th>
+                                    <th class="p-3">Stock</th>
+                                    <th class="p-3">Reorder Pt</th>
+                                    <th class="p-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-inventory-table-body" class="divide-y divide-gray-50 text-[11px]"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -319,6 +355,7 @@
                 </select>
                 <input type="number" step="0.01" id="prod-price" placeholder="Price ($)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
                 <input type="number" id="prod-stock" placeholder="Stock Quantity" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
+                <input type="number" id="prod-reorder" placeholder="Reorder Point (e.g. 10)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5" value="10">
                 <input type="text" id="prod-image" placeholder="Image URL (.jpg / .png)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
             </div>
             <button onclick="saveAdminProduct()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-xs">Save Product</button>
@@ -410,6 +447,7 @@
             if (window.products.length === 0) seedFullCatalog(db);
             if (window.renderProducts) window.renderProducts();
             if (window.renderAdminProducts) window.renderAdminProducts();
+            if (window.renderAdminInventory) window.renderAdminInventory();
         });
 
         onSnapshot(collection(db, "orders"), (snapshot) => {
@@ -538,6 +576,7 @@
             const category = document.getElementById('prod-category').value;
             const price = parseFloat(document.getElementById('prod-price').value);
             const stock = parseInt(document.getElementById('prod-stock').value);
+            const reorder = parseInt(document.getElementById('prod-reorder').value) || 10;
             const image = document.getElementById('prod-image').value.trim() || 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
 
             if (!name || isNaN(price)) return alert('Please enter valid product details.');
@@ -545,6 +584,7 @@
             const productData = {
                 name, sku, category, price,
                 stock: isNaN(stock) ? 10 : stock,
+                reorderPt: isNaN(reorder) ? 10 : reorder,
                 image, isPublished: true, updatedAt: new Date().toISOString()
             };
 
@@ -646,18 +686,16 @@
 
         async function seedFullCatalog(db) {
             const catalog = [
-                { name: 'Emma Thompson Set', sku: 'ORD-SRV-01', category: 'Accessories', price: 156.00, stock: 20, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
-                { name: 'Matte Pink Lipstick', sku: 'COS-001', category: 'Cosmetics', price: 89.50, stock: 15, image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&q=80' }
+                { name: 'Pearl Butterfly Hairpin', sku: 'HRP-001', category: 'Hairpins', price: 12.50, stock: 15, reorderPt: 5, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
+                { name: 'Matte Pink Lipstick', sku: 'COS-001', category: 'Cosmetics', price: 18.90, stock: 3, reorderPt: 8, image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&q=80' },
+                { name: 'Dainty Butterfly Choker', sku: 'ACC-001', category: 'Accessories', price: 15.00, stock: 4, reorderPt: 10, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' },
+                { name: 'Plush Crossbody Bag', sku: 'BAG-001', category: 'Bags', price: 24.99, stock: 12, reorderPt: 5, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' }
             ];
             for (let item of catalog) await addDoc(collection(db, "products"), { ...item, isPublished: true });
 
             const sampleOrders = [
                 { orderNum: '#ORD-001', customer: 'Emma Thompson', itemsCount: 3, status: 'Processing', total: 156.00, date: '2024-01-15', address: '123 Main St', phone: '123456789' },
-                { orderNum: '#ORD-002', customer: 'James Rodriguez', itemsCount: 1, status: 'Shipped', total: 89.50, date: '2024-01-15', address: '456 Park Ave', phone: '987654321' },
-                { orderNum: '#ORD-003', customer: 'Sofia Chen', itemsCount: 5, status: 'Pending', total: 342.00, date: '2024-01-14', address: '789 Broadway', phone: '555666777' },
-                { orderNum: '#ORD-004', customer: 'Michael Brown', itemsCount: 2, status: 'Shipped', total: 124.99, date: '2024-01-14', address: '321 Elm St', phone: '111222333' },
-                { orderNum: '#ORD-005', customer: 'Lisa Anderson', itemsCount: 1, status: 'Cancelled', total: 75.00, date: '2024-01-13', address: '654 Maple Rd', phone: '444555666' },
-                { orderNum: '#ORD-006', customer: 'David Wilson', itemsCount: 4, status: 'Processing', total: 298.50, date: '2024-01-13', address: '987 Oak Dr', phone: '777888999' }
+                { orderNum: '#ORD-002', customer: 'James Rodriguez', itemsCount: 1, status: 'Shipped', total: 89.50, date: '2024-01-15', address: '456 Park Ave', phone: '987654321' }
             ];
             for (let ord of sampleOrders) await addDoc(collection(db, "orders"), ord);
         }
@@ -667,7 +705,7 @@
     <script>
         const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
         window.products = []; window.orders = []; window.banners = [];
-        let cart = []; let wishlist = []; let activeCategory = 'All'; let currentOrderStatusFilter = 'All';
+        let cart = []; let wishlist = []; let activeCategory = 'All'; let currentOrderStatusFilter = 'All'; let lowStockFilterActive = false;
 
         function closePromoPopup() {
             if (popupTimerInterval) clearInterval(popupTimerInterval);
@@ -845,6 +883,7 @@
                 document.getElementById('prod-category').value = p.category || 'Hairpins';
                 document.getElementById('prod-price').value = p.price || '';
                 document.getElementById('prod-stock').value = p.stock || 10;
+                document.getElementById('prod-reorder').value = p.reorderPt || 10;
                 document.getElementById('prod-image').value = p.image || '';
             } else {
                 document.getElementById('product-modal-title').innerText = "Add Product to Database";
@@ -854,6 +893,7 @@
                 document.getElementById('prod-category').value = 'Hairpins';
                 document.getElementById('prod-price').value = '';
                 document.getElementById('prod-stock').value = '10';
+                document.getElementById('prod-reorder').value = '10';
                 document.getElementById('prod-image').value = '';
             }
             document.getElementById('admin-product-modal').classList.remove('hidden');
@@ -877,7 +917,7 @@
         }
 
         function switchAdminNav(sec) {
-            ['orders', 'products', 'promotions'].forEach(s => {
+            ['orders', 'products', 'inventory', 'promotions'].forEach(s => {
                 document.getElementById(`admin-sec-${s}`).classList.add('hidden');
                 document.getElementById(`adtab-${s}`).className = 'px-4 py-2 border-b-2 border-transparent text-gray-500 font-semibold';
             });
@@ -885,6 +925,7 @@
             document.getElementById(`adtab-${sec}`).className = 'px-4 py-2 border-b-2 border-brand-500 text-brand-600 font-semibold';
             if (sec === 'orders') renderAdminOrders();
             if (sec === 'products') renderAdminProducts();
+            if (sec === 'inventory') renderAdminInventory();
             if (sec === 'promotions') renderBannerHistory();
         }
 
@@ -903,7 +944,18 @@
             renderAdminOrders();
         }
 
-        // STYLEADMIN ORDERS TABLE MATCHING REFERENCE
+        function filterLowStock() {
+            lowStockFilterActive = !lowStockFilterActive;
+            const btn = document.getElementById('low-stock-filter-btn');
+            if (lowStockFilterActive) {
+                btn.className = "border border-brand-500 bg-brand-50 px-3 py-1.5 rounded-xl text-xs text-brand-600 font-bold";
+            } else {
+                btn.className = "border border-gray-200 px-3 py-1.5 rounded-xl text-xs text-gray-600 font-medium hover:bg-gray-50";
+            }
+            renderAdminInventory();
+        }
+
+        // ORDERS MANAGEMENT TABLE
         window.renderAdminOrders = function() {
             const tbody = document.getElementById('admin-orders-table-body');
             if (!tbody) return;
@@ -961,36 +1013,68 @@
             }
         };
 
-        window.exportOrdersCSV = function() {
-            let csv = "Order ID,Customer,Items,Status,Total,Date\n";
-            window.orders.forEach(o => {
-                csv += `${o.orderNum},"${o.customer}",${o.itemsCount || 1},${o.status},${o.total},${o.date}\n`;
-            });
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.setAttribute('href', url);
-            a.setAttribute('download', 'orders_export.csv');
-            a.click();
-            alert("Orders exported successfully as CSV!");
+        // PRODUCT MANAGEMENT TABLE
+        window.renderAdminProducts = function() {
+            const tbody = document.getElementById('admin-products-table-body');
+            if (!tbody) return;
+
+            tbody.innerHTML = window.products.length === 0 ? `<tr><td colspan="5" class="p-4 text-center text-gray-400">No products found.</td></tr>` :
+                window.products.map(p => `
+                    <tr class="hover:bg-gray-50/50">
+                        <td class="p-3 flex items-center space-x-2">
+                            <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-8 h-8 rounded-lg object-cover">
+                            <b class="text-gray-900">${p.name}</b>
+                        </td>
+                        <td class="p-3 font-mono font-medium">${p.sku || 'SKU-001'}</td>
+                        <td class="p-3"><span class="bg-gray-100 px-2 py-0.5 rounded text-gray-600">${p.category || 'General'}</span></td>
+                        <td class="p-3 font-bold text-gray-900">$${Number(p.price || 0).toFixed(2)}</td>
+                        <td class="p-3 text-right space-x-1">
+                            <button onclick="openProductModal('${p.id}')" class="bg-white border border-gray-200 text-gray-700 px-2.5 py-1 rounded-lg font-medium">Edit</button>
+                            <button onclick="deleteProduct('${p.id}')" class="bg-red-50 text-red-600 px-2.5 py-1 rounded-lg font-medium">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
         };
 
-        window.renderAdminProducts = function() {
-            const listEl = document.getElementById('admin-products-list');
-            if (!listEl) return;
-            listEl.innerHTML = window.products.length === 0 ? `<p class="text-gray-400 text-xs">No products found.</p>` :
-                window.products.map(p => `
-                    <div class="flex justify-between items-center bg-gray-50 p-2.5 rounded-xl border border-gray-100">
-                        <div class="flex items-center space-x-2">
-                            <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-8 h-8 rounded-lg object-cover">
-                            <div>
-                                <b>${p.name}</b>
-                                <p class="text-[10px] text-gray-400">$${p.price} • Stock: ${p.stock ?? 10}</p>
-                            </div>
-                        </div>
-                        <button onclick="deleteProduct('${p.id}')" class="text-red-500 text-xs px-2 py-1">Delete</button>
-                    </div>
-                `).join('');
+        // STOCK MANAGEMENT TABLE
+        window.renderAdminInventory = function() {
+            const tbody = document.getElementById('admin-inventory-table-body');
+            if (!tbody) return;
+
+            let filtered = window.products.filter(p => {
+                const stockVal = p.stock ?? 10;
+                const reorderVal = p.reorderPt ?? 10;
+                const isLow = stockVal <= reorderVal;
+                if (lowStockFilterActive && !isLow) return false;
+                return true;
+            });
+
+            tbody.innerHTML = filtered.length === 0 ? `<tr><td colspan="6" class="p-4 text-center text-gray-400">No inventory products found.</td></tr>` :
+                filtered.map(p => {
+                    const stockVal = p.stock ?? 10;
+                    const reorderVal = p.reorderPt ?? 10;
+                    const isLow = stockVal <= reorderVal;
+                    
+                    return `
+                        <tr class="hover:bg-gray-50/50">
+                            <td class="p-3 flex items-center space-x-2">
+                                <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-8 h-8 rounded-lg object-cover">
+                                <b class="text-gray-900">${p.name}</b>
+                            </td>
+                            <td class="p-3 font-mono font-medium">${p.sku || 'SKU-001'}</td>
+                            <td class="p-3"><span class="bg-gray-100 px-2 py-0.5 rounded text-gray-600">${p.category || 'General'}</span></td>
+                            <td class="p-3 font-bold">
+                                ${stockVal} 
+                                ${isLow ? `<span class="text-red-500 ml-1" title="Low stock warning!">⚠️</span>` : ''}
+                            </td>
+                            <td class="p-3 text-gray-500">${reorderVal}</td>
+                            <td class="p-3 text-right space-x-1">
+                                <button onclick="openProductModal('${p.id}')" class="bg-white border border-gray-200 text-gray-700 px-2 py-1 rounded font-medium">Edit Stock</button>
+                                <button onclick="deleteProduct('${p.id}')" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-xmark"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
         };
     </script>
 </body>
