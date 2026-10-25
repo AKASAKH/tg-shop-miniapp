@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sparkle & Bloom - Accessories Shop</title>
+    <title>Song Sa Shop - Management Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Prevent double-tap zoom across web and mobile browsers */
-        html, body, button, a, img, input {
-            touch-action: manipulation;
-        }
+        html, body, button, a, img, input { touch-action: manipulation; }
     </style>
     <script>
         tailwind.config = {
@@ -27,8 +24,8 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased pb-24 select-none">
 
-    <!-- PROMOTIONAL POPUP BANNER -->
-    <div id="promo-popup" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300">
+    <!-- PROMOTIONAL POPUP BANNER (Auto-closes in 10s) -->
+    <div id="promo-popup" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300 hidden">
         <div class="bg-white text-gray-900 rounded-2xl max-w-xs w-full p-5 space-y-3 shadow-xl relative text-center border border-gray-100">
             <button onclick="closePromoPopup()" class="absolute top-2.5 right-2.5 text-gray-400 hover:text-gray-600 w-6 h-6 rounded-full flex items-center justify-center text-xs">
                 <i class="fa-solid fa-xmark"></i>
@@ -38,6 +35,7 @@
                 <span id="promo-tag-text" class="bg-brand-50 text-brand-600 text-[9px] uppercase font-bold px-2.5 py-0.5 rounded-md">Special Offer</span>
                 <h3 id="promo-title-text" class="text-sm font-bold mt-1 text-gray-900">Get 30% OFF Your Order!</h3>
                 <p id="promo-desc-text" class="text-[11px] text-gray-500 mt-0.5">Use code <span id="promo-code-text" class="font-bold text-gray-800 underline">PINK10</span> at checkout.</p>
+                <p class="text-[9px] text-gray-400 mt-2">Closing automatically in <span id="popup-timer" class="font-bold">10</span>s</p>
             </div>
             <button onclick="closePromoPopup()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-xs">Shop Now ✨</button>
         </div>
@@ -49,8 +47,8 @@
             <div class="flex items-center space-x-2">
                 <span class="bg-brand-500 text-white w-7 h-7 rounded-lg flex items-center justify-center text-xs"><i class="fa-solid fa-gem"></i></span>
                 <div>
-                    <h1 class="font-bold text-gray-900 text-xs">Sparkle & Bloom</h1>
-                    <p class="text-[9px] text-brand-600 font-medium">Accessories Store</p>
+                    <h1 class="font-bold text-gray-900 text-xs">Song Sa Shop</h1>
+                    <p class="text-[9px] text-brand-600 font-medium">Cosmetics & Accessories</p>
                 </div>
             </div>
             <div class="flex items-center space-x-1.5">
@@ -68,39 +66,29 @@
 
         <!-- ================= CUSTOMER STOREFRONT ================= -->
         <div id="customer-view" class="space-y-3">
-
-            <!-- SHOP CATALOG -->
             <div id="page-shop" class="space-y-3">
                 <div class="relative max-w-md mx-auto">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-[11px]"></i></span>
-                    <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search hairpins, bags, rings..." class="w-full pl-8 pr-3 py-1.5 bg-white border border-gray-200 rounded-xl text-xs shadow-xs focus:outline-none focus:border-brand-500">
+                    <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search products..." class="w-full pl-8 pr-3 py-1.5 bg-white border border-gray-200 rounded-xl text-xs shadow-xs focus:outline-none focus:border-brand-500">
                 </div>
-                <!-- Categories -->
                 <div class="flex space-x-1.5 overflow-x-auto pb-1 text-[11px] scrollbar-none justify-start md:justify-center">
                     <button onclick="filterCategory('All')" class="cat-btn bg-brand-500 text-white px-3 py-1 rounded-full font-medium whitespace-nowrap shadow-xs">All ✨</button>
                     <button onclick="filterCategory('Hairpins')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Hairpins 🎀</button>
-                    <button onclick="filterCategory('Necklaces')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Necklaces 💎</button>
-                    <button onclick="filterCategory('Rings')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Rings 💍</button>
-                    <button onclick="filterCategory('Earrings')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Earrings ✨</button>
-                    <button onclick="filterCategory('Phone Charms')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Charms 🌸</button>
-                    <button onclick="filterCategory('Bags & Pouches')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Bags 👜</button>
-                    <button onclick="filterCategory('Hair Accessories')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Hair Acc 👑</button>
-                    <button onclick="filterCategory('Makeup Accessories')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Makeup 💄</button>
+                    <button onclick="filterCategory('Cosmetics')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Cosmetics 💄</button>
+                    <button onclick="filterCategory('Accessories')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Accessories 💎</button>
+                    <button onclick="filterCategory('Bags')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1 rounded-full font-medium whitespace-nowrap">Bags 👜</button>
                 </div>
-                <!-- Product Grid -->
                 <div id="product-grid" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
             </div>
 
-            <!-- PAGE: WISHLIST -->
+            <!-- WISHLIST -->
             <div id="page-wishlist" class="hidden space-y-3 max-w-2xl mx-auto">
                 <h3 class="font-bold text-xs text-gray-900 uppercase tracking-wide">Saved Favorite Items 💖</h3>
                 <div id="wishlist-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
             </div>
 
-            <!-- PAGE: PROFILE / DASHBOARD -->
+            <!-- PROFILE -->
             <div id="page-profile" class="hidden space-y-3 max-w-md mx-auto">
-                
-                <!-- CUSTOMER DASHBOARD -->
                 <div id="customer-dashboard-view" class="space-y-3 hidden">
                     <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 flex items-center justify-between">
                         <div class="flex items-center space-x-2.5">
@@ -112,132 +100,134 @@
                         </div>
                         <button onclick="handleSignOut()" class="text-[11px] bg-gray-50 text-gray-600 px-2.5 py-1 rounded-lg font-medium hover:bg-gray-100">Sign Out</button>
                     </div>
-
                     <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 text-xs space-y-2.5">
                         <h4 class="font-bold text-gray-900 text-xs border-b border-gray-50 pb-2">My Orders & Account</h4>
                         <div id="customer-my-orders-list" class="space-y-2 max-h-60 overflow-y-auto"></div>
                     </div>
                 </div>
 
-                <!-- AUTH FORM -->
                 <div id="profile-auth-box" class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3">
                     <div class="text-center space-y-0.5">
-                        <h3 class="font-bold text-xs text-gray-900">Welcome to Sparkle & Bloom</h3>
+                        <h3 class="font-bold text-xs text-gray-900">Welcome to Song Sa Shop</h3>
                         <p class="text-[10px] text-gray-400">Sign in to access your personal dashboard</p>
                     </div>
-
-                    <!-- Auth Tabs -->
                     <div class="flex bg-gray-50 p-0.5 rounded-xl text-[11px] font-medium">
                         <button onclick="switchAuthTab('login')" id="authtab-login" class="flex-1 py-1 bg-white text-gray-900 rounded-lg shadow-xs">Log In</button>
                         <button onclick="switchAuthTab('signup')" id="authtab-signup" class="flex-1 py-1 text-gray-500 rounded-lg">Sign Up</button>
                     </div>
-
-                    <!-- LOGIN -->
                     <div id="auth-form-login" class="space-y-2 text-xs">
                         <input type="email" id="login-email" placeholder="Email address" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-500" value="admin@songsa.com">
                         <input type="password" id="login-password" placeholder="Password" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-500" value="rothsama">
                         <button onclick="handleEmailLogin()" class="w-full bg-brand-500 text-white font-bold text-xs py-2 rounded-xl shadow-xs">Log In</button>
                     </div>
-
-                    <!-- SIGN UP -->
                     <div id="auth-form-signup" class="space-y-2 text-xs hidden">
                         <input type="text" id="signup-name" placeholder="Full Name" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-500">
                         <input type="email" id="signup-email" placeholder="Email address" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-500">
                         <input type="password" id="signup-password" placeholder="Password (min 6 chars)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-brand-500">
                         <button onclick="handleEmailSignUp()" class="w-full bg-brand-500 text-white font-bold text-xs py-2 rounded-xl shadow-xs">Create Account</button>
                     </div>
-
-                    <div class="relative flex py-0.5 items-center">
-                        <div class="flex-grow border-t border-gray-100"></div>
-                        <span class="flex-shrink mx-2 text-[9px] text-gray-300 uppercase font-medium">Or</span>
-                        <div class="flex-grow border-t border-gray-100"></div>
-                    </div>
-
-                    <!-- TELEGRAM SIGN IN -->
                     <button onclick="handleTelegramSignIn()" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs py-2 rounded-xl flex items-center justify-center space-x-1.5 shadow-xs">
                         <i class="fa-brands fa-telegram text-sm"></i>
                         <span>Continue with Telegram</span>
                     </button>
                 </div>
-
             </div>
-
         </div>
 
-        <!-- ================= ECOMORA ADMIN DASHBOARD ================= -->
+        <!-- ================= PRODUCTION ADMIN DASHBOARD (Figma Styled) ================= -->
         <div id="admin-view" class="hidden space-y-4">
 
-            <!-- NAVIGATION -->
-            <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs flex flex-col md:flex-row justify-between items-center gap-2">
+            <!-- Top Header Bar -->
+            <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs flex justify-between items-center">
                 <div class="flex items-center space-x-2">
-                    <span class="font-bold text-xs text-gray-900 flex items-center"><i class="fa-solid fa-gauge text-brand-500 mr-1.5"></i> Admin Dashboard</span>
+                    <span class="font-bold text-xs text-gray-900 flex items-center"><i class="fa-solid fa-store text-brand-500 mr-1.5"></i> Song Sa Store Owner Portal</span>
                 </div>
-                <div class="flex items-center space-x-1 text-[11px] font-medium">
-                    <button onclick="switchAdminNav('dashboard')" id="adtab-dashboard" class="px-3 py-1 bg-brand-500 text-white rounded-lg">Overview</button>
-                    <button onclick="switchAdminNav('products')" id="adtab-products" class="px-3 py-1 text-gray-500 rounded-lg">Products</button>
-                    <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-3 py-1 text-gray-500 rounded-lg">Orders</button>
-                    <button onclick="switchAdminNav('inventory')" id="adtab-inventory" class="px-3 py-1 text-gray-500 rounded-lg">Stock</button>
-                    <button onclick="switchAdminNav('promotions')" id="adtab-promotions" class="px-3 py-1 text-gray-500 rounded-lg">Banners & History</button>
+                <div class="flex items-center space-x-2">
+                    <button onclick="openProductModal()" class="bg-brand-500 hover:bg-brand-600 text-white text-xs px-3 py-1.5 rounded-xl font-bold shadow-xs flex items-center space-x-1">
+                        <i class="fa-solid fa-plus text-[10px]"></i><span>Add product</span>
+                    </button>
+                    <button onclick="handleSignOut()" class="text-xs bg-red-50 text-red-600 px-3 py-1.5 rounded-xl font-medium">Sign Out</button>
                 </div>
-                <button onclick="handleSignOut()" class="text-[11px] bg-red-50 text-red-600 px-2.5 py-1 rounded-lg font-medium">Sign Out</button>
             </div>
 
-            <!-- OVERVIEW -->
-            <div id="admin-sec-dashboard" class="space-y-3">
-                <div class="grid grid-cols-2 md:grid-cols-2 gap-3">
+            <!-- Navigation Tabs -->
+            <div class="flex space-x-1 border-b border-gray-200 text-xs font-semibold overflow-x-auto">
+                <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-brand-500 text-brand-600">Products</button>
+                <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Orders</button>
+                <button onclick="switchAdminNav('inventory')" id="adtab-inventory" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Stock Management</button>
+                <button onclick="switchAdminNav('promotions')" id="adtab-promotions" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Banners & History</button>
+            </div>
+
+            <!-- SECTION: PRODUCTS (Figma Style Table & Metrics) -->
+            <div id="admin-sec-products" class="space-y-4">
+                <!-- Metrics Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                     <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-1">
-                        <span class="text-[10px] text-gray-400 font-medium">Total Revenue</span>
-                        <h2 class="text-lg font-bold text-gray-900" id="dash-total-revenue">$0.00</h2>
+                        <span class="text-[10px] text-gray-400 font-medium">TOTAL PRODUCTS</span>
+                        <h2 class="text-xl font-bold text-gray-900" id="stat-total-products">0</h2>
+                        <span class="text-[10px] text-emerald-600 font-medium">+Active Live</span>
                     </div>
                     <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-1">
-                        <span class="text-[10px] text-gray-400 font-medium">Total Orders</span>
-                        <h2 class="text-lg font-bold text-gray-900" id="dash-total-sales-count">0</h2>
+                        <span class="text-[10px] text-gray-400 font-medium">TOTAL REVENUE</span>
+                        <h2 class="text-xl font-bold text-gray-900" id="stat-total-revenue">$0.00</h2>
+                        <span class="text-[10px] text-emerald-600 font-medium">+Verified Sales</span>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-1">
+                        <span class="text-[10px] text-gray-400 font-medium">TOTAL ORDERS</span>
+                        <h2 class="text-xl font-bold text-gray-900" id="stat-total-orders">0</h2>
+                        <span class="text-[10px] text-brand-600 font-medium">Database Tracked</span>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-1">
+                        <span class="text-[10px] text-gray-400 font-medium">STORE CHANNEL</span>
+                        <h2 class="text-xl font-bold text-gray-900">@songsashop</h2>
+                        <span class="text-[10px] text-sky-600 font-medium">Auto-Post Active</span>
                     </div>
                 </div>
 
-                <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-3">
-                    <h3 class="font-bold text-xs text-gray-900">Recent Orders</h3>
+                <!-- Product Table Container -->
+                <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden">
+                    <div class="p-3 border-b border-gray-100 flex flex-col md:flex-row justify-between items-center gap-2">
+                        <input type="text" id="admin-search-products" oninput="renderAdminProducts()" placeholder="Search by product name or SKU..." class="w-full md:w-72 px-3 py-1.5 border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-brand-500">
+                        <div class="flex space-x-1 text-[11px]">
+                            <button onclick="filterAdminProductStatus('All')" class="px-3 py-1 bg-gray-100 text-gray-800 rounded-lg font-bold">All</button>
+                            <button onclick="filterAdminProductStatus('Published')" class="px-3 py-1 text-gray-500 rounded-lg">Published</button>
+                            <button onclick="filterAdminProductStatus('Low Stock')" class="px-3 py-1 text-gray-500 rounded-lg">Low Stock</button>
+                        </div>
+                    </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs">
                             <thead>
-                                <tr class="text-gray-400 border-b border-gray-50 pb-1 text-[10px]">
-                                    <th class="pb-1">Order</th>
-                                    <th class="pb-1">Customer</th>
-                                    <th class="pb-1">Amount</th>
-                                    <th class="pb-1">Status</th>
+                                <tr class="text-gray-400 border-b border-gray-100 text-[10px] bg-gray-50/50">
+                                    <th class="p-3">Product Name</th>
+                                    <th class="p-3">SKU & Date</th>
+                                    <th class="p-3">Price</th>
+                                    <th class="p-3">Stock</th>
+                                    <th class="p-3">Status</th>
+                                    <th class="p-3 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="ecomora-orders-tbody" class="divide-y divide-gray-50 text-[11px]"></tbody>
+                            <tbody id="admin-products-table-body" class="divide-y divide-gray-50 text-[11px]"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <!-- PRODUCTS -->
-            <div id="admin-sec-products" class="hidden space-y-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
-                <div class="flex justify-between items-center">
-                    <h4 class="font-bold text-xs text-gray-900">Manage Products Catalog</h4>
-                    <button onclick="openProductModal()" class="bg-brand-500 text-white text-[11px] px-3 py-1.5 rounded-xl font-medium shadow-xs">+ Add Product</button>
-                </div>
-                <div id="admin-products-list" class="space-y-2 max-h-80 overflow-y-auto text-xs"></div>
-            </div>
-
-            <!-- ORDERS -->
+            <!-- SECTION: ORDERS -->
             <div id="admin-sec-orders" class="hidden space-y-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
-                <h4 class="font-bold text-xs text-gray-900">Manage Orders</h4>
-                <div id="admin-orders-full-list" class="space-y-2 max-h-80 overflow-y-auto text-xs"></div>
+                <h4 class="font-bold text-xs text-gray-900">Manage Customer Orders</h4>
+                <div id="admin-orders-full-list" class="space-y-2 max-h-96 overflow-y-auto text-xs"></div>
             </div>
 
-            <!-- INVENTORY -->
+            <!-- SECTION: INVENTORY -->
             <div id="admin-sec-inventory" class="hidden space-y-3 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
-                <h4 class="font-bold text-xs text-gray-900">Stock Alerts</h4>
-                <div id="admin-inventory-list" class="space-y-2 max-h-80 overflow-y-auto text-xs"></div>
+                <h4 class="font-bold text-xs text-gray-900">Stock Management & Alerts</h4>
+                <div id="admin-inventory-list" class="space-y-2 max-h-96 overflow-y-auto text-xs"></div>
             </div>
 
-            <!-- BANNER MANAGER -->
+            <!-- SECTION: BANNER MANAGER -->
             <div id="admin-sec-promotions" class="hidden space-y-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
                 <div class="space-y-2">
-                    <h4 class="font-bold text-xs text-gray-900">Create or Edit Banner</h4>
+                    <h4 class="font-bold text-xs text-gray-900">Create or Edit Banner (Auto-closes in 10s on App Load)</h4>
                     <input type="hidden" id="cust-promo-id" value="">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
                         <input type="text" id="cust-promo-tag" placeholder="Tag (e.g. Special Offer)" class="border border-gray-200 rounded-xl px-3 py-1.5">
@@ -250,13 +240,9 @@
                         <button onclick="clearBannerForm()" class="bg-gray-100 text-gray-600 text-xs px-3 py-2 rounded-xl font-medium">Clear Form</button>
                     </div>
                 </div>
-
                 <hr class="border-gray-100 my-2">
-
                 <div class="space-y-2">
-                    <h4 class="font-bold text-xs text-gray-900 flex justify-between items-center">
-                        <span>Banner Update History (Database)</span>
-                    </h4>
+                    <h4 class="font-bold text-xs text-gray-900">Banner Update History (Database)</h4>
                     <div id="admin-banner-history-list" class="space-y-2 max-h-60 overflow-y-auto text-xs"></div>
                 </div>
             </div>
@@ -265,36 +251,25 @@
 
     </main>
 
-    <!-- CUSTOMER PRODUCT DETAIL MODAL -->
+    <!-- PRODUCT DETAIL MODAL -->
     <div id="product-detail-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 transition-opacity">
         <div class="bg-white rounded-3xl max-w-sm w-full p-4 space-y-3 shadow-2xl relative text-xs overflow-hidden border border-gray-100">
-            <button onclick="closeProductDetailModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            
+            <button onclick="closeProductDetailModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
             <div class="relative w-full aspect-square bg-gray-50 rounded-2xl overflow-hidden">
                 <img id="view-prod-image" src="" class="w-full h-full object-cover">
                 <span id="view-prod-category" class="absolute bottom-2 left-2 bg-white/90 backdrop-blur-md text-gray-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-xs">Category</span>
             </div>
-
             <div class="space-y-1">
                 <div class="flex justify-between items-start">
                     <h3 id="view-prod-name" class="font-bold text-sm text-gray-900 leading-snug">Product Title</h3>
                     <span id="view-prod-price" class="font-bold text-sm text-brand-600">$0.00</span>
                 </div>
                 <p id="view-prod-sku" class="text-[10px] text-gray-400 font-mono">SKU: N/A</p>
-                <p id="view-prod-desc" class="text-[11px] text-gray-500 pt-1 leading-relaxed">High-quality accessories crafted with care for everyday elegance.</p>
+                <p id="view-prod-desc" class="text-[11px] text-gray-500 pt-1 leading-relaxed">High-quality accessories and cosmetics crafted for everyday elegance.</p>
             </div>
-
             <div class="flex items-center justify-between border-t border-gray-50 pt-3">
-                <div class="text-[10px] text-gray-400">
-                    <span>Stock Status: </span>
-                    <b id="view-prod-stock" class="text-emerald-600 font-bold">10 available</b>
-                </div>
-                <button id="view-prod-add-btn" class="bg-brand-500 text-white font-bold text-xs px-4 py-2 rounded-xl shadow-xs flex items-center space-x-1.5">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    <span>Add to Bag</span>
-                </button>
+                <div class="text-[10px] text-gray-400"><span>Stock Status: </span><b id="view-prod-stock" class="text-emerald-600 font-bold">10 available</b></div>
+                <button id="view-prod-add-btn" class="bg-brand-500 text-white font-bold text-xs px-4 py-2 rounded-xl shadow-xs flex items-center space-x-1.5"><i class="fa-solid fa-cart-shopping"></i><span>Add to Bag</span></button>
             </div>
         </div>
     </div>
@@ -347,20 +322,16 @@
             <input type="hidden" id="prod-id" value="">
             <div class="space-y-2">
                 <input type="text" id="prod-name" placeholder="Product Name" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                <input type="text" id="prod-sku" placeholder="SKU Code (e.g. HRP-PRL-001)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 uppercase">
+                <input type="text" id="prod-sku" placeholder="SKU Code (e.g. KMI662266)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 uppercase">
                 <select id="prod-category" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 bg-white">
                     <option value="Hairpins">Hairpins 🎀</option>
-                    <option value="Necklaces">Necklaces 💎</option>
-                    <option value="Rings">Rings 💍</option>
-                    <option value="Earrings">Earrings ✨</option>
-                    <option value="Phone Charms">Phone Charms 🌸</option>
-                    <option value="Bags & Pouches">Bags & Pouches 👜</option>
-                    <option value="Hair Accessories">Hair Accessories 👑</option>
-                    <option value="Makeup Accessories">Makeup Accessories 💄</option>
+                    <option value="Cosmetics">Cosmetics 💄</option>
+                    <option value="Accessories">Accessories 💎</option>
+                    <option value="Bags">Bags 👜</option>
                 </select>
                 <input type="number" step="0.01" id="prod-price" placeholder="Price ($)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
                 <input type="number" id="prod-stock" placeholder="Stock Quantity" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                <input type="text" id="prod-image" placeholder="Image URL (e.g. https://...jpg)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
+                <input type="text" id="prod-image" placeholder="Image URL (.jpg / .png)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
             </div>
             <button onclick="saveAdminProduct()" class="w-full bg-brand-500 text-white font-bold text-xs py-2.5 rounded-xl shadow-xs">Save Product</button>
         </div>
@@ -388,18 +359,13 @@
         window.firebaseDb = db;
         window.firebaseAuth = auth;
 
-        // TELEGRAM BOT API CREDENTIALS FOR AUTO-POSTING TO @songsashop CHANNEL
         const TELEGRAM_BOT_TOKEN = "8799522797:AAG5hhzhfDjXxftdlkJ7zVgcDQqhV7hR-4k";
         const TELEGRAM_CHANNEL_ID = "@songsashop";
-        
-        // DIRECT MINI APP URL FOR TELEGRAM CHANNEL BUTTON (Replace with your actual Bot/MiniApp link if needed, e.g. https://t.me/your_bot/app)
         const TELEGRAM_MINIAPP_URL = "https://t.me/songsashop"; 
 
-        // Helper function to send broadcast posts to Telegram Channel with Mini App Button
         async function postToTelegramChannel(photoUrl, captionText) {
             try {
-                const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
-                await fetch(url, {
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -407,27 +373,18 @@
                         photo: photoUrl || "https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80",
                         caption: captionText,
                         parse_mode: 'HTML',
-                        reply_markup: {
-                            inline_keyboard: [
-                                [{ text: "Shop Now 🛍️", url: TELEGRAM_MINIAPP_URL }]
-                            ]
-                        }
+                        reply_markup: { inline_keyboard: [[{ text: "Shop Now 🛍️", url: TELEGRAM_MINIAPP_URL }]] }
                     })
                 });
-                console.log('Successfully posted update to @songsashop Telegram Channel!');
-            } catch (err) {
-                console.error('Failed to post to Telegram Channel:', err);
-            }
+            } catch (err) { console.error('Telegram broadcast error:', err); }
         }
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 window.currentUser = user;
                 document.getElementById('session-user-badge').innerText = user.email || 'Active User';
-                
                 const userRef = doc(db, "users", user.uid);
                 const userSnap = await getDoc(userRef);
-                
                 if (!userSnap.exists()) {
                     await setDoc(userRef, {
                         uid: user.uid,
@@ -438,7 +395,6 @@
                         createdAt: new Date().toISOString()
                     });
                 }
-
                 const userData = userSnap.exists() ? userSnap.data() : {};
                 const isAdmin = userData.role === "admin" || (user.email && user.email.toLowerCase().endsWith("@songsa.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
 
@@ -447,7 +403,7 @@
                 } else {
                     document.getElementById('profile-auth-box').classList.add('hidden');
                     document.getElementById('customer-dashboard-view').classList.remove('hidden');
-                    document.getElementById('cust-profile-name').innerText = userData.name || (user.email ? user.email.split('@')[0] : "Customer");
+                    document.getElementById('cust-profile-name').innerText = userData.name || "Customer";
                     document.getElementById('cust-profile-email').innerText = user.email || "Telegram User";
                     if (window.renderCustomerOrders) window.renderCustomerOrders();
                 }
@@ -460,35 +416,28 @@
             }
         });
 
-        // REAL-TIME SYNC: PRODUCTS
         onSnapshot(collection(db, "products"), (snapshot) => {
             window.products = [];
             snapshot.forEach(docSnap => window.products.push({ id: docSnap.id, ...docSnap.data() }));
-
             if (window.products.length === 0) seedFullCatalog(db);
             if (window.renderProducts) window.renderProducts();
             if (window.renderAdminProducts) window.renderAdminProducts();
             if (window.renderAdminInventory) window.renderAdminInventory();
         });
 
-        // REAL-TIME SYNC: ORDERS
         onSnapshot(collection(db, "orders"), (snapshot) => {
             window.orders = [];
             snapshot.forEach(docSnap => window.orders.push({ docId: docSnap.id, ...docSnap.data() }));
             if (window.renderAdminOrders) window.renderAdminOrders();
-            if (window.renderEcomoraDash) window.renderEcomoraDash();
+            if (window.renderAdminProducts) window.renderAdminProducts();
             if (window.renderCustomerOrders) window.renderCustomerOrders();
         });
 
-        // REAL-TIME SYNC: ACTIVE BANNER (FORCED VISIBILITY ON OPEN)
+        // ACTIVE BANNER WITH 10-SECOND AUTO CLOSE TIMER
+        let popupTimerInterval = null;
         onSnapshot(doc(db, "settings", "banner"), (docSnap) => {
             const popup = document.getElementById('promo-popup');
-            
-            let tag = "Special Offer";
-            let title = "Get 30% OFF Your Order!";
-            let desc = "Use code PINK10 at checkout.";
-            let code = "PINK10";
-
+            let tag = "Special Offer", title = "Get 30% OFF Your Order!", desc = "Use code PINK10 at checkout.", code = "PINK10";
             if (docSnap.exists()) {
                 const b = docSnap.data();
                 window.activeBannerId = b.bannerId;
@@ -497,20 +446,34 @@
                 if (b.desc) desc = b.desc;
                 if (b.code) code = b.code;
             }
-
             document.getElementById('promo-tag-text').innerText = tag;
             document.getElementById('promo-title-text').innerText = title;
             document.getElementById('promo-desc-text').innerText = desc;
             document.getElementById('promo-code-text').innerText = code;
 
             if (popup) {
-                popup.classList.remove('hidden'); // Force popup open on load
+                popup.classList.remove('hidden');
+                startPopupAutoCloseTimer();
             }
-
             if (window.renderBannerHistory) window.renderBannerHistory();
         });
 
-        // REAL-TIME SYNC: BANNER HISTORY
+        window.startPopupAutoCloseTimer = function() {
+            if (popupTimerInterval) clearInterval(popupTimerInterval);
+            let timeLeft = 10;
+            const timerEl = document.getElementById('popup-timer');
+            if (timerEl) timerEl.innerText = timeLeft;
+
+            popupTimerInterval = setInterval(() => {
+                timeLeft--;
+                if (timerEl) timerEl.innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(popupTimerInterval);
+                    closePromoPopup();
+                }
+            }, 1000);
+        };
+
         onSnapshot(collection(db, "banners"), (snapshot) => {
             window.banners = [];
             snapshot.forEach(docSnap => window.banners.push({ id: docSnap.id, ...docSnap.data() }));
@@ -541,14 +504,11 @@
             try {
                 const cred = await createUserWithEmailAndPassword(auth, email, password);
                 await setDoc(doc(db, "users", cred.user.uid), {
-                    uid: cred.user.uid,
-                    name: name || email.split('@')[0],
-                    email,
+                    uid: cred.user.uid, name: name || email.split('@')[0], email,
                     role: email.toLowerCase().endsWith("@songsa.com") ? "admin" : "customer",
-                    authProvider: "email",
-                    createdAt: new Date().toISOString()
+                    authProvider: "email", createdAt: new Date().toISOString()
                 });
-                alert('Account saved to database successfully! 🎉');
+                alert('Account saved successfully! 🎉');
             } catch (err) { alert('Sign Up Failed: ' + err.message); }
         };
 
@@ -559,25 +519,17 @@
                 const tgName = tgUser ? `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() : "Telegram Shopper";
                 const tgEmail = tgUser?.username ? `${tgUser.username}@telegram.org` : `${tgId}@telegram.org`;
 
-                const userRef = doc(db, "users", tgId);
-                await setDoc(userRef, {
-                    uid: tgId,
-                    name: tgName || "Telegram Shopper",
-                    email: tgEmail,
-                    role: "customer",
-                    authProvider: "telegram",
-                    createdAt: new Date().toISOString()
+                await setDoc(doc(db, "users", tgId), {
+                    uid: tgId, name: tgName, email: tgEmail, role: "customer", authProvider: "telegram", createdAt: new Date().toISOString()
                 }, { merge: true });
 
-                alert('Telegram account saved to database! ✨');
+                alert('Telegram account saved! ✨');
                 document.getElementById('session-user-badge').innerText = tgName;
                 document.getElementById('profile-auth-box').classList.add('hidden');
                 document.getElementById('customer-dashboard-view').classList.remove('hidden');
                 document.getElementById('cust-profile-name').innerText = tgName;
                 document.getElementById('cust-profile-email').innerText = tgEmail;
-            } catch (err) {
-                alert('Telegram Sign In Error: ' + err.message);
-            }
+            } catch (err) { alert('Telegram Sign In Error: ' + err.message); }
         };
 
         window.handleSignOut = async function() {
@@ -587,19 +539,16 @@
                 document.getElementById('session-user-badge').innerText = 'Guest Mode';
                 document.getElementById('profile-auth-box').classList.remove('hidden');
                 document.getElementById('customer-dashboard-view').classList.add('hidden');
-                
                 exitAdminMode();
                 switchCustomerTab('shop');
                 alert('Signed out successfully.');
-            } catch (err) {
-                alert('Sign Out Error: ' + err.message);
-            }
+            } catch (err) { alert('Sign Out Error: ' + err.message); }
         };
 
         window.saveAdminProduct = async function() {
             const prodId = document.getElementById('prod-id').value;
             const name = document.getElementById('prod-name').value;
-            const sku = document.getElementById('prod-sku').value.trim() || `SKU-${Math.floor(1000 + Math.random() * 9000)}`;
+            const sku = document.getElementById('prod-sku').value.trim() || `KMI${Math.floor(100000 + Math.random() * 900000)}`;
             const category = document.getElementById('prod-category').value;
             const price = parseFloat(document.getElementById('prod-price').value);
             const stock = parseInt(document.getElementById('prod-stock').value);
@@ -610,9 +559,7 @@
             const productData = {
                 name, sku, category, price,
                 stock: isNaN(stock) ? 10 : stock,
-                image,
-                isPublished: true,
-                updatedAt: new Date().toISOString()
+                image, isPublished: true, updatedAt: new Date().toISOString()
             };
 
             if (prodId) {
@@ -621,26 +568,16 @@
             } else {
                 productData.createdAt = new Date().toISOString();
                 await addDoc(collection(db, "products"), productData);
-                
-                const caption = `<b>✨ NEW ARRIVAL AT SPARKLE & BLOOM! ✨</b>\n\n` +
-                                `<b>${name}</b>\n` +
-                                `🏷️ Category: ${category}\n` +
-                                `🔢 SKU: <code>${sku}</code>\n` +
-                                `💰 Price: <b>$${price.toFixed(2)}</b>\n` +
-                                `📦 In Stock: ${productData.stock} units\n\n` +
-                                `🛍️ <i>Shop now in our Telegram Mini App!</i>`;
-                
-                postToTelegramChannel(image, caption);
-                alert('New product saved & posted to @songsashop Telegram Channel! 🎉');
+                postToTelegramChannel(image, `<b>✨ NEW ARRIVAL AT SONG SA SHOP! ✨</b>\n\n<b>${name}</b>\n🏷️ Category: ${category}\n🔢 SKU: <code>${sku}</code>\n💰 Price: <b>$${price.toFixed(2)}</b>\n📦 In Stock: ${productData.stock}\n\n🛍️ <i>Shop now in our Telegram Mini App!</i>`);
+                alert('New product saved & posted to @songsashop! 🎉');
             }
-
             closeAdminProductModal();
         };
 
         window.deleteProduct = async function(id) {
-            if (confirm("Are you sure you want to delete this product?")) {
+            if (confirm("Delete this product?")) {
                 await deleteDoc(doc(db, "products", id));
-                alert('Product deleted successfully.');
+                alert('Product deleted.');
             }
         };
 
@@ -648,62 +585,47 @@
             const bannerId = document.getElementById('cust-promo-id').value;
             const tag = document.getElementById('cust-promo-tag').value || "Special Offer";
             const title = document.getElementById('cust-promo-title').value || "Get 30% OFF Your Order!";
-            const desc = document.getElementById('cust-promo-desc').value || "Use special discount coupon during checkout.";
+            const desc = document.getElementById('cust-promo-desc').value || "Use coupon during checkout.";
             const code = document.getElementById('cust-promo-code').value || "PINK10";
 
             let docId = bannerId;
             const bannerData = { tag, title, desc, code, updatedAt: new Date().toISOString() };
-
             if (docId) {
                 await updateDoc(doc(db, "banners", docId), bannerData);
             } else {
                 const addedRef = await addDoc(collection(db, "banners"), bannerData);
                 docId = addedRef.id;
             }
-
             await setDoc(doc(db, "settings", "banner"), { ...bannerData, bannerId: docId, active: true });
-
-            const promoCaption = `<b>🎉 NEW SPECIAL PROMOTION! 🎉</b>\n\n` +
-                                 `<b>${title}</b> (${tag})\n` +
-                                 `${desc}\n\n` +
-                                 `🎟️ Coupon Code: <b>${code}</b>\n` +
-                                 `✨ <i>Open our Mini App to claim your discount now!</i>`;
-
-            postToTelegramChannel("https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80", promoCaption);
-
+            postToTelegramChannel("https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80", `<b>🎉 NEW PROMOTION! 🎉</b>\n\n<b>${title}</b> (${tag})\n${desc}\n\n🎟️ Code: <b>${code}</b>`);
             clearBannerForm();
             document.getElementById('promo-popup').classList.remove('hidden');
-            alert("Banner activated & broadcasted to @songsashop Channel! ✨");
+            startPopupAutoCloseTimer();
+            alert("Banner saved & published live! ✨");
         };
 
         window.renewBanner = async function(id) {
             const b = window.banners.find(item => item.id === id);
             if (!b) return;
-
-            await setDoc(doc(db, "settings", "banner"), {
-                tag: b.tag, title: b.title, desc: b.desc, code: b.code, bannerId: id, active: true, renewedAt: new Date().toISOString()
-            });
-
+            await setDoc(doc(db, "settings", "banner"), { tag: b.tag, title: b.title, desc: b.desc, code: b.code, bannerId: id, active: true, renewedAt: new Date().toISOString() });
             document.getElementById('promo-popup').classList.remove('hidden');
-            alert(`Banner "${b.title}" renewed and live now! ✨`);
+            startPopupAutoCloseTimer();
+            alert(`Banner "${b.title}" renewed! ✨`);
         };
 
         window.editBanner = function(id) {
             const b = window.banners.find(item => item.id === id);
             if (!b) return;
-
             document.getElementById('cust-promo-id').value = id;
             document.getElementById('cust-promo-tag').value = b.tag || '';
             document.getElementById('cust-promo-title').value = b.title || '';
             document.getElementById('cust-promo-desc').value = b.desc || '';
             document.getElementById('cust-promo-code').value = b.code || '';
-            alert("Loaded into banner form. Update values and click Save!");
+            alert("Loaded into banner form.");
         };
 
         window.deleteBannerHistory = async function(id) {
-            if (confirm("Delete this banner from database history?")) {
-                await deleteDoc(doc(db, "banners", id));
-            }
+            if (confirm("Delete banner history?")) await deleteDoc(doc(db, "banners", id));
         };
 
         window.updateOrderStatus = async function(docId, status) {
@@ -726,7 +648,6 @@
             if (!name || !phone || !address) return alert('Please fill in delivery details');
 
             let sub = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-
             for (let item of cart) {
                 if (item.id) {
                     const newStock = Math.max(0, (item.stock || 10) - item.qty);
@@ -735,7 +656,7 @@
             }
 
             await addDoc(collection(db, "orders"), {
-                orderNum: `#${Math.floor(202520 + Math.random() * 100)}`,
+                orderNum: `#KMI${Math.floor(100000 + Math.random() * 900000)}`,
                 userId: window.currentUser ? window.currentUser.uid : 'guest',
                 customer: name, phone, address, total: sub, status: 'In Progress', 
                 date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
@@ -749,32 +670,21 @@
 
         async function seedFullCatalog(db) {
             const catalog = [
-                { name: 'Pearl Butterfly Hairpin', sku: 'HRP-PRL-BTF-001', category: 'Hairpins', price: 12.50, stock: 15, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
-                { name: 'Crystal Flower Claw Clip', sku: 'HRP-CRS-FLW-002', category: 'Hairpins', price: 8.90, stock: 20, image: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&q=80' },
-                { name: 'Dainty Butterfly Choker', sku: 'NCK-DNT-BTF-001', category: 'Necklaces', price: 18.00, stock: 10, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80' },
-                { name: 'Layered Gold Heart Pendant', sku: 'NCK-LYR-GLD-002', category: 'Necklaces', price: 22.50, stock: 8, image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=80' },
-                { name: 'Vintage Crystal Ring Set', sku: 'RNG-VTG-CRS-001', category: 'Rings', price: 14.00, stock: 15, image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=400&q=80' },
-                { name: 'Crystal Drop Earrings', sku: 'ERG-CRS-DRP-001', category: 'Earrings', price: 15.50, stock: 16, image: 'https://images.unsplash.com/photo-1630019852942-f89202989a59?w=400&q=80' },
-                { name: 'Beaded Pastel Phone Lanyard', sku: 'PHN-BDD-PST-001', category: 'Phone Charms', price: 8.50, stock: 20, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&q=80' },
-                { name: 'Plush Bear Crossbody Bag', sku: 'BAG-PLS-BER-001', category: 'Bags & Pouches', price: 24.99, stock: 10, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80' }
+                { name: 'Airpods Pro Max 2024', sku: 'KMI662266', category: 'Accessories', price: 10120.00, stock: 120, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80' },
+                { name: 'Nike New Model Shoes', sku: 'KMI662211', category: 'Bags', price: 10120.00, stock: 10, image: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&q=80' }
             ];
-            for (let item of catalog) {
-                await addDoc(collection(db, "products"), { ...item, isPublished: true });
-            }
+            for (let item of catalog) await addDoc(collection(db, "products"), { ...item, isPublished: true });
         }
     </script>
 
     <!-- CORE INTERACTION SCRIPT -->
     <script>
         const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
-        window.products = [];
-        window.orders = [];
-        window.banners = [];
-        let cart = [];
-        let wishlist = [];
-        let activeCategory = 'All';
+        window.products = []; window.orders = []; window.banners = [];
+        let cart = []; let wishlist = []; let activeCategory = 'All'; let adminProductFilter = 'All';
 
         function closePromoPopup() {
+            if (popupTimerInterval) clearInterval(popupTimerInterval);
             document.getElementById('promo-popup').classList.add('hidden');
         }
 
@@ -810,11 +720,7 @@
         window.renderCustomerOrders = function() {
             const listEl = document.getElementById('customer-my-orders-list');
             if (!listEl) return;
-
-            const myOrders = window.orders.filter(o => 
-                window.currentUser && o.userId === window.currentUser.uid
-            );
-
+            const myOrders = window.orders.filter(o => window.currentUser && o.userId === window.currentUser.uid);
             listEl.innerHTML = myOrders.length === 0 ? `<p class="text-gray-400 text-[11px]">No orders placed yet.</p>` :
                 myOrders.map(o => `
                     <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 flex justify-between items-center text-[11px]">
@@ -830,8 +736,7 @@
         window.renderBannerHistory = function() {
             const listEl = document.getElementById('admin-banner-history-list');
             if (!listEl) return;
-
-            listEl.innerHTML = window.banners.length === 0 ? `<p class="text-gray-400 text-[11px]">No saved banner history yet.</p>` :
+            listEl.innerHTML = window.banners.length === 0 ? `<p class="text-gray-400 text-[11px]">No banner history.</p>` :
                 window.banners.map(b => {
                     const isActive = window.activeBannerId === b.id;
                     return `
@@ -840,13 +745,13 @@
                                 <span class="font-bold text-gray-900">${b.title} <span class="text-[10px] text-brand-600 font-normal">(${b.tag})</span></span>
                                 ${isActive ? `<span class="bg-emerald-100 text-emerald-700 text-[9px] font-bold px-2 py-0.5 rounded-full">Active Live</span>` : ''}
                             </div>
-                            <p class="text-[10px] text-gray-500">${b.desc} • Coupon: <b class="text-gray-800">${b.code}</b></p>
+                            <p class="text-[10px] text-gray-500">${b.desc} • Code: <b class="text-gray-800">${b.code}</b></p>
                             <div class="flex justify-between items-center pt-1 border-t border-gray-100">
                                 <span class="text-[9px] text-gray-400">${b.updatedAt ? new Date(b.updatedAt).toLocaleDateString() : ''}</span>
                                 <div class="space-x-1 text-[10px]">
-                                    <button onclick="renewBanner('${b.id}')" class="bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded font-bold">Renew (Publish Live)</button>
-                                    <button onclick="editBanner('${b.id}')" class="bg-white border border-gray-200 text-gray-700 px-2 py-0.5 rounded font-medium">Edit</button>
-                                    <button onclick="deleteBannerHistory('${b.id}')" class="bg-red-50 text-red-600 px-2 py-0.5 rounded font-medium">Delete</button>
+                                    <button onclick="renewBanner('${b.id}')" class="bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded font-bold">Renew Live</button>
+                                    <button onclick="editBanner('${b.id}')" class="bg-white border border-gray-200 text-gray-700 px-2 py-0.5 rounded">Edit</button>
+                                    <button onclick="deleteBannerHistory('${b.id}')" class="bg-red-50 text-red-600 px-2 py-0.5 rounded">Delete</button>
                                 </div>
                             </div>
                         </div>
@@ -859,7 +764,6 @@
             if (!grid) return;
             const searchVal = document.getElementById('search-input').value.toLowerCase();
             let filtered = window.products.filter(p => (activeCategory === 'All' || p.category === activeCategory) && p.name.toLowerCase().includes(searchVal));
-            
             grid.innerHTML = filtered.map(p => `
                 <div class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs flex flex-col justify-between hover:border-brand-500/30 transition-all">
                     <div onclick="openProductDetailModal('${p.id}')" class="cursor-pointer">
@@ -881,27 +785,18 @@
         function openProductDetailModal(id) {
             const p = window.products.find(item => item.id === id);
             if (!p) return;
-
             document.getElementById('view-prod-image').src = p.image || FALLBACK_IMAGE;
             document.getElementById('view-prod-category').innerText = p.category || 'Accessories';
             document.getElementById('view-prod-name').innerText = p.name || 'Product';
             document.getElementById('view-prod-price').innerText = `$${Number(p.price || 0).toFixed(2)}`;
             document.getElementById('view-prod-sku').innerText = `SKU: ${p.sku || 'N/A'}`;
             document.getElementById('view-prod-stock').innerText = `${p.stock ?? 10} units in stock`;
-
             const addBtn = document.getElementById('view-prod-add-btn');
-            addBtn.onclick = function() {
-                addToCart(p.id);
-                closeProductDetailModal();
-            };
-
+            addBtn.onclick = function() { addToCart(p.id); closeProductDetailModal(); };
             document.getElementById('product-detail-modal').classList.remove('hidden');
         }
 
-        function closeProductDetailModal() {
-            document.getElementById('product-detail-modal').classList.add('hidden');
-        }
-
+        function closeProductDetailModal() { document.getElementById('product-detail-modal').classList.add('hidden'); }
         function filterCategory(cat) { activeCategory = cat; renderProducts(); }
         function filterProducts() { renderProducts(); }
 
@@ -913,7 +808,7 @@
         function renderWishlist() {
             let favs = window.products.filter(p => wishlist.includes(p.id));
             document.getElementById('wishlist-grid').innerHTML = favs.length === 0 ? 
-                `<p class="text-xs text-gray-400 col-span-2 text-center py-6">No saved items in wishlist.</p>` :
+                `<p class="text-xs text-gray-400 col-span-2 text-center py-6">No saved items.</p>` :
                 favs.map(p => `
                     <div onclick="openProductDetailModal('${p.id}')" class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs flex flex-col justify-between cursor-pointer">
                         <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full aspect-square object-cover rounded-xl mb-2">
@@ -928,7 +823,7 @@
             const existing = cart.find(i => i.id === id);
             if (existing) existing.qty += 1; else cart.push({ ...prod, qty: 1 });
             document.getElementById('cart-badge').innerText = cart.reduce((s, i) => s + i.qty, 0);
-            alert('Item added to shopping bag! 🛍️');
+            alert('Item added to bag! 🛍️');
         }
 
         function openCartDrawer() {
@@ -961,7 +856,7 @@
                 document.getElementById('prod-id').value = p.id;
                 document.getElementById('prod-name').value = p.name || '';
                 document.getElementById('prod-sku').value = p.sku || '';
-                document.getElementById('prod-category').value = p.category || 'Hairpins';
+                document.getElementById('prod-category').value = p.category || 'Accessories';
                 document.getElementById('prod-price').value = p.price || '';
                 document.getElementById('prod-stock').value = p.stock || 10;
                 document.getElementById('prod-image').value = p.image || '';
@@ -970,7 +865,7 @@
                 document.getElementById('prod-id').value = '';
                 document.getElementById('prod-name').value = '';
                 document.getElementById('prod-sku').value = '';
-                document.getElementById('prod-category').value = 'Hairpins';
+                document.getElementById('prod-category').value = 'Accessories';
                 document.getElementById('prod-price').value = '';
                 document.getElementById('prod-stock').value = '10';
                 document.getElementById('prod-image').value = '';
@@ -984,7 +879,7 @@
             document.getElementById('customer-view').classList.add('hidden');
             document.getElementById('admin-view').classList.remove('hidden');
             document.getElementById('customer-nav').classList.add('hidden');
-            switchAdminNav('dashboard');
+            switchAdminNav('products');
         }
 
         function exitAdminMode() {
@@ -995,85 +890,101 @@
         }
 
         function switchAdminNav(sec) {
-            ['dashboard', 'products', 'orders', 'inventory', 'promotions'].forEach(s => {
+            ['products', 'orders', 'inventory', 'promotions'].forEach(s => {
                 document.getElementById(`admin-sec-${s}`).classList.add('hidden');
-                document.getElementById(`adtab-${s}`).className = 'px-3 py-1 text-gray-500 rounded-lg';
+                document.getElementById(`adtab-${s}`).className = 'px-4 py-2 border-b-2 border-transparent text-gray-500 font-semibold';
             });
             document.getElementById(`admin-sec-${sec}`).classList.remove('hidden');
-            document.getElementById(`adtab-${sec}`).className = 'px-3 py-1 bg-brand-500 text-white rounded-lg';
-            if (sec === 'dashboard') renderEcomoraDash();
+            document.getElementById(`adtab-${sec}`).className = 'px-4 py-2 border-b-2 border-brand-500 text-brand-600 font-semibold';
             if (sec === 'products') renderAdminProducts();
             if (sec === 'orders') renderAdminOrders();
             if (sec === 'inventory') renderAdminInventory();
             if (sec === 'promotions') renderBannerHistory();
         }
 
-        window.renderEcomoraDash = function() {
-            const rev = window.orders.reduce((sum, o) => sum + Number(o.total || 0), 0);
-            document.getElementById('dash-total-revenue').innerText = `$${rev.toFixed(2)}`;
-            document.getElementById('dash-total-sales-count').innerText = `${window.orders.length}`;
+        function filterAdminProductStatus(status) {
+            adminProductFilter = status;
+            renderAdminProducts();
+        }
 
-            const tbody = document.getElementById('ecomora-orders-tbody');
-            if (tbody) {
-                tbody.innerHTML = window.orders.slice(0, 5).map(o => `
-                    <tr>
-                        <td class="py-1.5 font-bold text-gray-900">${o.orderNum}</td>
-                        <td>${o.customer}</td>
-                        <td class="font-bold text-gray-900">$${Number(o.total || 0).toFixed(2)}</td>
-                        <td><span class="text-[10px] font-bold text-brand-600">${o.status}</span></td>
-                    </tr>
-                `).join('');
-            }
-        };
-
+        // FIGMA-STYLED PRODUCTION ADMIN PRODUCTS TABLE & METRICS
         window.renderAdminProducts = function() {
-            const listEl = document.getElementById('admin-products-list');
-            if (!listEl) return;
+            const rev = window.orders.reduce((sum, o) => sum + Number(o.total || 0), 0);
+            document.getElementById('stat-total-revenue').innerText = `$${rev.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            document.getElementById('stat-total-products').innerText = window.products.length;
+            document.getElementById('stat-total-orders').innerText = window.orders.length;
 
-            listEl.innerHTML = window.products.length === 0 ? `<p class="text-gray-400 text-[11px]">No products in catalog.</p>` :
-                window.products.map(p => `
-                    <div class="flex justify-between items-center bg-gray-50 p-2.5 rounded-xl border border-gray-100 text-xs">
-                        <div class="flex items-center space-x-2">
-                            <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-8 h-8 rounded-lg object-cover">
-                            <div>
-                                <b>${p.name}</b>
-                                <p class="text-[10px] text-gray-400">${p.category} • <b class="text-brand-600">$${p.price}</b></p>
-                            </div>
-                        </div>
-                        <div class="space-x-1">
-                            <button onclick="openProductModal('${p.id}')" class="bg-white border border-gray-200 text-gray-700 px-2 py-1 rounded-lg font-medium">Edit</button>
-                            <button onclick="deleteProduct('${p.id}')" class="bg-red-50 text-red-600 px-2 py-1 rounded-lg font-medium">Delete</button>
-                        </div>
-                    </div>
-                `).join('');
+            const tbody = document.getElementById('admin-products-table-body');
+            if (!tbody) return;
+
+            const searchVal = document.getElementById('admin-search-products').value.toLowerCase();
+            let filtered = window.products.filter(p => 
+                (p.name.toLowerCase().includes(searchVal) || (p.sku && p.sku.toLowerCase().includes(searchVal))) &&
+                (adminProductFilter === 'All' || (adminProductFilter === 'Published' && p.isPublished) || (adminProductFilter === 'Low Stock' && (p.stock ?? 10) < 5))
+            );
+
+            tbody.innerHTML = filtered.length === 0 ? `<tr><td colspan="6" class="p-4 text-center text-gray-400">No products found.</td></tr>` :
+                filtered.map(p => {
+                    const stockVal = p.stock ?? 10;
+                    let statusBadge = stockVal === 0 ? 
+                        `<span class="bg-amber-100 text-amber-700 font-bold px-2 py-0.5 rounded-full text-[9px]">out Stock</span>` :
+                        `<span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-full text-[9px]">Published</span>`;
+                    
+                    return `
+                        <tr class="hover:bg-gray-50/50">
+                            <td class="p-3 flex items-center space-x-2">
+                                <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-8 h-8 rounded-lg object-cover">
+                                <div>
+                                    <b class="text-gray-900">${p.name}</b>
+                                    <p class="text-[10px] text-gray-400">${p.category}</p>
+                                </div>
+                            </td>
+                            <td class="p-3">
+                                <span class="font-mono font-medium">#${p.sku || 'KMI662266'}</span>
+                                <p class="text-[10px] text-gray-400">${p.createdAt ? new Date(p.createdAt).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) : 'Jan 01, 2026'}</p>
+                            </td>
+                            <td class="p-3">
+                                <b class="text-gray-900">$${Number(p.price || 0).toFixed(2)}</b>
+                                <p class="text-[10px] text-gray-400">Sell Price</p>
+                            </td>
+                            <td class="p-3 font-medium">${stockVal},120</td>
+                            <td class="p-3">${statusBadge}</td>
+                            <td class="p-3 text-right space-x-1">
+                                <button onclick="openProductModal('${p.id}')" class="bg-white border border-gray-200 text-gray-700 px-2.5 py-1 rounded-lg font-medium">Edit</button>
+                                <button onclick="deleteProduct('${p.id}')" class="bg-red-50 text-red-600 px-2.5 py-1 rounded-lg font-medium">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
         };
 
         window.renderAdminOrders = function() {
-            document.getElementById('admin-orders-full-list').innerHTML = window.orders.map(o => `
-                <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 space-y-1.5 text-xs">
-                    <div class="flex justify-between items-center">
-                        <span class="font-bold text-gray-900">${o.orderNum} - ${o.customer}</span>
-                        <span class="font-bold text-brand-600">$${Number(o.total || 0).toFixed(2)}</span>
-                    </div>
-                    <p class="text-[10px] text-gray-400">${o.address}</p>
-                    <div class="flex justify-between items-center pt-1 border-t border-gray-100">
-                        <span>Status: <b>${o.status}</b></span>
-                        <div class="space-x-1">
-                            <button onclick="updateOrderStatus('${o.docId}', 'Complete')" class="bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded font-medium text-[10px]">Complete</button>
-                            <button onclick="updateOrderStatus('${o.docId}', 'Cancelled')" class="bg-red-50 text-red-600 px-2 py-0.5 rounded font-medium text-[10px]">Cancel</button>
+            document.getElementById('admin-orders-full-list').innerHTML = window.orders.length === 0 ? `<p class="text-gray-400 text-xs">No orders received yet.</p>` :
+                window.orders.map(o => `
+                    <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 space-y-1.5 text-xs">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-gray-900">${o.orderNum} - ${o.customer} (${o.phone})</span>
+                            <span class="font-bold text-brand-600">$${Number(o.total || 0).toFixed(2)}</span>
+                        </div>
+                        <p class="text-[10px] text-gray-400">${o.address}</p>
+                        <div class="flex justify-between items-center pt-1 border-t border-gray-100">
+                            <span>Status: <b>${o.status}</b></span>
+                            <div class="space-x-1">
+                                <button onclick="updateOrderStatus('${o.docId}', 'Complete')" class="bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded font-medium text-[10px]">Complete</button>
+                                <button onclick="updateOrderStatus('${o.docId}', 'Cancelled')" class="bg-red-50 text-red-600 px-2 py-0.5 rounded font-medium text-[10px]">Cancel</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `).join('');
         };
 
         window.renderAdminInventory = function() {
             document.getElementById('admin-inventory-list').innerHTML = window.products.map(p => `
                 <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 text-xs flex justify-between items-center">
-                    <span><b>${p.name}</b></span>
+                    <span><b>${p.name}</b> <span class="text-gray-400">(SKU: ${p.sku || 'N/A'})</span></span>
                     <div class="flex items-center space-x-2">
                         <span class="font-bold px-2 py-0.5 rounded text-[10px] ${(p.stock ?? 10) < 5 ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}">Stock: ${p.stock ?? 10}</span>
-                        <button onclick="updateProductStock('${p.id}', ${p.stock ?? 10})" class="bg-white border border-gray-200 px-2 py-0.5 rounded font-medium">Edit</button>
+                        <button onclick="updateProductStock('${p.id}', ${p.stock ?? 10})" class="bg-white border border-gray-200 px-2 py-0.5 rounded font-medium">Update Stock</button>
                     </div>
                 </div>
             `).join('');
