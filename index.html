@@ -100,7 +100,7 @@
                             <div>
                                 <h3 id="cust-profile-name" class="font-bold text-sm text-gray-900">Your Name</h3>
                                 <p id="cust-profile-handle" class="text-[11px] text-gray-400">@telegram_username</p>
-                                <span class="text-[9px] bg-brand-50 text-brand-600 px-2 py-0.5 rounded-md font-semibold mt-0.5 inline-block">Customer account</span>
+                                <p id="cust-profile-id-display" class="text-[9px] font-mono text-brand-600 font-semibold mt-0.5">ID: USR-000000</p>
                             </div>
                         </div>
                         <button onclick="openProfileEditModal()" class="text-gray-400 hover:text-gray-600 p-2 min-h-[44px] flex items-center"><i class="fa-solid fa-pen text-xs"></i></button>
@@ -320,7 +320,7 @@
         </div>
     </div>
 
-    <!-- PRODUCT DETAIL MODAL WITH REVIEWS ENHANCEMENT -->
+    <!-- PRODUCT DETAIL MODAL -->
     <div id="product-detail-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 transition-opacity">
         <div class="bg-white rounded-3xl max-w-sm w-full p-4 space-y-3 shadow-2xl relative text-xs max-h-[90vh] overflow-y-auto border border-gray-100">
             <button onclick="closeProductDetailModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
@@ -337,7 +337,6 @@
                 <p id="view-prod-desc" class="text-[11px] text-gray-500 pt-1 leading-relaxed">High-quality cosmetics and accessories crafted with care.</p>
             </div>
 
-            <!-- CUSTOMER REVIEWS & RATINGS SECTION -->
             <div class="border-t border-gray-100 pt-3 space-y-2">
                 <h4 class="font-bold text-xs text-gray-900 flex justify-between items-center">
                     <span>Customer Reviews ⭐</span>
@@ -345,7 +344,6 @@
                 </h4>
                 <div id="prod-reviews-list" class="space-y-1.5 max-h-32 overflow-y-auto text-[11px]"></div>
                 
-                <!-- Add Review Form -->
                 <div class="bg-gray-50 p-2.5 rounded-2xl border border-gray-100 space-y-1.5 mt-2">
                     <p class="font-bold text-[10px] text-gray-600">Leave a Review:</p>
                     <div class="flex items-center space-x-1 text-amber-400 text-xs" id="star-rating-select">
@@ -377,7 +375,7 @@
         </div>
     </nav>
 
-    <!-- CART DRAWER WITH PROMO CODE COUPON SYSTEM -->
+    <!-- CART DRAWER -->
     <div id="cart-drawer" class="fixed inset-0 bg-black/40 z-50 hidden transition-opacity">
         <div class="absolute inset-y-0 right-0 max-w-xs w-full bg-white shadow-xl flex flex-col p-4">
             <div class="flex justify-between items-center border-b border-gray-50 pb-2.5">
@@ -387,7 +385,6 @@
             <div id="cart-items-container" class="flex-1 overflow-y-auto py-2 space-y-2 text-xs"></div>
             
             <div class="border-t border-gray-50 pt-2.5 space-y-2 text-xs">
-                <!-- PROMO CODE INPUT FORM -->
                 <div class="flex space-x-1">
                     <input type="text" id="cart-promo-input" placeholder="Promo code (e.g. PINK10)" class="flex-1 border border-gray-200 rounded-xl px-2.5 py-1.5 uppercase text-xs">
                     <button onclick="applyPromoCode()" class="bg-gray-900 text-white px-3 py-1.5 font-bold rounded-xl text-xs">Apply</button>
@@ -524,9 +521,13 @@
                 document.getElementById('session-user-badge').innerText = user.email || 'Active User';
                 const userRef = doc(db, "users", user.uid);
                 const userSnap = await getDoc(userRef);
+
+                const generatedUserId = `USR-${user.uid.substring(0, 6).toUpperCase()}`;
+
                 if (!userSnap.exists()) {
                     await setDoc(userRef, {
                         uid: user.uid,
+                        customId: generatedUserId,
                         email: user.email || `${user.uid}@telegram.org`,
                         name: user.displayName || (user.email ? user.email.split('@')[0] : "Shopper"),
                         phone: "+855 00 000 000",
@@ -537,7 +538,9 @@
                     });
                 }
                 const userData = userSnap.exists() ? userSnap.data() : {};
+                userData.customId = userData.customId || generatedUserId;
                 window.currentUserData = userData;
+
                 const isAdmin = userData.role === "admin" || (user.email && user.email.toLowerCase().endsWith("@songsa.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
 
                 if (isAdmin) {
@@ -547,6 +550,7 @@
                     document.getElementById('customer-dashboard-view').classList.remove('hidden');
                     document.getElementById('cust-profile-name').innerText = userData.name || "Customer";
                     document.getElementById('cust-profile-handle').innerText = userData.email ? `@${userData.email.split('@')[0]}` : "@telegram_username";
+                    document.getElementById('cust-profile-id-display').innerText = `ID: ${userData.customId}`;
                     if (window.renderCustomerOrders) window.renderCustomerOrders();
                 }
             } else {
@@ -623,7 +627,6 @@
             if (window.renderBannerHistory) window.renderBannerHistory();
         });
 
-        // BAKONG PAYMENT & DATABASE ORDER CREATION
         let bakongPollInterval = null;
         window.initiateBakongPayment = async function() {
             const name = document.getElementById('checkout-name').value;
@@ -705,8 +708,9 @@
             const password = document.getElementById('signup-password').value;
             try {
                 const cred = await createUserWithEmailAndPassword(auth, email, password);
+                const generatedUserId = `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`;
                 await setDoc(doc(db, "users", cred.user.uid), {
-                    uid: cred.user.uid, name: name || email.split('@')[0], email,
+                    uid: cred.user.uid, customId: generatedUserId, name: name || email.split('@')[0], email,
                     phone: "+855 00 000 000", addresses: ["Phnom Penh, Cambodia"],
                     role: email.toLowerCase().endsWith("@songsa.com") ? "admin" : "customer",
                     authProvider: "email", createdAt: new Date().toISOString()
@@ -737,6 +741,7 @@
                 document.getElementById('customer-dashboard-view').classList.remove('hidden');
                 document.getElementById('cust-profile-name').innerText = userData.name || tgName;
                 document.getElementById('cust-profile-handle').innerText = `@${tgUser?.username || tgId}`;
+                document.getElementById('cust-profile-id-display').innerText = `ID: ${userData.customId || 'USR-DEMO'}`;
             } catch (err) { alert('Telegram Sign In Error: ' + err.message); }
         };
 
@@ -849,7 +854,7 @@
         }
     </script>
 
-    <!-- PROMO SYSTEM & PRODUCT REVIEWS INTERACTION -->
+    <!-- LOCAL-ONLY PROFILE UPDATES & INTERACTION SCRIPT -->
     <script>
         const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
         window.products = []; window.orders = []; window.banners = [];
@@ -898,7 +903,6 @@
             if (tab === 'wishlist') renderWishlist();
         }
 
-        // PROMO CODE COUPON SYSTEM
         function applyPromoCode() {
             const codeInput = document.getElementById('cart-promo-input').value.trim().toUpperCase();
             const validCode = (window.activeBannerCode || "PINK10").toUpperCase();
@@ -936,7 +940,6 @@
             document.getElementById('cart-total').innerText = `$${total.toFixed(2)}`;
         }
 
-        // REVIEWS & PRODUCT DETAIL
         function setReviewRating(rating) {
             currentSelectedStarRating = rating;
             const stars = document.getElementById('star-rating-select').children;
@@ -958,7 +961,6 @@
             document.getElementById('view-prod-sku').innerText = `SKU: ${p.sku || 'N/A'}`;
             document.getElementById('view-prod-stock').innerText = `${p.stock ?? 10} units in stock`;
 
-            // Render Reviews
             const reviews = p.reviews || [];
             const avgRating = reviews.length > 0 ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1) : "5.0";
             document.getElementById('prod-avg-rating').innerText = `⭐ ${avgRating} / 5.0 (${reviews.length})`;
@@ -983,6 +985,7 @@
 
         function closeProductDetailModal() { document.getElementById('product-detail-modal').classList.add('hidden'); }
 
+        // LOCAL-ONLY PROFILE SECTION UPDATES (NO DATABASE SYNC)
         window.openProfileSection = function(section) {
             const modal = document.getElementById('profile-sub-modal');
             const titleEl = document.getElementById('profile-modal-title');
@@ -992,7 +995,7 @@
             const uData = window.currentUserData || {};
 
             if (section === 'personal') {
-                titleEl.innerText = "Personal Information";
+                titleEl.innerText = "Personal Information (Local State)";
                 bodyEl.innerHTML = `
                     <div class="space-y-3">
                         <div>
@@ -1003,7 +1006,7 @@
                             <label class="text-[10px] font-bold text-gray-500 uppercase">Phone Number</label>
                             <input type="text" id="prof-edit-phone" value="${uData.phone || ''}" placeholder="+855 00 000 000" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
                         </div>
-                        <button onclick="savePersonalProfile()" class="w-full bg-brand-500 text-white font-bold py-2.5 min-h-[44px] rounded-xl mt-2 shadow-xs">Save Changes to Database</button>
+                        <button onclick="savePersonalProfileLocally()" class="w-full bg-brand-500 text-white font-bold py-2.5 min-h-[44px] rounded-xl mt-2 shadow-xs">Save Locally (No DB Update)</button>
                     </div>
                 `;
             } else if (section === 'orders') {
@@ -1029,7 +1032,7 @@
                     `;
                 }).join('');
             } else if (section === 'addresses') {
-                titleEl.innerText = "Delivery Addresses";
+                titleEl.innerText = "Delivery Addresses (Local State)";
                 const addrs = uData.addresses || (uData.address ? [uData.address] : []);
                 
                 bodyEl.innerHTML = `
@@ -1038,7 +1041,7 @@
                             <label class="text-[10px] font-bold text-gray-500 uppercase">Add New Address</label>
                             <div class="flex space-x-1.5">
                                 <input type="text" id="new-delivery-addr" placeholder="Street, City, Cambodia..." class="flex-1 border border-gray-200 rounded-xl px-3 py-2">
-                                <button onclick="addNewAddressToDB()" class="bg-brand-500 text-white font-bold px-3 py-2 rounded-xl"><i class="fa-solid fa-plus"></i></button>
+                                <button onclick="addNewAddressLocally()" class="bg-brand-500 text-white font-bold px-3 py-2 rounded-xl"><i class="fa-solid fa-plus"></i></button>
                             </div>
                         </div>
                         <div class="space-y-2 pt-2 border-t border-gray-50">
@@ -1047,7 +1050,7 @@
                                 addrs.map((addr, idx) => `
                                     <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 flex justify-between items-center">
                                         <span class="text-gray-700 font-medium text-xs truncate max-w-[200px]">${addr}</span>
-                                        <button onclick="removeAddressFromDB(${idx})" class="text-red-400 hover:text-red-600 p-1"><i class="fa-solid fa-trash-can"></i></button>
+                                        <button onclick="removeAddressLocally(${idx})" class="text-red-400 hover:text-red-600 p-1"><i class="fa-solid fa-trash-can"></i></button>
                                     </div>
                                 `).join('')
                             }
@@ -1093,7 +1096,7 @@
                             <span class="font-medium text-gray-700">Promotions & Disount Alerts</span>
                             <input type="checkbox" checked class="accent-brand-500 w-4 h-4">
                         </label>
-                        <button onclick="alert('Preferences updated!'); closeProfileSubModal();" class="w-full bg-brand-500 text-white py-2.5 font-bold rounded-xl mt-2">Save Preferences</button>
+                        <button onclick="alert('Preferences updated locally!'); closeProfileSubModal();" class="w-full bg-brand-500 text-white py-2.5 font-bold rounded-xl mt-2">Save Preferences</button>
                     </div>
                 `;
             } else if (section === 'support') {
@@ -1108,9 +1111,10 @@
                 titleEl.innerText = "Account Settings";
                 bodyEl.innerHTML = `
                     <div class="space-y-3 text-xs">
-                        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 space-y-1">
                             <p class="text-gray-400 text-[10px]">Logged in as:</p>
                             <p class="font-bold text-gray-800">${window.currentUser ? window.currentUser.email : 'Guest Mode'}</p>
+                            <p class="font-mono text-[10px] text-brand-600">User ID: ${window.currentUserData?.customId || 'USR-000000'}</p>
                         </div>
                         <button onclick="handleSignOut(); closeProfileSubModal();" class="w-full bg-red-50 text-red-600 font-bold py-2.5 rounded-xl border border-red-100">Sign Out</button>
                     </div>
@@ -1122,39 +1126,32 @@
             document.getElementById('profile-sub-modal').classList.add('hidden');
         };
 
-        window.savePersonalProfile = async function() {
+        window.savePersonalProfileLocally = function() {
             const newName = document.getElementById('prof-edit-name').value;
             const newPhone = document.getElementById('prof-edit-phone').value;
-            if (window.currentUser) {
-                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { name: newName, phone: newPhone });
+            if (window.currentUserData) {
                 window.currentUserData.name = newName;
                 window.currentUserData.phone = newPhone;
                 document.getElementById('cust-profile-name').innerText = newName;
-                alert('Personal profile synchronized to database! ✨');
+                alert('Personal info updated locally (Not saved to database). ✨');
                 closeProfileSubModal();
             }
         };
 
-        window.addNewAddressToDB = async function() {
+        window.addNewAddressLocally = function() {
             const inputEl = document.getElementById('new-delivery-addr');
             const newAddr = inputEl.value.trim();
-            if (newAddr && window.currentUser) {
-                let currentAddrs = window.currentUserData.addresses || [];
-                currentAddrs.push(newAddr);
-                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { addresses: currentAddrs, address: newAddr });
-                window.currentUserData.addresses = currentAddrs;
-                window.currentUserData.address = newAddr;
-                alert('Address saved! ✨');
+            if (newAddr && window.currentUserData) {
+                if (!window.currentUserData.addresses) window.currentUserData.addresses = [];
+                window.currentUserData.addresses.push(newAddr);
+                alert('Address added locally (Not saved to database). ✨');
                 openProfileSection('addresses');
             }
         };
 
-        window.removeAddressFromDB = async function(index) {
-            if (window.currentUser && confirm("Remove this address?")) {
-                let currentAddrs = window.currentUserData.addresses || [];
-                currentAddrs.splice(index, 1);
-                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { addresses: currentAddrs });
-                window.currentUserData.addresses = currentAddrs;
+        window.removeAddressLocally = function(index) {
+            if (window.currentUserData && confirm("Remove this address locally?")) {
+                window.currentUserData.addresses.splice(index, 1);
                 openProfileSection('addresses');
             }
         };
