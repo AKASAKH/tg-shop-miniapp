@@ -312,7 +312,7 @@
 
     </main>
 
-    <!-- PROFILE SUB-SECTION MODAL (DELIVERY ADDRESSES, PERSONAL INFO, ORDERS, ETC.) -->
+    <!-- PROFILE SUB-SECTION MODAL -->
     <div id="profile-sub-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative text-xs border border-gray-100 max-h-[90vh] overflow-y-auto">
             <button onclick="closeProfileSubModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
@@ -866,7 +866,7 @@
         }
     </script>
 
-    <!-- DATABASE-SYNCED DELIVERY ADDRESSES & INTERACTION SCRIPT -->
+    <!-- DATABASE-SYNCED DELIVERY ADDRESSES & GEOLOCATION SCRIPT -->
     <script>
         const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
         window.products = []; window.orders = []; window.banners = [];
@@ -997,7 +997,7 @@
 
         function closeProductDetailModal() { document.getElementById('product-detail-modal').classList.add('hidden'); }
 
-        // PROFILE SECTION MODALS & DELIVERY ADDRESS UI (MATCHING DESIGN REFERENCE)
+        // PROFILE SECTION MODALS
         window.openProfileSection = function(section) {
             const modal = document.getElementById('profile-sub-modal');
             const titleEl = document.getElementById('profile-modal-title');
@@ -1110,7 +1110,7 @@
             }
         };
 
-        // RENDER DELIVERY ADDRESSES SCREEN (MATCHING REFERENCE UI)
+        // RENDER DELIVERY ADDRESSES LIST
         window.renderDeliveryAddressesList = function() {
             const titleEl = document.getElementById('profile-modal-title');
             const bodyEl = document.getElementById('profile-modal-body');
@@ -1147,7 +1147,7 @@
             `).join('');
         };
 
-        // OPEN ADD / EDIT ADDRESS FORM MODAL (MATCHING REFERENCE UI)
+        // OPEN ADD / EDIT ADDRESS FORM WITH GEOLOCATION CURRENT LOCATION OPTION
         window.openAddressFormModal = function(addrId = null) {
             const titleEl = document.getElementById('profile-modal-title');
             const bodyEl = document.getElementById('profile-modal-body');
@@ -1160,6 +1160,12 @@
 
             bodyEl.innerHTML = `
                 <div class="space-y-3 text-xs">
+                    <!-- USE CURRENT LOCATION BUTTON -->
+                    <button type="button" id="geo-btn" onclick="fetchCurrentGPSLocation()" class="w-full bg-amber-50 hover:bg-amber-100 text-[#b08b45] border border-amber-200 font-bold py-2.5 rounded-xl flex items-center justify-center space-x-2 transition-colors min-h-[44px]">
+                        <i class="fa-solid fa-location-crosshairs text-sm"></i>
+                        <span id="geo-btn-text">Use My Current Location</span>
+                    </button>
+
                     <input type="hidden" id="addr-form-id" value="${existing ? existing.id : ''}">
                     <div>
                         <label class="text-[10px] font-bold text-gray-500 uppercase">Address Label *</label>
@@ -1174,7 +1180,7 @@
                         <input type="text" id="addr-phone" value="${existing ? (existing.phone || '') : (uData.phone || '')}" placeholder="+855 12 345 4567" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold text-gray-500 uppercase">Address *</label>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase">Address / Street *</label>
                         <input type="text" id="addr-street" value="${existing ? (existing.street || '') : ''}" placeholder="Street address, building, apartment" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
                     </div>
                     <div>
@@ -1183,8 +1189,8 @@
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <label class="text-[10px] font-bold text-gray-500 uppercase">State *</label>
-                            <input type="text" id="addr-state" value="${existing ? (existing.state || '') : 'PP'}" placeholder="State / Province" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
+                            <label class="text-[10px] font-bold text-gray-500 uppercase">State / District *</label>
+                            <input type="text" id="addr-state" value="${existing ? (existing.state || '') : 'Phnom Penh'}" placeholder="State / Province" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
                         </div>
                         <div>
                             <label class="text-[10px] font-bold text-gray-500 uppercase">ZIP Code *</label>
@@ -1203,6 +1209,51 @@
             `;
         };
 
+        // FETCH GPS LOCATION & REVERSE GEOCODE TO ADDRESS FIELDS
+        window.fetchCurrentGPSLocation = function() {
+            const btnText = document.getElementById('geo-btn-text');
+            if (!navigator.geolocation) {
+                alert('Geolocation is not supported by your browser.');
+                return;
+            }
+
+            btnText.innerHTML = '<i class="fa-solid fa-spinner animate-spin mr-1"></i> Locating...';
+
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+
+                try {
+                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`);
+                    const data = await res.json();
+
+                    if (data && data.address) {
+                        const addr = data.address;
+                        const streetName = addr.road || addr.suburb || addr.neighbourhood || addr.amenity || 'Current Location';
+                        const city = addr.city || addr.town || addr.municipality || 'Phnom Penh';
+                        const state = addr.state || addr.region || 'Phnom Penh';
+                        const zip = addr.postcode || '12000';
+
+                        document.getElementById('addr-street').value = `${streetName} (GPS: ${lat.toFixed(4)}, ${lon.toFixed(4)})`;
+                        document.getElementById('addr-city').value = city;
+                        document.getElementById('addr-state').value = state;
+                        document.getElementById('addr-zip').value = zip;
+
+                        btnText.innerText = 'Location Detected! ✨';
+                    } else {
+                        document.getElementById('addr-street').value = `GPS Location (${lat.toFixed(4)}, ${lon.toFixed(4)})`;
+                        btnText.innerText = 'Coordinates Applied ✨';
+                    }
+                } catch (err) {
+                    document.getElementById('addr-street').value = `GPS Location (${lat.toFixed(4)}, ${lon.toFixed(4)})`;
+                    btnText.innerText = 'Coordinates Applied ✨';
+                }
+            }, (error) => {
+                alert('Unable to retrieve location: ' + error.message);
+                btnText.innerText = 'Use My Current Location';
+            }, { enableHighAccuracy: true, timeout: 10000 });
+        };
+
         window.saveAddressToDB = async function() {
             const addrId = document.getElementById('addr-form-id').value;
             const label = document.getElementById('addr-label').value.trim() || 'Home';
@@ -1212,7 +1263,7 @@
             const city = document.getElementById('addr-city').value.trim();
             const state = document.getElementById('addr-state').value.trim();
             const zip = document.getElementById('addr-zip').value.trim();
-            const isDefault = document.getElementById('addr-isdefault').checked;
+            let isDefault = document.getElementById('addr-isdefault').checked;
 
             if (!fullName || !phone || !street || !city) return alert('Please fill in all required address fields.');
 
@@ -1236,7 +1287,7 @@
                 }
 
                 window.currentUserData.addressesList = list;
-                window.currentUserData.address = street + ', ' + city; // Keep legacy sync string
+                window.currentUserData.address = street + ', ' + city;
 
                 await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), {
                     addressesList: list,
