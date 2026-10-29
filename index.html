@@ -41,11 +41,10 @@
         </div>
     </div>
 
-    <!-- HEADER WITH LOGO IMAGE INTEGRATED -->
+    <!-- HEADER WITH LOGO IMAGE -->
     <header class="bg-white border-b border-gray-100 sticky top-0 z-40 shadow-xs">
         <div class="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <!-- INTEGRATED LOGO CONTAINER -->
                 <div class="h-10 flex items-center justify-center">
                     <img src="https://i.ibb.co/L9388m9/image-beb07a.png" 
                          alt="Mininize Studio Logo" 
@@ -313,12 +312,12 @@
 
     </main>
 
-    <!-- PROFILE SUB-SECTION MODAL -->
+    <!-- PROFILE SUB-SECTION MODAL (DELIVERY ADDRESSES, PERSONAL INFO, ORDERS, ETC.) -->
     <div id="profile-sub-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative text-xs border border-gray-100">
-            <button onclick="closeProfileSubModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs"><i class="fa-solid fa-xmark"></i></button>
+        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative text-xs border border-gray-100 max-h-[90vh] overflow-y-auto">
+            <button onclick="closeProfileSubModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
             <h3 id="profile-modal-title" class="font-serif italic font-bold text-sm text-gray-900">Section Title</h3>
-            <div id="profile-modal-body" class="space-y-3 max-h-72 overflow-y-auto"></div>
+            <div id="profile-modal-body" class="space-y-3"></div>
         </div>
     </div>
 
@@ -533,7 +532,10 @@
                         email: user.email || `${user.uid}@telegram.org`,
                         name: user.displayName || (user.email ? user.email.split('@')[0] : "Shopper"),
                         phone: "+855 00 000 000",
-                        addresses: ["Phnom Penh, Cambodia"],
+                        addressesList: [
+                            { id: 'addr_1', label: 'Home', fullName: user.displayName || 'Shopper', phone: '+855 12 345 678', street: '123 Main Street', city: 'Phnom Penh', state: 'PP', zip: '12000', isDefault: true },
+                            { id: 'addr_2', label: 'Office', fullName: user.displayName || 'Shopper', phone: '+855 12 345 678', street: '456 Business Ave', city: 'Phnom Penh', state: 'PP', zip: '12000', isDefault: false }
+                        ],
                         role: (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1" ? "admin" : "customer",
                         authProvider: user.email ? "email" : "telegram",
                         createdAt: new Date().toISOString()
@@ -541,6 +543,11 @@
                 }
                 const userData = userSnap.exists() ? userSnap.data() : {};
                 userData.customId = userData.customId || generatedUserId;
+                if (!userData.addressesList) {
+                    userData.addressesList = [
+                        { id: 'addr_1', label: 'Home', fullName: userData.name || 'Shopper', phone: userData.phone || '+855 12 345 678', street: userData.address || '123 Main Street', city: 'Phnom Penh', state: 'PP', zip: '12000', isDefault: true }
+                    ];
+                }
                 window.currentUserData = userData;
 
                 const isAdmin = userData.role === "admin" || (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
@@ -713,7 +720,10 @@
                 const generatedUserId = `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`;
                 await setDoc(doc(db, "users", cred.user.uid), {
                     uid: cred.user.uid, customId: generatedUserId, name: name || email.split('@')[0], email,
-                    phone: "+855 00 000 000", addresses: ["Phnom Penh, Cambodia"],
+                    phone: "+855 00 000 000",
+                    addressesList: [
+                        { id: 'addr_1', label: 'Home', fullName: name || 'Shopper', phone: '+855 12 345 678', street: '123 Main Street', city: 'Phnom Penh', state: 'PP', zip: '12000', isDefault: true }
+                    ],
                     role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer",
                     authProvider: "email", createdAt: new Date().toISOString()
                 });
@@ -856,7 +866,7 @@
         }
     </script>
 
-    <!-- DATABASE-SYNCED PROFILE UPDATES & INTERACTION SCRIPT -->
+    <!-- DATABASE-SYNCED DELIVERY ADDRESSES & INTERACTION SCRIPT -->
     <script>
         const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
         window.products = []; window.orders = []; window.banners = [];
@@ -987,7 +997,7 @@
 
         function closeProductDetailModal() { document.getElementById('product-detail-modal').classList.add('hidden'); }
 
-        // DATABASE-SYNCED PROFILE SECTION UPDATES
+        // PROFILE SECTION MODALS & DELIVERY ADDRESS UI (MATCHING DESIGN REFERENCE)
         window.openProfileSection = function(section) {
             const modal = document.getElementById('profile-sub-modal');
             const titleEl = document.getElementById('profile-modal-title');
@@ -1034,31 +1044,7 @@
                     `;
                 }).join('');
             } else if (section === 'addresses') {
-                titleEl.innerText = "Delivery Addresses (Database Sync)";
-                const addrs = uData.addresses || (uData.address ? [uData.address] : []);
-                
-                bodyEl.innerHTML = `
-                    <div class="space-y-3">
-                        <div class="space-y-1.5">
-                            <label class="text-[10px] font-bold text-gray-500 uppercase">Add New Address</label>
-                            <div class="flex space-x-1.5">
-                                <input type="text" id="new-delivery-addr" placeholder="Street, City, Cambodia..." class="flex-1 border border-gray-200 rounded-xl px-3 py-2">
-                                <button onclick="addNewAddressToDB()" class="bg-[#b08b45] text-white font-bold px-3 py-2 rounded-xl"><i class="fa-solid fa-plus"></i></button>
-                            </div>
-                        </div>
-                        <div class="space-y-2 pt-2 border-t border-gray-50">
-                            <p class="font-bold text-gray-800 text-[11px]">Saved Addresses:</p>
-                            ${addrs.length === 0 ? `<p class="text-gray-400 text-xs py-2">No saved addresses.</p>` :
-                                addrs.map((addr, idx) => `
-                                    <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 flex justify-between items-center">
-                                        <span class="text-gray-700 font-medium text-xs truncate max-w-[200px]">${addr}</span>
-                                        <button onclick="removeAddressFromDB(${idx})" class="text-red-400 hover:text-red-600 p-1"><i class="fa-solid fa-trash-can"></i></button>
-                                    </div>
-                                `).join('')
-                            }
-                        </div>
-                    </div>
-                `;
+                renderDeliveryAddressesList();
             } else if (section === 'favorites') {
                 titleEl.innerText = "My Favorites";
                 let favs = window.products.filter(p => wishlist.includes(p.id));
@@ -1124,6 +1110,169 @@
             }
         };
 
+        // RENDER DELIVERY ADDRESSES SCREEN (MATCHING REFERENCE UI)
+        window.renderDeliveryAddressesList = function() {
+            const titleEl = document.getElementById('profile-modal-title');
+            const bodyEl = document.getElementById('profile-modal-body');
+            titleEl.innerHTML = `<div class="flex items-center justify-between"><span class="font-serif italic font-bold text-sm text-gray-900">Delivery Addresses</span><button onclick="openAddressFormModal()" class="bg-[#b08b45] text-white text-[11px] font-bold px-3 py-1.5 rounded-xl shadow-xs flex items-center space-x-1"><i class="fa-solid fa-plus text-[10px]"></i><span>Add Address</span></button></div>`;
+            
+            const uData = window.currentUserData || {};
+            const list = uData.addressesList || [];
+
+            bodyEl.innerHTML = list.length === 0 ? `
+                <div class="text-center py-8 space-y-2">
+                    <div class="w-12 h-12 bg-amber-50 text-[#b08b45] rounded-full flex items-center justify-center mx-auto text-xl"><i class="fa-solid fa-location-dot"></i></div>
+                    <p class="text-xs text-gray-500 font-medium">No saved delivery addresses.</p>
+                    <button onclick="openAddressFormModal()" class="bg-[#b08b45] text-white font-bold text-xs px-4 py-2 rounded-xl">Add New Address</button>
+                </div>
+            ` : list.map(addr => `
+                <div class="bg-white p-3.5 rounded-2xl border ${addr.isDefault ? 'border-[#b08b45] ring-1 ring-[#b08b45]/30' : 'border-gray-100'} shadow-xs space-y-2 relative">
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-center space-x-2">
+                            <input type="radio" ${addr.isDefault ? 'checked' : ''} onclick="setDefaultAddress('${addr.id}')" class="accent-[#b08b45] w-4 h-4 cursor-pointer">
+                            <span class="font-bold text-gray-900 text-xs">${addr.label || 'Home'}</span>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            ${addr.isDefault ? '<span class="bg-amber-50 text-[#b08b45] text-[9px] font-bold px-2 py-0.5 rounded uppercase">Default</span>' : ''}
+                            <button onclick="openAddressFormModal('${addr.id}')" class="text-gray-400 hover:text-gray-600 p-1.5"><i class="fa-solid fa-pen text-xs"></i></button>
+                            <button onclick="deleteAddressFromDB('${addr.id}')" class="text-red-400 hover:text-red-600 p-1.5"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                        </div>
+                    </div>
+                    <div class="pl-6 space-y-0.5 text-[11px] text-gray-600">
+                        <p class="font-medium text-gray-800">${addr.fullName} <span class="text-gray-400 font-normal">(${addr.phone})</span></p>
+                        <p>${addr.street}</p>
+                        <p>${addr.city}, ${addr.state} ${addr.zip}</p>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        // OPEN ADD / EDIT ADDRESS FORM MODAL (MATCHING REFERENCE UI)
+        window.openAddressFormModal = function(addrId = null) {
+            const titleEl = document.getElementById('profile-modal-title');
+            const bodyEl = document.getElementById('profile-modal-body');
+            
+            const uData = window.currentUserData || {};
+            const list = uData.addressesList || [];
+            const existing = addrId ? list.find(a => a.id === addrId) : null;
+
+            titleEl.innerText = existing ? "Edit Delivery Address" : "Add Delivery Address";
+
+            bodyEl.innerHTML = `
+                <div class="space-y-3 text-xs">
+                    <input type="hidden" id="addr-form-id" value="${existing ? existing.id : ''}">
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase">Address Label *</label>
+                        <input type="text" id="addr-label" value="${existing ? (existing.label || '') : 'Home'}" placeholder="e.g. Home, Office, Parents' House" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase">Full Name *</label>
+                        <input type="text" id="addr-fullname" value="${existing ? (existing.fullName || '') : (uData.name || '')}" placeholder="Enter your full name" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase">Phone Number *</label>
+                        <input type="text" id="addr-phone" value="${existing ? (existing.phone || '') : (uData.phone || '')}" placeholder="+855 12 345 4567" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase">Address *</label>
+                        <input type="text" id="addr-street" value="${existing ? (existing.street || '') : ''}" placeholder="Street address, building, apartment" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-500 uppercase">City *</label>
+                        <input type="text" id="addr-city" value="${existing ? (existing.city || '') : 'Phnom Penh'}" placeholder="City" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase">State *</label>
+                            <input type="text" id="addr-state" value="${existing ? (existing.state || '') : 'PP'}" placeholder="State / Province" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-500 uppercase">ZIP Code *</label>
+                            <input type="text" id="addr-zip" value="${existing ? (existing.zip || '') : '12000'}" placeholder="ZIP Code" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
+                        </div>
+                    </div>
+                    <label class="flex items-center space-x-2 cursor-pointer pt-1">
+                        <input type="checkbox" id="addr-isdefault" ${existing && existing.isDefault ? 'checked' : (!existing && list.length === 0 ? 'checked' : '')} class="accent-[#b08b45] w-4 h-4">
+                        <span class="font-medium text-gray-700">Set as default address</span>
+                    </label>
+                    <div class="flex space-x-2 pt-2">
+                        <button onclick="saveAddressToDB()" class="flex-1 bg-[#b08b45] text-white font-bold py-2.5 min-h-[44px] rounded-xl shadow-xs">Save Address ✨</button>
+                        <button onclick="openProfileSection('addresses')" class="bg-gray-100 text-gray-600 font-bold px-4 py-2.5 rounded-xl">Back</button>
+                    </div>
+                </div>
+            `;
+        };
+
+        window.saveAddressToDB = async function() {
+            const addrId = document.getElementById('addr-form-id').value;
+            const label = document.getElementById('addr-label').value.trim() || 'Home';
+            const fullName = document.getElementById('addr-fullname').value.trim();
+            const phone = document.getElementById('addr-phone').value.trim();
+            const street = document.getElementById('addr-street').value.trim();
+            const city = document.getElementById('addr-city').value.trim();
+            const state = document.getElementById('addr-state').value.trim();
+            const zip = document.getElementById('addr-zip').value.trim();
+            const isDefault = document.getElementById('addr-isdefault').checked;
+
+            if (!fullName || !phone || !street || !city) return alert('Please fill in all required address fields.');
+
+            if (window.currentUser) {
+                const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+                let list = window.currentUserData.addressesList || [];
+
+                if (isDefault) {
+                    list.forEach(a => a.isDefault = false);
+                }
+
+                if (addrId) {
+                    let idx = list.findIndex(a => a.id === addrId);
+                    if (idx !== -1) {
+                        list[idx] = { id: addrId, label, fullName, phone, street, city, state, zip, isDefault };
+                    }
+                } else {
+                    const newId = `addr_${Date.now()}`;
+                    if (list.length === 0) isDefault = true;
+                    list.push({ id: newId, label, fullName, phone, street, city, state, zip, isDefault });
+                }
+
+                window.currentUserData.addressesList = list;
+                window.currentUserData.address = street + ', ' + city; // Keep legacy sync string
+
+                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), {
+                    addressesList: list,
+                    address: street + ', ' + city
+                });
+
+                alert('Delivery address successfully saved to database! ✨');
+                renderDeliveryAddressesList();
+            }
+        };
+
+        window.setDefaultAddress = async function(addrId) {
+            if (window.currentUser) {
+                const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+                let list = window.currentUserData.addressesList || [];
+                list.forEach(a => { a.isDefault = (a.id === addrId); });
+
+                window.currentUserData.addressesList = list;
+                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { addressesList: list });
+                renderDeliveryAddressesList();
+            }
+        };
+
+        window.deleteAddressFromDB = async function(addrId) {
+            if (window.currentUser && confirm("Delete this delivery address?")) {
+                const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+                let list = window.currentUserData.addressesList || [];
+                list = list.filter(a => a.id !== addrId);
+                if (list.length > 0 && !list.some(a => a.isDefault)) list[0].isDefault = true;
+
+                window.currentUserData.addressesList = list;
+                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { addressesList: list });
+                renderDeliveryAddressesList();
+            }
+        };
+
         window.closeProfileSubModal = function() {
             document.getElementById('profile-sub-modal').classList.add('hidden');
         };
@@ -1139,32 +1288,6 @@
                 document.getElementById('cust-profile-name').innerText = newName;
                 alert('Personal profile updated & saved to database! ✨');
                 closeProfileSubModal();
-            }
-        };
-
-        window.addNewAddressToDB = async function() {
-            const inputEl = document.getElementById('new-delivery-addr');
-            const newAddr = inputEl.value.trim();
-            if (newAddr && window.currentUser) {
-                const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
-                let currentAddrs = window.currentUserData.addresses || [];
-                currentAddrs.push(newAddr);
-                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { addresses: currentAddrs, address: newAddr });
-                window.currentUserData.addresses = currentAddrs;
-                window.currentUserData.address = newAddr;
-                alert('Address added & saved to database! ✨');
-                openProfileSection('addresses');
-            }
-        };
-
-        window.removeAddressFromDB = async function(index) {
-            if (window.currentUser && confirm("Remove this address from database?")) {
-                const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
-                let currentAddrs = window.currentUserData.addresses || [];
-                currentAddrs.splice(index, 1);
-                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { addresses: currentAddrs });
-                window.currentUserData.addresses = currentAddrs;
-                openProfileSection('addresses');
             }
         };
 
@@ -1268,7 +1391,17 @@
         }
 
         function closeCartDrawer() { document.getElementById('cart-drawer').classList.add('hidden'); }
-        function openCheckoutModal() { closeCartDrawer(); document.getElementById('checkout-modal').classList.remove('hidden'); }
+        function openCheckoutModal() { 
+            closeCartDrawer(); 
+            const uData = window.currentUserData || {};
+            const defaultAddr = (uData.addressesList || []).find(a => a.isDefault) || (uData.addressesList || [])[0];
+            if (defaultAddr) {
+                document.getElementById('checkout-name').value = defaultAddr.fullName;
+                document.getElementById('checkout-phone').value = defaultAddr.phone;
+                document.getElementById('checkout-address').value = `${defaultAddr.street}, ${defaultAddr.city} ${defaultAddr.zip}`;
+            }
+            document.getElementById('checkout-modal').classList.remove('hidden'); 
+        }
         function closeCheckoutModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
 
         function openProductModal(id = null) {
