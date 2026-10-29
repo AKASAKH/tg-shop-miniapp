@@ -854,7 +854,7 @@
         }
     </script>
 
-    <!-- LOCAL-ONLY PROFILE UPDATES & INTERACTION SCRIPT -->
+    <!-- DATABASE-SYNCED PROFILE UPDATES & INTERACTION SCRIPT -->
     <script>
         const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
         window.products = []; window.orders = []; window.banners = [];
@@ -985,7 +985,7 @@
 
         function closeProductDetailModal() { document.getElementById('product-detail-modal').classList.add('hidden'); }
 
-        // LOCAL-ONLY PROFILE SECTION UPDATES (NO DATABASE SYNC)
+        // DATABASE-SYNCED PROFILE SECTION UPDATES
         window.openProfileSection = function(section) {
             const modal = document.getElementById('profile-sub-modal');
             const titleEl = document.getElementById('profile-modal-title');
@@ -995,7 +995,7 @@
             const uData = window.currentUserData || {};
 
             if (section === 'personal') {
-                titleEl.innerText = "Personal Information (Local State)";
+                titleEl.innerText = "Personal Information (Database Sync)";
                 bodyEl.innerHTML = `
                     <div class="space-y-3">
                         <div>
@@ -1006,7 +1006,7 @@
                             <label class="text-[10px] font-bold text-gray-500 uppercase">Phone Number</label>
                             <input type="text" id="prof-edit-phone" value="${uData.phone || ''}" placeholder="+855 00 000 000" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
                         </div>
-                        <button onclick="savePersonalProfileLocally()" class="w-full bg-brand-500 text-white font-bold py-2.5 min-h-[44px] rounded-xl mt-2 shadow-xs">Save Locally (No DB Update)</button>
+                        <button onclick="savePersonalProfileToDB()" class="w-full bg-brand-500 text-white font-bold py-2.5 min-h-[44px] rounded-xl mt-2 shadow-xs">Save to Database ✨</button>
                     </div>
                 `;
             } else if (section === 'orders') {
@@ -1032,7 +1032,7 @@
                     `;
                 }).join('');
             } else if (section === 'addresses') {
-                titleEl.innerText = "Delivery Addresses (Local State)";
+                titleEl.innerText = "Delivery Addresses (Database Sync)";
                 const addrs = uData.addresses || (uData.address ? [uData.address] : []);
                 
                 bodyEl.innerHTML = `
@@ -1041,7 +1041,7 @@
                             <label class="text-[10px] font-bold text-gray-500 uppercase">Add New Address</label>
                             <div class="flex space-x-1.5">
                                 <input type="text" id="new-delivery-addr" placeholder="Street, City, Cambodia..." class="flex-1 border border-gray-200 rounded-xl px-3 py-2">
-                                <button onclick="addNewAddressLocally()" class="bg-brand-500 text-white font-bold px-3 py-2 rounded-xl"><i class="fa-solid fa-plus"></i></button>
+                                <button onclick="addNewAddressToDB()" class="bg-brand-500 text-white font-bold px-3 py-2 rounded-xl"><i class="fa-solid fa-plus"></i></button>
                             </div>
                         </div>
                         <div class="space-y-2 pt-2 border-t border-gray-50">
@@ -1050,7 +1050,7 @@
                                 addrs.map((addr, idx) => `
                                     <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 flex justify-between items-center">
                                         <span class="text-gray-700 font-medium text-xs truncate max-w-[200px]">${addr}</span>
-                                        <button onclick="removeAddressLocally(${idx})" class="text-red-400 hover:text-red-600 p-1"><i class="fa-solid fa-trash-can"></i></button>
+                                        <button onclick="removeAddressFromDB(${idx})" class="text-red-400 hover:text-red-600 p-1"><i class="fa-solid fa-trash-can"></i></button>
                                     </div>
                                 `).join('')
                             }
@@ -1096,7 +1096,7 @@
                             <span class="font-medium text-gray-700">Promotions & Disount Alerts</span>
                             <input type="checkbox" checked class="accent-brand-500 w-4 h-4">
                         </label>
-                        <button onclick="alert('Preferences updated locally!'); closeProfileSubModal();" class="w-full bg-brand-500 text-white py-2.5 font-bold rounded-xl mt-2">Save Preferences</button>
+                        <button onclick="alert('Preferences updated!'); closeProfileSubModal();" class="w-full bg-brand-500 text-white py-2.5 font-bold rounded-xl mt-2">Save Preferences</button>
                     </div>
                 `;
             } else if (section === 'support') {
@@ -1126,32 +1126,43 @@
             document.getElementById('profile-sub-modal').classList.add('hidden');
         };
 
-        window.savePersonalProfileLocally = function() {
+        window.savePersonalProfileToDB = async function() {
             const newName = document.getElementById('prof-edit-name').value;
             const newPhone = document.getElementById('prof-edit-phone').value;
-            if (window.currentUserData) {
+            if (window.currentUser) {
+                await window.firebaseDb.collection ? null : await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+                const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { name: newName, phone: newPhone });
                 window.currentUserData.name = newName;
                 window.currentUserData.phone = newPhone;
                 document.getElementById('cust-profile-name').innerText = newName;
-                alert('Personal info updated locally (Not saved to database). ✨');
+                alert('Personal profile updated & saved to database! ✨');
                 closeProfileSubModal();
             }
         };
 
-        window.addNewAddressLocally = function() {
+        window.addNewAddressToDB = async function() {
             const inputEl = document.getElementById('new-delivery-addr');
             const newAddr = inputEl.value.trim();
-            if (newAddr && window.currentUserData) {
-                if (!window.currentUserData.addresses) window.currentUserData.addresses = [];
-                window.currentUserData.addresses.push(newAddr);
-                alert('Address added locally (Not saved to database). ✨');
+            if (newAddr && window.currentUser) {
+                const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+                let currentAddrs = window.currentUserData.addresses || [];
+                currentAddrs.push(newAddr);
+                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { addresses: currentAddrs, address: newAddr });
+                window.currentUserData.addresses = currentAddrs;
+                window.currentUserData.address = newAddr;
+                alert('Address added & saved to database! ✨');
                 openProfileSection('addresses');
             }
         };
 
-        window.removeAddressLocally = function(index) {
-            if (window.currentUserData && confirm("Remove this address locally?")) {
-                window.currentUserData.addresses.splice(index, 1);
+        window.removeAddressFromDB = async function(index) {
+            if (window.currentUser && confirm("Remove this address from database?")) {
+                const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+                let currentAddrs = window.currentUserData.addresses || [];
+                currentAddrs.splice(index, 1);
+                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { addresses: currentAddrs });
+                window.currentUserData.addresses = currentAddrs;
                 openProfileSection('addresses');
             }
         };
