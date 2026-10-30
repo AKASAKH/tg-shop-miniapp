@@ -497,6 +497,9 @@
             if (window.renderAdminProducts) window.renderAdminProducts();
             if (window.renderAdminInventory) window.renderAdminInventory();
             if (window.renderAdminReviews) window.renderAdminReviews();
+            if (window.currentSelectedProdId && window.openProductDetailModal) {
+                window.openProductDetailModal(window.currentSelectedProdId, true); // Silent refresh modal
+            }
         });
 
         onSnapshot(collection(db, "orders"), (snapshot) => {
@@ -543,11 +546,11 @@
 
         // SUBMIT REVIEW & POST TO TELEGRAM CHANNEL
         window.submitProductReview = async function() {
-            if (!currentSelectedProdId) return;
+            if (!window.currentSelectedProdId) return alert('No product selected.');
             const reviewText = document.getElementById('new-review-text').value.trim();
             if (!reviewText) return alert('Please enter review text.');
 
-            const prodRef = doc(db, "products", currentSelectedProdId);
+            const prodRef = doc(db, "products", window.currentSelectedProdId);
             const prodSnap = await getDoc(prodRef);
             if (prodSnap.exists()) {
                 const p = prodSnap.data();
@@ -556,7 +559,7 @@
                 const newRev = {
                     id: `rev_${Date.now()}`,
                     author: authorName,
-                    rating: currentSelectedStarRating,
+                    rating: window.currentSelectedStarRating || 5,
                     text: reviewText,
                     adminReply: '',
                     date: new Date().toISOString().split('T')[0]
@@ -565,11 +568,11 @@
                 await updateDoc(prodRef, { reviews });
                 
                 // Broadcast review to Telegram Channel
-                const starStr = '⭐'.repeat(currentSelectedStarRating);
-                await postToTelegramChannel(p.image, `<b>💬 NEW CUSTOMER REVIEW! 💬</b>\n\n<b>Product:</b> ${p.name}\n<b>Rating:</b> ${starStr} (${currentSelectedStarRating}.0)\n<b>Reviewer:</b> ${authorName}\n💬 <i>"${reviewText}"</i>\n\n🛍️ <i>Shop & review in Mininize Studio Mini App!</i>`);
+                const starStr = '⭐'.repeat(newRev.rating);
+                await postToTelegramChannel(p.image, `<b>💬 NEW CUSTOMER REVIEW! 💬</b>\n\n<b>Product:</b> ${p.name}\n<b>Rating:</b> ${starStr} (${newRev.rating}.0)\n<b>Reviewer:</b> ${authorName}\n💬 <i>"${reviewText}"</i>\n\n🛍️ <i>Shop & review in Mininize Studio Mini App!</i>`);
 
                 document.getElementById('new-review-text').value = '';
-                openProductDetailModal(currentSelectedProdId);
+                openProductDetailModal(window.currentSelectedProdId);
                 alert('Thank you for your review! ⭐ Posted to app & Telegram channel.');
             }
         };
@@ -611,8 +614,8 @@
         window.products = []; window.orders = []; window.banners = [];
         let cart = JSON.parse(localStorage.getItem('mininize_cart') || '[]');
         let wishlist = []; let activeCategory = 'All';
-        let currentSelectedProdId = null;
-        let currentSelectedStarRating = 5;
+        window.currentSelectedProdId = null;
+        window.currentSelectedStarRating = 5;
 
         document.addEventListener("DOMContentLoaded", () => {
             const badge = document.getElementById('cart-badge');
@@ -641,7 +644,7 @@
         }
 
         function setReviewRating(rating) {
-            currentSelectedStarRating = rating;
+            window.currentSelectedStarRating = rating;
             const stars = document.getElementById('star-rating-select').children;
             for (let i = 0; i < 5; i++) {
                 if (i < rating) stars[i].className = "fa-solid fa-star cursor-pointer text-amber-400";
@@ -649,10 +652,10 @@
             }
         }
 
-        function openProductDetailModal(id) {
+        window.openProductDetailModal = function(id, silent = false) {
             const p = window.products.find(item => item.id === id);
             if (!p) return;
-            currentSelectedProdId = id;
+            window.currentSelectedProdId = id;
 
             document.getElementById('view-prod-image').src = p.image || FALLBACK_IMAGE;
             document.getElementById('view-prod-category').innerText = p.category || 'Accessories';
@@ -678,13 +681,18 @@
                     </div>
                 `).join('');
 
-            setReviewRating(5);
-            const addBtn = document.getElementById('view-prod-add-btn');
-            addBtn.onclick = function() { addToCart(p.id); closeProductDetailModal(); };
-            document.getElementById('product-detail-modal').classList.remove('hidden');
+            if (!silent) {
+                setReviewRating(5);
+                const addBtn = document.getElementById('view-prod-add-btn');
+                addBtn.onclick = function() { addToCart(p.id); closeProductDetailModal(); };
+                document.getElementById('product-detail-modal').classList.remove('hidden');
+            }
         }
 
-        function closeProductDetailModal() { document.getElementById('product-detail-modal').classList.add('hidden'); }
+        function closeProductDetailModal() { 
+            window.currentSelectedProdId = null;
+            document.getElementById('product-detail-modal').classList.add('hidden'); 
+        }
 
         function renderProducts() {
             const grid = document.getElementById('product-grid');
