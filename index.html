@@ -43,7 +43,7 @@
         </div>
     </div>
 
-    <!-- HEADER WITH CHOSEN SOFT ROSE & RIBBON LOGO -->
+    <!-- HEADER WITH SOFT ROSE & RIBBON LOGO -->
     <header class="bg-white border-b border-gray-100 sticky top-0 z-40 shadow-xs">
         <div class="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
             <div class="flex items-center space-x-3">
@@ -75,13 +75,20 @@
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-[11px]"></i></span>
                     <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search products..." class="w-full pl-8 pr-3 py-2 bg-white border border-gray-200 rounded-xl text-xs shadow-xs focus:outline-none focus:border-[#a4133c]">
                 </div>
+                
+                <!-- RESTORED EXTENSIVE 8-CATEGORY FILTER BAR -->
                 <div class="flex space-x-1.5 overflow-x-auto pb-1 text-[11px] scrollbar-none justify-start md:justify-center">
                     <button onclick="filterCategory('All')" class="cat-btn bg-[#800f2f] text-white px-3 py-1.5 rounded-full font-medium whitespace-nowrap shadow-xs min-h-[36px]">All ✨</button>
                     <button onclick="filterCategory('Hairpins')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Hairpins 🎀</button>
-                    <button onclick="filterCategory('Cosmetics')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Cosmetics 💄</button>
-                    <button onclick="filterCategory('Accessories')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Accessories 💎</button>
-                    <button onclick="filterCategory('Bags')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Bags 👜</button>
+                    <button onclick="filterCategory('Necklaces')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Necklaces 📿</button>
+                    <button onclick="filterCategory('Rings')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Rings 💍</button>
+                    <button onclick="filterCategory('Earrings')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Earrings 💎</button>
+                    <button onclick="filterCategory('Phone Charms')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Phone Charms 📱</button>
+                    <button onclick="filterCategory('Bags & Pouches')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Bags & Pouches 👜</button>
+                    <button onclick="filterCategory('Hair Accessories')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Hair Accessories 🌸</button>
+                    <button onclick="filterCategory('Makeup Accessories')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Makeup Accessories 💄</button>
                 </div>
+
                 <div id="product-grid" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
             </div>
 
@@ -93,8 +100,6 @@
 
             <!-- PROFILE SECTION -->
             <div id="page-profile" class="hidden space-y-3 max-w-md mx-auto">
-                
-                <!-- CUSTOMER DASHBOARD VIEW -->
                 <div id="customer-dashboard-view" class="space-y-3 hidden">
                     <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 flex items-center justify-between">
                         <div class="flex items-center space-x-3">
@@ -430,7 +435,7 @@
         </div>
     </div>
 
-    <!-- ADD / EDIT PRODUCT MODAL -->
+    <!-- ADD / EDIT PRODUCT MODAL (WITH 8 CATEGORIES) -->
     <div id="admin-product-modal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs">
             <button onclick="closeAdminProductModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
@@ -441,9 +446,13 @@
                 <input type="text" id="prod-sku" placeholder="SKU Code" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 uppercase">
                 <select id="prod-category" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 bg-white">
                     <option value="Hairpins">Hairpins 🎀</option>
-                    <option value="Cosmetics">Cosmetics 💄</option>
-                    <option value="Accessories">Accessories 💎</option>
-                    <option value="Bags">Bags 👜</option>
+                    <option value="Necklaces">Necklaces 📿</option>
+                    <option value="Rings">Rings 💍</option>
+                    <option value="Earrings">Earrings 💎</option>
+                    <option value="Phone Charms">Phone Charms 📱</option>
+                    <option value="Bags & Pouches">Bags & Pouches 👜</option>
+                    <option value="Hair Accessories">Hair Accessories 🌸</option>
+                    <option value="Makeup Accessories">Makeup Accessories 💄</option>
                 </select>
                 <input type="number" step="0.01" id="prod-price" placeholder="Price ($)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
                 <input type="number" id="prod-stock" placeholder="Stock Quantity" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
@@ -658,7 +667,7 @@
         async function seedFullCatalog(db) {
             const catalog = [
                 { name: 'Pearl Butterfly Hairpin', sku: 'HRP-001', category: 'Hairpins', price: 12.50, stock: 15, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80', reviews: [] },
-                { name: 'Matte Pink Lipstick', sku: 'COS-001', category: 'Cosmetics', price: 18.90, stock: 3, image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&q=80', reviews: [] }
+                { name: 'Gold Pendant Necklace', sku: 'NC-001', category: 'Necklaces', price: 24.50, stock: 10, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80', reviews: [] }
             ];
             for (let item of catalog) await addDoc(collection(db, "products"), { ...item, isPublished: true });
         }
