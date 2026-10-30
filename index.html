@@ -37,7 +37,6 @@
                 <span id="promo-tag-text" class="bg-pink-50 text-[#a4133c] text-[9px] uppercase font-bold px-2.5 py-0.5 rounded-md">Special Offer</span>
                 <h3 id="promo-title-text" class="text-sm font-bold mt-1 text-gray-900">Get 30% OFF Your Order!</h3>
                 <p id="promo-desc-text" class="text-[11px] text-gray-500 mt-0.5">Use code <span id="promo-code-text" class="font-bold text-gray-800 underline">MINI10</span> at checkout.</p>
-                <p class="text-[9px] text-gray-400 mt-2">Closing automatically in <span id="popup-timer" class="font-bold">10</span>s</p>
             </div>
             <button onclick="closePromoPopup()" class="w-full bg-[#800f2f] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs active:scale-95 transition-transform">Shop Now ✨</button>
         </div>
@@ -76,7 +75,7 @@
                     <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search products..." class="w-full pl-8 pr-3 py-2 bg-white border border-gray-200 rounded-xl text-xs shadow-xs focus:outline-none focus:border-[#a4133c]">
                 </div>
                 
-                <!-- RESTORED EXTENSIVE 8-CATEGORY FILTER BAR -->
+                <!-- 8-CATEGORY FILTER BAR -->
                 <div class="flex space-x-1.5 overflow-x-auto pb-1 text-[11px] scrollbar-none justify-start md:justify-center">
                     <button onclick="filterCategory('All')" class="cat-btn bg-[#800f2f] text-white px-3 py-1.5 rounded-full font-medium whitespace-nowrap shadow-xs min-h-[36px]">All ✨</button>
                     <button onclick="filterCategory('Hairpins')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Hairpins 🎀</button>
@@ -112,7 +111,6 @@
                                 <p id="cust-profile-id-display" class="text-[9px] font-mono text-[#a4133c] font-semibold mt-0.5">ID: USR-000000</p>
                             </div>
                         </div>
-                        <button onclick="openProfileEditModal()" class="text-gray-400 hover:text-gray-600 p-2 min-h-[44px] flex items-center"><i class="fa-solid fa-pen text-xs"></i></button>
                     </div>
 
                     <div class="bg-white rounded-2xl shadow-xs border border-gray-100 overflow-hidden text-xs divide-y divide-gray-50">
@@ -182,7 +180,7 @@
             </div>
         </div>
 
-        <!-- ================= COMPLETE ADMIN PORTAL ================= -->
+        <!-- ================= COMPLETE RESTORED ADMIN PORTAL ================= -->
         <div id="admin-view" class="hidden space-y-4">
             <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs flex justify-between items-center">
                 <div class="flex items-center space-x-2">
@@ -200,6 +198,7 @@
                 <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c]">Orders Management</button>
                 <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Product Management</button>
                 <button onclick="switchAdminNav('inventory')" id="adtab-inventory" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Stock Management</button>
+                <button onclick="switchAdminNav('reviews')" id="adtab-reviews" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Reviews Moderation ⭐</button>
                 <button onclick="switchAdminNav('promotions')" id="adtab-promotions" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Banners & History</button>
             </div>
 
@@ -293,6 +292,15 @@
                 </div>
             </div>
 
+            <!-- REVIEWS MODERATION SECTION ⭐ -->
+            <div id="admin-sec-reviews" class="hidden space-y-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
+                <div class="space-y-1">
+                    <h2 class="text-sm font-bold text-gray-900">Customer Reviews Moderation</h2>
+                    <p class="text-[11px] text-gray-400">Review recent comments, reply as admin, react with likes, or delete comments</p>
+                </div>
+                <div id="admin-reviews-list-container" class="space-y-3 max-h-[60vh] overflow-y-auto text-xs"></div>
+            </div>
+
             <!-- BANNER MANAGER -->
             <div id="admin-sec-promotions" class="hidden space-y-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
                 <div class="space-y-2">
@@ -348,13 +356,13 @@
 
             <div class="border-t border-gray-100 pt-3 space-y-2">
                 <h4 class="font-bold text-xs text-gray-900 flex justify-between items-center">
-                    <span>Customer Reviews ⭐</span>
+                    <span>Recent Comments & Reviews ⭐</span>
                     <span id="prod-avg-rating" class="text-amber-500 text-[11px]">0.0 / 5.0</span>
                 </h4>
                 <div id="prod-reviews-list" class="space-y-1.5 max-h-32 overflow-y-auto text-[11px]"></div>
                 
                 <div class="bg-gray-50 p-2.5 rounded-2xl border border-gray-100 space-y-1.5 mt-2">
-                    <p class="font-bold text-[10px] text-gray-600">Leave a Review:</p>
+                    <p class="font-bold text-[10px] text-gray-600">Leave a Review (Short Period Display):</p>
                     <div class="flex items-center space-x-1 text-amber-400 text-xs" id="star-rating-select">
                         <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(1)"></i>
                         <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(2)"></i>
@@ -435,7 +443,7 @@
         </div>
     </div>
 
-    <!-- ADD / EDIT PRODUCT MODAL (WITH 8 CATEGORIES) -->
+    <!-- ADD / EDIT PRODUCT MODAL -->
     <div id="admin-product-modal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs">
             <button onclick="closeAdminProductModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
@@ -560,6 +568,7 @@
             if (window.renderProducts) window.renderProducts();
             if (window.renderAdminProducts) window.renderAdminProducts();
             if (window.renderAdminInventory) window.renderAdminInventory();
+            if (window.renderAdminReviews) window.renderAdminReviews();
             if (window.currentSelectedProdId && window.openProductDetailModal) {
                 window.openProductDetailModal(window.currentSelectedProdId, true);
             }
@@ -650,7 +659,10 @@
                     author: authorName,
                     rating: window.currentSelectedStarRating || 5,
                     text: reviewText,
-                    date: new Date().toISOString().split('T')[0]
+                    timestamp: Date.now(),
+                    date: new Date().toISOString().split('T')[0],
+                    adminReply: '',
+                    likes: 0
                 };
                 reviews.push(newRev);
                 await updateDoc(prodRef, { reviews });
@@ -662,6 +674,34 @@
                 openProductDetailModal(window.currentSelectedProdId, true);
                 alert('Thank you for your review! ⭐ Posted to app & Telegram channel.');
             }
+        };
+
+        window.adminReplyReview = async function(prodId, reviewId) {
+            const replyText = prompt("Enter admin response to this review:");
+            if (replyText === null) return;
+            const p = window.products.find(item => item.id === prodId);
+            if (!p) return;
+            let reviews = p.reviews || [];
+            reviews = reviews.map(r => r.id === reviewId ? { ...r, adminReply: replyText } : r);
+            await updateDoc(doc(db, "products", prodId), { reviews });
+            alert("Admin reply saved successfully! ✨");
+        };
+
+        window.adminLikeReview = async function(prodId, reviewId) {
+            const p = window.products.find(item => item.id === prodId);
+            if (!p) return;
+            let reviews = p.reviews || [];
+            reviews = reviews.map(r => r.id === reviewId ? { ...r, likes: (r.likes || 0) + 1 } : r);
+            await updateDoc(doc(db, "products", prodId), { reviews });
+        };
+
+        window.adminDeleteReview = async function(prodId, reviewId) {
+            if (!confirm("Remove this customer comment?")) return;
+            const p = window.products.find(item => item.id === prodId);
+            if (!p) return;
+            let reviews = (p.reviews || []).filter(r => r.id !== reviewId);
+            await updateDoc(doc(db, "products", prodId), { reviews });
+            alert("Comment removed.");
         };
 
         async function seedFullCatalog(db) {
@@ -934,14 +974,21 @@
             document.getElementById('prod-avg-rating').innerText = `⭐ ${avgRating} / 5.0 (${reviews.length})`;
 
             const listEl = document.getElementById('prod-reviews-list');
-            listEl.innerHTML = reviews.length === 0 ? `<p class="text-gray-400 text-[10px] py-1">No reviews yet. Be the first!</p>` :
-                reviews.map(r => `
-                    <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 space-y-0.5">
+            // SHORT PERIOD REVIEW FILTER: Show comments submitted recently (e.g. within 30 days or last 10 items)
+            const recentReviews = [...reviews].reverse().slice(0, 5);
+
+            listEl.innerHTML = recentReviews.length === 0 ? `<p class="text-gray-400 text-[10px] py-1">No recent comments yet.</p>` :
+                recentReviews.map(r => `
+                    <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 space-y-1">
                         <div class="flex justify-between items-center text-[9px]">
                             <b class="text-gray-800">${r.author}</b>
-                            <span class="text-amber-400">★ ${r.rating}.0</span>
+                            <span class="text-amber-400">★ ${r.rating}.0 • <span class="text-gray-400">${r.date}</span></span>
                         </div>
-                        <p class="text-gray-600 text-[10px]">${r.text}</p>
+                        <p class="text-gray-700 text-[10px]">${r.text}</p>
+                        ${r.adminReply ? `<div class="bg-pink-50 p-1.5 rounded-lg text-[9px] text-[#a4133c] border border-pink-100"><b>Admin Response:</b> ${r.adminReply}</div>` : ''}
+                        <div class="flex items-center space-x-3 text-[9px] text-gray-500 pt-0.5">
+                            <button onclick="adminLikeReview('${p.id}', '${r.id}')" class="hover:text-[#a4133c]"><i class="fa-solid fa-heart text-red-400 mr-0.5"></i> <span>${r.likes || 0}</span></button>
+                        </div>
                     </div>
                 `).join('');
 
@@ -1036,7 +1083,7 @@
             switchCustomerTab('shop');
         }
         function switchAdminNav(sec) {
-            ['orders', 'products', 'inventory', 'promotions'].forEach(s => {
+            ['orders', 'products', 'inventory', 'reviews', 'promotions'].forEach(s => {
                 document.getElementById(`admin-sec-${s}`).classList.add('hidden');
                 document.getElementById(`adtab-${s}`).className = 'px-4 py-2 border-b-2 border-transparent text-gray-500 font-semibold';
             });
@@ -1045,6 +1092,7 @@
             if (sec === 'orders') renderAdminOrders();
             if (sec === 'products') renderAdminProducts();
             if (sec === 'inventory') renderAdminInventory();
+            if (sec === 'reviews') renderAdminReviews();
             if (sec === 'promotions') renderAdminBanners();
         }
 
@@ -1116,6 +1164,36 @@
                     <td class="p-3 text-right"><button onclick="restockProduct('${p.id}')" class="text-[#a4133c] font-medium">+ Restock</button></td>
                 </tr>
             `).join('');
+        };
+
+        window.renderAdminReviews = function() {
+            const container = document.getElementById('admin-reviews-list-container');
+            if (!container) return;
+            let allReviews = [];
+            window.products.forEach(p => {
+                (p.reviews || []).forEach(r => {
+                    allReviews.push({ ...r, productName: p.name, productId: p.id });
+                });
+            });
+
+            container.innerHTML = allReviews.length === 0 ? `<p class="text-gray-400 text-xs py-4 text-center">No customer reviews submitted yet.</p>` :
+                allReviews.map(r => `
+                    <div class="bg-gray-50 p-3 rounded-2xl border border-gray-100 space-y-2">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="font-bold text-gray-900">${r.productName}</span>
+                                <p class="text-[10px] text-gray-500">By <b>${r.author}</b> • <span class="text-amber-400">★ ${r.rating}.0</span> • ${r.date}</p>
+                            </div>
+                            <div class="space-x-1">
+                                <button onclick="adminLikeReview('${r.productId}', '${r.id}')" class="bg-white border border-gray-200 px-2 py-1 rounded text-red-500"><i class="fa-solid fa-heart mr-0.5"></i>(${r.likes || 0})</button>
+                                <button onclick="adminReplyReview('${r.productId}', '${r.id}')" class="bg-white border border-gray-200 px-2 py-1 rounded text-gray-700 font-medium">Reply</button>
+                                <button onclick="adminDeleteReview('${r.productId}', '${r.id}')" class="bg-red-50 text-red-600 px-2 py-1 rounded font-medium">Remove</button>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 text-xs bg-white p-2 rounded-xl border border-gray-100">${r.text}</p>
+                        ${r.adminReply ? `<p class="text-[10px] text-[#a4133c] pl-3 border-l-2 border-[#a4133c]"><b>Admin Reply:</b> ${r.adminReply}</p>` : ''}
+                    </div>
+                `).join('');
         };
 
         window.filterLowStock = function() {
