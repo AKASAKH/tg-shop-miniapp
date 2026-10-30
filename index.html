@@ -97,7 +97,7 @@
                 <div id="my-orders-list" class="space-y-2"></div>
             </div>
 
-            <!-- PROFILE & SETTINGS SECTION (Matching Design Mockup) -->
+            <!-- PROFILE SECTION (Updated to match your design mockup) -->
             <div id="page-profile" class="hidden space-y-3 max-w-md mx-auto">
                 <div id="customer-dashboard-view" class="space-y-3 hidden">
                     
@@ -108,7 +108,7 @@
                                 <i class="fa-solid fa-user"></i>
                             </div>
                             <div>
-                                <h3 id="cust-profile-name" class="font-bold text-sm text-gray-950">Sokha Chan</h3>
+                                <h3 id="cust-profile-name" class="font-bold text-sm text-gray-900">Sokha Chan</h3>
                                 <p id="cust-profile-handle" class="text-[11px] text-gray-400">@sokha_chan</p>
                                 <div class="flex items-center space-x-2 mt-1">
                                     <span class="bg-sky-50 text-sky-600 text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center"><i class="fa-solid fa-circle-check mr-1 text-[8px]"></i> Verified Telegram</span>
@@ -125,7 +125,7 @@
                         <div><b id="stat-addr-count" class="text-sm font-black text-gray-900 block">1</b><span class="text-[10px] text-gray-400">Address</span></div>
                     </div>
 
-                    <!-- PROFILE & SETTINGS FULL MENU (Exact Mockup Layout)[cite: 1] -->
+                    <!-- PROFILE & SETTINGS FULL MENU[cite: 1] -->
                     <div class="bg-white rounded-2xl shadow-xs border border-gray-100 overflow-hidden text-xs divide-y divide-gray-50">
                         <button onclick="openSettingsSubPage('personal')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
                             <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-user text-[#a4133c] w-4"></i><span>Personal Information</span></span>
@@ -313,7 +313,7 @@
 
     </main>
 
-    <!-- SETTINGS & SUB-PAGE MODAL (Matching Mockup Screens)[cite: 1] -->
+    <!-- SETTINGS & SUB-PAGE MODAL[cite: 1] -->
     <div id="settings-sub-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative text-xs border border-gray-100 max-h-[90vh] overflow-y-auto">
             <button onclick="closeSettingsSubModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
@@ -366,15 +366,90 @@
         </div>
     </div>
 
-    <!-- BOTTOM NAV (Matching Design Mockup)[cite: 1] -->
+    <!-- BOTTOM NAV[cite: 1] -->
     <nav id="customer-nav" class="fixed bottom-0 inset-x-0 bg-white border-t border-gray-100 py-2 px-6 z-40 shadow-sm">
         <div class="max-w-md mx-auto flex justify-around items-center text-xs">
             <button onclick="switchCustomerTab('shop')" id="nav-btn-shop" class="flex flex-col items-center text-[#a4133c] font-bold"><i class="fa-solid fa-store text-sm mb-0.5"></i> Home</button>
             <button onclick="switchCustomerTab('wishlist')" id="nav-btn-wishlist" class="flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-heart text-sm mb-0.5"></i> Favorites</button>
             <button onclick="switchCustomerTab('orders')" id="nav-btn-orders" class="flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-box text-sm mb-0.5"></i> Orders</button>
+            <button onclick="openCartDrawer()" class="relative flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-cart-shopping text-sm mb-0.5"></i> Cart<span id="cart-badge" class="absolute -top-1 -right-2 bg-[#a4133c] text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold">0</span></button>
             <button onclick="switchCustomerTab('profile')" id="nav-btn-profile" class="flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-user text-sm mb-0.5"></i> Profile</button>
         </div>
     </nav>
+
+    <!-- CART DRAWER -->
+    <div id="cart-drawer" class="fixed inset-0 bg-black/40 z-50 hidden transition-opacity">
+        <div class="absolute inset-y-0 right-0 max-w-xs w-full bg-white shadow-xl flex flex-col p-4">
+            <div class="flex justify-between items-center border-b border-gray-50 pb-2.5">
+                <h3 class="font-serif italic font-bold text-xs text-gray-900"><i class="fa-solid fa-bag-shopping text-[#a4133c] mr-1"></i> Shopping Bag</h3>
+                <button onclick="closeCartDrawer()" class="text-gray-400 text-xs"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="cart-items-container" class="flex-1 overflow-y-auto py-2 space-y-2 text-xs"></div>
+            <div class="border-t border-gray-50 pt-2.5 space-y-2 text-xs">
+                <div class="flex justify-between font-bold text-gray-900 pt-1"><span>Total</span><span id="cart-total" class="text-[#a4133c]">$0.00</span></div>
+                <button onclick="openCheckoutModal()" class="w-full bg-[#800f2f] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Proceed to Payment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHECKOUT DETAILS MODAL -->
+    <div id="checkout-modal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs">
+            <button onclick="closeCheckoutModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="font-serif italic font-bold text-xs text-gray-900">Delivery Details</h3>
+            <div class="space-y-2">
+                <input type="text" id="checkout-name" placeholder="Full Name" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
+                <input type="text" id="checkout-phone" placeholder="Phone Number" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
+                <textarea id="checkout-address" placeholder="Delivery Address" rows="2" class="w-full border border-gray-200 rounded-xl px-3 py-1.5"></textarea>
+            </div>
+            <button onclick="initiateBakongPayment()" class="w-full bg-red-600 text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs flex items-center justify-center space-x-1.5">
+                <i class="fa-solid fa-qrcode"></i><span>Pay via Bakong KHQR</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- BAKONG KHQR PAYMENT GATEWAY MODAL -->
+    <div id="bakong-payment-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-xs w-full p-5 space-y-4 shadow-2xl relative text-center border border-gray-100">
+            <button onclick="cancelBakongPayment()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs"><i class="fa-solid fa-xmark"></i></button>
+            <div class="flex items-center justify-center space-x-1.5">
+                <span class="bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded">KHQR</span>
+                <span class="font-bold text-xs text-gray-900">Bakong Payment</span>
+            </div>
+            <div class="bg-red-50/50 p-3 rounded-2xl border border-red-100 space-y-1">
+                <p class="text-[10px] text-gray-400">Total Amount Due</p>
+                <h3 id="bakong-pay-amount" class="text-xl font-black text-red-600">$0.00</h3>
+                <p id="bakong-pay-ordernum" class="text-[9px] font-mono text-gray-500">Order: #ORD-000</p>
+            </div>
+            <div class="bg-white p-2 border border-gray-200 rounded-2xl shadow-inner inline-block">
+                <img id="bakong-qr-img" src="" class="w-44 h-44 mx-auto rounded-lg object-contain">
+            </div>
+            <a id="bakong-deeplink-btn" href="#" target="_blank" class="block w-full bg-red-600 text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Open Bakong App</a>
+        </div>
+    </div>
+
+    <!-- ADD / EDIT PRODUCT MODAL -->
+    <div id="admin-product-modal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs">
+            <button onclick="closeAdminProductModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
+            <h3 id="product-modal-title" class="font-serif italic font-bold text-xs text-gray-900">Add Product to Database</h3>
+            <input type="hidden" id="prod-id" value="">
+            <div class="space-y-2">
+                <input type="text" id="prod-name" placeholder="Product Name" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
+                <input type="text" id="prod-sku" placeholder="SKU Code" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 uppercase">
+                <select id="prod-category" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 bg-white">
+                    <option value="Hairpins">Hairpins 🎀</option>
+                    <option value="Cosmetics">Cosmetics 💄</option>
+                    <option value="Accessories">Accessories 💎</option>
+                    <option value="Bags">Bags 👜</option>
+                </select>
+                <input type="number" step="0.01" id="prod-price" placeholder="Price ($)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
+                <input type="number" id="prod-stock" placeholder="Stock Quantity" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
+                <input type="text" id="prod-image" placeholder="Image URL (.jpg / .png)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
+            </div>
+            <button onclick="saveAdminProduct()" class="w-full bg-[#800f2f] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Save Product</button>
+        </div>
+    </div>
 
     <!-- FIREBASE MODULE & REALTIME DATABASE LOGIC -->
     <script type="module">
@@ -397,6 +472,26 @@
 
         window.firebaseDb = db;
         window.firebaseAuth = auth;
+
+        const TELEGRAM_BOT_TOKEN = "8799522797:AAG5hhzhfDjXxftdlkJ7zVgcDQqhV7hR-4k";
+        const TELEGRAM_CHANNEL_ID = "@songsashop";
+        const TELEGRAM_MINIAPP_URL = "https://t.me/songsashop"; 
+
+        async function postToTelegramChannel(photoUrl, captionText) {
+            try {
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHANNEL_ID,
+                        photo: photoUrl || "https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80",
+                        caption: captionText,
+                        parse_mode: 'HTML',
+                        reply_markup: { inline_keyboard: [[{ text: "Shop Now 🛍️", url: TELEGRAM_MINIAPP_URL }]] }
+                    })
+                });
+            } catch (err) { console.error('Telegram broadcast error:', err); }
+        }
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -422,6 +517,7 @@
                     });
                 }
                 const userData = userSnap.exists() ? userSnap.data() : {};
+                userData.customId = userData.customId || generatedUserId;
                 window.currentUserData = userData;
 
                 const isAdmin = userData.role === "admin" || (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
@@ -451,98 +547,148 @@
             snapshot.forEach(docSnap => window.products.push({ id: docSnap.id, ...docSnap.data() }));
             if (window.products.length === 0) seedFullCatalog(db);
             if (window.renderProducts) window.renderProducts();
+            if (window.renderAdminProducts) window.renderAdminProducts();
+            if (window.renderAdminInventory) window.renderAdminInventory();
+            if (window.renderAdminReviews) window.renderAdminReviews();
+            if (window.currentSelectedProdId && window.openProductDetailModal) {
+                window.openProductDetailModal(window.currentSelectedProdId, true);
+            }
         });
 
         onSnapshot(collection(db, "orders"), (snapshot) => {
             window.orders = [];
             snapshot.forEach(docSnap => window.orders.push({ docId: docSnap.id, ...docSnap.data() }));
             document.getElementById('stat-orders-count').innerText = window.orders.length;
+            if (window.renderAdminOrders) window.renderAdminOrders();
             if (window.renderCustomerOrders) window.renderCustomerOrders();
         });
 
-        window.handleEmailLogin = async function() {
-            const email = document.getElementById('login-email').value.trim();
-            const password = document.getElementById('login-password').value;
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                alert('Signed in successfully! ✨');
-            } catch (err) { alert('Login Failed: ' + err.message); }
+        window.saveAdminProduct = async function() {
+            const prodId = document.getElementById('prod-id').value;
+            const name = document.getElementById('prod-name').value;
+            const sku = document.getElementById('prod-sku').value.trim() || `SKU-${Math.floor(1000 + Math.random() * 9000)}`;
+            const category = document.getElementById('prod-category').value;
+            const price = parseFloat(document.getElementById('prod-price').value);
+            const stock = parseInt(document.getElementById('prod-stock').value) || 10;
+            const image = document.getElementById('prod-image').value.trim() || 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
+
+            if (!name || isNaN(price)) return alert('Please enter valid product details.');
+
+            const productData = {
+                name, sku, category, price, stock,
+                image, isPublished: true, updatedAt: new Date().toISOString()
+            };
+
+            if (prodId) {
+                await updateDoc(doc(db, "products", prodId), productData);
+                alert('Product updated successfully! ✨');
+            } else {
+                productData.createdAt = new Date().toISOString();
+                productData.reviews = [];
+                await addDoc(collection(db, "products"), productData);
+                postToTelegramChannel(image, `<b>✨ NEW ARRIVAL AT MININIZE STUDIO! ✨</b>\n\n<b>${name}</b>\n🏷️ Category: ${category}\n🔢 SKU: <code>${sku}</code>\n💰 Price: <b>$${price.toFixed(2)}</b>\n📦 Stock: ${stock}\n\n🛍️ <i>Shop now in our Telegram Mini App!</i>`);
+                alert('New product saved & posted to Telegram channel! 🎉');
+            }
+            closeAdminProductModal();
         };
 
-        window.handleEmailSignUp = async function() {
-            const name = document.getElementById('signup-name').value;
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            try {
-                const cred = await createUserWithEmailAndPassword(auth, email, password);
-                const generatedUserId = `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`;
-                await setDoc(doc(db, "users", cred.user.uid), {
-                    uid: cred.user.uid, customId: generatedUserId, name: name || email.split('@')[0], email,
-                    phone: "+855 12 345 678",
-                    addressesList: [
-                        { id: 'addr_1', label: 'Home', fullName: name || 'Sokha Chan', phone: '+855 12 345 678', street: '123 Main Street', city: 'Phnom Penh', province: 'Phnom Penh', district: 'Sen Sok', isDefault: true }
-                    ],
-                    preferences: { currency: 'USD', language: 'English', theme: 'Light' },
-                    role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer",
-                    createdAt: new Date().toISOString()
-                });
-                alert('Account saved successfully! 🎉');
-            } catch (err) { alert('Sign Up Failed: ' + err.message); }
+        window.deleteProduct = async function(id) {
+            if (confirm("Delete this product?")) {
+                await deleteDoc(doc(db, "products", id));
+                alert('Product deleted.');
+            }
         };
 
-        window.handleTelegramSignIn = async function() {
-            try {
-                const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-                const tgId = tgUser ? `tg_${tgUser.id}` : "tg_demo";
-                const tgName = tgUser ? `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() : "Sokha Chan";
+        window.submitProductReview = async function() {
+            if (!window.currentSelectedProdId) return alert('No product selected.');
+            const reviewText = document.getElementById('new-review-text').value.trim();
+            if (!reviewText) return alert('Please enter review text.');
+
+            const prodRef = doc(db, "products", window.currentSelectedProdId);
+            const prodSnap = await getDoc(prodRef);
+            if (prodSnap.exists()) {
+                const p = prodSnap.data();
+                const reviews = p.reviews || [];
+                const authorName = window.currentUserData?.name || "Shopper";
+                const newRev = {
+                    id: `rev_${Date.now()}`,
+                    author: authorName,
+                    rating: window.currentSelectedStarRating || 5,
+                    text: reviewText,
+                    adminReply: '',
+                    date: new Date().toISOString().split('T')[0]
+                };
+                reviews.push(newRev);
+                await updateDoc(prodRef, { reviews });
                 
-                const userRef = doc(db, "users", tgId);
-                const userSnap = await getDoc(userRef);
+                const starStr = '⭐'.repeat(newRev.rating);
+                await postToTelegramChannel(p.image, `<b>💬 NEW CUSTOMER REVIEW! 💬</b>\n\n<b>Product:</b> ${p.name}\n<b>Rating:</b> ${starStr} (${newRev.rating}.0)\n<b>Reviewer:</b> ${authorName}\n💬 <i>"${reviewText}"</i>\n\n🛍️ <i>Shop & review in Mininize Studio Mini App!</i>`);
 
-                if (!userSnap.exists()) {
-                    await setDoc(userRef, {
-                        uid: tgId, customId: `USR-TG01`, name: tgName, email: `${tgId}@telegram.org`,
-                        phone: "+855 12 345 678",
-                        addressesList: [
-                            { id: 'addr_1', label: 'Home', fullName: tgName, phone: '+855 12 345 678', street: '123 Main Street', city: 'Phnom Penh', province: 'Phnom Penh', district: 'Sen Sok', isDefault: true }
-                        ],
-                        preferences: { currency: 'USD', language: 'English', theme: 'Light' },
-                        role: "customer", createdAt: new Date().toISOString()
-                    });
-                }
-                alert(`Welcome back, ${tgName}! ✨`);
-                window.location.reload();
-            } catch (err) { alert('Telegram Sign In Error: ' + err.message); }
+                document.getElementById('new-review-text').value = '';
+                openProductDetailModal(window.currentSelectedProdId);
+                alert('Thank you for your review! ⭐ Posted to app & Telegram channel.');
+            }
         };
 
-        window.handleSignOut = async function() {
-            try {
-                await signOut(auth);
-                alert('Signed out successfully.');
-                window.location.reload();
-            } catch (err) { alert('Sign Out Error: ' + err.message); }
+        window.adminReplyReview = async function(prodId, reviewId) {
+            const replyText = prompt("Enter admin response to this review:");
+            if (replyText === null) return;
+
+            const p = window.products.find(item => item.id === prodId);
+            if (!p) return;
+            let reviews = p.reviews || [];
+            reviews = reviews.map(r => r.id === reviewId ? { ...r, adminReply: replyText } : r);
+            await updateDoc(doc(db, "products", prodId), { reviews });
+            alert("Admin reply saved successfully! ✨");
+        };
+
+        window.adminDeleteReview = async function(prodId, reviewId) {
+            if (!confirm("Remove this customer review?")) return;
+            const p = window.products.find(item => item.id === prodId);
+            if (!p) return;
+            let reviews = (p.reviews || []).filter(r => r.id !== reviewId);
+            await updateDoc(doc(db, "products", prodId), { reviews });
+            alert("Review removed.");
         };
 
         async function seedFullCatalog(db) {
-            await addDoc(collection(db, "products"), { name: 'Pearl Butterfly Hairpin', category: 'Hairpins', price: 12.50, stock: 15, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80', isPublished: true });
-            await addDoc(collection(db, "products"), { name: 'Matte Pink Lipstick', category: 'Cosmetics', price: 18.90, stock: 3, image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&q=80', isPublished: true });
+            const catalog = [
+                { name: 'Pearl Butterfly Hairpin', sku: 'HRP-001', category: 'Hairpins', price: 12.50, stock: 15, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80', reviews: [{id: 'rev_1', author: 'Sophea', rating: 5, text: 'Beautiful quality!', adminReply: 'Thank you Sophea! 💖', date: '2026-07-01'}] },
+                { name: 'Matte Pink Lipstick', sku: 'COS-001', category: 'Cosmetics', price: 18.90, stock: 3, image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&q=80', reviews: [] }
+            ];
+            for (let item of catalog) await addDoc(collection(db, "products"), { ...item, isPublished: true });
         }
     </script>
 
-    <!-- STOREFRONT & MOCKUP SCREEN UI SCRIPT[cite: 1] -->
+    <!-- STOREFRONT, UI & MOCKUP SETTINGS SCRIPT -->
     <script>
-        window.products = []; window.orders = [];
+        const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
+        window.products = []; window.orders = []; window.banners = [];
+        let cart = JSON.parse(localStorage.getItem('mininize_cart') || '[]');
         let wishlist = []; let activeCategory = 'All';
+        window.currentSelectedProdId = null;
+        window.currentSelectedStarRating = 5;
 
         document.addEventListener("DOMContentLoaded", () => {
-            renderProducts();
+            const badge = document.getElementById('cart-badge');
+            if (badge) badge.innerText = cart.reduce((s, i) => s + i.qty, 0);
         });
+
+        function closePromoPopup() { document.getElementById('promo-popup').classList.add('hidden'); }
+        function switchAuthTab(mode) {
+            ['login', 'signup'].forEach(m => {
+                document.getElementById(`auth-form-${m}`).classList.add('hidden');
+                document.getElementById(`authtab-${m}`).className = 'flex-1 py-1 text-gray-500 rounded-lg';
+            });
+            document.getElementById(`auth-form-${mode}`).classList.remove('hidden');
+            document.getElementById(`authtab-${mode}`).className = 'flex-1 py-1 bg-white text-gray-900 rounded-lg shadow-xs';
+        }
 
         function switchCustomerTab(tab) {
             ['shop', 'wishlist', 'orders', 'profile'].forEach(t => {
                 const el = document.getElementById(`page-${t}`);
                 if (el) el.classList.add('hidden');
-                const btn = document.getElementById(`nav-btn-${t === 'shop' ? 'shop' : t === 'wishlist' ? 'wishlist' : t === 'orders' ? 'orders' : 'profile'}`);
+                const btn = document.getElementById(`nav-btn-${t}`);
                 if (btn) btn.className = 'flex flex-col items-center text-gray-400 font-medium';
             });
             const targetPage = document.getElementById(`page-${tab}`);
@@ -550,6 +696,8 @@
             const targetBtn = document.getElementById(`nav-btn-${tab}`);
             if (targetBtn) targetBtn.className = 'flex flex-col items-center text-[#a4133c] font-bold';
 
+            if (tab === 'shop') renderProducts();
+            if (tab === 'wishlist') renderWishlist();
             if (tab === 'orders') renderCustomerOrders();
         }
 
@@ -880,25 +1028,121 @@
             document.getElementById('settings-sub-modal').classList.add('hidden');
         };
 
+        function setReviewRating(rating) {
+            window.currentSelectedStarRating = rating;
+            const stars = document.getElementById('star-rating-select').children;
+            for (let i = 0; i < 5; i++) {
+                if (i < rating) stars[i].className = "fa-solid fa-star cursor-pointer text-amber-400";
+                else stars[i].className = "fa-regular fa-star cursor-pointer text-gray-300";
+            }
+        }
+
+        window.openProductDetailModal = function(id, silent = false) {
+            const p = window.products.find(item => item.id === id);
+            if (!p) return;
+            window.currentSelectedProdId = id;
+
+            document.getElementById('view-prod-image').src = p.image || FALLBACK_IMAGE;
+            document.getElementById('view-prod-category').innerText = p.category || 'Accessories';
+            document.getElementById('view-prod-name').innerText = p.name || 'Product';
+            document.getElementById('view-prod-price').innerText = `$${Number(p.price || 0).toFixed(2)}`;
+            document.getElementById('view-prod-sku').innerText = `SKU: ${p.sku || 'N/A'}`;
+            document.getElementById('view-prod-stock').innerText = `${p.stock ?? 10} units`;
+
+            const reviews = p.reviews || [];
+            const avgRating = reviews.length > 0 ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1) : "5.0";
+            document.getElementById('prod-avg-rating').innerText = `⭐ ${avgRating} / 5.0 (${reviews.length})`;
+
+            const listEl = document.getElementById('prod-reviews-list');
+            listEl.innerHTML = reviews.length === 0 ? `<p class="text-gray-400 text-[10px] py-1">No reviews yet. Be the first!</p>` :
+                reviews.map(r => `
+                    <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 space-y-1">
+                        <div class="flex justify-between items-center text-[9px]">
+                            <b class="text-gray-800">${r.author}</b>
+                            <span class="text-amber-400">★ ${r.rating}.0</span>
+                        </div>
+                        <p class="text-gray-600 text-[10px]">${r.text}</p>
+                        ${r.adminReply ? `<div class="bg-pink-50/60 p-1.5 rounded-lg text-[9px] text-[#a4133c] mt-1 border border-pink-100"><b>Admin Reply:</b> ${r.adminReply}</div>` : ''}
+                    </div>
+                `).join('');
+
+            if (!silent) {
+                setReviewRating(5);
+                const addBtn = document.getElementById('view-prod-add-btn');
+                addBtn.onclick = function() { addToCart(p.id); closeProductDetailModal(); };
+                document.getElementById('product-detail-modal').classList.remove('hidden');
+            }
+        }
+
+        function closeProductDetailModal() { 
+            window.currentSelectedProdId = null;
+            document.getElementById('product-detail-modal').classList.add('hidden'); 
+        }
+
         function renderProducts() {
             const grid = document.getElementById('product-grid');
             if (!grid) return;
-            grid.innerHTML = (window.products || []).map(p => `
-                <div class="bg-white rounded-2xl p-2.5 border border-gray-200 shadow-xs flex flex-col justify-between">
+            const searchVal = document.getElementById('search-input').value.toLowerCase();
+            let filtered = window.products.filter(p => (activeCategory === 'All' || p.category === activeCategory) && p.name.toLowerCase().includes(searchVal));
+            grid.innerHTML = filtered.map(p => `
+                <div class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs flex flex-col justify-between hover:border-pink-500/30 transition-all cursor-pointer" onclick="openProductDetailModal('${p.id}')">
                     <div>
                         <div class="relative rounded-xl overflow-hidden aspect-square bg-gray-50 mb-2">
-                            <img src="${p.image}" class="w-full h-full object-cover">
+                            <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full h-full object-cover">
+                            <button onclick="event.stopPropagation(); toggleWishlist('${p.id}')" class="absolute top-2 right-2 w-6 h-6 bg-white/90 rounded-full flex items-center justify-center text-[10px] ${wishlist.includes(p.id) ? 'text-red-500' : 'text-gray-400'}"><i class="fa-solid fa-heart"></i></button>
                         </div>
-                        <h4 class="font-serif italic font-bold text-xs text-gray-950 truncate">${p.name}</h4>
+                        <h4 class="font-serif italic font-bold text-xs text-gray-900 truncate">${p.name}</h4>
                         <p class="text-[10px] text-gray-400">Stock: ${p.stock ?? 10}</p>
                     </div>
-                    <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
+                    <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-50">
                         <span class="font-bold text-xs text-[#a4133c]">$${Number(p.price || 0).toFixed(2)}</span>
-                        <button onclick="alert('Item added!')" class="bg-[#800f2f] text-white px-3 py-1.5 rounded-xl text-xs font-bold">+</button>
+                        <button onclick="event.stopPropagation(); addToCart('${p.id}')" class="bg-[#800f2f] text-white px-3 py-1.5 rounded-xl text-xs font-bold active:scale-95 transition-transform">+</button>
                     </div>
                 </div>
             `).join('');
         }
+
+        function filterCategory(cat) { activeCategory = cat; renderProducts(); }
+        function filterProducts() { renderProducts(); }
+        function toggleWishlist(id) { wishlist = wishlist.includes(id) ? wishlist.filter(i => i !== id) : [...wishlist, id]; renderProducts(); }
+        function renderWishlist() {
+            let favs = window.products.filter(p => wishlist.includes(p.id));
+            document.getElementById('wishlist-grid').innerHTML = favs.length === 0 ? `<p class="text-xs text-gray-400 col-span-2 text-center py-6">No saved items.</p>` :
+                favs.map(p => `<div onclick="openProductDetailModal('${p.id}')" class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs cursor-pointer"><img src="${p.image}" class="w-full aspect-square object-cover rounded-xl mb-2"><h4 class="font-serif italic font-bold text-xs text-gray-900 truncate">${p.name}</h4></div>`).join('');
+        }
+
+        function addToCart(id) {
+            const prod = window.products.find(p => p.id === id);
+            const existing = cart.find(i => i.id === id);
+            if (existing) existing.qty += 1; else cart.push({ ...prod, qty: 1 });
+            localStorage.setItem('mininize_cart', JSON.stringify(cart));
+            document.getElementById('cart-badge').innerText = cart.reduce((s, i) => s + i.qty, 0);
+            alert('Item added to bag! 🛍️');
+        }
+
+        function openCartDrawer() {
+            document.getElementById('cart-items-container').innerHTML = cart.length === 0 ? `<p class="text-xs text-gray-400 text-center py-8">Your cart is empty</p>` :
+                cart.map((item, idx) => `<div class="flex justify-between items-center text-xs border-b border-gray-50 pb-2"><span><b>${item.name}</b> (x${item.qty})</span><span class="font-bold text-[#a4133c]">$${(item.price * item.qty).toFixed(2)}</span></div>`).join('');
+            document.getElementById('cart-total').innerText = `$${cart.reduce((s, i) => s + (i.price * i.qty), 0).toFixed(2)}`;
+            document.getElementById('cart-drawer').classList.remove('hidden');
+        }
+        function closeCartDrawer() { document.getElementById('cart-drawer').classList.add('hidden'); }
+        function openCheckoutModal() { closeCartDrawer(); document.getElementById('checkout-modal').classList.remove('hidden'); }
+        function closeCheckoutModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
+
+        window.initiateBakongPayment = function() {
+            const name = document.getElementById('checkout-name').value;
+            const phone = document.getElementById('checkout-phone').value;
+            const address = document.getElementById('checkout-address').value;
+            if (!name || !phone || !address) return alert('Please fill in delivery details.');
+            const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            const qrApiUrl = `https://quickchart.io/qr?text=mininize@bakong&size=250`;
+            document.getElementById('bakong-pay-amount').innerText = `$${total.toFixed(2)}`;
+            document.getElementById('bakong-qr-img').src = qrApiUrl;
+            closeCheckoutModal();
+            document.getElementById('bakong-payment-modal').classList.remove('hidden');
+        }
+        function cancelBakongPayment() { document.getElementById('bakong-payment-modal').classList.add('hidden'); }
 
         window.renderCustomerOrders = function() {
             const listEl = document.getElementById('my-orders-list');
@@ -924,13 +1168,55 @@
             document.getElementById('customer-view').classList.add('hidden');
             document.getElementById('admin-view').classList.remove('hidden');
             document.getElementById('customer-nav').classList.add('hidden');
+            switchAdminNav('orders');
         }
-
         function exitAdminMode() {
             document.getElementById('customer-view').classList.remove('hidden');
             document.getElementById('admin-view').classList.add('hidden');
             document.getElementById('customer-nav').classList.remove('hidden');
+            switchCustomerTab('shop');
         }
+        function switchAdminNav(sec) {
+            ['orders', 'products', 'inventory', 'reviews', 'promotions'].forEach(s => {
+                document.getElementById(`admin-sec-${s}`).classList.add('hidden');
+                document.getElementById(`adtab-${s}`).className = 'px-4 py-2 border-b-2 border-transparent text-gray-500 font-semibold';
+            });
+            document.getElementById(`admin-sec-${sec}`).classList.remove('hidden');
+            document.getElementById(`adtab-${sec}`).className = 'px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c] font-semibold';
+            if (sec === 'reviews') renderAdminReviews();
+        }
+
+        window.renderAdminReviews = function() {
+            const container = document.getElementById('admin-reviews-list-container');
+            if (!container) return;
+            let allReviews = [];
+            window.products.forEach(p => {
+                (p.reviews || []).forEach(r => {
+                    allReviews.push({ ...r, productName: p.name, productId: p.id });
+                });
+            });
+
+            container.innerHTML = allReviews.length === 0 ? `<p class="text-gray-400 text-xs py-4 text-center">No customer reviews submitted yet.</p>` :
+                allReviews.map(r => `
+                    <div class="bg-gray-50 p-3 rounded-2xl border border-gray-100 space-y-2">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="font-bold text-gray-900">${r.productName}</span>
+                                <p class="text-[10px] text-gray-500">By <b>${r.author}</b> • <span class="text-amber-400">★ ${r.rating}.0</span> • ${r.date}</p>
+                            </div>
+                            <div class="space-x-1">
+                                <button onclick="adminReplyReview('${r.productId}', '${r.id}')" class="bg-white border border-gray-200 px-2 py-1 rounded text-gray-700 font-medium">Reply</button>
+                                <button onclick="adminDeleteReview('${r.productId}', '${r.id}')" class="bg-red-50 text-red-600 px-2 py-1 rounded font-medium">Remove</button>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 text-xs bg-white p-2 rounded-xl border border-gray-100">${r.text}</p>
+                        ${r.adminReply ? `<p class="text-[10px] text-[#a4133c] pl-3 border-l-2 border-[#a4133c]"><b>Admin Reply:</b> ${r.adminReply}</p>` : ''}
+                    </div>
+                `).join('');
+        };
+
+        function openProductModal() { document.getElementById('admin-product-modal').classList.remove('hidden'); }
+        function closeAdminProductModal() { document.getElementById('admin-product-modal').classList.add('hidden'); }
     </script>
 </body>
 </html>
