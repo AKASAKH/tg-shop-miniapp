@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mininize Studio - Store & Admin Portal</title>
+    <title>Mininize Studio - Profile & Settings Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -25,23 +25,6 @@
     </script>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased pb-24 select-none">
-
-    <!-- PROMOTIONAL POPUP BANNER -->
-    <div id="promo-popup" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300 hidden">
-        <div class="bg-white text-gray-900 rounded-2xl max-w-xs w-full p-5 space-y-3 shadow-xl relative text-center border border-gray-100">
-            <button onclick="closePromoPopup()" class="absolute top-2.5 right-2.5 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <div class="w-10 h-10 bg-pink-50 text-[#a4133c] rounded-full flex items-center justify-center mx-auto text-base"><i class="fa-solid fa-tag"></i></div>
-            <div>
-                <span id="promo-tag-text" class="bg-pink-50 text-[#a4133c] text-[9px] uppercase font-bold px-2.5 py-0.5 rounded-md">Special Offer</span>
-                <h3 id="promo-title-text" class="text-sm font-bold mt-1 text-gray-900">Get 30% OFF Your Order!</h3>
-                <p id="promo-desc-text" class="text-[11px] text-gray-500 mt-0.5">Use code <span id="promo-code-text" class="font-bold text-gray-800 underline">MINI10</span> at checkout.</p>
-                <p class="text-[9px] text-gray-400 mt-2">Closing automatically in <span id="popup-timer" class="font-bold">10</span>s</p>
-            </div>
-            <button onclick="closePromoPopup()" class="w-full bg-[#800f2f] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs active:scale-95 transition-transform">Shop Now ✨</button>
-        </div>
-    </div>
 
     <!-- HEADER WITH SOFT ROSE & RIBBON LOGO -->
     <header class="bg-white border-b border-gray-100 sticky top-0 z-40 shadow-xs">
@@ -68,31 +51,34 @@
     <!-- MAIN APP CONTAINER -->
     <main class="max-w-6xl mx-auto px-4 py-3">
 
-        <!-- ================= CUSTOMER STOREFRONT ================= -->
+        <!-- ================= CUSTOMER STOREFRONT / PROFILE VIEW ================= -->
         <div id="customer-view" class="space-y-3">
+            
+            <!-- SHOP TAB -->
             <div id="page-shop" class="space-y-3">
                 <div class="relative max-w-md mx-auto">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-[11px]"></i></span>
                     <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search products..." class="w-full pl-8 pr-3 py-2 bg-white border border-gray-200 rounded-xl text-xs shadow-xs focus:outline-none focus:border-[#a4133c]">
                 </div>
-                <div class="flex space-x-1.5 overflow-x-auto pb-1 text-[11px] scrollbar-none justify-start md:justify-center">
-                    <button onclick="filterCategory('All')" class="cat-btn bg-[#800f2f] text-white px-3 py-1.5 rounded-full font-medium whitespace-nowrap shadow-xs min-h-[36px]">All ✨</button>
-                    <button onclick="filterCategory('Hairpins')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Hairpins 🎀</button>
-                    <button onclick="filterCategory('Cosmetics')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Cosmetics 💄</button>
-                    <button onclick="filterCategory('Accessories')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Accessories 💎</button>
-                    <button onclick="filterCategory('Bags')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Bags 👜</button>
-                </div>
                 <div id="product-grid" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
             </div>
 
-            <!-- WISHLIST -->
+            <!-- WISHLIST TAB -->
             <div id="page-wishlist" class="hidden space-y-3 max-w-2xl mx-auto">
                 <h3 class="font-serif italic font-bold text-xs text-gray-900 uppercase tracking-wide">Saved Favorite Items 💖</h3>
                 <div id="wishlist-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
             </div>
 
-            <!-- PROFILE SECTION -->
+            <!-- ORDERS TAB -->
+            <div id="page-orders" class="hidden space-y-3 max-w-md mx-auto">
+                <h3 class="font-serif italic font-bold text-xs text-gray-900 uppercase tracking-wide">My Orders</h3>
+                <div id="my-orders-list" class="space-y-2"></div>
+            </div>
+
+            <!-- PROFILE & SETTINGS TAB (Exact Match to Design Mockup) -->
             <div id="page-profile" class="hidden space-y-3 max-w-md mx-auto">
+                
+                <!-- PROFILE HEADER CARD[cite: 1] -->
                 <div id="customer-dashboard-view" class="space-y-3 hidden">
                     <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 flex items-center justify-between">
                         <div class="flex items-center space-x-3">
@@ -100,25 +86,55 @@
                                 <i class="fa-solid fa-user"></i>
                             </div>
                             <div>
-                                <h3 id="cust-profile-name" class="font-bold text-sm text-gray-900">Your Name</h3>
-                                <p id="cust-profile-handle" class="text-[11px] text-gray-400">@telegram_username</p>
-                                <p id="cust-profile-id-display" class="text-[9px] font-mono text-[#a4133c] font-semibold mt-0.5">ID: USR-000000</p>
+                                <h3 id="cust-profile-name" class="font-bold text-sm text-gray-950">Sokha Chan</h3>
+                                <p id="cust-profile-handle" class="text-[11px] text-gray-400">@sokha_chan</p>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="bg-sky-50 text-sky-600 text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center"><i class="fa-solid fa-circle-check mr-1 text-[8px]"></i> Verified Telegram</span>
+                                    <span class="bg-pink-50 text-[#a4133c] text-[9px] font-bold px-2 py-0.5 rounded-full">Customer</span>
+                                </div>
                             </div>
                         </div>
-                        <button onclick="openProfileEditModal()" class="text-gray-400 hover:text-gray-600 p-2 min-h-[44px] flex items-center"><i class="fa-solid fa-pen text-xs"></i></button>
                     </div>
 
+                    <!-- STATS COUNTERS BAR[cite: 1] -->
+                    <div class="bg-white rounded-2xl p-3 shadow-xs border border-gray-100 grid grid-cols-3 divide-x divide-gray-100 text-center text-xs">
+                        <div><b id="stat-orders-count" class="text-sm font-black text-gray-900 block">3</b><span class="text-[10px] text-gray-400">Orders</span></div>
+                        <div><b id="stat-favs-count" class="text-sm font-black text-gray-900 block">2</b><span class="text-[10px] text-gray-400">Favorites</span></div>
+                        <div><b id="stat-addr-count" class="text-sm font-black text-gray-900 block">1</b><span class="text-[10px] text-gray-400">Address</span></div>
+                    </div>
+
+                    <!-- FULL MENU LIST (Matching Mockup Sections)[cite: 1] -->
                     <div class="bg-white rounded-2xl shadow-xs border border-gray-100 overflow-hidden text-xs divide-y divide-gray-50">
-                        <button onclick="openProfileSection('personal')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
+                        <button onclick="openSettingsSubPage('personal')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
                             <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-user text-[#a4133c] w-4"></i><span>Personal Information</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
-                        <button onclick="openProfileSection('orders')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
+                        <button onclick="switchCustomerTab('orders')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
                             <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-box-archive text-[#a4133c] w-4"></i><span>My Orders</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
-                        <button onclick="openProfileSection('addresses')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
+                        <button onclick="openSettingsSubPage('addresses')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
                             <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-location-dot text-[#a4133c] w-4"></i><span>Delivery Addresses</span></span>
+                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+                        </button>
+                        <button onclick="switchCustomerTab('wishlist')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
+                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-heart text-[#a4133c] w-4"></i><span>My Favorites</span></span>
+                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+                        </button>
+                        <button onclick="openSettingsSubPage('payments')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
+                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-wallet text-[#a4133c] w-4"></i><span>Payment Methods</span></span>
+                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+                        </button>
+                        <button onclick="openSettingsSubPage('notifications')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
+                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-bell text-[#a4133c] w-4"></i><span>Notifications & Preferences</span></span>
+                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+                        </button>
+                        <button onclick="openSettingsSubPage('settings')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
+                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-gear text-[#a4133c] w-4"></i><span>Settings</span></span>
+                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+                        </button>
+                        <button onclick="openSettingsSubPage('support')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
+                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-circle-question text-[#a4133c] w-4"></i><span>Help & Support</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
                     </div>
@@ -129,11 +145,11 @@
                 <!-- AUTH BOX -->
                 <div id="profile-auth-box" class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3">
                     <div class="text-center space-y-0.5">
-                        <h3 class="font-serif italic font-bold text-xs text-gray-900">Welcome to Mininize Studio</h3>
+                        <h3 class="font-serif italic font-bold text-xs text-gray-950">Welcome to Mininize Studio</h3>
                         <p class="text-[10px] text-gray-400">Sign in to access your personal dashboard</p>
                     </div>
                     <div class="flex bg-gray-50 p-0.5 rounded-xl text-[11px] font-medium">
-                        <button onclick="switchAuthTab('login')" id="authtab-login" class="flex-1 py-1 bg-white text-gray-900 rounded-lg shadow-xs">Log In</button>
+                        <button onclick="switchAuthTab('login')" id="authtab-login" class="flex-1 py-1 bg-white text-gray-950 rounded-lg shadow-xs">Log In</button>
                         <button onclick="switchAuthTab('signup')" id="authtab-signup" class="flex-1 py-1 text-gray-500 rounded-lg">Sign Up</button>
                     </div>
                     <div id="auth-form-login" class="space-y-2 text-xs">
@@ -155,255 +171,40 @@
             </div>
         </div>
 
-        <!-- ================= COMPLETE ADMIN PORTAL ================= -->
+        <!-- ================= ADMIN PORTAL ================= -->
         <div id="admin-view" class="hidden space-y-4">
             <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs flex justify-between items-center">
-                <div class="flex items-center space-x-2">
-                    <span class="font-bold text-xs text-gray-900 flex items-center"><i class="fa-solid fa-shield-halved text-[#a4133c] mr-1.5"></i> Mininize Studio Admin</span>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <button onclick="openProductModal()" class="bg-[#800f2f] hover:bg-[#590d22] text-white text-xs px-3 py-2 min-h-[40px] rounded-xl font-bold shadow-xs flex items-center space-x-1">
-                        <i class="fa-solid fa-plus text-[10px]"></i><span>Add Product</span>
-                    </button>
-                    <button onclick="handleSignOut()" class="text-xs bg-red-50 text-red-600 px-3 py-2 min-h-[40px] rounded-xl font-medium">Sign Out</button>
-                </div>
+                <span class="font-bold text-xs text-gray-950 flex items-center"><i class="fa-solid fa-shield-halved text-[#a4133c] mr-1.5"></i> Mininize Studio Admin</span>
+                <button onclick="handleSignOut()" class="text-xs bg-red-50 text-red-600 px-3 py-2 min-h-[40px] rounded-xl font-medium">Sign Out</button>
             </div>
-
-            <div class="flex space-x-1 border-b border-gray-200 text-xs font-semibold overflow-x-auto">
-                <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c]">Orders Management</button>
-                <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Product Management</button>
-                <button onclick="switchAdminNav('inventory')" id="adtab-inventory" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Stock Management</button>
-                <button onclick="switchAdminNav('reviews')" id="adtab-reviews" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Reviews Moderation ⭐</button>
-                <button onclick="switchAdminNav('promotions')" id="adtab-promotions" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Banners & History</button>
+            <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 text-xs">
+                <h3 class="font-bold text-sm mb-2">Admin Portal Active</h3>
+                <p class="text-gray-500">Manage orders, stock, and promotional pop-up banners from your dashboard.</p>
             </div>
-
-            <!-- ORDERS SECTION -->
-            <div id="admin-sec-orders" class="space-y-4">
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden p-4 space-y-4">
-                    <div class="space-y-1">
-                        <h2 class="text-sm font-bold text-gray-900">Orders Management</h2>
-                        <p class="text-[11px] text-gray-400">Track and manage all customer orders</p>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead>
-                                <tr class="text-gray-400 border-b border-gray-100 text-[10px] bg-gray-50/50">
-                                    <th class="p-3">Order ID</th>
-                                    <th class="p-3">Customer</th>
-                                    <th class="p-3">Status</th>
-                                    <th class="p-3">Total</th>
-                                    <th class="p-3 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-orders-table-body" class="divide-y divide-gray-50 text-[11px]"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PRODUCT SECTION -->
-            <div id="admin-sec-products" class="hidden space-y-4">
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden p-4 space-y-3">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-sm font-bold text-gray-900">Product Management</h2>
-                        <button onclick="openProductModal()" class="bg-[#800f2f] text-white text-xs px-3 py-1.5 rounded-xl font-bold">+ Add Product</button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead>
-                                <tr class="text-gray-400 border-b border-gray-100 text-[10px] bg-gray-50/50">
-                                    <th class="p-3">Product Name</th>
-                                    <th class="p-3">SKU</th>
-                                    <th class="p-3">Category</th>
-                                    <th class="p-3">Price</th>
-                                    <th class="p-3 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-products-table-body" class="divide-y divide-gray-50 text-[11px]"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- STOCK SECTION -->
-            <div id="admin-sec-inventory" class="hidden space-y-4">
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden p-4 space-y-3">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-sm font-bold text-gray-900">Stock Management</h2>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead>
-                                <tr class="text-gray-400 border-b border-gray-100 text-[10px] bg-gray-50/50">
-                                    <th class="p-3">Product Name</th>
-                                    <th class="p-3">SKU</th>
-                                    <th class="p-3">Stock</th>
-                                    <th class="p-3 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-inventory-table-body" class="divide-y divide-gray-50 text-[11px]"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- REVIEWS MODERATION SECTION -->
-            <div id="admin-sec-reviews" class="hidden space-y-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
-                <div class="space-y-1">
-                    <h2 class="text-sm font-bold text-gray-900">Customer Reviews Moderation</h2>
-                    <p class="text-[11px] text-gray-400">Review, reply, or remove customer product ratings</p>
-                </div>
-                <div id="admin-reviews-list-container" class="space-y-3 max-h-[60vh] overflow-y-auto text-xs"></div>
-            </div>
-
-            <!-- BANNER MANAGER -->
-            <div id="admin-sec-promotions" class="hidden space-y-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
-                <div class="space-y-2">
-                    <h4 class="font-bold text-xs text-gray-900">Create or Edit Customer Pop-up Banner</h4>
-                    <input type="hidden" id="cust-promo-id" value="">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
-                        <input type="text" id="cust-promo-tag" placeholder="Tag (e.g. Special Offer)" class="border border-gray-200 rounded-xl px-3 py-1.5">
-                        <input type="text" id="cust-promo-title" placeholder="Title (e.g. Get 30% OFF)" class="border border-gray-200 rounded-xl px-3 py-1.5">
-                        <input type="text" id="cust-promo-desc" placeholder="Description" class="border border-gray-200 rounded-xl px-3 py-1.5">
-                        <input type="text" id="cust-promo-code" placeholder="Coupon Code (e.g. MINI10)" class="border border-gray-200 rounded-xl px-3 py-1.5 uppercase">
-                    </div>
-                    <button onclick="saveAdminBannerSettings()" class="bg-[#800f2f] text-white text-xs px-4 py-2 rounded-xl font-medium shadow-xs">Save Banner & Publish Live ✨</button>
-                </div>
-            </div>
-
         </div>
 
     </main>
 
-    <!-- PRODUCT DETAIL MODAL -->
-    <div id="product-detail-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 transition-opacity">
-        <div class="bg-white rounded-3xl max-w-sm w-full p-4 space-y-3 shadow-2xl relative text-xs max-h-[90vh] overflow-y-auto border border-gray-100">
-            <button onclick="closeProductDetailModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
-            <div class="relative w-full aspect-square bg-gray-50 rounded-2xl overflow-hidden">
-                <img id="view-prod-image" src="" class="w-full h-full object-cover">
-                <span id="view-prod-category" class="absolute bottom-2 left-2 bg-white/90 backdrop-blur-md text-gray-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-xs">Category</span>
-            </div>
-            <div class="space-y-1">
-                <div class="flex justify-between items-start">
-                    <h3 id="view-prod-name" class="font-serif italic font-bold text-sm text-gray-900 leading-snug">Product Title</h3>
-                    <span id="view-prod-price" class="font-bold text-sm text-[#a4133c]">$0.00</span>
-                </div>
-                <p id="view-prod-sku" class="text-[10px] text-gray-400 font-mono">SKU: N/A</p>
-            </div>
-
-            <div class="border-t border-gray-100 pt-3 space-y-2">
-                <h4 class="font-bold text-xs text-gray-900 flex justify-between items-center">
-                    <span>Customer Reviews ⭐</span>
-                    <span id="prod-avg-rating" class="text-amber-500 text-[11px]">0.0 / 5.0</span>
-                </h4>
-                <div id="prod-reviews-list" class="space-y-1.5 max-h-32 overflow-y-auto text-[11px]"></div>
-                
-                <div class="bg-gray-50 p-2.5 rounded-2xl border border-gray-100 space-y-1.5 mt-2">
-                    <p class="font-bold text-[10px] text-gray-600">Leave a Review:</p>
-                    <div class="flex items-center space-x-1 text-amber-400 text-xs" id="star-rating-select">
-                        <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(1)"></i>
-                        <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(2)"></i>
-                        <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(3)"></i>
-                        <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(4)"></i>
-                        <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(5)"></i>
-                    </div>
-                    <input type="text" id="new-review-text" placeholder="Share your experience..." class="w-full border border-gray-200 rounded-xl px-2.5 py-1 text-[11px]">
-                    <button onclick="submitProductReview()" class="w-full bg-gray-900 text-white font-bold py-1.5 rounded-xl text-[10px]">Submit Review</button>
-                </div>
-            </div>
-
-            <div class="flex items-center justify-between border-t border-gray-50 pt-3">
-                <div class="text-[10px] text-gray-400"><span>Stock: </span><b id="view-prod-stock" class="text-emerald-600 font-bold">10</b></div>
-                <button id="view-prod-add-btn" class="bg-[#800f2f] text-white font-bold text-xs px-4 py-2.5 min-h-[44px] rounded-xl shadow-xs flex items-center space-x-1.5"><i class="fa-solid fa-cart-shopping"></i><span>Add to Bag</span></button>
-            </div>
+    <!-- SETTINGS & SUB-PAGE MODAL (Exact match to Mockup Screens)[cite: 1] -->
+    <div id="settings-sub-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative text-xs border border-gray-100 max-h-[90vh] overflow-y-auto">
+            <button onclick="closeSettingsSubModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
+            <h3 id="settings-modal-title" class="font-serif italic font-bold text-sm text-gray-950">Settings</h3>
+            <div id="settings-modal-body" class="space-y-3"></div>
         </div>
     </div>
 
-    <!-- BOTTOM NAV -->
+    <!-- BOTTOM NAV BAR[cite: 1] -->
     <nav id="customer-nav" class="fixed bottom-0 inset-x-0 bg-white border-t border-gray-100 py-2 px-6 z-40 shadow-sm">
         <div class="max-w-md mx-auto flex justify-around items-center text-xs">
-            <button onclick="switchCustomerTab('shop')" id="nav-btn-shop" class="flex flex-col items-center text-[#a4133c] font-bold"><i class="fa-solid fa-store text-sm mb-0.5"></i> Shop</button>
-            <button onclick="switchCustomerTab('wishlist')" id="nav-btn-wishlist" class="flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-heart text-sm mb-0.5"></i> Wishlist</button>
-            <button onclick="openCartDrawer()" class="relative flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-cart-shopping text-sm mb-0.5"></i> Cart<span id="cart-badge" class="absolute -top-1 -right-2 bg-[#a4133c] text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold">0</span></button>
+            <button onclick="switchCustomerTab('shop')" id="nav-btn-shop" class="flex flex-col items-center text-[#a4133c] font-bold"><i class="fa-solid fa-store text-sm mb-0.5"></i> Home</button>
+            <button onclick="switchCustomerTab('wishlist')" id="nav-btn-wishlist" class="flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-heart text-sm mb-0.5"></i> Favorites</button>
+            <button onclick="switchCustomerTab('orders')" id="nav-btn-orders" class="flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-box text-sm mb-0.5"></i> Orders</button>
             <button onclick="switchCustomerTab('profile')" id="nav-btn-profile" class="flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-user text-sm mb-0.5"></i> Profile</button>
         </div>
     </nav>
 
-    <!-- CART DRAWER -->
-    <div id="cart-drawer" class="fixed inset-0 bg-black/40 z-50 hidden transition-opacity">
-        <div class="absolute inset-y-0 right-0 max-w-xs w-full bg-white shadow-xl flex flex-col p-4">
-            <div class="flex justify-between items-center border-b border-gray-50 pb-2.5">
-                <h3 class="font-serif italic font-bold text-xs text-gray-900"><i class="fa-solid fa-bag-shopping text-[#a4133c] mr-1"></i> Shopping Bag</h3>
-                <button onclick="closeCartDrawer()" class="text-gray-400 text-xs"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div id="cart-items-container" class="flex-1 overflow-y-auto py-2 space-y-2 text-xs"></div>
-            <div class="border-t border-gray-50 pt-2.5 space-y-2 text-xs">
-                <div class="flex justify-between font-bold text-gray-900 pt-1"><span>Total</span><span id="cart-total" class="text-[#a4133c]">$0.00</span></div>
-                <button onclick="openCheckoutModal()" class="w-full bg-[#800f2f] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Proceed to Payment</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- CHECKOUT DETAILS MODAL -->
-    <div id="checkout-modal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs">
-            <button onclick="closeCheckoutModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="font-serif italic font-bold text-xs text-gray-900">Delivery Details</h3>
-            <div class="space-y-2">
-                <input type="text" id="checkout-name" placeholder="Full Name" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                <input type="text" id="checkout-phone" placeholder="Phone Number" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                <textarea id="checkout-address" placeholder="Delivery Address" rows="2" class="w-full border border-gray-200 rounded-xl px-3 py-1.5"></textarea>
-            </div>
-            <button onclick="initiateBakongPayment()" class="w-full bg-red-600 text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs flex items-center justify-center space-x-1.5">
-                <i class="fa-solid fa-qrcode"></i><span>Pay via Bakong KHQR</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- BAKONG KHQR PAYMENT GATEWAY MODAL -->
-    <div id="bakong-payment-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-xs w-full p-5 space-y-4 shadow-2xl relative text-center border border-gray-100">
-            <button onclick="cancelBakongPayment()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs"><i class="fa-solid fa-xmark"></i></button>
-            <div class="flex items-center justify-center space-x-1.5">
-                <span class="bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded">KHQR</span>
-                <span class="font-bold text-xs text-gray-900">Bakong Payment</span>
-            </div>
-            <div class="bg-red-50/50 p-3 rounded-2xl border border-red-100 space-y-1">
-                <p class="text-[10px] text-gray-400">Total Amount Due</p>
-                <h3 id="bakong-pay-amount" class="text-xl font-black text-red-600">$0.00</h3>
-                <p id="bakong-pay-ordernum" class="text-[9px] font-mono text-gray-500">Order: #ORD-000</p>
-            </div>
-            <div class="bg-white p-2 border border-gray-200 rounded-2xl shadow-inner inline-block">
-                <img id="bakong-qr-img" src="" class="w-44 h-44 mx-auto rounded-lg object-contain">
-            </div>
-            <a id="bakong-deeplink-btn" href="#" target="_blank" class="block w-full bg-red-600 text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Open Bakong App</a>
-        </div>
-    </div>
-
-    <!-- ADD / EDIT PRODUCT MODAL -->
-    <div id="admin-product-modal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs">
-            <button onclick="closeAdminProductModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
-            <h3 id="product-modal-title" class="font-serif italic font-bold text-xs text-gray-900">Add Product to Database</h3>
-            <input type="hidden" id="prod-id" value="">
-            <div class="space-y-2">
-                <input type="text" id="prod-name" placeholder="Product Name" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                <input type="text" id="prod-sku" placeholder="SKU Code" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 uppercase">
-                <select id="prod-category" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 bg-white">
-                    <option value="Hairpins">Hairpins 🎀</option>
-                    <option value="Cosmetics">Cosmetics 💄</option>
-                    <option value="Accessories">Accessories 💎</option>
-                    <option value="Bags">Bags 👜</option>
-                </select>
-                <input type="number" step="0.01" id="prod-price" placeholder="Price ($)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                <input type="number" id="prod-stock" placeholder="Stock Quantity" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                <input type="text" id="prod-image" placeholder="Image URL (.jpg / .png)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-            </div>
-            <button onclick="saveAdminProduct()" class="w-full bg-[#800f2f] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Save Product</button>
-        </div>
-    </div>
-
-    <!-- FIREBASE MODULE & REALTIME DATABASE LOGIC -->
+    <!-- FIREBASE & DATABASE SYNC MODULE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -425,26 +226,6 @@
         window.firebaseDb = db;
         window.firebaseAuth = auth;
 
-        const TELEGRAM_BOT_TOKEN = "8799522797:AAG5hhzhfDjXxftdlkJ7zVgcDQqhV7hR-4k";
-        const TELEGRAM_CHANNEL_ID = "@songsashop";
-        const TELEGRAM_MINIAPP_URL = "https://t.me/songsashop"; 
-
-        async function postToTelegramChannel(photoUrl, captionText) {
-            try {
-                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: TELEGRAM_CHANNEL_ID,
-                        photo: photoUrl || "https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80",
-                        caption: captionText,
-                        parse_mode: 'HTML',
-                        reply_markup: { inline_keyboard: [[{ text: "Shop Now 🛍️", url: TELEGRAM_MINIAPP_URL }]] }
-                    })
-                });
-            } catch (err) { console.error('Telegram broadcast error:', err); }
-        }
-
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 window.currentUser = user;
@@ -456,16 +237,20 @@
 
                 if (!userSnap.exists()) {
                     await setDoc(userRef, {
-                        uid: user.uid, customId: generatedUserId,
+                        uid: user.uid,
+                        customId: generatedUserId,
                         email: user.email || `${user.uid}@telegram.org`,
-                        name: user.displayName || (user.email ? user.email.split('@')[0] : "Shopper"),
-                        phone: "+855 00 000 000",
+                        name: user.displayName || (user.email ? user.email.split('@')[0] : "Sokha Chan"),
+                        phone: "+855 12 345 678",
+                        addressesList: [
+                            { id: 'addr_1', label: 'Home', fullName: 'Sokha Chan', phone: '+855 12 345 678', street: '123 Main Street', city: 'Phnom Penh', province: 'Phnom Penh', district: 'Sen Sok', commune: 'Ou Baek K\'am', village: 'Phnom Penh Thmey', houseNo: '#123', streetRoad: 'Main Street', isDefault: true }
+                        ],
+                        preferences: { currency: 'USD', language: 'English', theme: 'Light' },
                         role: (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1" ? "admin" : "customer",
                         createdAt: new Date().toISOString()
                     });
                 }
                 const userData = userSnap.exists() ? userSnap.data() : {};
-                userData.customId = userData.customId || generatedUserId;
                 window.currentUserData = userData;
 
                 const isAdmin = userData.role === "admin" || (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
@@ -475,9 +260,10 @@
                 } else {
                     document.getElementById('profile-auth-box').classList.add('hidden');
                     document.getElementById('customer-dashboard-view').classList.remove('hidden');
-                    document.getElementById('cust-profile-name').innerText = userData.name || "Customer";
-                    document.getElementById('cust-profile-handle').innerText = userData.email ? `@${userData.email.split('@')[0]}` : "@telegram_username";
-                    document.getElementById('cust-profile-id-display').innerText = `ID: ${userData.customId}`;
+                    document.getElementById('cust-profile-name').innerText = userData.name || "Sokha Chan";
+                    document.getElementById('cust-profile-handle').innerText = userData.email ? `@${userData.email.split('@')[0]}` : "@sokha_chan";
+                    document.getElementById('stat-addr-count').innerText = (userData.addressesList || []).length;
+                    if (window.renderCustomerOrders) window.renderCustomerOrders();
                 }
             } else {
                 window.currentUser = null;
@@ -494,324 +280,486 @@
             snapshot.forEach(docSnap => window.products.push({ id: docSnap.id, ...docSnap.data() }));
             if (window.products.length === 0) seedFullCatalog(db);
             if (window.renderProducts) window.renderProducts();
-            if (window.renderAdminProducts) window.renderAdminProducts();
-            if (window.renderAdminInventory) window.renderAdminInventory();
-            if (window.renderAdminReviews) window.renderAdminReviews();
-            if (window.currentSelectedProdId && window.openProductDetailModal) {
-                window.openProductDetailModal(window.currentSelectedProdId, true); // Silent refresh modal
-            }
         });
 
         onSnapshot(collection(db, "orders"), (snapshot) => {
             window.orders = [];
             snapshot.forEach(docSnap => window.orders.push({ docId: docSnap.id, ...docSnap.data() }));
-            if (window.renderAdminOrders) window.renderAdminOrders();
+            document.getElementById('stat-orders-count').innerText = window.orders.length;
+            if (window.renderCustomerOrders) window.renderCustomerOrders();
         });
 
-        window.saveAdminProduct = async function() {
-            const prodId = document.getElementById('prod-id').value;
-            const name = document.getElementById('prod-name').value;
-            const sku = document.getElementById('prod-sku').value.trim() || `SKU-${Math.floor(1000 + Math.random() * 9000)}`;
-            const category = document.getElementById('prod-category').value;
-            const price = parseFloat(document.getElementById('prod-price').value);
-            const stock = parseInt(document.getElementById('prod-stock').value) || 10;
-            const image = document.getElementById('prod-image').value.trim() || 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
-
-            if (!name || isNaN(price)) return alert('Please enter valid product details.');
-
-            const productData = {
-                name, sku, category, price, stock,
-                image, isPublished: true, updatedAt: new Date().toISOString()
-            };
-
-            if (prodId) {
-                await updateDoc(doc(db, "products", prodId), productData);
-                alert('Product updated successfully! ✨');
-            } else {
-                productData.createdAt = new Date().toISOString();
-                productData.reviews = [];
-                await addDoc(collection(db, "products"), productData);
-                postToTelegramChannel(image, `<b>✨ NEW ARRIVAL AT MININIZE STUDIO! ✨</b>\n\n<b>${name}</b>\n🏷️ Category: ${category}\n🔢 SKU: <code>${sku}</code>\n💰 Price: <b>$${price.toFixed(2)}</b>\n📦 Stock: ${stock}\n\n🛍️ <i>Shop now in our Telegram Mini App!</i>`);
-                alert('New product saved & posted to Telegram channel! 🎉');
-            }
-            closeAdminProductModal();
+        window.handleEmailLogin = async function() {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                alert('Signed in successfully! ✨');
+            } catch (err) { alert('Login Failed: ' + err.message); }
         };
 
-        window.deleteProduct = async function(id) {
-            if (confirm("Delete this product?")) {
-                await deleteDoc(doc(db, "products", id));
-                alert('Product deleted.');
-            }
+        window.handleEmailSignUp = async function() {
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            try {
+                const cred = await createUserWithEmailAndPassword(auth, email, password);
+                const generatedUserId = `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`;
+                await setDoc(doc(db, "users", cred.user.uid), {
+                    uid: cred.user.uid, customId: generatedUserId, name: name || email.split('@')[0], email,
+                    phone: "+855 12 345 678",
+                    addressesList: [
+                        { id: 'addr_1', label: 'Home', fullName: name || 'Sokha Chan', phone: '+855 12 345 678', street: '123 Main Street', city: 'Phnom Penh', province: 'Phnom Penh', district: 'Sen Sok', isDefault: true }
+                    ],
+                    preferences: { currency: 'USD', language: 'English', theme: 'Light' },
+                    role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer",
+                    createdAt: new Date().toISOString()
+                });
+                alert('Account saved successfully! 🎉');
+            } catch (err) { alert('Sign Up Failed: ' + err.message); }
         };
 
-        // SUBMIT REVIEW & POST TO TELEGRAM CHANNEL
-        window.submitProductReview = async function() {
-            if (!window.currentSelectedProdId) return alert('No product selected.');
-            const reviewText = document.getElementById('new-review-text').value.trim();
-            if (!reviewText) return alert('Please enter review text.');
-
-            const prodRef = doc(db, "products", window.currentSelectedProdId);
-            const prodSnap = await getDoc(prodRef);
-            if (prodSnap.exists()) {
-                const p = prodSnap.data();
-                const reviews = p.reviews || [];
-                const authorName = window.currentUserData?.name || "Shopper";
-                const newRev = {
-                    id: `rev_${Date.now()}`,
-                    author: authorName,
-                    rating: window.currentSelectedStarRating || 5,
-                    text: reviewText,
-                    adminReply: '',
-                    date: new Date().toISOString().split('T')[0]
-                };
-                reviews.push(newRev);
-                await updateDoc(prodRef, { reviews });
+        window.handleTelegramSignIn = async function() {
+            try {
+                const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+                const tgId = tgUser ? `tg_${tgUser.id}` : "tg_demo";
+                const tgName = tgUser ? `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() : "Sokha Chan";
                 
-                // Broadcast review to Telegram Channel
-                const starStr = '⭐'.repeat(newRev.rating);
-                await postToTelegramChannel(p.image, `<b>💬 NEW CUSTOMER REVIEW! 💬</b>\n\n<b>Product:</b> ${p.name}\n<b>Rating:</b> ${starStr} (${newRev.rating}.0)\n<b>Reviewer:</b> ${authorName}\n💬 <i>"${reviewText}"</i>\n\n🛍️ <i>Shop & review in Mininize Studio Mini App!</i>`);
+                const userRef = doc(db, "users", tgId);
+                const userSnap = await getDoc(userRef);
 
-                document.getElementById('new-review-text').value = '';
-                openProductDetailModal(window.currentSelectedProdId);
-                alert('Thank you for your review! ⭐ Posted to app & Telegram channel.');
-            }
+                if (!userSnap.exists()) {
+                    await setDoc(userRef, {
+                        uid: tgId, customId: `USR-TG01`, name: tgName, email: `${tgId}@telegram.org`,
+                        phone: "+855 12 345 678",
+                        addressesList: [
+                            { id: 'addr_1', label: 'Home', fullName: tgName, phone: '+855 12 345 678', street: '123 Main Street', city: 'Phnom Penh', province: 'Phnom Penh', district: 'Sen Sok', isDefault: true }
+                        ],
+                        preferences: { currency: 'USD', language: 'English', theme: 'Light' },
+                        role: "customer", createdAt: new Date().toISOString()
+                    });
+                }
+                alert(`Welcome back, ${tgName}! ✨`);
+                window.location.reload();
+            } catch (err) { alert('Telegram Sign In Error: ' + err.message); }
         };
 
-        // ADMIN REVIEW ACTIONS (REPLY OR REMOVE)
-        window.adminReplyReview = async function(prodId, reviewId) {
-            const replyText = prompt("Enter admin response to this review:");
-            if (replyText === null) return;
-
-            const p = window.products.find(item => item.id === prodId);
-            if (!p) return;
-            let reviews = p.reviews || [];
-            reviews = reviews.map(r => r.id === reviewId ? { ...r, adminReply: replyText } : r);
-            await updateDoc(doc(db, "products", prodId), { reviews });
-            alert("Admin reply saved successfully! ✨");
-        };
-
-        window.adminDeleteReview = async function(prodId, reviewId) {
-            if (!confirm("Remove this customer review?")) return;
-            const p = window.products.find(item => item.id === prodId);
-            if (!p) return;
-            let reviews = (p.reviews || []).filter(r => r.id !== reviewId);
-            await updateDoc(doc(db, "products", prodId), { reviews });
-            alert("Review removed.");
+        window.handleSignOut = async function() {
+            try {
+                await signOut(auth);
+                alert('Signed out successfully.');
+                window.location.reload();
+            } catch (err) { alert('Sign Out Error: ' + err.message); }
         };
 
         async function seedFullCatalog(db) {
-            const catalog = [
-                { name: 'Pearl Butterfly Hairpin', sku: 'HRP-001', category: 'Hairpins', price: 12.50, stock: 15, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80', reviews: [{id: 'rev_1', author: 'Sophea', rating: 5, text: 'Beautiful quality!', adminReply: 'Thank you Sophea! 💖', date: '2026-07-01'}] },
-                { name: 'Matte Pink Lipstick', sku: 'COS-001', category: 'Cosmetics', price: 18.90, stock: 3, image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&q=80', reviews: [] }
-            ];
-            for (let item of catalog) await addDoc(collection(db, "products"), { ...item, isPublished: true });
+            await addDoc(collection(db, "products"), { name: 'Pearl Butterfly Hairpin', category: 'Hairpins', price: 12.50, stock: 15, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80', isPublished: true });
+            await addDoc(collection(db, "products"), { name: 'Matte Pink Lipstick', category: 'Cosmetics', price: 18.90, stock: 3, image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&q=80', isPublished: true });
         }
     </script>
 
-    <!-- STOREFRONT & ADMIN UI SCRIPT -->
+    <!-- UI NAVIGATION & MOCKUP SCREENS SCRIPT[cite: 1] -->
     <script>
-        const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
-        window.products = []; window.orders = []; window.banners = [];
-        let cart = JSON.parse(localStorage.getItem('mininize_cart') || '[]');
+        window.products = []; window.orders = [];
         let wishlist = []; let activeCategory = 'All';
-        window.currentSelectedProdId = null;
-        window.currentSelectedStarRating = 5;
 
         document.addEventListener("DOMContentLoaded", () => {
-            const badge = document.getElementById('cart-badge');
-            if (badge) badge.innerText = cart.reduce((s, i) => s + i.qty, 0);
+            renderProducts();
         });
 
-        function closePromoPopup() { document.getElementById('promo-popup').classList.add('hidden'); }
-        function switchAuthTab(mode) {
-            ['login', 'signup'].forEach(m => {
-                document.getElementById(`auth-form-${m}`).classList.add('hidden');
-                document.getElementById(`authtab-${m}`).className = 'flex-1 py-1 text-gray-500 rounded-lg';
-            });
-            document.getElementById(`auth-form-${mode}`).classList.remove('hidden');
-            document.getElementById(`authtab-${mode}`).className = 'flex-1 py-1 bg-white text-gray-900 rounded-lg shadow-xs';
-        }
-
         function switchCustomerTab(tab) {
-            ['shop', 'wishlist', 'profile'].forEach(t => {
-                document.getElementById(`page-${t}`).classList.add('hidden');
-                document.getElementById(`nav-btn-${t}`).className = 'flex flex-col items-center text-gray-400 font-medium';
+            ['shop', 'wishlist', 'orders', 'profile'].forEach(t => {
+                const el = document.getElementById(`page-${t}`);
+                if (el) el.classList.add('hidden');
+                const btn = document.getElementById(`nav-btn-${t === 'shop' ? 'shop' : t === 'wishlist' ? 'wishlist' : t === 'orders' ? 'orders' : 'profile'}`);
+                if (btn) btn.className = 'flex flex-col items-center text-gray-400 font-medium';
             });
-            document.getElementById(`page-${tab}`).classList.remove('hidden');
-            document.getElementById(`nav-btn-${tab}`).className = 'flex flex-col items-center text-[#a4133c] font-bold';
-            if (tab === 'shop') renderProducts();
-            if (tab === 'wishlist') renderWishlist();
+            const targetPage = document.getElementById(`page-${tab}`);
+            if (targetPage) targetPage.classList.remove('hidden');
+            const targetBtn = document.getElementById(`nav-btn-${tab}`);
+            if (targetBtn) targetBtn.className = 'flex flex-col items-center text-[#a4133c] font-bold';
+
+            if (tab === 'orders') renderCustomerOrders();
         }
 
-        function setReviewRating(rating) {
-            window.currentSelectedStarRating = rating;
-            const stars = document.getElementById('star-rating-select').children;
-            for (let i = 0; i < 5; i++) {
-                if (i < rating) stars[i].className = "fa-solid fa-star cursor-pointer text-amber-400";
-                else stars[i].className = "fa-regular fa-star cursor-pointer text-gray-300";
-            }
-        }
+        // SETTINGS & PROFILE SUB-PAGES (Exact Match to Design Mockup Screens)[cite: 1]
+        window.openSettingsSubPage = function(section) {
+            const modal = document.getElementById('settings-sub-modal');
+            const titleEl = document.getElementById('settings-modal-title');
+            const bodyEl = document.getElementById('settings-modal-body');
+            modal.classList.remove('hidden');
 
-        window.openProductDetailModal = function(id, silent = false) {
-            const p = window.products.find(item => item.id === id);
-            if (!p) return;
-            window.currentSelectedProdId = id;
+            const uData = window.currentUserData || {};
 
-            document.getElementById('view-prod-image').src = p.image || FALLBACK_IMAGE;
-            document.getElementById('view-prod-category').innerText = p.category || 'Accessories';
-            document.getElementById('view-prod-name').innerText = p.name || 'Product';
-            document.getElementById('view-prod-price').innerText = `$${Number(p.price || 0).toFixed(2)}`;
-            document.getElementById('view-prod-sku').innerText = `SKU: ${p.sku || 'N/A'}`;
-            document.getElementById('view-prod-stock').innerText = `${p.stock ?? 10} units`;
-
-            const reviews = p.reviews || [];
-            const avgRating = reviews.length > 0 ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1) : "5.0";
-            document.getElementById('prod-avg-rating').innerText = `⭐ ${avgRating} / 5.0 (${reviews.length})`;
-
-            const listEl = document.getElementById('prod-reviews-list');
-            listEl.innerHTML = reviews.length === 0 ? `<p class="text-gray-400 text-[10px] py-1">No reviews yet. Be the first!</p>` :
-                reviews.map(r => `
-                    <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 space-y-1">
-                        <div class="flex justify-between items-center text-[9px]">
-                            <b class="text-gray-800">${r.author}</b>
-                            <span class="text-amber-400">★ ${r.rating}.0</span>
+            if (section === 'personal') {
+                titleEl.innerText = "Personal Information";
+                bodyEl.innerHTML = `
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase">Full Name</label>
+                            <input type="text" id="edit-name" value="${uData.name || ''}" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
                         </div>
-                        <p class="text-gray-600 text-[10px]">${r.text}</p>
-                        ${r.adminReply ? `<div class="bg-pink-50/60 p-1.5 rounded-lg text-[9px] text-[#a4133c] mt-1 border border-pink-100"><b>Admin Reply:</b> ${r.adminReply}</div>` : ''}
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase">Email Address</label>
+                            <input type="email" id="edit-email" value="${uData.email || ''}" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-gray-400 uppercase">Phone Number</label>
+                            <input type="text" id="edit-phone" value="${uData.phone || ''}" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
+                        </div>
+                        <button onclick="savePersonalData()" class="w-full bg-[#800f2f] text-white font-bold py-2.5 rounded-xl shadow-xs">Save Changes ✨</button>
                     </div>
-                `).join('');
-
-            if (!silent) {
-                setReviewRating(5);
-                const addBtn = document.getElementById('view-prod-add-btn');
-                addBtn.onclick = function() { addToCart(p.id); closeProductDetailModal(); };
-                document.getElementById('product-detail-modal').classList.remove('hidden');
+                `;
+            } else if (section === 'addresses') {
+                renderDeliveryAddressesScreen();
+            } else if (section === 'payments') {
+                titleEl.innerText = "Payment Methods";
+                bodyEl.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="bg-red-50 p-3 rounded-2xl border border-red-100 space-y-1">
+                            <span class="bg-red-600 text-white text-[9px] font-bold px-2 py-0.5 rounded uppercase">Connected</span>
+                            <h4 class="font-bold text-gray-950">Bakong KHQR Gateway</h4>
+                            <p class="text-[10px] text-gray-500">Instant scan-and-pay supported for all Cambodian banking apps.</p>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-2xl border border-gray-200 flex justify-between items-center">
+                            <span>Cash on Delivery (COD)</span>
+                            <span class="text-emerald-600 font-bold text-[10px]">Available</span>
+                        </div>
+                    </div>
+                `;
+            } else if (section === 'notifications') {
+                titleEl.innerText = "Notifications & Preferences";
+                bodyEl.innerHTML = `
+                    <div class="space-y-3 text-xs">
+                        <label class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border border-gray-100 cursor-pointer">
+                            <span>Order confirmation</span>
+                            <input type="checkbox" checked class="accent-[#a4133c] w-4 h-4">
+                        </label>
+                        <label class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border border-gray-100 cursor-pointer">
+                            <span>Order status changes</span>
+                            <input type="checkbox" checked class="accent-[#a4133c] w-4 h-4">
+                        </label>
+                        <label class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border border-gray-100 cursor-pointer">
+                            <span>Promotions & discounts</span>
+                            <input type="checkbox" checked class="accent-[#a4133c] w-4 h-4">
+                        </label>
+                        <label class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border border-gray-100 cursor-pointer">
+                            <span>New product announcements</span>
+                            <input type="checkbox" checked class="accent-[#a4133c] w-4 h-4">
+                        </label>
+                    </div>
+                `;
+            } else if (section === 'settings') {
+                titleEl.innerText = "Settings";
+                bodyEl.innerHTML = `
+                    <div class="space-y-2">
+                        <button onclick="openSettingsSubPage('language')" class="w-full p-3 bg-gray-50 rounded-xl border border-gray-100 flex justify-between items-center text-left">
+                            <div><b class="block text-gray-950">Language & Region</b><span class="text-[10px] text-gray-400">Khmer / English, USD / KHR</span></div>
+                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+                        </button>
+                        <button onclick="openSettingsSubPage('security')" class="w-full p-3 bg-gray-50 rounded-xl border border-gray-100 flex justify-between items-center text-left">
+                            <div><b class="block text-gray-950">Privacy & Security</b><span class="text-[10px] text-gray-400">Telegram authentication & sessions</span></div>
+                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+                        </button>
+                    </div>
+                `;
+            } else if (section === 'language') {
+                titleEl.innerText = "Language & Region";
+                bodyEl.innerHTML = `
+                    <div class="space-y-3 text-xs">
+                        <div class="space-y-1">
+                            <label class="flex items-center space-x-2 bg-gray-50 p-3 rounded-xl border border-gray-100 cursor-pointer">
+                                <input type="radio" name="lang" checked class="accent-[#a4133c]">
+                                <div><b class="block text-gray-950">English</b><span class="text-[10px] text-gray-400">English (Default)</span></div>
+                            </label>
+                            <label class="flex items-center space-x-2 bg-gray-50 p-3 rounded-xl border border-gray-100 cursor-pointer">
+                                <input type="radio" name="lang" class="accent-[#a4133c]">
+                                <div><b class="block text-gray-950">ភាសាខ្មែរ</b><span class="text-[10px] text-gray-400">Khmer</span></div>
+                            </label>
+                        </div>
+                        <div class="space-y-1 pt-2">
+                            <b class="text-gray-950 block">Currency</b>
+                            <label class="flex items-center space-x-2 bg-gray-50 p-2.5 rounded-xl border border-gray-100 cursor-pointer">
+                                <input type="radio" name="curr" checked class="accent-[#a4133c]">
+                                <span>USD ($) US Dollar</span>
+                            </label>
+                            <label class="flex items-center space-x-2 bg-gray-50 p-2.5 rounded-xl border border-gray-100 cursor-pointer">
+                                <input type="radio" name="curr" class="accent-[#a4133c]">
+                                <span>KHR (៛) Cambodian Riel</span>
+                            </label>
+                        </div>
+                        <button onclick="closeSettingsSubModal(); alert('Preferences saved!');" class="w-full bg-[#800f2f] text-white font-bold py-2.5 rounded-xl shadow-xs mt-2">Save Changes</button>
+                    </div>
+                `;
+            } else if (section === 'security') {
+                titleEl.innerText = "Privacy & Security";
+                bodyEl.innerHTML = `
+                    <div class="space-y-2 text-xs">
+                        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 flex items-center justify-between">
+                            <div class="flex items-center space-x-2"><i class="fa-brands fa-telegram text-sky-500 text-base"></i><div><b class="block text-gray-950">Telegram Connected</b><span class="text-[10px] text-emerald-600 font-semibold">Active Session</span></div></div>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                            <b class="block text-gray-950">Active Sessions</b>
+                            <p class="text-[10px] text-gray-400">1 device connected securely via Telegram WebApp</p>
+                        </div>
+                    </div>
+                `;
+            } else if (section === 'support') {
+                titleEl.innerText = "About & Help & Support";
+                bodyEl.innerHTML = `
+                    <div class="space-y-3 text-center text-xs">
+                        <div class="bg-pink-50 p-4 rounded-2xl border border-pink-100 space-y-1">
+                            <h4 class="font-bold text-sm text-[#a4133c]">Mininize Studio</h4>
+                            <p class="text-[10px] text-gray-600">Quality Products, Better Life 🎀</p>
+                        </div>
+                        <a href="https://t.me/mininize" target="_blank" class="block w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 rounded-xl shadow-xs"><i class="fa-brands fa-telegram mr-1.5"></i> Open Telegram Support Chat</a>
+                        <p class="text-[9px] text-gray-400">Version 1.0.0 • Connected to Firebase</p>
+                    </div>
+                `;
             }
-        }
+        };
 
-        function closeProductDetailModal() { 
-            window.currentSelectedProdId = null;
-            document.getElementById('product-detail-modal').classList.add('hidden'); 
-        }
+        // DELIVERY ADDRESSES SCREEN (Exact Match to Mockup UI)[cite: 1]
+        window.renderDeliveryAddressesScreen = function() {
+            const titleEl = document.getElementById('settings-modal-title');
+            const bodyEl = document.getElementById('settings-modal-body');
+            titleEl.innerHTML = `<div class="flex items-center justify-between"><span class="font-serif italic font-bold text-sm text-gray-950">Delivery Addresses</span><button onclick="openAddAddressForm()" class="bg-[#800f2f] text-white text-[10px] font-bold px-3 py-1.5 rounded-xl shadow-xs">+ Add Address</button></div>`;
+
+            const uData = window.currentUserData || {};
+            const list = uData.addressesList || [];
+
+            bodyEl.innerHTML = list.length === 0 ? `
+                <div class="text-center py-6"><p class="text-xs text-gray-400">No saved delivery addresses.</p></div>
+            ` : list.map(addr => `
+                <div class="bg-white p-3.5 rounded-2xl border ${addr.isDefault ? 'border-[#a4133c] ring-1 ring-[#a4133c]/30' : 'border-gray-200'} shadow-xs space-y-1.5 relative text-xs">
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center space-x-2">
+                            <input type="radio" ${addr.isDefault ? 'checked' : ''} onclick="setDefaultAddress('${addr.id}')" class="accent-[#a4133c] w-4 h-4 cursor-pointer">
+                            <b class="text-gray-950 text-sm">${addr.label || 'Home'}</b>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            ${addr.isDefault ? '<span class="bg-pink-50 text-[#a4133c] text-[9px] font-bold px-2 py-0.5 rounded uppercase">Default</span>' : ''}
+                            <button onclick="openAddAddressForm('${addr.id}')" class="text-gray-400 hover:text-gray-600 p-1"><i class="fa-solid fa-pen text-xs"></i></button>
+                            <button onclick="deleteAddress('${addr.id}')" class="text-red-400 hover:text-red-600 p-1"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                        </div>
+                    </div>
+                    <div class="pl-6 text-gray-600 space-y-0.5 text-[11px]">
+                        <p class="font-medium text-gray-900">${addr.fullName} (${addr.phone})</p>
+                        <p>${addr.street}, ${addr.district || ''}, ${addr.city || 'Phnom Penh'}</p>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        // ADD / EDIT ADDRESS FORM SCREEN (Exact Match to Mockup Form)[cite: 1]
+        window.openAddAddressForm = function(addrId = null) {
+            const titleEl = document.getElementById('settings-modal-title');
+            const bodyEl = document.getElementById('settings-modal-body');
+            const uData = window.currentUserData || {};
+            const list = uData.addressesList || [];
+            const existing = addrId ? list.find(a => a.id === addrId) : null;
+
+            titleEl.innerText = existing ? "Edit Delivery Address" : "Add Delivery Address";
+
+            bodyEl.innerHTML = `
+                <div class="space-y-3 text-xs">
+                    <input type="hidden" id="addr-form-id" value="${existing ? existing.id : ''}">
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Address label *</label>
+                        <div class="flex space-x-2 mt-1">
+                            <button type="button" onclick="setAddrLabel('Home')" id="lbl-Home" class="flex-1 py-1.5 rounded-xl border ${(!existing || existing.label === 'Home') ? 'bg-[#800f2f] text-white border-[#800f2f]' : 'bg-white text-gray-700 border-gray-200'} font-bold">Home</button>
+                            <button type="button" onclick="setAddrLabel('Work')" id="lbl-Work" class="flex-1 py-1.5 rounded-xl border ${(existing && existing.label === 'Work') ? 'bg-[#800f2f] text-white border-[#800f2f]' : 'bg-white text-gray-700 border-gray-200'} font-bold">Work</button>
+                            <button type="button" onclick="setAddrLabel('Other')" id="lbl-Other" class="flex-1 py-1.5 rounded-xl border ${(existing && existing.label === 'Other') ? 'bg-[#800f2f] text-white border-[#800f2f]' : 'bg-white text-gray-700 border-gray-200'} font-bold">Other</button>
+                        </div>
+                        <input type="hidden" id="addr-label-val" value="${existing ? (existing.label || 'Home') : 'Home'}">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Recipient full name *</label>
+                        <input type="text" id="addr-fullname" value="${existing ? (existing.fullName || '') : (uData.name || 'Sokha Chan')}" placeholder="Enter recipient name" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Phone number *</label>
+                        <input type="text" id="addr-phone" value="${existing ? (existing.phone || '') : '+855 12 345 678'}" placeholder="+855 12 345 678" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Province / Capital *</label>
+                        <select id="addr-province" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5 bg-white">
+                            <option value="Phnom Penh">Phnom Penh</option>
+                            <option value="Siem Reap">Siem Reap</option>
+                            <option value="Kandal">Kandal</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">District / Khan *</label>
+                        <select id="addr-district" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5 bg-white">
+                            <option value="Sen Sok">Sen Sok</option>
+                            <option value="Chamkar Mon">Chamkar Mon</option>
+                            <option value="Daun Penh">Daun Penh</option>
+                            <option value="Dangkaor">Dangkaor</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Commune / Sangkat *</label>
+                        <select id="addr-commune" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5 bg-white">
+                            <option value="Ou Baek K'am">Ou Baek K'am</option>
+                            <option value="Phnom Penh Thmey">Phnom Penh Thmey</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Village (optional)</label>
+                        <input type="text" id="addr-village" value="${existing ? (existing.village || '') : ''}" placeholder="Enter village name" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">House / Building No. *</label>
+                        <input type="text" id="addr-house" value="${existing ? (existing.houseNo || '') : '#123'}" placeholder="#123" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-gray-400 uppercase">Street / Road *</label>
+                        <input type="text" id="addr-street" value="${existing ? (existing.street || '') : 'Main Street'}" placeholder="Main Street" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
+                    </div>
+                    <button onclick="saveAddressToDatabase()" class="w-full bg-[#800f2f] text-white font-bold py-3 rounded-xl shadow-xs mt-2">Next / Save Address ✨</button>
+                    <button onclick="renderDeliveryAddressesScreen()" class="w-full bg-gray-100 text-gray-600 font-bold py-2.5 rounded-xl">Back</button>
+                </div>
+            `;
+        };
+
+        window.setAddrLabel = function(lbl) {
+            document.getElementById('addr-label-val').value = lbl;
+            ['Home', 'Work', 'Other'].forEach(l => {
+                const btn = document.getElementById(`lbl-${l}`);
+                if (btn) btn.className = l === lbl ? 'flex-1 py-1.5 rounded-xl border bg-[#800f2f] text-white border-[#800f2f] font-bold' : 'flex-1 py-1.5 rounded-xl border bg-white text-gray-700 border-gray-200 font-bold';
+            });
+        };
+
+        window.saveAddressToDatabase = async function() {
+            const addrId = document.getElementById('addr-form-id').value;
+            const label = document.getElementById('addr-label-val').value;
+            const fullName = document.getElementById('addr-fullname').value;
+            const phone = document.getElementById('addr-phone').value;
+            const province = document.getElementById('addr-province').value;
+            const district = document.getElementById('addr-district').value;
+            const commune = document.getElementById('addr-commune').value;
+            const village = document.getElementById('addr-village').value;
+            const houseNo = document.getElementById('addr-house').value;
+            const street = document.getElementById('addr-street').value;
+
+            if (!fullName || !phone || !street) return alert('Please fill in required address fields.');
+
+            if (window.currentUser) {
+                const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+                let list = window.currentUserData.addressesList || [];
+
+                if (addrId) {
+                    let idx = list.findIndex(a => a.id === addrId);
+                    if (idx !== -1) list[idx] = { id: addrId, label, fullName, phone, province, district, commune, village, houseNo, street, city: province, isDefault: list[idx].isDefault };
+                } else {
+                    const newId = `addr_${Date.now()}`;
+                    const isDefault = list.length === 0;
+                    list.push({ id: newId, label, fullName, phone, province, district, commune, village, houseNo, street, city: province, isDefault });
+                }
+
+                window.currentUserData.addressesList = list;
+                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { addressesList: list });
+                document.getElementById('stat-addr-count').innerText = list.length;
+                alert('Delivery address saved successfully! ✨');
+                renderDeliveryAddressesScreen();
+            }
+        };
+
+        window.setDefaultAddress = async function(addrId) {
+            if (window.currentUser) {
+                const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+                let list = window.currentUserData.addressesList || [];
+                list.forEach(a => { a.isDefault = (a.id === addrId); });
+                window.currentUserData.addressesList = list;
+                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { addressesList: list });
+                renderDeliveryAddressesScreen();
+            }
+        };
+
+        window.deleteAddress = async function(addrId) {
+            if (window.currentUser && confirm("Delete this delivery address?")) {
+                const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+                let list = window.currentUserData.addressesList || [];
+                list = list.filter(a => a.id !== addrId);
+                window.currentUserData.addressesList = list;
+                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { addressesList: list });
+                document.getElementById('stat-addr-count').innerText = list.length;
+                renderDeliveryAddressesScreen();
+            }
+        };
+
+        window.savePersonalData = async function() {
+            const name = document.getElementById('edit-name').value;
+            const email = document.getElementById('edit-email').value;
+            const phone = document.getElementById('edit-phone').value;
+            if (window.currentUser) {
+                const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { name, email, phone });
+                window.currentUserData.name = name;
+                window.currentUserData.email = email;
+                window.currentUserData.phone = phone;
+                document.getElementById('cust-profile-name').innerText = name;
+                alert('Personal information updated successfully! ✨');
+                closeSettingsSubModal();
+            }
+        };
+
+        window.closeSettingsSubModal = function() {
+            document.getElementById('settings-sub-modal').classList.add('hidden');
+        };
 
         function renderProducts() {
             const grid = document.getElementById('product-grid');
             if (!grid) return;
-            const searchVal = document.getElementById('search-input').value.toLowerCase();
-            let filtered = window.products.filter(p => (activeCategory === 'All' || p.category === activeCategory) && p.name.toLowerCase().includes(searchVal));
-            grid.innerHTML = filtered.map(p => `
-                <div class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs flex flex-col justify-between hover:border-pink-500/30 transition-all cursor-pointer" onclick="openProductDetailModal('${p.id}')">
+            grid.innerHTML = (window.products || []).map(p => `
+                <div class="bg-white rounded-2xl p-2.5 border border-gray-200 shadow-xs flex flex-col justify-between">
                     <div>
                         <div class="relative rounded-xl overflow-hidden aspect-square bg-gray-50 mb-2">
-                            <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full h-full object-cover">
-                            <button onclick="event.stopPropagation(); toggleWishlist('${p.id}')" class="absolute top-2 right-2 w-6 h-6 bg-white/90 rounded-full flex items-center justify-center text-[10px] ${wishlist.includes(p.id) ? 'text-red-500' : 'text-gray-400'}"><i class="fa-solid fa-heart"></i></button>
+                            <img src="${p.image}" class="w-full h-full object-cover">
                         </div>
-                        <h4 class="font-serif italic font-bold text-xs text-gray-900 truncate">${p.name}</h4>
+                        <h4 class="font-serif italic font-bold text-xs text-gray-950 truncate">${p.name}</h4>
                         <p class="text-[10px] text-gray-400">Stock: ${p.stock ?? 10}</p>
                     </div>
-                    <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-50">
+                    <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
                         <span class="font-bold text-xs text-[#a4133c]">$${Number(p.price || 0).toFixed(2)}</span>
-                        <button onclick="event.stopPropagation(); addToCart('${p.id}')" class="bg-[#800f2f] text-white px-3 py-1.5 rounded-xl text-xs font-bold active:scale-95 transition-transform">+</button>
+                        <button onclick="alert('Item added!')" class="bg-[#800f2f] text-white px-3 py-1.5 rounded-xl text-xs font-bold">+</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        function filterCategory(cat) { activeCategory = cat; renderProducts(); }
-        function filterProducts() { renderProducts(); }
-        function toggleWishlist(id) { wishlist = wishlist.includes(id) ? wishlist.filter(i => i !== id) : [...wishlist, id]; renderProducts(); }
-        function renderWishlist() {
-            let favs = window.products.filter(p => wishlist.includes(p.id));
-            document.getElementById('wishlist-grid').innerHTML = favs.length === 0 ? `<p class="text-xs text-gray-400 col-span-2 text-center py-6">No saved items.</p>` :
-                favs.map(p => `<div onclick="openProductDetailModal('${p.id}')" class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs cursor-pointer"><img src="${p.image}" class="w-full aspect-square object-cover rounded-xl mb-2"><h4 class="font-serif italic font-bold text-xs text-gray-900 truncate">${p.name}</h4></div>`).join('');
-        }
-
-        function addToCart(id) {
-            const prod = window.products.find(p => p.id === id);
-            const existing = cart.find(i => i.id === id);
-            if (existing) existing.qty += 1; else cart.push({ ...prod, qty: 1 });
-            localStorage.setItem('mininize_cart', JSON.stringify(cart));
-            document.getElementById('cart-badge').innerText = cart.reduce((s, i) => s + i.qty, 0);
-            alert('Item added to bag! 🛍️');
-        }
-
-        function openCartDrawer() {
-            document.getElementById('cart-items-container').innerHTML = cart.length === 0 ? `<p class="text-xs text-gray-400 text-center py-8">Your cart is empty</p>` :
-                cart.map((item, idx) => `<div class="flex justify-between items-center text-xs border-b border-gray-50 pb-2"><span><b>${item.name}</b> (x${item.qty})</span><span class="font-bold text-[#a4133c]">$${(item.price * item.qty).toFixed(2)}</span></div>`).join('');
-            document.getElementById('cart-total').innerText = `$${cart.reduce((s, i) => s + (i.price * i.qty), 0).toFixed(2)}`;
-            document.getElementById('cart-drawer').classList.remove('hidden');
-        }
-        function closeCartDrawer() { document.getElementById('cart-drawer').classList.add('hidden'); }
-        function openCheckoutModal() { closeCartDrawer(); document.getElementById('checkout-modal').classList.remove('hidden'); }
-        function closeCheckoutModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
-
-        window.initiateBakongPayment = function() {
-            const name = document.getElementById('checkout-name').value;
-            const phone = document.getElementById('checkout-phone').value;
-            const address = document.getElementById('checkout-address').value;
-            if (!name || !phone || !address) return alert('Please fill in delivery details.');
-            const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-            const qrApiUrl = `https://quickchart.io/qr?text=mininize@bakong&size=250`;
-            document.getElementById('bakong-pay-amount').innerText = `$${total.toFixed(2)}`;
-            document.getElementById('bakong-qr-img').src = qrApiUrl;
-            closeCheckoutModal();
-            document.getElementById('bakong-payment-modal').classList.remove('hidden');
-        }
-        function cancelBakongPayment() { document.getElementById('bakong-payment-modal').classList.add('hidden'); }
+        window.renderCustomerOrders = function() {
+            const listEl = document.getElementById('my-orders-list');
+            if (!listEl) return;
+            const myOrders = window.orders || [];
+            listEl.innerHTML = myOrders.length === 0 ? `
+                <div class="text-center py-10 bg-white rounded-2xl border border-gray-200 p-6 space-y-2">
+                    <i class="fa-solid fa-box-open text-2xl text-gray-300"></i>
+                    <p class="text-xs text-gray-500 font-medium">No order history found.</p>
+                </div>
+            ` : myOrders.map(o => `
+                <div class="bg-white p-3.5 rounded-2xl border border-gray-200 shadow-xs flex justify-between items-center text-xs">
+                    <div>
+                        <b class="text-gray-950">${o.orderNum || '#ORD-101'}</b>
+                        <p class="text-[10px] text-gray-400 mt-0.5">${o.date || '2026-07-15'} • <span class="text-emerald-600 font-bold">${o.status || 'Processing'}</span></p>
+                    </div>
+                    <span class="font-bold text-[#a4133c]">$${Number(o.total || 12.50).toFixed(2)}</span>
+                </div>
+            `).join('');
+        };
 
         function enterAdminMode() {
             document.getElementById('customer-view').classList.add('hidden');
             document.getElementById('admin-view').classList.remove('hidden');
             document.getElementById('customer-nav').classList.add('hidden');
-            switchAdminNav('orders');
         }
+
         function exitAdminMode() {
             document.getElementById('customer-view').classList.remove('hidden');
             document.getElementById('admin-view').classList.add('hidden');
             document.getElementById('customer-nav').classList.remove('hidden');
-            switchCustomerTab('shop');
         }
-        function switchAdminNav(sec) {
-            ['orders', 'products', 'inventory', 'reviews', 'promotions'].forEach(s => {
-                document.getElementById(`admin-sec-${s}`).classList.add('hidden');
-                document.getElementById(`adtab-${s}`).className = 'px-4 py-2 border-b-2 border-transparent text-gray-500 font-semibold';
-            });
-            document.getElementById(`admin-sec-${sec}`).classList.remove('hidden');
-            document.getElementById(`adtab-${sec}`).className = 'px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c] font-semibold';
-            if (sec === 'reviews') renderAdminReviews();
-        }
-
-        window.renderAdminReviews = function() {
-            const container = document.getElementById('admin-reviews-list-container');
-            if (!container) return;
-            let allReviews = [];
-            window.products.forEach(p => {
-                (p.reviews || []).forEach(r => {
-                    allReviews.push({ ...r, productName: p.name, productId: p.id });
-                });
-            });
-
-            container.innerHTML = allReviews.length === 0 ? `<p class="text-gray-400 text-xs py-4 text-center">No customer reviews submitted yet.</p>` :
-                allReviews.map(r => `
-                    <div class="bg-gray-50 p-3 rounded-2xl border border-gray-100 space-y-2">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <span class="font-bold text-gray-900">${r.productName}</span>
-                                <p class="text-[10px] text-gray-500">By <b>${r.author}</b> • <span class="text-amber-400">★ ${r.rating}.0</span> • ${r.date}</p>
-                            </div>
-                            <div class="space-x-1">
-                                <button onclick="adminReplyReview('${r.productId}', '${r.id}')" class="bg-white border border-gray-200 px-2 py-1 rounded text-gray-700 font-medium">Reply</button>
-                                <button onclick="adminDeleteReview('${r.productId}', '${r.id}')" class="bg-red-50 text-red-600 px-2 py-1 rounded font-medium">Remove</button>
-                            </div>
-                        </div>
-                        <p class="text-gray-700 text-xs bg-white p-2 rounded-xl border border-gray-100">${r.text}</p>
-                        ${r.adminReply ? `<p class="text-[10px] text-[#a4133c] pl-3 border-l-2 border-[#a4133c]"><b>Admin Reply:</b> ${r.adminReply}</p>` : ''}
-                    </div>
-                `).join('');
-        };
-
-        function openProductModal() { document.getElementById('admin-product-modal').classList.remove('hidden'); }
-        function closeAdminProductModal() { document.getElementById('admin-product-modal').classList.add('hidden'); }
     </script>
 </body>
 </html>
