@@ -296,7 +296,7 @@
             <div id="admin-sec-reviews" class="hidden space-y-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
                 <div class="space-y-1">
                     <h2 class="text-sm font-bold text-gray-900">Customer Reviews Moderation</h2>
-                    <p class="text-[11px] text-gray-400">Review recent comments, reply as admin, react with likes, or delete comments</p>
+                    <p class="text-[11px] text-gray-400">Review all comments, reply as admin, react with likes, or delete comments</p>
                 </div>
                 <div id="admin-reviews-list-container" class="space-y-3 max-h-[60vh] overflow-y-auto text-xs"></div>
             </div>
@@ -356,13 +356,13 @@
 
             <div class="border-t border-gray-100 pt-3 space-y-2">
                 <h4 class="font-bold text-xs text-gray-900 flex justify-between items-center">
-                    <span>Recent Comments & Reviews ⭐</span>
+                    <span>Customer Reviews & Comments ⭐</span>
                     <span id="prod-avg-rating" class="text-amber-500 text-[11px]">0.0 / 5.0</span>
                 </h4>
-                <div id="prod-reviews-list" class="space-y-1.5 max-h-32 overflow-y-auto text-[11px]"></div>
+                <div id="prod-reviews-list" class="space-y-1.5 max-h-40 overflow-y-auto text-[11px]"></div>
                 
                 <div class="bg-gray-50 p-2.5 rounded-2xl border border-gray-100 space-y-1.5 mt-2">
-                    <p class="font-bold text-[10px] text-gray-600">Leave a Review (Short Period Display):</p>
+                    <p class="font-bold text-[10px] text-gray-600">Leave a Review:</p>
                     <div class="flex items-center space-x-1 text-amber-400 text-xs" id="star-rating-select">
                         <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(1)"></i>
                         <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(2)"></i>
@@ -672,7 +672,7 @@
 
                 document.getElementById('new-review-text').value = '';
                 openProductDetailModal(window.currentSelectedProdId, true);
-                alert('Thank you for your review! ⭐ Posted to app & Telegram channel.');
+                alert('Thank you for your review! ⭐ Saved permanently & posted to Telegram channel.');
             }
         };
 
@@ -974,11 +974,9 @@
             document.getElementById('prod-avg-rating').innerText = `⭐ ${avgRating} / 5.0 (${reviews.length})`;
 
             const listEl = document.getElementById('prod-reviews-list');
-            // SHORT PERIOD REVIEW FILTER: Show comments submitted recently (e.g. within 30 days or last 10 items)
-            const recentReviews = [...reviews].reverse().slice(0, 5);
-
-            listEl.innerHTML = recentReviews.length === 0 ? `<p class="text-gray-400 text-[10px] py-1">No recent comments yet.</p>` :
-                recentReviews.map(r => `
+            // DISPLAY ALL SAVED REVIEWS PERMANENTLY (REMOVED SHORT PERIOD CUTOFF)
+            listEl.innerHTML = reviews.length === 0 ? `<p class="text-gray-400 text-[10px] py-1">No comments yet. Be the first!</p>` :
+                reviews.map(r => `
                     <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 space-y-1">
                         <div class="flex justify-between items-center text-[9px]">
                             <b class="text-gray-800">${r.author}</b>
