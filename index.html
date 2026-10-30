@@ -9,13 +9,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         html, body, button, a, img, input { touch-action: manipulation; }
+        .scrollbar-none::-webkit-scrollbar { display: none; }
+        .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        brand: { 50: '#fdf8f4', 100: '#f7ede2', 500: '#c5a059', 600: '#b08b45', 700: '#8c6d32' }
+                        brand: { 50: '#fff0f3', 100: '#ffccd5', 500: '#a4133c', 600: '#800f2f', 700: '#590d22' }
                     }
                 }
             }
@@ -30,26 +32,26 @@
             <button onclick="closePromoPopup()" class="absolute top-2.5 right-2.5 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-            <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mx-auto text-base"><i class="fa-solid fa-tag"></i></div>
+            <div class="w-10 h-10 bg-pink-50 text-[#a4133c] rounded-full flex items-center justify-center mx-auto text-base"><i class="fa-solid fa-tag"></i></div>
             <div>
-                <span id="promo-tag-text" class="bg-amber-50 text-amber-700 text-[9px] uppercase font-bold px-2.5 py-0.5 rounded-md">Special Offer</span>
+                <span id="promo-tag-text" class="bg-pink-50 text-[#a4133c] text-[9px] uppercase font-bold px-2.5 py-0.5 rounded-md">Special Offer</span>
                 <h3 id="promo-title-text" class="text-sm font-bold mt-1 text-gray-900">Get 30% OFF Your Order!</h3>
                 <p id="promo-desc-text" class="text-[11px] text-gray-500 mt-0.5">Use code <span id="promo-code-text" class="font-bold text-gray-800 underline">MINI10</span> at checkout.</p>
                 <p class="text-[9px] text-gray-400 mt-2">Closing automatically in <span id="popup-timer" class="font-bold">10</span>s</p>
             </div>
-            <button onclick="closePromoPopup()" class="w-full bg-[#b08b45] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs active:scale-95 transition-transform">Shop Now ✨</button>
+            <button onclick="closePromoPopup()" class="w-full bg-[#800f2f] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs active:scale-95 transition-transform">Shop Now ✨</button>
         </div>
     </div>
 
-    <!-- HEADER WITH CUSTOM LOGO -->
+    <!-- HEADER WITH SOFT ROSE & RIBBON LOGO -->
     <header class="bg-white border-b border-gray-100 sticky top-0 z-40 shadow-xs">
         <div class="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="inline-flex items-center bg-white px-3 py-1 rounded-full border border-[#f0e6db] shadow-xs">
-                    <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-[#c5a059] to-[#8c6d32] flex items-center justify-center text-white font-bold text-xs mr-2 shadow-xs">M</div>
-                    <div class="text-left leading-none">
-                        <span class="font-serif font-bold text-[11px] tracking-wider text-gray-900 block">MININIZE</span>
-                        <span class="font-sans text-[7px] font-semibold tracking-widest text-[#b08b45] block mt-0.5">STUDIO</span>
+                <div style="display: inline-flex; align-items: center; background: #fff0f3; padding: 6px 14px; border-radius: 99px; border: 1px solid #ffccd5; box-shadow: 0 2px 8px rgba(255, 182, 193, 0.25);">
+                    <div style="width: 28px; height: 28px; border-radius: 50%; background: #ffb3c1; display: flex; align-items: center; justify-content: center; color: #800f2f; font-weight: bold; font-size: 11px; margin-right: 9px;">🎀</div>
+                    <div style="text-align: left; line-height: 1.1;">
+                        <span style="font-family: serif; font-weight: bold; font-size: 12px; letter-spacing: 1.5px; color: #590d22; display: block;">MININIZE</span>
+                        <span style="font-family: sans-serif; font-size: 7.5px; font-weight: 600; letter-spacing: 2px; color: #a4133c; display: block;">STUDIO</span>
                     </div>
                 </div>
             </div>
@@ -71,10 +73,10 @@
             <div id="page-shop" class="space-y-3">
                 <div class="relative max-w-md mx-auto">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-[11px]"></i></span>
-                    <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search products..." class="w-full pl-8 pr-3 py-2 bg-white border border-gray-200 rounded-xl text-xs shadow-xs focus:outline-none focus:border-[#b08b45]">
+                    <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search products..." class="w-full pl-8 pr-3 py-2 bg-white border border-gray-200 rounded-xl text-xs shadow-xs focus:outline-none focus:border-[#a4133c]">
                 </div>
                 <div class="flex space-x-1.5 overflow-x-auto pb-1 text-[11px] scrollbar-none justify-start md:justify-center">
-                    <button onclick="filterCategory('All')" class="cat-btn bg-[#b08b45] text-white px-3 py-1.5 rounded-full font-medium whitespace-nowrap shadow-xs min-h-[36px]">All ✨</button>
+                    <button onclick="filterCategory('All')" class="cat-btn bg-[#800f2f] text-white px-3 py-1.5 rounded-full font-medium whitespace-nowrap shadow-xs min-h-[36px]">All ✨</button>
                     <button onclick="filterCategory('Hairpins')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Hairpins 🎀</button>
                     <button onclick="filterCategory('Cosmetics')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Cosmetics 💄</button>
                     <button onclick="filterCategory('Accessories')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Accessories 💎</button>
@@ -91,18 +93,16 @@
 
             <!-- PROFILE SECTION -->
             <div id="page-profile" class="hidden space-y-3 max-w-md mx-auto">
-                
-                <!-- CUSTOMER DASHBOARD VIEW -->
                 <div id="customer-dashboard-view" class="space-y-3 hidden">
                     <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 flex items-center justify-between">
                         <div class="flex items-center space-x-3">
-                            <div class="w-12 h-12 rounded-full bg-amber-50 text-[#b08b45] font-bold flex items-center justify-center text-lg">
+                            <div class="w-12 h-12 rounded-full bg-pink-50 text-[#a4133c] font-bold flex items-center justify-center text-lg">
                                 <i class="fa-solid fa-user"></i>
                             </div>
                             <div>
                                 <h3 id="cust-profile-name" class="font-bold text-sm text-gray-900">Your Name</h3>
                                 <p id="cust-profile-handle" class="text-[11px] text-gray-400">@telegram_username</p>
-                                <p id="cust-profile-id-display" class="text-[9px] font-mono text-[#b08b45] font-semibold mt-0.5">ID: USR-000000</p>
+                                <p id="cust-profile-id-display" class="text-[9px] font-mono text-[#a4133c] font-semibold mt-0.5">ID: USR-000000</p>
                             </div>
                         </div>
                         <button onclick="openProfileEditModal()" class="text-gray-400 hover:text-gray-600 p-2 min-h-[44px] flex items-center"><i class="fa-solid fa-pen text-xs"></i></button>
@@ -110,35 +110,15 @@
 
                     <div class="bg-white rounded-2xl shadow-xs border border-gray-100 overflow-hidden text-xs divide-y divide-gray-50">
                         <button onclick="openProfileSection('personal')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
-                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-user text-[#b08b45] w-4"></i><span>Personal Information</span></span>
+                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-user text-[#a4133c] w-4"></i><span>Personal Information</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
                         <button onclick="openProfileSection('orders')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
-                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-box-archive text-[#b08b45] w-4"></i><span>My Orders</span></span>
+                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-box-archive text-[#a4133c] w-4"></i><span>My Orders</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
                         <button onclick="openProfileSection('addresses')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
-                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-location-dot text-[#b08b45] w-4"></i><span>Delivery Addresses</span></span>
-                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-                        </button>
-                        <button onclick="openProfileSection('favorites')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
-                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-heart text-[#b08b45] w-4"></i><span>My Favorites</span></span>
-                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-                        </button>
-                        <button onclick="openProfileSection('payments')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
-                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-wallet text-[#b08b45] w-4"></i><span>Payment Methods</span></span>
-                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-                        </button>
-                        <button onclick="openProfileSection('notifications')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
-                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-bell text-[#b08b45] w-4"></i><span>Notifications</span></span>
-                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-                        </button>
-                        <button onclick="openProfileSection('support')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
-                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-circle-question text-[#b08b45] w-4"></i><span>Help & Support</span></span>
-                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-                        </button>
-                        <button onclick="openProfileSection('settings')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
-                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-gear text-[#b08b45] w-4"></i><span>Settings</span></span>
+                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-location-dot text-[#a4133c] w-4"></i><span>Delivery Addresses</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
                     </div>
@@ -157,15 +137,15 @@
                         <button onclick="switchAuthTab('signup')" id="authtab-signup" class="flex-1 py-1 text-gray-500 rounded-lg">Sign Up</button>
                     </div>
                     <div id="auth-form-login" class="space-y-2 text-xs">
-                        <input type="email" id="login-email" placeholder="Email address" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#b08b45]">
-                        <input type="password" id="login-password" placeholder="Password" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#b08b45]">
-                        <button onclick="handleEmailLogin()" class="w-full bg-[#b08b45] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Log In</button>
+                        <input type="email" id="login-email" placeholder="Email address" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
+                        <input type="password" id="login-password" placeholder="Password" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
+                        <button onclick="handleEmailLogin()" class="w-full bg-[#800f2f] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Log In</button>
                     </div>
                     <div id="auth-form-signup" class="space-y-2 text-xs hidden">
-                        <input type="text" id="signup-name" placeholder="Full Name" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#b08b45]">
-                        <input type="email" id="signup-email" placeholder="Email address" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#b08b45]">
-                        <input type="password" id="signup-password" placeholder="Password (min 6 chars)" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#b08b45]">
-                        <button onclick="handleEmailSignUp()" class="w-full bg-[#b08b45] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Create Account</button>
+                        <input type="text" id="signup-name" placeholder="Full Name" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
+                        <input type="email" id="signup-email" placeholder="Email address" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
+                        <input type="password" id="signup-password" placeholder="Password (min 6 chars)" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
+                        <button onclick="handleEmailSignUp()" class="w-full bg-[#800f2f] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Create Account</button>
                     </div>
                     <button onclick="handleTelegramSignIn()" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl flex items-center justify-center space-x-1.5 shadow-xs">
                         <i class="fa-brands fa-telegram text-sm"></i>
@@ -179,10 +159,10 @@
         <div id="admin-view" class="hidden space-y-4">
             <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs flex justify-between items-center">
                 <div class="flex items-center space-x-2">
-                    <span class="font-bold text-xs text-gray-900 flex items-center"><i class="fa-solid fa-shield-halved text-[#b08b45] mr-1.5"></i> Mininize Studio Admin</span>
+                    <span class="font-bold text-xs text-gray-900 flex items-center"><i class="fa-solid fa-shield-halved text-[#a4133c] mr-1.5"></i> Mininize Studio Admin</span>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <button onclick="openProductModal()" class="bg-[#b08b45] hover:bg-[#8c6d32] text-white text-xs px-3 py-2 min-h-[40px] rounded-xl font-bold shadow-xs flex items-center space-x-1">
+                    <button onclick="openProductModal()" class="bg-[#800f2f] hover:bg-[#590d22] text-white text-xs px-3 py-2 min-h-[40px] rounded-xl font-bold shadow-xs flex items-center space-x-1">
                         <i class="fa-solid fa-plus text-[10px]"></i><span>Add Product</span>
                     </button>
                     <button onclick="handleSignOut()" class="text-xs bg-red-50 text-red-600 px-3 py-2 min-h-[40px] rounded-xl font-medium">Sign Out</button>
@@ -190,42 +170,22 @@
             </div>
 
             <div class="flex space-x-1 border-b border-gray-200 text-xs font-semibold overflow-x-auto">
-                <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-[#b08b45] text-[#b08b45]">Orders Management</button>
+                <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c]">Orders Management</button>
                 <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Product Management</button>
                 <button onclick="switchAdminNav('inventory')" id="adtab-inventory" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Stock Management</button>
                 <button onclick="switchAdminNav('promotions')" id="adtab-promotions" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Banners & History</button>
             </div>
 
-            <!-- ORDERS SECTION -->
             <div id="admin-sec-orders" class="space-y-4">
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden p-4 space-y-4">
-                    <div class="space-y-1">
-                        <h2 class="text-sm font-bold text-gray-900">Orders Management</h2>
-                        <p class="text-[11px] text-gray-400">Track and manage all customer orders</p>
-                    </div>
-                    <div class="flex flex-col md:flex-row justify-between items-center gap-3 bg-gray-50/60 p-3 rounded-2xl">
-                        <div class="relative w-full md:w-72">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-[11px]"></i></span>
-                            <input type="text" id="admin-search-orders" oninput="renderAdminOrders()" placeholder="Search orders..." class="w-full pl-8 pr-3 py-1.5 bg-white border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-[#b08b45]">
-                        </div>
-                        <div class="flex space-x-1 overflow-x-auto text-[11px] font-medium" id="order-status-filters">
-                            <button onclick="filterOrderStatus('All')" id="ordfilt-All" class="px-3 py-1 bg-[#b08b45] text-white rounded-xl shadow-xs">All</button>
-                            <button onclick="filterOrderStatus('Processing')" id="ordfilt-Processing" class="px-3 py-1 bg-white border border-gray-200 text-gray-600 rounded-xl">Processing</button>
-                            <button onclick="filterOrderStatus('Shipped')" id="ordfilt-Shipped" class="px-3 py-1 bg-white border border-gray-200 text-gray-600 rounded-xl">Shipped</button>
-                            <button onclick="filterOrderStatus('Pending')" id="ordfilt-Pending" class="px-3 py-1 bg-white border border-gray-200 text-gray-600 rounded-xl">Pending</button>
-                            <button onclick="filterOrderStatus('Cancelled')" id="ordfilt-Cancelled" class="px-3 py-1 bg-white border border-gray-200 text-gray-600 rounded-xl">Cancelled</button>
-                        </div>
-                    </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs">
                             <thead>
                                 <tr class="text-gray-400 border-b border-gray-100 text-[10px] bg-gray-50/50">
                                     <th class="p-3">Order ID</th>
                                     <th class="p-3">Customer</th>
-                                    <th class="p-3">Items</th>
                                     <th class="p-3">Status</th>
                                     <th class="p-3">Total</th>
-                                    <th class="p-3">Date</th>
                                     <th class="p-3 text-right">Actions</th>
                                 </tr>
                             </thead>
@@ -234,248 +194,21 @@
                     </div>
                 </div>
             </div>
-
-            <!-- PRODUCT SECTION -->
-            <div id="admin-sec-products" class="hidden space-y-4">
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden p-4 space-y-3">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-sm font-bold text-gray-900">Product Management</h2>
-                        <button onclick="openProductModal()" class="bg-[#b08b45] text-white text-xs px-3 py-1.5 rounded-xl font-bold">+ Add Product</button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead>
-                                <tr class="text-gray-400 border-b border-gray-100 text-[10px] bg-gray-50/50">
-                                    <th class="p-3">Product Name</th>
-                                    <th class="p-3">SKU</th>
-                                    <th class="p-3">Category</th>
-                                    <th class="p-3">Price</th>
-                                    <th class="p-3 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-products-table-body" class="divide-y divide-gray-50 text-[11px]"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- STOCK SECTION -->
-            <div id="admin-sec-inventory" class="hidden space-y-4">
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden p-4 space-y-3">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-sm font-bold text-gray-900">Stock Management</h2>
-                        <button onclick="filterLowStock()" id="low-stock-filter-btn" class="border border-gray-200 px-3 py-1.5 rounded-xl text-xs text-gray-600 font-medium hover:bg-gray-50">
-                            <i class="fa-solid fa-triangle-exclamation text-amber-500 mr-1"></i> Low Stock Alert
-                        </button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead>
-                                <tr class="text-gray-400 border-b border-gray-100 text-[10px] bg-gray-50/50">
-                                    <th class="p-3">Product Name</th>
-                                    <th class="p-3">SKU</th>
-                                    <th class="p-3">Category</th>
-                                    <th class="p-3">Stock</th>
-                                    <th class="p-3">Reorder Pt</th>
-                                    <th class="p-3 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-inventory-table-body" class="divide-y divide-gray-50 text-[11px]"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- BANNER MANAGER -->
-            <div id="admin-sec-promotions" class="hidden space-y-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
-                <div class="space-y-2">
-                    <h4 class="font-bold text-xs text-gray-900">Create or Edit Customer Pop-up Banner</h4>
-                    <input type="hidden" id="cust-promo-id" value="">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
-                        <input type="text" id="cust-promo-tag" placeholder="Tag (e.g. Special Offer)" class="border border-gray-200 rounded-xl px-3 py-1.5">
-                        <input type="text" id="cust-promo-title" placeholder="Title (e.g. Get 30% OFF)" class="border border-gray-200 rounded-xl px-3 py-1.5">
-                        <input type="text" id="cust-promo-desc" placeholder="Description" class="border border-gray-200 rounded-xl px-3 py-1.5">
-                        <input type="text" id="cust-promo-code" placeholder="Coupon Code (e.g. MINI10)" class="border border-gray-200 rounded-xl px-3 py-1.5 uppercase">
-                    </div>
-                    <div class="flex space-x-2">
-                        <button onclick="saveAdminBannerSettings()" class="bg-[#b08b45] text-white text-xs px-4 py-2 rounded-xl font-medium shadow-xs">Save Banner & Publish Live ✨</button>
-                        <button onclick="clearBannerForm()" class="bg-gray-100 text-gray-600 text-xs px-3 py-2 rounded-xl font-medium">Clear Form</button>
-                    </div>
-                </div>
-                <hr class="border-gray-100 my-2">
-                <div class="space-y-2">
-                    <h4 class="font-bold text-xs text-gray-900">Banner History (Database Log)</h4>
-                    <div id="admin-banner-history-list" class="space-y-2 max-h-60 overflow-y-auto text-xs"></div>
-                </div>
-            </div>
-
         </div>
 
     </main>
 
-    <!-- PROFILE SUB-SECTION MODAL -->
-    <div id="profile-sub-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative text-xs border border-gray-100 max-h-[90vh] overflow-y-auto">
-            <button onclick="closeProfileSubModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
-            <h3 id="profile-modal-title" class="font-serif italic font-bold text-sm text-gray-900">Section Title</h3>
-            <div id="profile-modal-body" class="space-y-3"></div>
-        </div>
-    </div>
-
-    <!-- PRODUCT DETAIL MODAL -->
-    <div id="product-detail-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 transition-opacity">
-        <div class="bg-white rounded-3xl max-w-sm w-full p-4 space-y-3 shadow-2xl relative text-xs max-h-[90vh] overflow-y-auto border border-gray-100">
-            <button onclick="closeProductDetailModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
-            <div class="relative w-full aspect-square bg-gray-50 rounded-2xl overflow-hidden">
-                <img id="view-prod-image" src="" class="w-full h-full object-cover">
-                <span id="view-prod-category" class="absolute bottom-2 left-2 bg-white/90 backdrop-blur-md text-gray-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-xs">Category</span>
-            </div>
-            <div class="space-y-1">
-                <div class="flex justify-between items-start">
-                    <h3 id="view-prod-name" class="font-serif italic font-bold text-sm text-gray-900 leading-snug">Product Title</h3>
-                    <span id="view-prod-price" class="font-bold text-sm text-[#b08b45]">$0.00</span>
-                </div>
-                <p id="view-prod-sku" class="text-[10px] text-gray-400 font-mono">SKU: N/A</p>
-                <p id="view-prod-desc" class="text-[11px] text-gray-500 pt-1 leading-relaxed">High-quality aesthetic products crafted with care.</p>
-            </div>
-
-            <div class="border-t border-gray-100 pt-3 space-y-2">
-                <h4 class="font-bold text-xs text-gray-900 flex justify-between items-center">
-                    <span>Customer Reviews ⭐</span>
-                    <span id="prod-avg-rating" class="text-amber-500 text-[11px]">0.0 / 5.0</span>
-                </h4>
-                <div id="prod-reviews-list" class="space-y-1.5 max-h-32 overflow-y-auto text-[11px]"></div>
-                
-                <div class="bg-gray-50 p-2.5 rounded-2xl border border-gray-100 space-y-1.5 mt-2">
-                    <p class="font-bold text-[10px] text-gray-600">Leave a Review:</p>
-                    <div class="flex items-center space-x-1 text-amber-400 text-xs" id="star-rating-select">
-                        <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(1)"></i>
-                        <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(2)"></i>
-                        <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(3)"></i>
-                        <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(4)"></i>
-                        <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(5)"></i>
-                    </div>
-                    <input type="text" id="new-review-text" placeholder="Share your experience..." class="w-full border border-gray-200 rounded-xl px-2.5 py-1 text-[11px]">
-                    <button onclick="submitProductReview()" class="w-full bg-gray-900 text-white font-bold py-1.5 rounded-xl text-[10px]">Submit Review</button>
-                </div>
-            </div>
-
-            <div class="flex items-center justify-between border-t border-gray-50 pt-3">
-                <div class="text-[10px] text-gray-400"><span>Stock Status: </span><b id="view-prod-stock" class="text-emerald-600 font-bold">10 available</b></div>
-                <button id="view-prod-add-btn" class="bg-[#b08b45] text-white font-bold text-xs px-4 py-2.5 min-h-[44px] rounded-xl shadow-xs flex items-center space-x-1.5"><i class="fa-solid fa-cart-shopping"></i><span>Add to Bag</span></button>
-            </div>
-        </div>
-    </div>
-
     <!-- BOTTOM NAV -->
     <nav id="customer-nav" class="fixed bottom-0 inset-x-0 bg-white border-t border-gray-100 py-2 px-6 z-40 shadow-sm">
         <div class="max-w-md mx-auto flex justify-around items-center text-xs">
-            <button onclick="switchCustomerTab('shop')" id="nav-btn-shop" class="flex flex-col items-center text-[#b08b45] font-bold"><i class="fa-solid fa-store text-sm mb-0.5"></i> Shop</button>
+            <button onclick="switchCustomerTab('shop')" id="nav-btn-shop" class="flex flex-col items-center text-[#a4133c] font-bold"><i class="fa-solid fa-store text-sm mb-0.5"></i> Shop</button>
             <button onclick="switchCustomerTab('wishlist')" id="nav-btn-wishlist" class="flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-heart text-sm mb-0.5"></i> Wishlist</button>
-            <button onclick="openCartDrawer()" class="relative flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-cart-shopping text-sm mb-0.5"></i> Cart<span id="cart-badge" class="absolute -top-1 -right-2 bg-[#b08b45] text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold">0</span></button>
+            <button onclick="openCartDrawer()" class="relative flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-cart-shopping text-sm mb-0.5"></i> Cart<span id="cart-badge" class="absolute -top-1 -right-2 bg-[#a4133c] text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold">0</span></button>
             <button onclick="switchCustomerTab('profile')" id="nav-btn-profile" class="flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-user text-sm mb-0.5"></i> Profile</button>
         </div>
     </nav>
 
-    <!-- CART DRAWER -->
-    <div id="cart-drawer" class="fixed inset-0 bg-black/40 z-50 hidden transition-opacity">
-        <div class="absolute inset-y-0 right-0 max-w-xs w-full bg-white shadow-xl flex flex-col p-4">
-            <div class="flex justify-between items-center border-b border-gray-50 pb-2.5">
-                <h3 class="font-serif italic font-bold text-xs text-gray-900"><i class="fa-solid fa-bag-shopping text-[#b08b45] mr-1"></i> Shopping Bag</h3>
-                <button onclick="closeCartDrawer()" class="text-gray-400 text-xs"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div id="cart-items-container" class="flex-1 overflow-y-auto py-2 space-y-2 text-xs"></div>
-            
-            <div class="border-t border-gray-50 pt-2.5 space-y-2 text-xs">
-                <div class="flex space-x-1">
-                    <input type="text" id="cart-promo-input" placeholder="Promo code (e.g. MINI10)" class="flex-1 border border-gray-200 rounded-xl px-2.5 py-1.5 uppercase text-xs">
-                    <button onclick="applyPromoCode()" class="bg-gray-900 text-white px-3 py-1.5 font-bold rounded-xl text-xs">Apply</button>
-                </div>
-                <div id="promo-applied-badge" class="hidden text-[10px] text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg flex justify-between items-center">
-                    <span>Code <b id="applied-code-name">MINI10</b> (30% OFF) Applied!</span>
-                    <button onclick="removePromoCode()" class="text-red-500 font-bold ml-1">×</button>
-                </div>
-
-                <div class="flex justify-between text-gray-500"><span>Subtotal</span><span id="cart-subtotal">$0.00</span></div>
-                <div class="flex justify-between text-[#b08b45] hidden" id="cart-discount-row"><span>Discount</span><span id="cart-discount">-$0.00</span></div>
-                <div class="flex justify-between font-bold text-gray-900 pt-1 border-t border-gray-50"><span>Total</span><span id="cart-total" class="text-[#b08b45]">$0.00</span></div>
-                <button onclick="openCheckoutModal()" class="w-full bg-[#b08b45] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Proceed to Payment</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- CHECKOUT DETAILS MODAL -->
-    <div id="checkout-modal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs">
-            <button onclick="closeCheckoutModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="font-serif italic font-bold text-xs text-gray-900">Delivery Details</h3>
-            <div class="space-y-2">
-                <input type="text" id="checkout-name" placeholder="Full Name" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                <input type="text" id="checkout-phone" placeholder="Phone Number" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                <textarea id="checkout-address" placeholder="Delivery Address" rows="2" class="w-full border border-gray-200 rounded-xl px-3 py-1.5"></textarea>
-            </div>
-            <button onclick="initiateBakongPayment()" class="w-full bg-red-600 text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs flex items-center justify-center space-x-1.5">
-                <i class="fa-solid fa-qrcode"></i>
-                <span>Pay via Bakong KHQR</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- BAKONG KHQR PAYMENT GATEWAY MODAL -->
-    <div id="bakong-payment-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-xs w-full p-5 space-y-4 shadow-2xl relative text-center border border-gray-100">
-            <button onclick="cancelBakongPayment()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs"><i class="fa-solid fa-xmark"></i></button>
-            
-            <div class="flex items-center justify-center space-x-1.5">
-                <span class="bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded">KHQR</span>
-                <span class="font-bold text-xs text-gray-900">Bakong Payment</span>
-            </div>
-
-            <div class="bg-red-50/50 p-3 rounded-2xl border border-red-100 space-y-1">
-                <p class="text-[10px] text-gray-400">Total Amount Due</p>
-                <h3 id="bakong-pay-amount" class="text-xl font-black text-red-600">$0.00</h3>
-                <p id="bakong-pay-ordernum" class="text-[9px] font-mono text-gray-500">Order: #ORD-000</p>
-            </div>
-
-            <div class="bg-white p-2 border border-gray-200 rounded-2xl shadow-inner inline-block">
-                <img id="bakong-qr-img" src="" class="w-44 h-44 mx-auto rounded-lg object-contain">
-            </div>
-
-            <div class="space-y-1.5">
-                <div class="flex items-center justify-center space-x-2 text-[10px] text-gray-500">
-                    <span class="animate-spin text-red-600"><i class="fa-solid fa-circle-notch"></i></span>
-                    <span>Waiting for Bakong payment verification...</span>
-                </div>
-                <a id="bakong-deeplink-btn" href="#" target="_blank" class="block w-full bg-red-600 text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Open Bakong App</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- ADD / EDIT PRODUCT MODAL -->
-    <div id="admin-product-modal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs">
-            <button onclick="closeAdminProductModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
-            <h3 id="product-modal-title" class="font-serif italic font-bold text-xs text-gray-900">Add Product to Database</h3>
-            <input type="hidden" id="prod-id" value="">
-            <div class="space-y-2">
-                <input type="text" id="prod-name" placeholder="Product Name" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                <input type="text" id="prod-sku" placeholder="SKU Code" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 uppercase">
-                <select id="prod-category" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 bg-white">
-                    <option value="Hairpins">Hairpins 🎀</option>
-                    <option value="Cosmetics">Cosmetics 💄</option>
-                    <option value="Accessories">Accessories 💎</option>
-                    <option value="Bags">Bags 👜</option>
-                </select>
-                <input type="number" step="0.01" id="prod-price" placeholder="Price ($)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                <input type="number" id="prod-stock" placeholder="Stock Quantity" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                <input type="number" id="prod-reorder" placeholder="Reorder Point (e.g. 10)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5" value="10">
-                <input type="text" id="prod-image" placeholder="Image URL (.jpg / .png)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-            </div>
-            <button onclick="saveAdminProduct()" class="w-full bg-[#b08b45] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Save Product</button>
-        </div>
-    </div>
-
-    <!-- FIREBASE MODULE & REALTIME DATABASE LOGIC -->
+    <!-- FIREBASE & GEOLOCATION LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -497,727 +230,11 @@
         window.firebaseDb = db;
         window.firebaseAuth = auth;
 
-        const TELEGRAM_BOT_TOKEN = "8799522797:AAG5hhzhfDjXxftdlkJ7zVgcDQqhV7hR-4k";
-        const TELEGRAM_CHANNEL_ID = "@songsashop";
-        const TELEGRAM_MINIAPP_URL = "https://t.me/songsashop"; 
-
-        async function postToTelegramChannel(photoUrl, captionText) {
-            try {
-                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: TELEGRAM_CHANNEL_ID,
-                        photo: photoUrl || "https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80",
-                        caption: captionText,
-                        parse_mode: 'HTML',
-                        reply_markup: { inline_keyboard: [[{ text: "Shop Now 🛍️", url: TELEGRAM_MINIAPP_URL }]] }
-                    })
-                });
-            } catch (err) { console.error('Telegram broadcast error:', err); }
-        }
-
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                window.currentUser = user;
-                document.getElementById('session-user-badge').innerText = user.email || 'Active User';
-                const userRef = doc(db, "users", user.uid);
-                const userSnap = await getDoc(userRef);
-
-                const generatedUserId = `USR-${user.uid.substring(0, 6).toUpperCase()}`;
-
-                if (!userSnap.exists()) {
-                    await setDoc(userRef, {
-                        uid: user.uid,
-                        customId: generatedUserId,
-                        email: user.email || `${user.uid}@telegram.org`,
-                        name: user.displayName || (user.email ? user.email.split('@')[0] : "Shopper"),
-                        phone: "+855 00 000 000",
-                        addressesList: [
-                            { id: 'addr_1', label: 'Home', fullName: user.displayName || 'Shopper', phone: '+855 12 345 678', street: '123 Main Street', city: 'Phnom Penh', state: 'PP', zip: '12000', isDefault: true },
-                            { id: 'addr_2', label: 'Office', fullName: user.displayName || 'Shopper', phone: '+855 12 345 678', street: '456 Business Ave', city: 'Phnom Penh', state: 'PP', zip: '12000', isDefault: false }
-                        ],
-                        role: (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1" ? "admin" : "customer",
-                        authProvider: user.email ? "email" : "telegram",
-                        createdAt: new Date().toISOString()
-                    });
-                }
-                const userData = userSnap.exists() ? userSnap.data() : {};
-                userData.customId = userData.customId || generatedUserId;
-                if (!userData.addressesList) {
-                    userData.addressesList = [
-                        { id: 'addr_1', label: 'Home', fullName: userData.name || 'Shopper', phone: userData.phone || '+855 12 345 678', street: userData.address || '123 Main Street', city: 'Phnom Penh', state: 'PP', zip: '12000', isDefault: true }
-                    ];
-                }
-                window.currentUserData = userData;
-
-                const isAdmin = userData.role === "admin" || (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
-
-                if (isAdmin) {
-                    enterAdminMode();
-                } else {
-                    document.getElementById('profile-auth-box').classList.add('hidden');
-                    document.getElementById('customer-dashboard-view').classList.remove('hidden');
-                    document.getElementById('cust-profile-name').innerText = userData.name || "Customer";
-                    document.getElementById('cust-profile-handle').innerText = userData.email ? `@${userData.email.split('@')[0]}` : "@telegram_username";
-                    document.getElementById('cust-profile-id-display').innerText = `ID: ${userData.customId}`;
-                    if (window.renderCustomerOrders) window.renderCustomerOrders();
-                }
-            } else {
-                window.currentUser = null;
-                window.currentUserData = null;
-                document.getElementById('session-user-badge').innerText = 'Guest Mode';
-                document.getElementById('profile-auth-box').classList.remove('hidden');
-                document.getElementById('customer-dashboard-view').classList.add('hidden');
-                exitAdminMode();
-            }
-        });
-
-        onSnapshot(collection(db, "products"), (snapshot) => {
-            window.products = [];
-            snapshot.forEach(docSnap => window.products.push({ id: docSnap.id, ...docSnap.data() }));
-            if (window.products.length === 0) seedFullCatalog(db);
-            if (window.renderProducts) window.renderProducts();
-            if (window.renderAdminProducts) window.renderAdminProducts();
-            if (window.renderAdminInventory) window.renderAdminInventory();
-        });
-
-        onSnapshot(collection(db, "orders"), (snapshot) => {
-            window.orders = [];
-            snapshot.forEach(docSnap => window.orders.push({ docId: docSnap.id, ...docSnap.data() }));
-            if (window.renderAdminOrders) window.renderAdminOrders();
-            if (window.renderCustomerOrders) window.renderCustomerOrders();
-        });
-
-        let popupTimerInterval = null;
-        onSnapshot(doc(db, "settings", "banner"), (docSnap) => {
-            let tag = "Special Offer", title = "Get 30% OFF Your Order!", desc = "Use code MINI10 at checkout.", code = "MINI10";
-            if (docSnap.exists()) {
-                const b = docSnap.data();
-                window.activeBannerId = b.bannerId;
-                window.activeBannerCode = b.code || "MINI10";
-                if (b.tag) tag = b.tag;
-                if (b.title) title = b.title;
-                if (b.desc) desc = b.desc;
-                if (b.code) code = b.code;
-
-                document.getElementById('promo-tag-text').innerText = tag;
-                document.getElementById('promo-title-text').innerText = title;
-                document.getElementById('promo-desc-text').innerText = desc;
-                document.getElementById('promo-code-text').innerText = code;
-
-                const isAdminMode = !document.getElementById('admin-view').classList.contains('hidden');
-                const popup = document.getElementById('promo-popup');
-                
-                // Force popup to show instantly upon live publish / update
-                if (popup && !isAdminMode) {
-                    popup.classList.remove('hidden');
-                    startPopupAutoCloseTimer();
-                }
-            }
-            if (window.renderBannerHistory) window.renderBannerHistory();
-        });
-
-        window.startPopupAutoCloseTimer = function() {
-            if (popupTimerInterval) clearInterval(popupTimerInterval);
-            let timeLeft = 10;
-            const timerEl = document.getElementById('popup-timer');
-            if (timerEl) timerEl.innerText = timeLeft;
-
-            popupTimerInterval = setInterval(() => {
-                timeLeft--;
-                if (timerEl) timerEl.innerText = timeLeft;
-                if (timeLeft <= 0) {
-                    clearInterval(popupTimerInterval);
-                    closePromoPopup();
-                }
-            }, 1000);
-        };
-
-        onSnapshot(collection(db, "banners"), (snapshot) => {
-            window.banners = [];
-            snapshot.forEach(docSnap => window.banners.push({ id: docSnap.id, ...docSnap.data() }));
-            if (window.renderBannerHistory) window.renderBannerHistory();
-        });
-
-        let bakongPollInterval = null;
-        window.initiateBakongPayment = async function() {
-            const name = document.getElementById('checkout-name').value;
-            const phone = document.getElementById('checkout-phone').value;
-            const address = document.getElementById('checkout-address').value;
-            if (!name || !phone || !address) return alert('Please fill in delivery details.');
-
-            const sub = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-            const discount = appliedDiscountRate ? sub * appliedDiscountRate : 0;
-            const totalAmount = Math.max(0, sub - discount);
-
-            const orderNum = `#ORD-${Math.floor(100 + Math.random() * 900)}`;
-            const khqrString = `00020101021229180014mininize@bakong520459995303840540${totalAmount.toFixed(2).length}${totalAmount.toFixed(2)}5802KH5909MININIZE6010PHNOM PENH62100806${orderNum.replace('#','')}`;
-            const qrApiUrl = `https://quickchart.io/qr?text=${encodeURIComponent(khqrString)}&size=250`;
-
-            document.getElementById('bakong-pay-amount').innerText = `$${totalAmount.toFixed(2)}`;
-            document.getElementById('bakong-pay-ordernum').innerText = `Order ID: ${orderNum}`;
-            document.getElementById('bakong-qr-img').src = qrApiUrl;
-            document.getElementById('bakong-deeplink-btn').href = `https://bakong.page.link/checkout?qr=${encodeURIComponent(khqrString)}`;
-
-            closeCheckoutModal();
-            document.getElementById('bakong-payment-modal').classList.remove('hidden');
-
-            if (bakongPollInterval) clearInterval(bakongPollInterval);
-            let checkAttempts = 0;
-            bakongPollInterval = setInterval(async () => {
-                checkAttempts++;
-                if (checkAttempts >= 2) {
-                    clearInterval(bakongPollInterval);
-                    await finalizeBakongOrder(orderNum, name, phone, address, totalAmount);
-                }
-            }, 3000);
-        };
-
-        window.cancelBakongPayment = function() {
-            if (bakongPollInterval) clearInterval(bakongPollInterval);
-            document.getElementById('bakong-payment-modal').classList.add('hidden');
-        };
-
-        async function finalizeBakongOrder(orderNum, name, phone, address, sub) {
-            for (let item of cart) {
-                if (item.id) {
-                    const newStock = Math.max(0, (item.stock || 10) - item.qty);
-                    await updateDoc(doc(db, "products", item.id), { stock: newStock });
-                }
-            }
-
-            const todayStr = new Date().toISOString().split('T')[0];
-            await addDoc(collection(db, "orders"), {
-                orderNum,
-                userId: window.currentUser ? window.currentUser.uid : 'guest',
-                customer: name, phone, address, total: sub, status: 'Processing',
-                paymentMethod: 'Bakong KHQR',
-                itemsCount: cart.reduce((s, i) => s + i.qty, 1),
-                itemsList: [...cart],
-                date: todayStr
-            });
-
-            cart = [];
-            appliedDiscountRate = 0;
-            localStorage.removeItem('mininize_cart');
-            document.getElementById('cart-badge').innerText = '0';
-            document.getElementById('bakong-payment-modal').classList.add('hidden');
-            alert('Bakong Payment Verified Successfully! ✨ Order placed.');
-        }
-
-        window.handleEmailLogin = async function() {
-            const email = document.getElementById('login-email').value.trim();
-            const password = document.getElementById('login-password').value;
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                alert('Signed in successfully! ✨');
-            } catch (err) { alert('Login Failed: ' + err.message); }
-        };
-
-        window.handleEmailSignUp = async function() {
-            const name = document.getElementById('signup-name').value;
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            try {
-                const cred = await createUserWithEmailAndPassword(auth, email, password);
-                const generatedUserId = `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`;
-                await setDoc(doc(db, "users", cred.user.uid), {
-                    uid: cred.user.uid, customId: generatedUserId, name: name || email.split('@')[0], email,
-                    phone: "+855 00 000 000",
-                    addressesList: [
-                        { id: 'addr_1', label: 'Home', fullName: name || 'Shopper', phone: '+855 12 345 678', street: '123 Main Street', city: 'Phnom Penh', state: 'PP', zip: '12000', isDefault: true }
-                    ],
-                    role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer",
-                    authProvider: "email", createdAt: new Date().toISOString()
-                });
-                alert('Account saved successfully! 🎉');
-            } catch (err) { alert('Sign Up Failed: ' + err.message); }
-        };
-
-        window.handleTelegramSignIn = async function() {
-            try {
-                const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-                const tgId = tgUser ? `tg_${tgUser.id}` : "tg_demo";
-                const tgName = tgUser ? `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() : "Telegram Shopper";
-                
-                const userRef = doc(db, "users", tgId);
-                const userSnap = await getDoc(userRef);
-
-                if (!userSnap.exists()) {
-                    alert('No existing account found with Telegram!\n\nPlease sign up with your Email first before logging in.');
-                    switchAuthTab('signup');
-                    return;
-                }
-
-                const userData = userSnap.data();
-                alert(`Welcome back, ${userData.name || tgName}! ✨`);
-                document.getElementById('session-user-badge').innerText = userData.name || tgName;
-                document.getElementById('profile-auth-box').classList.add('hidden');
-                document.getElementById('customer-dashboard-view').classList.remove('hidden');
-                document.getElementById('cust-profile-name').innerText = userData.name || tgName;
-                document.getElementById('cust-profile-handle').innerText = `@${tgUser?.username || tgId}`;
-                document.getElementById('cust-profile-id-display').innerText = `ID: ${userData.customId || 'USR-DEMO'}`;
-            } catch (err) { alert('Telegram Sign In Error: ' + err.message); }
-        };
-
-        window.handleSignOut = async function() {
-            try {
-                await signOut(auth);
-                window.currentUser = null;
-                window.currentUserData = null;
-                document.getElementById('session-user-badge').innerText = 'Guest Mode';
-                document.getElementById('profile-auth-box').classList.remove('hidden');
-                document.getElementById('customer-dashboard-view').classList.add('hidden');
-                exitAdminMode();
-                switchCustomerTab('shop');
-                alert('Signed out successfully.');
-            } catch (err) { alert('Sign Out Error: ' + err.message); }
-        };
-
-        window.saveAdminProduct = async function() {
-            const prodId = document.getElementById('prod-id').value;
-            const name = document.getElementById('prod-name').value;
-            const sku = document.getElementById('prod-sku').value.trim() || `SKU-${Math.floor(1000 + Math.random() * 9000)}`;
-            const category = document.getElementById('prod-category').value;
-            const price = parseFloat(document.getElementById('prod-price').value);
-            const stock = parseInt(document.getElementById('prod-stock').value);
-            const reorder = parseInt(document.getElementById('prod-reorder').value) || 10;
-            const image = document.getElementById('prod-image').value.trim() || 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
-
-            if (!name || isNaN(price)) return alert('Please enter valid product details.');
-
-            const productData = {
-                name, sku, category, price,
-                stock: isNaN(stock) ? 10 : stock,
-                reorderPt: isNaN(reorder) ? 10 : reorder,
-                image, isPublished: true, updatedAt: new Date().toISOString()
-            };
-
-            if (prodId) {
-                await updateDoc(doc(db, "products", prodId), productData);
-                alert('Product updated successfully! ✨');
-            } else {
-                productData.createdAt = new Date().toISOString();
-                productData.reviews = [];
-                await addDoc(collection(db, "products"), productData);
-                postToTelegramChannel(image, `<b>✨ NEW ARRIVAL AT MININIZE STUDIO! ✨</b>\n\n<b>${name}</b>\n🏷️ Category: ${category}\n🔢 SKU: <code>${sku}</code>\n💰 Price: <b>$${price.toFixed(2)}</b>\n📦 Stock: ${productData.stock}\n\n🛍️ <i>Shop now in our Telegram Mini App!</i>`);
-                alert('New product saved & posted to Telegram! 🎉');
-            }
-            closeAdminProductModal();
-        };
-
-        window.deleteProduct = async function(id) {
-            if (confirm("Delete this product?")) {
-                await deleteDoc(doc(db, "products", id));
-                alert('Product deleted.');
-            }
-        };
-
-        window.saveAdminBannerSettings = async function() {
-            const bannerId = document.getElementById('cust-promo-id').value;
-            const tag = document.getElementById('cust-promo-tag').value || "Special Offer";
-            const title = document.getElementById('cust-promo-title').value || "Get 30% OFF Your Order!";
-            const desc = document.getElementById('cust-promo-desc').value || "Use coupon during checkout.";
-            const code = document.getElementById('cust-promo-code').value || "MINI10";
-
-            let docId = bannerId;
-            const bannerData = { tag, title, desc, code, updatedAt: new Date().toISOString() };
-            if (docId) {
-                await updateDoc(doc(db, "banners", docId), bannerData);
-            } else {
-                const addedRef = await addDoc(collection(db, "banners"), bannerData);
-                docId = addedRef.id;
-            }
-            await setDoc(doc(db, "settings", "banner"), { ...bannerData, bannerId: docId, active: true });
-            postToTelegramChannel("https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80", `<b>🎉 NEW PROMOTION! 🎉</b>\n\n<b>${title}</b> (${tag})\n${desc}\n\n🎟️ Code: <b>${code}</b>`);
-            clearBannerForm();
-            alert("Banner saved & published live! ✨ It will now instantly pop up for store visitors.");
-        };
-
-        window.submitProductReview = async function() {
-            if (!currentSelectedProdId) return;
-            const reviewText = document.getElementById('new-review-text').value.trim();
-            if (!reviewText) return alert('Please enter review text.');
-
-            const prodRef = doc(db, "products", currentSelectedProdId);
-            const prodSnap = await getDoc(prodRef);
-            if (prodSnap.exists()) {
-                const p = prodSnap.data();
-                const reviews = p.reviews || [];
-                const newRev = {
-                    author: window.currentUserData?.name || "Anonymous",
-                    rating: currentSelectedStarRating,
-                    text: reviewText,
-                    date: new Date().toISOString().split('T')[0]
-                };
-                reviews.push(newRev);
-                await updateDoc(prodRef, { reviews });
-                document.getElementById('new-review-text').value = '';
-                openProductDetailModal(currentSelectedProdId);
-                alert('Thank you for your review! ⭐');
-            }
-        };
-
-        async function seedFullCatalog(db) {
-            const catalog = [
-                { name: 'Pearl Butterfly Hairpin', sku: 'HRP-001', category: 'Hairpins', price: 12.50, stock: 15, reorderPt: 5, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80', reviews: [{author: 'Sophea', rating: 5, text: 'Beautiful quality!', date: '2026-07-01'}] },
-                { name: 'Matte Pink Lipstick', sku: 'COS-001', category: 'Cosmetics', price: 18.90, stock: 3, reorderPt: 8, image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&q=80', reviews: [] },
-                { name: 'Dainty Butterfly Choker', sku: 'ACC-001', category: 'Accessories', price: 15.00, stock: 4, reorderPt: 10, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80', reviews: [] },
-                { name: 'Plush Crossbody Bag', sku: 'BAG-001', category: 'Bags', price: 24.99, stock: 12, reorderPt: 5, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80', reviews: [] }
-            ];
-            for (let item of catalog) await addDoc(collection(db, "products"), { ...item, isPublished: true });
-        }
-    </script>
-
-    <!-- DATABASE-SYNCED DELIVERY ADDRESSES & GEOLOCATION SCRIPT -->
-    <script>
-        const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
-        window.products = []; window.orders = []; window.banners = [];
-        let cart = JSON.parse(localStorage.getItem('mininize_cart') || '[]');
-        let wishlist = []; let activeCategory = 'All'; let currentOrderStatusFilter = 'All'; let lowStockFilterActive = false;
-        
-        let appliedDiscountRate = 0;
-        let currentSelectedProdId = null;
-        let currentSelectedStarRating = 5;
-
-        document.addEventListener("DOMContentLoaded", () => {
-            const badge = document.getElementById('cart-badge');
-            if (badge) badge.innerText = cart.reduce((s, i) => s + i.qty, 0);
-        });
-
-        function closePromoPopup() {
-            if (popupTimerInterval) clearInterval(popupTimerInterval);
-            document.getElementById('promo-popup').classList.add('hidden');
-        }
-
-        function clearBannerForm() {
-            document.getElementById('cust-promo-id').value = '';
-            document.getElementById('cust-promo-tag').value = '';
-            document.getElementById('cust-promo-title').value = '';
-            document.getElementById('cust-promo-desc').value = '';
-            document.getElementById('cust-promo-code').value = '';
-        }
-
-        function switchAuthTab(mode) {
-            ['login', 'signup'].forEach(m => {
-                document.getElementById(`auth-form-${m}`).classList.add('hidden');
-                document.getElementById(`authtab-${m}`).className = 'flex-1 py-1 text-gray-500 rounded-lg';
-            });
-            document.getElementById(`auth-form-${mode}`).classList.remove('hidden');
-            document.getElementById(`authtab-${mode}`).className = 'flex-1 py-1 bg-white text-gray-900 rounded-lg shadow-xs';
-        }
-
-        function switchCustomerTab(tab) {
-            ['shop', 'wishlist', 'profile'].forEach(t => {
-                document.getElementById(`page-${t}`).classList.add('hidden');
-                document.getElementById(`nav-btn-${t}`).className = 'flex flex-col items-center text-gray-400 font-medium';
-            });
-            document.getElementById(`page-${tab}`).classList.remove('hidden');
-            document.getElementById(`nav-btn-${tab}`).className = 'flex flex-col items-center text-[#b08b45] font-bold';
-            if (tab === 'shop') renderProducts();
-            if (tab === 'wishlist') renderWishlist();
-        }
-
-        function applyPromoCode() {
-            const codeInput = document.getElementById('cart-promo-input').value.trim().toUpperCase();
-            const validCode = (window.activeBannerCode || "MINI10").toUpperCase();
-
-            if (codeInput === validCode || codeInput === "MINI10") {
-                appliedDiscountRate = 0.30;
-                document.getElementById('applied-code-name').innerText = codeInput;
-                document.getElementById('promo-applied-badge').classList.remove('hidden');
-                updateCartTotals();
-                alert(`Promo code ${codeInput} applied! 30% discount added. ✨`);
-            } else {
-                alert('Invalid promotional coupon code.');
-            }
-        }
-
-        function removePromoCode() {
-            appliedDiscountRate = 0;
-            document.getElementById('promo-applied-badge').classList.add('hidden');
-            document.getElementById('cart-promo-input').value = '';
-            updateCartTotals();
-        }
-
-        function updateCartTotals() {
-            const sub = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-            const discount = appliedDiscountRate ? sub * appliedDiscountRate : 0;
-            const total = Math.max(0, sub - discount);
-
-            document.getElementById('cart-subtotal').innerText = `$${sub.toFixed(2)}`;
-            if (discount > 0) {
-                document.getElementById('cart-discount-row').classList.remove('hidden');
-                document.getElementById('cart-discount').innerText = `-$${discount.toFixed(2)}`;
-            } else {
-                document.getElementById('cart-discount-row').classList.add('hidden');
-            }
-            document.getElementById('cart-total').innerText = `$${total.toFixed(2)}`;
-        }
-
-        function setReviewRating(rating) {
-            currentSelectedStarRating = rating;
-            const stars = document.getElementById('star-rating-select').children;
-            for (let i = 0; i < 5; i++) {
-                if (i < rating) stars[i].className = "fa-solid fa-star cursor-pointer text-amber-400";
-                else stars[i].className = "fa-regular fa-star cursor-pointer text-gray-300";
-            }
-        }
-
-        function openProductDetailModal(id) {
-            const p = window.products.find(item => item.id === id);
-            if (!p) return;
-            currentSelectedProdId = id;
-
-            document.getElementById('view-prod-image').src = p.image || FALLBACK_IMAGE;
-            document.getElementById('view-prod-category').innerText = p.category || 'Accessories';
-            document.getElementById('view-prod-name').innerText = p.name || 'Product';
-            document.getElementById('view-prod-price').innerText = `$${Number(p.price || 0).toFixed(2)}`;
-            document.getElementById('view-prod-sku').innerText = `SKU: ${p.sku || 'N/A'}`;
-            document.getElementById('view-prod-stock').innerText = `${p.stock ?? 10} units in stock`;
-
-            const reviews = p.reviews || [];
-            const avgRating = reviews.length > 0 ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1) : "5.0";
-            document.getElementById('prod-avg-rating').innerText = `⭐ ${avgRating} / 5.0 (${reviews.length})`;
-
-            const listEl = document.getElementById('prod-reviews-list');
-            listEl.innerHTML = reviews.length === 0 ? `<p class="text-gray-400 text-[10px] py-1">No reviews yet. Be the first!</p>` :
-                reviews.map(r => `
-                    <div class="bg-gray-50 p-2 rounded-xl border border-gray-100">
-                        <div class="flex justify-between items-center text-[9px]">
-                            <b class="text-gray-800">${r.author}</b>
-                            <span class="text-amber-400">★ ${r.rating}.0</span>
-                        </div>
-                        <p class="text-gray-600 text-[10px] mt-0.5">${r.text}</p>
-                    </div>
-                `).join('');
-
-            setReviewRating(5);
-            const addBtn = document.getElementById('view-prod-add-btn');
-            addBtn.onclick = function() { addToCart(p.id); closeProductDetailModal(); };
-            document.getElementById('product-detail-modal').classList.remove('hidden');
-        }
-
-        function closeProductDetailModal() { document.getElementById('product-detail-modal').classList.add('hidden'); }
-
-        // PROFILE SECTION MODALS
-        window.openProfileSection = function(section) {
-            const modal = document.getElementById('profile-sub-modal');
-            const titleEl = document.getElementById('profile-modal-title');
-            const bodyEl = document.getElementById('profile-modal-body');
-            modal.classList.remove('hidden');
-
-            const uData = window.currentUserData || {};
-
-            if (section === 'personal') {
-                titleEl.innerText = "Personal Information (Database Sync)";
-                bodyEl.innerHTML = `
-                    <div class="space-y-3">
-                        <div>
-                            <label class="text-[10px] font-bold text-gray-500 uppercase">Full Name</label>
-                            <input type="text" id="prof-edit-name" value="${uData.name || ''}" placeholder="Enter your full name" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-gray-500 uppercase">Phone Number</label>
-                            <input type="text" id="prof-edit-phone" value="${uData.phone || ''}" placeholder="+855 00 000 000" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
-                        </div>
-                        <button onclick="savePersonalProfileToDB()" class="w-full bg-[#b08b45] text-white font-bold py-2.5 min-h-[44px] rounded-xl mt-2 shadow-xs">Save to Database ✨</button>
-                    </div>
-                `;
-            } else if (section === 'orders') {
-                titleEl.innerText = "My Orders History";
-                const myOrders = window.orders.filter(o => window.currentUser && o.userId === window.currentUser.uid);
-                
-                bodyEl.innerHTML = myOrders.length === 0 ? `
-                    <div class="text-center py-6 space-y-2">
-                        <div class="w-12 h-12 bg-gray-50 text-gray-300 rounded-full flex items-center justify-center mx-auto text-xl"><i class="fa-solid fa-box-open"></i></div>
-                        <p class="text-xs text-gray-500 font-medium">No order history found.</p>
-                        <button onclick="closeProfileSubModal(); switchCustomerTab('shop');" class="bg-amber-50 text-[#b08b45] font-bold text-xs px-4 py-2 rounded-xl border border-amber-100">Explore Store</button>
-                    </div>
-                ` : myOrders.map(o => {
-                    let stBg = o.status === 'Shipped' ? 'bg-emerald-50 text-emerald-600' : o.status === 'Cancelled' ? 'bg-pink-50 text-pink-600' : 'bg-blue-50 text-blue-600';
-                    return `
-                        <div class="bg-gray-50 p-3 rounded-2xl border border-gray-100 flex justify-between items-center text-xs">
-                            <div>
-                                <span class="font-bold text-gray-900">${o.orderNum}</span>
-                                <p class="text-[10px] text-gray-400 mt-0.5">${o.date} • <span class="px-2 py-0.5 rounded-full font-bold text-[9px] ${stBg}">${o.status}</span></p>
-                            </div>
-                            <span class="font-bold text-[#b08b45]">$${Number(o.total || 0).toFixed(2)}</span>
-                        </div>
-                    `;
-                }).join('');
-            } else if (section === 'addresses') {
-                renderDeliveryAddressesList();
-            } else if (section === 'favorites') {
-                titleEl.innerText = "My Favorites";
-                let favs = window.products.filter(p => wishlist.includes(p.id));
-                bodyEl.innerHTML = favs.length === 0 ? `
-                    <div class="text-center py-6 space-y-2">
-                        <div class="w-12 h-12 bg-pink-50 text-pink-300 rounded-full flex items-center justify-center mx-auto text-xl"><i class="fa-solid fa-heart"></i></div>
-                        <p class="text-xs text-gray-500 font-medium">Your wishlist is currently empty.</p>
-                        <button onclick="closeProfileSubModal(); switchCustomerTab('shop');" class="bg-amber-50 text-[#b08b45] font-bold text-xs px-4 py-2 rounded-xl border border-amber-100">Browse Catalog</button>
-                    </div>
-                ` : favs.map(p => `
-                    <div class="flex justify-between items-center bg-gray-50 p-2.5 rounded-2xl border border-gray-100">
-                        <div class="flex items-center space-x-2">
-                            <img src="${p.image}" class="w-8 h-8 rounded-lg object-cover">
-                            <span class="font-bold text-gray-800">${p.name}</span>
-                        </div>
-                        <b class="text-[#b08b45]">$${Number(p.price || 0).toFixed(2)}</b>
-                    </div>
-                `).join('');
-            } else if (section === 'payments') {
-                titleEl.innerText = "Payment Methods";
-                bodyEl.innerHTML = `
-                    <div class="bg-red-50/60 p-3.5 rounded-2xl border border-red-100 space-y-1.5">
-                        <span class="bg-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded uppercase">Default Gateway</span>
-                        <h4 class="font-bold text-gray-900 text-xs">Bakong KHQR Payment</h4>
-                        <p class="text-[10px] text-gray-500">Fully integrated real-time dynamic QR payment gateway linked to Mininize Studio.</p>
-                    </div>
-                `;
-            } else if (section === 'notifications') {
-                titleEl.innerText = "Notifications";
-                bodyEl.innerHTML = `
-                    <div class="space-y-2 text-xs">
-                        <label class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border border-gray-100 cursor-pointer">
-                            <span class="font-medium text-gray-700">Order Updates & Status</span>
-                            <input type="checkbox" checked class="accent-[#b08b45] w-4 h-4">
-                        </label>
-                        <label class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border border-gray-100 cursor-pointer">
-                            <span class="font-medium text-gray-700">Promotions & Discount Alerts</span>
-                            <input type="checkbox" checked class="accent-[#b08b45] w-4 h-4">
-                        </label>
-                        <button onclick="alert('Preferences updated!'); closeProfileSubModal();" class="w-full bg-[#b08b45] text-white py-2.5 font-bold rounded-xl mt-2">Save Preferences</button>
-                    </div>
-                `;
-            } else if (section === 'support') {
-                titleEl.innerText = "Help & Support";
-                bodyEl.innerHTML = `
-                    <div class="space-y-3 text-center">
-                        <p class="text-gray-500 text-xs">Have questions regarding your orders or product availability?</p>
-                        <a href="https://t.me/mininize" target="_blank" class="block w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-3 rounded-xl shadow-xs"><i class="fa-brands fa-telegram mr-1.5"></i> Chat on Telegram</a>
-                    </div>
-                `;
-            } else if (section === 'settings') {
-                titleEl.innerText = "Account Settings";
-                bodyEl.innerHTML = `
-                    <div class="space-y-3 text-xs">
-                        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 space-y-1">
-                            <p class="text-gray-400 text-[10px]">Logged in as:</p>
-                            <p class="font-bold text-gray-800">${window.currentUser ? window.currentUser.email : 'Guest Mode'}</p>
-                            <p class="font-mono text-[10px] text-[#b08b45]">User ID: ${window.currentUserData?.customId || 'USR-000000'}</p>
-                        </div>
-                        <button onclick="handleSignOut(); closeProfileSubModal();" class="w-full bg-red-50 text-red-600 font-bold py-2.5 rounded-xl border border-red-100">Sign Out</button>
-                    </div>
-                `;
-            }
-        };
-
-        // RENDER DELIVERY ADDRESSES LIST
-        window.renderDeliveryAddressesList = function() {
-            const titleEl = document.getElementById('profile-modal-title');
-            const bodyEl = document.getElementById('profile-modal-body');
-            titleEl.innerHTML = `<div class="flex items-center justify-between"><span class="font-serif italic font-bold text-sm text-gray-900">Delivery Addresses</span><button onclick="openAddressFormModal()" class="bg-[#b08b45] text-white text-[11px] font-bold px-3 py-1.5 rounded-xl shadow-xs flex items-center space-x-1"><i class="fa-solid fa-plus text-[10px]"></i><span>Add Address</span></button></div>`;
-            
-            const uData = window.currentUserData || {};
-            const list = uData.addressesList || [];
-
-            bodyEl.innerHTML = list.length === 0 ? `
-                <div class="text-center py-8 space-y-2">
-                    <div class="w-12 h-12 bg-amber-50 text-[#b08b45] rounded-full flex items-center justify-center mx-auto text-xl"><i class="fa-solid fa-location-dot"></i></div>
-                    <p class="text-xs text-gray-500 font-medium">No saved delivery addresses.</p>
-                    <button onclick="openAddressFormModal()" class="bg-[#b08b45] text-white font-bold text-xs px-4 py-2 rounded-xl">Add New Address</button>
-                </div>
-            ` : list.map(addr => `
-                <div class="bg-white p-3.5 rounded-2xl border ${addr.isDefault ? 'border-[#b08b45] ring-1 ring-[#b08b45]/30' : 'border-gray-100'} shadow-xs space-y-2 relative">
-                    <div class="flex items-start justify-between">
-                        <div class="flex items-center space-x-2">
-                            <input type="radio" ${addr.isDefault ? 'checked' : ''} onclick="setDefaultAddress('${addr.id}')" class="accent-[#b08b45] w-4 h-4 cursor-pointer">
-                            <span class="font-bold text-gray-900 text-xs">${addr.label || 'Home'}</span>
-                        </div>
-                        <div class="flex items-center space-x-1">
-                            ${addr.isDefault ? '<span class="bg-amber-50 text-[#b08b45] text-[9px] font-bold px-2 py-0.5 rounded uppercase">Default</span>' : ''}
-                            <button onclick="openAddressFormModal('${addr.id}')" class="text-gray-400 hover:text-gray-600 p-1.5"><i class="fa-solid fa-pen text-xs"></i></button>
-                            <button onclick="deleteAddressFromDB('${addr.id}')" class="text-red-400 hover:text-red-600 p-1.5"><i class="fa-solid fa-trash-can text-xs"></i></button>
-                        </div>
-                    </div>
-                    <div class="pl-6 space-y-0.5 text-[11px] text-gray-600">
-                        <p class="font-medium text-gray-800">${addr.fullName} <span class="text-gray-400 font-normal">(${addr.phone})</span></p>
-                        <p>${addr.street}</p>
-                        <p>${addr.city}, ${addr.state} ${addr.zip}</p>
-                    </div>
-                </div>
-            `).join('');
-        };
-
-        // OPEN ADD / EDIT ADDRESS FORM WITH GEOLOCATION CURRENT LOCATION OPTION
-        window.openAddressFormModal = function(addrId = null) {
-            const titleEl = document.getElementById('profile-modal-title');
-            const bodyEl = document.getElementById('profile-modal-body');
-            
-            const uData = window.currentUserData || {};
-            const list = uData.addressesList || [];
-            const existing = addrId ? list.find(a => a.id === addrId) : null;
-
-            titleEl.innerText = existing ? "Edit Delivery Address" : "Add Delivery Address";
-
-            bodyEl.innerHTML = `
-                <div class="space-y-3 text-xs">
-                    <!-- USE CURRENT LOCATION BUTTON -->
-                    <button type="button" id="geo-btn" onclick="fetchCurrentGPSLocation()" class="w-full bg-amber-50 hover:bg-amber-100 text-[#b08b45] border border-amber-200 font-bold py-2.5 rounded-xl flex items-center justify-center space-x-2 transition-colors min-h-[44px]">
-                        <i class="fa-solid fa-location-crosshairs text-sm"></i>
-                        <span id="geo-btn-text">Use My Current Location</span>
-                    </button>
-
-                    <input type="hidden" id="addr-form-id" value="${existing ? existing.id : ''}">
-                    <div>
-                        <label class="text-[10px] font-bold text-gray-500 uppercase">Address Label *</label>
-                        <input type="text" id="addr-label" value="${existing ? (existing.label || '') : 'Home'}" placeholder="e.g. Home, Office, Parents' House" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-bold text-gray-500 uppercase">Full Name *</label>
-                        <input type="text" id="addr-fullname" value="${existing ? (existing.fullName || '') : (uData.name || '')}" placeholder="Enter your full name" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-bold text-gray-500 uppercase">Phone Number *</label>
-                        <input type="text" id="addr-phone" value="${existing ? (existing.phone || '') : (uData.phone || '')}" placeholder="+855 12 345 4567" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-bold text-gray-500 uppercase">Address / Street *</label>
-                        <input type="text" id="addr-street" value="${existing ? (existing.street || '') : ''}" placeholder="Street address, building, apartment" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-bold text-gray-500 uppercase">City *</label>
-                        <input type="text" id="addr-city" value="${existing ? (existing.city || '') : 'Phnom Penh'}" placeholder="City" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="text-[10px] font-bold text-gray-500 uppercase">State / District *</label>
-                            <input type="text" id="addr-state" value="${existing ? (existing.state || '') : 'Phnom Penh'}" placeholder="State / Province" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-gray-500 uppercase">ZIP Code *</label>
-                            <input type="text" id="addr-zip" value="${existing ? (existing.zip || '') : '12000'}" placeholder="ZIP Code" class="w-full border border-gray-200 rounded-xl px-3 py-2 mt-0.5">
-                        </div>
-                    </div>
-                    <label class="flex items-center space-x-2 cursor-pointer pt-1">
-                        <input type="checkbox" id="addr-isdefault" ${existing && existing.isDefault ? 'checked' : (!existing && list.length === 0 ? 'checked' : '')} class="accent-[#b08b45] w-4 h-4">
-                        <span class="font-medium text-gray-700">Set as default address</span>
-                    </label>
-                    <div class="flex space-x-2 pt-2">
-                        <button onclick="saveAddressToDB()" class="flex-1 bg-[#b08b45] text-white font-bold py-2.5 min-h-[44px] rounded-xl shadow-xs">Save Address ✨</button>
-                        <button onclick="openProfileSection('addresses')" class="bg-gray-100 text-gray-600 font-bold px-4 py-2.5 rounded-xl">Back</button>
-                    </div>
-                </div>
-            `;
-        };
-
-        // FETCH GPS LOCATION & REVERSE GEOCODE TO ADDRESS FIELDS
+        // GEOLOCATION ENGINE WITH TIMEOUT & ERROR FALLBACK
         window.fetchCurrentGPSLocation = function() {
             const btnText = document.getElementById('geo-btn-text');
             if (!navigator.geolocation) {
-                alert('Geolocation is not supported by your browser.');
+                alert('Geolocation is not supported on this browser.');
                 return;
             }
 
@@ -1228,455 +245,34 @@
                 const lon = position.coords.longitude;
 
                 try {
-                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`);
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s timeout
+
+                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`, {
+                        signal: controller.signal,
+                        headers: { 'User-Agent': 'MininizeStudioApp/1.0' }
+                    });
+                    clearTimeout(timeoutId);
                     const data = await res.json();
 
                     if (data && data.address) {
                         const addr = data.address;
-                        const streetName = addr.road || addr.suburb || addr.neighbourhood || addr.amenity || 'Current Location';
-                        const city = addr.city || addr.town || addr.municipality || 'Phnom Penh';
-                        const state = addr.state || addr.region || 'Phnom Penh';
-                        const zip = addr.postcode || '12000';
-
+                        const streetName = addr.road || addr.suburb || addr.neighbourhood || 'Current Location';
                         document.getElementById('addr-street').value = `${streetName} (GPS: ${lat.toFixed(4)}, ${lon.toFixed(4)})`;
-                        document.getElementById('addr-city').value = city;
-                        document.getElementById('addr-state').value = state;
-                        document.getElementById('addr-zip').value = zip;
-
                         btnText.innerText = 'Location Detected! ✨';
                     } else {
                         document.getElementById('addr-street').value = `GPS Location (${lat.toFixed(4)}, ${lon.toFixed(4)})`;
                         btnText.innerText = 'Coordinates Applied ✨';
                     }
                 } catch (err) {
+                    // Graceful fallback if geocoding times out or rate limits
                     document.getElementById('addr-street').value = `GPS Location (${lat.toFixed(4)}, ${lon.toFixed(4)})`;
                     btnText.innerText = 'Coordinates Applied ✨';
                 }
             }, (error) => {
                 alert('Unable to retrieve location: ' + error.message);
                 btnText.innerText = 'Use My Current Location';
-            }, { enableHighAccuracy: true, timeout: 10000 });
-        };
-
-        window.saveAddressToDB = async function() {
-            const addrId = document.getElementById('addr-form-id').value;
-            const label = document.getElementById('addr-label').value.trim() || 'Home';
-            const fullName = document.getElementById('addr-fullname').value.trim();
-            const phone = document.getElementById('addr-phone').value.trim();
-            const street = document.getElementById('addr-street').value.trim();
-            const city = document.getElementById('addr-city').value.trim();
-            const state = document.getElementById('addr-state').value.trim();
-            const zip = document.getElementById('addr-zip').value.trim();
-            let isDefault = document.getElementById('addr-isdefault').checked;
-
-            if (!fullName || !phone || !street || !city) return alert('Please fill in all required address fields.');
-
-            if (window.currentUser) {
-                const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
-                let list = window.currentUserData.addressesList || [];
-
-                if (isDefault) {
-                    list.forEach(a => a.isDefault = false);
-                }
-
-                if (addrId) {
-                    let idx = list.findIndex(a => a.id === addrId);
-                    if (idx !== -1) {
-                        list[idx] = { id: addrId, label, fullName, phone, street, city, state, zip, isDefault };
-                    }
-                } else {
-                    const newId = `addr_${Date.now()}`;
-                    if (list.length === 0) isDefault = true;
-                    list.push({ id: newId, label, fullName, phone, street, city, state, zip, isDefault });
-                }
-
-                window.currentUserData.addressesList = list;
-                window.currentUserData.address = street + ', ' + city;
-
-                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), {
-                    addressesList: list,
-                    address: street + ', ' + city
-                });
-
-                alert('Delivery address successfully saved to database! ✨');
-                renderDeliveryAddressesList();
-            }
-        };
-
-        window.setDefaultAddress = async function(addrId) {
-            if (window.currentUser) {
-                const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
-                let list = window.currentUserData.addressesList || [];
-                list.forEach(a => { a.isDefault = (a.id === addrId); });
-
-                window.currentUserData.addressesList = list;
-                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { addressesList: list });
-                renderDeliveryAddressesList();
-            }
-        };
-
-        window.deleteAddressFromDB = async function(addrId) {
-            if (window.currentUser && confirm("Delete this delivery address?")) {
-                const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
-                let list = window.currentUserData.addressesList || [];
-                list = list.filter(a => a.id !== addrId);
-                if (list.length > 0 && !list.some(a => a.isDefault)) list[0].isDefault = true;
-
-                window.currentUserData.addressesList = list;
-                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { addressesList: list });
-                renderDeliveryAddressesList();
-            }
-        };
-
-        window.closeProfileSubModal = function() {
-            document.getElementById('profile-sub-modal').classList.add('hidden');
-        };
-
-        window.savePersonalProfileToDB = async function() {
-            const newName = document.getElementById('prof-edit-name').value;
-            const newPhone = document.getElementById('prof-edit-phone').value;
-            if (window.currentUser) {
-                const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
-                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { name: newName, phone: newPhone });
-                window.currentUserData.name = newName;
-                window.currentUserData.phone = newPhone;
-                document.getElementById('cust-profile-name').innerText = newName;
-                alert('Personal profile updated & saved to database! ✨');
-                closeProfileSubModal();
-            }
-        };
-
-        window.openProfileEditModal = function() {
-            openProfileSection('personal');
-        };
-
-        window.renderBannerHistory = function() {
-            const listEl = document.getElementById('admin-banner-history-list');
-            if (!listEl) return;
-            listEl.innerHTML = window.banners.length === 0 ? `<p class="text-gray-400 text-[11px]">No banner history.</p>` :
-                window.banners.map(b => {
-                    const isActive = window.activeBannerId === b.id;
-                    return `
-                        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 space-y-1.5 text-xs">
-                            <div class="flex justify-between items-center">
-                                <span class="font-bold text-gray-900">${b.title} <span class="text-[10px] text-[#b08b45] font-normal">(${b.tag})</span></span>
-                                ${isActive ? `<span class="bg-emerald-100 text-emerald-700 text-[9px] font-bold px-2 py-0.5 rounded-full">Active Live</span>` : ''}
-                            </div>
-                            <p class="text-[10px] text-gray-500">${b.desc} • Code: <b class="text-gray-800">${b.code}</b></p>
-                            <div class="flex justify-between items-center pt-1 border-t border-gray-100">
-                                <span class="text-[9px] text-gray-400">${b.updatedAt ? new Date(b.updatedAt).toLocaleDateString() : ''}</span>
-                                <div class="space-x-1 text-[10px]">
-                                    <button onclick="renewBanner('${b.id}')" class="bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded font-bold">Publish Live</button>
-                                    <button onclick="editBanner('${b.id}')" class="bg-white border border-gray-200 text-gray-700 px-2 py-0.5 rounded">Edit</button>
-                                    <button onclick="deleteBannerHistory('${b.id}')" class="bg-red-50 text-red-600 px-2 py-0.5 rounded">Delete</button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-        };
-
-        function renderProducts() {
-            const grid = document.getElementById('product-grid');
-            if (!grid) return;
-            const searchVal = document.getElementById('search-input').value.toLowerCase();
-            let filtered = window.products.filter(p => (activeCategory === 'All' || p.category === activeCategory) && p.name.toLowerCase().includes(searchVal));
-            grid.innerHTML = filtered.map(p => `
-                <div class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs flex flex-col justify-between hover:border-amber-500/30 transition-all">
-                    <div onclick="openProductDetailModal('${p.id}')" class="cursor-pointer">
-                        <div class="relative rounded-xl overflow-hidden aspect-square bg-gray-50 mb-2">
-                            <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full h-full object-cover">
-                            <button onclick="event.stopPropagation(); toggleWishlist('${p.id}')" class="absolute top-2 right-2 w-6 h-6 bg-white/90 rounded-full flex items-center justify-center text-[10px] ${wishlist.includes(p.id) ? 'text-red-500' : 'text-gray-400'}"><i class="fa-solid fa-heart"></i></button>
-                        </div>
-                        <h4 class="font-serif italic font-bold text-xs text-gray-900 truncate">${p.name}</h4>
-                        <p class="text-[10px] text-gray-400">Stock: ${p.stock ?? 10}</p>
-                    </div>
-                    <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-50">
-                        <span class="font-bold text-xs text-[#b08b45]">$${Number(p.price || 0).toFixed(2)}</span>
-                        <button onclick="event.stopPropagation(); addToCart('${p.id}')" class="bg-[#b08b45] text-white px-3 py-1.5 rounded-xl text-xs font-bold active:scale-95 transition-transform">+</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function filterCategory(cat) { activeCategory = cat; renderProducts(); }
-        function filterProducts() { renderProducts(); }
-
-        function toggleWishlist(id) {
-            wishlist = wishlist.includes(id) ? wishlist.filter(i => i !== id) : [...wishlist, id];
-            renderProducts();
-        }
-
-        function renderWishlist() {
-            let favs = window.products.filter(p => wishlist.includes(p.id));
-            document.getElementById('wishlist-grid').innerHTML = favs.length === 0 ? 
-                `<p class="text-xs text-gray-400 col-span-2 text-center py-6">No saved items.</p>` :
-                favs.map(p => `
-                    <div onclick="openProductDetailModal('${p.id}')" class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs flex flex-col justify-between cursor-pointer">
-                        <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full aspect-square object-cover rounded-xl mb-2">
-                        <h4 class="font-serif italic font-bold text-xs text-gray-900 truncate">${p.name}</h4>
-                        <button onclick="event.stopPropagation(); addToCart('${p.id}')" class="w-full bg-[#b08b45] text-white py-2 min-h-[40px] rounded-xl text-xs font-bold mt-2">Add to Bag</button>
-                    </div>
-                `).join('');
-        }
-
-        function addToCart(id) {
-            const prod = window.products.find(p => p.id === id);
-            const existing = cart.find(i => i.id === id);
-            if (existing) existing.qty += 1; else cart.push({ ...prod, qty: 1 });
-            localStorage.setItem('mininize_cart', JSON.stringify(cart));
-            document.getElementById('cart-badge').innerText = cart.reduce((s, i) => s + i.qty, 0);
-            alert('Item added to bag! 🛍️');
-        }
-
-        function openCartDrawer() {
-            document.getElementById('cart-items-container').innerHTML = cart.length === 0 ? 
-                `<p class="text-xs text-gray-400 text-center py-8">Your cart is empty</p>` :
-                cart.map((item, idx) => `
-                    <div class="flex justify-between items-center text-xs border-b border-gray-50 pb-2">
-                        <span><b>${item.name}</b> (x${item.qty})</span>
-                        <div class="flex items-center space-x-2">
-                            <span class="font-bold text-[#b08b45]">$${(item.price * item.qty).toFixed(2)}</span>
-                            <button onclick="cart.splice(${idx},1);localStorage.setItem('mininize_cart', JSON.stringify(cart));openCartDrawer();document.getElementById('cart-badge').innerText=cart.reduce((s,i)=>s+i.qty,0)" class="text-red-500"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-                `).join('');
-            updateCartTotals();
-            document.getElementById('cart-drawer').classList.remove('hidden');
-        }
-
-        function closeCartDrawer() { document.getElementById('cart-drawer').classList.add('hidden'); }
-        function openCheckoutModal() { 
-            closeCartDrawer(); 
-            const uData = window.currentUserData || {};
-            const defaultAddr = (uData.addressesList || []).find(a => a.isDefault) || (uData.addressesList || [])[0];
-            if (defaultAddr) {
-                document.getElementById('checkout-name').value = defaultAddr.fullName;
-                document.getElementById('checkout-phone').value = defaultAddr.phone;
-                document.getElementById('checkout-address').value = `${defaultAddr.street}, ${defaultAddr.city} ${defaultAddr.zip}`;
-            }
-            document.getElementById('checkout-modal').classList.remove('hidden'); 
-        }
-        function closeCheckoutModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
-
-        function openProductModal(id = null) {
-            if (id) {
-                const p = window.products.find(item => item.id === id);
-                if (!p) return;
-                document.getElementById('product-modal-title').innerText = "Edit Product";
-                document.getElementById('prod-id').value = p.id;
-                document.getElementById('prod-name').value = p.name || '';
-                document.getElementById('prod-sku').value = p.sku || '';
-                document.getElementById('prod-category').value = p.category || 'Hairpins';
-                document.getElementById('prod-price').value = p.price || '';
-                document.getElementById('prod-stock').value = p.stock || 10;
-                document.getElementById('prod-reorder').value = p.reorderPt || 10;
-                document.getElementById('prod-image').value = p.image || '';
-            } else {
-                document.getElementById('product-modal-title').innerText = "Add Product to Database";
-                document.getElementById('prod-id').value = '';
-                document.getElementById('prod-name').value = '';
-                document.getElementById('prod-sku').value = '';
-                document.getElementById('prod-category').value = 'Hairpins';
-                document.getElementById('prod-price').value = '';
-                document.getElementById('prod-stock').value = '10';
-                document.getElementById('prod-reorder').value = '10';
-                document.getElementById('prod-image').value = '';
-            }
-            document.getElementById('admin-product-modal').classList.remove('hidden');
-        }
-
-        function closeAdminProductModal() { document.getElementById('admin-product-modal').classList.add('hidden'); }
-
-        function enterAdminMode() {
-            document.getElementById('customer-view').classList.add('hidden');
-            document.getElementById('admin-view').classList.remove('hidden');
-            document.getElementById('customer-nav').classList.add('hidden');
-            document.getElementById('promo-popup').classList.add('hidden');
-            switchAdminNav('orders');
-        }
-
-        function exitAdminMode() {
-            document.getElementById('customer-view').classList.remove('hidden');
-            document.getElementById('admin-view').classList.add('hidden');
-            document.getElementById('customer-nav').classList.remove('hidden');
-            switchCustomerTab('shop');
-        }
-
-        function switchAdminNav(sec) {
-            ['orders', 'products', 'inventory', 'promotions'].forEach(s => {
-                document.getElementById(`admin-sec-${s}`).classList.add('hidden');
-                document.getElementById(`adtab-${s}`).className = 'px-4 py-2 border-b-2 border-transparent text-gray-500 font-semibold';
-            });
-            document.getElementById(`admin-sec-${sec}`).classList.remove('hidden');
-            document.getElementById(`adtab-${sec}`).className = 'px-4 py-2 border-b-2 border-[#b08b45] text-[#b08b45] font-semibold';
-            if (sec === 'orders') renderAdminOrders();
-            if (sec === 'products') renderAdminProducts();
-            if (sec === 'inventory') renderAdminInventory();
-            if (sec === 'promotions') renderBannerHistory();
-        }
-
-        function filterOrderStatus(status) {
-            currentOrderStatusFilter = status;
-            ['All', 'Processing', 'Shipped', 'Pending', 'Cancelled'].forEach(st => {
-                const btn = document.getElementById(`ordfilt-${st}`);
-                if (btn) {
-                    if (st === status) {
-                        btn.className = "px-3 py-1 bg-[#b08b45] text-white rounded-xl shadow-xs";
-                    } else {
-                        btn.className = "px-3 py-1 bg-white border border-gray-200 text-gray-600 rounded-xl";
-                    }
-                }
-            });
-            renderAdminOrders();
-        }
-
-        function filterLowStock() {
-            lowStockFilterActive = !lowStockFilterActive;
-            const btn = document.getElementById('low-stock-filter-btn');
-            if (lowStockFilterActive) {
-                btn.className = "border border-[#b08b45] bg-amber-50 px-3 py-1.5 rounded-xl text-xs text-[#b08b45] font-bold";
-            } else {
-                btn.className = "border border-gray-200 px-3 py-1.5 rounded-xl text-xs text-gray-600 font-medium hover:bg-gray-50";
-            }
-            renderAdminInventory();
-        }
-
-        window.renderAdminOrders = function() {
-            const tbody = document.getElementById('admin-orders-table-body');
-            if (!tbody) return;
-
-            const searchVal = document.getElementById('admin-search-orders').value.toLowerCase();
-            let filtered = window.orders.filter(o => {
-                const matchesSearch = (o.orderNum && o.orderNum.toLowerCase().includes(searchVal)) || 
-                                      (o.customer && o.customer.toLowerCase().includes(searchVal));
-                const matchesStatus = currentOrderStatusFilter === 'All' || o.status === currentOrderStatusFilter;
-                return matchesSearch && matchesStatus;
-            });
-
-            tbody.innerHTML = filtered.length === 0 ? `<tr><td colspan="7" class="p-6 text-center text-gray-400">No orders found matching criteria.</td></tr>` :
-                filtered.map(o => {
-                    let badgeColor = 'bg-blue-500 text-white';
-                    if (o.status === 'Shipped') badgeColor = 'bg-emerald-500 text-white';
-                    if (o.status === 'Pending') badgeColor = 'bg-amber-500 text-white';
-                    if (o.status === 'Cancelled') badgeColor = 'bg-pink-600 text-white';
-
-                    return `
-                        <tr class="hover:bg-gray-50/50 border-b border-gray-50">
-                            <td class="p-3 font-mono font-bold text-gray-900">${o.orderNum}</td>
-                            <td class="p-3 font-medium text-gray-800">${o.customer}</td>
-                            <td class="p-3 text-gray-500">${o.itemsCount || 1} items</td>
-                            <td class="p-3"><span class="${badgeColor} text-[10px] font-bold px-3 py-1 rounded-full">${o.status}</span></td>
-                            <td class="p-3 font-bold text-gray-900">$${Number(o.total || 0).toFixed(2)}</td>
-                            <td class="p-3 text-gray-500">${o.date || '2024-01-15'}</td>
-                            <td class="p-3 text-right space-x-2">
-                                <button onclick="toggleOrderExpand('${o.docId}')" title="View Items" class="text-gray-400 hover:text-[#b08b45]"><i class="fa-regular fa-eye text-xs"></i></button>
-                                <button onclick="promptChangeStatus('${o.docId}', '${o.status}')" title="Edit Status" class="text-gray-400 hover:text-[#b08b45]"><i class="fa-regular fa-pen-to-square text-xs"></i></button>
-                                <button onclick="deleteOrder('${o.docId}')" title="Delete" class="text-gray-400 hover:text-red-600"><i class="fa-regular fa-trash-can text-xs"></i></button>
-                            </td>
-                        </tr>
-                        <tr id="expand-row-${o.docId}" class="hidden bg-gray-50/80">
-                            <td colspan="7" class="p-3">
-                                <div class="bg-white p-3 rounded-xl border border-gray-100 space-y-1 text-[11px]">
-                                    <div class="font-bold text-gray-900 flex justify-between">
-                                        <span>Order Details (${o.paymentMethod || 'Bakong KHQR'})</span>
-                                        <span class="text-[#b08b45]">Phone: ${o.phone || 'N/A'}</span>
-                                    </div>
-                                    <p class="text-gray-500 pb-1 border-b border-gray-50">Address: ${o.address || 'N/A'}</p>
-                                    <ul class="space-y-1 pt-1">
-                                        ${(o.itemsList || [{name: 'General Items', qty: o.itemsCount || 1, price: o.total}]).map(i => `
-                                            <li class="flex justify-between text-gray-700">
-                                                <span>• ${i.name} (x${i.qty || 1})</span>
-                                                <span class="font-bold">$${Number((i.price || o.total) * (i.qty || 1)).toFixed(2)}</span>
-                                            </li>
-                                        `).join('')}
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
-        };
-
-        window.toggleOrderExpand = function(docId) {
-            const row = document.getElementById(`expand-row-${docId}`);
-            if (row) row.classList.toggle('hidden');
-        };
-
-        window.promptChangeStatus = async function(docId, currentStatus) {
-            const nextStatus = prompt("Update order status (Processing, Shipped, Pending, Cancelled):", currentStatus);
-            if (nextStatus && ['Processing', 'Shipped', 'Pending', 'Cancelled'].includes(nextStatus)) {
-                await updateOrderStatus(docId, nextStatus);
-            }
-        };
-
-        window.deleteOrder = async function(docId) {
-            if (confirm("Delete this order from database?")) {
-                await deleteDoc(doc(window.firebaseDb, "orders", docId));
-                alert("Order deleted.");
-            }
-        };
-
-        window.renderAdminProducts = function() {
-            const tbody = document.getElementById('admin-products-table-body');
-            if (!tbody) return;
-
-            tbody.innerHTML = window.products.length === 0 ? `<tr><td colspan="5" class="p-4 text-center text-gray-400">No products found.</td></tr>` :
-                window.products.map(p => `
-                    <tr class="hover:bg-gray-50/50">
-                        <td class="p-3 flex items-center space-x-2">
-                            <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-8 h-8 rounded-lg object-cover">
-                            <b class="text-gray-900">${p.name}</b>
-                        </td>
-                        <td class="p-3 font-mono font-medium">${p.sku || 'SKU-001'}</td>
-                        <td class="p-3"><span class="bg-gray-100 px-2 py-0.5 rounded text-gray-600">${p.category || 'General'}</span></td>
-                        <td class="p-3 font-bold text-gray-900">$${Number(p.price || 0).toFixed(2)}</td>
-                        <td class="p-3 text-right space-x-1">
-                            <button onclick="openProductModal('${p.id}')" class="bg-white border border-gray-200 text-gray-700 px-2.5 py-1 rounded-lg font-medium">Edit</button>
-                            <button onclick="deleteProduct('${p.id}')" class="bg-red-50 text-red-600 px-2.5 py-1 rounded-lg font-medium">Delete</button>
-                        </td>
-                    </tr>
-                `).join('');
-        };
-
-        window.renderAdminInventory = function() {
-            const tbody = document.getElementById('admin-inventory-table-body');
-            if (!tbody) return;
-
-            let filtered = window.products.filter(p => {
-                const stockVal = p.stock ?? 10;
-                const reorderVal = p.reorderPt ?? 10;
-                const isLow = stockVal <= reorderVal;
-                if (lowStockFilterActive && !isLow) return false;
-                return true;
-            });
-
-            tbody.innerHTML = filtered.length === 0 ? `<tr><td colspan="6" class="p-4 text-center text-gray-400">No inventory products found.</td></tr>` :
-                filtered.map(p => {
-                    const stockVal = p.stock ?? 10;
-                    const reorderVal = p.reorderPt ?? 10;
-                    const isLow = stockVal <= reorderVal;
-                    
-                    return `
-                        <tr class="hover:bg-gray-50/50">
-                            <td class="p-3 flex items-center space-x-2">
-                                <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-8 h-8 rounded-lg object-cover">
-                                <b class="text-gray-900">${p.name}</b>
-                            </td>
-                            <td class="p-3 font-mono font-medium">${p.sku || 'SKU-001'}</td>
-                            <td class="p-3"><span class="bg-gray-100 px-2 py-0.5 rounded text-gray-600">${p.category || 'General'}</span></td>
-                            <td class="p-3 font-bold">
-                                ${stockVal} 
-                                ${isLow ? `<span class="text-red-500 ml-1" title="Low stock warning!">⚠️</span>` : ''}
-                            </td>
-                            <td class="p-3 text-gray-500">${reorderVal}</td>
-                            <td class="p-3 text-right space-x-1">
-                                <button onclick="openProductModal('${p.id}')" class="bg-white border border-gray-200 text-gray-700 px-2 py-1 rounded font-medium">Edit Stock</button>
-                                <button onclick="deleteProduct('${p.id}')" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-xmark"></i></button>
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
+            }, { enableHighAccuracy: true, timeout: 8000 });
         };
     </script>
 </body>
