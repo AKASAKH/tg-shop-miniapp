@@ -75,6 +75,8 @@
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-[11px]"></i></span>
                     <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search products..." class="w-full pl-8 pr-3 py-2 bg-white border border-gray-200 rounded-xl text-xs shadow-xs focus:outline-none focus:border-[#a4133c]">
                 </div>
+                
+                <!-- PRODUCT CATEGORY FILTER BAR RESTORED -->
                 <div class="flex space-x-1.5 overflow-x-auto pb-1 text-[11px] scrollbar-none justify-start md:justify-center">
                     <button onclick="filterCategory('All')" class="cat-btn bg-[#800f2f] text-white px-3 py-1.5 rounded-full font-medium whitespace-nowrap shadow-xs min-h-[36px]">All ✨</button>
                     <button onclick="filterCategory('Hairpins')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Hairpins 🎀</button>
@@ -82,6 +84,7 @@
                     <button onclick="filterCategory('Accessories')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Accessories 💎</button>
                     <button onclick="filterCategory('Bags')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Bags 👜</button>
                 </div>
+
                 <div id="product-grid" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
             </div>
 
@@ -97,7 +100,7 @@
                 <div id="my-orders-list" class="space-y-2"></div>
             </div>
 
-            <!-- PROFILE SECTION (Updated to match your design mockup) -->
+            <!-- PROFILE SECTION -->
             <div id="page-profile" class="hidden space-y-3 max-w-md mx-auto">
                 <div id="customer-dashboard-view" class="space-y-3 hidden">
                     
@@ -701,7 +704,21 @@
             if (tab === 'orders') renderCustomerOrders();
         }
 
-        // SETTINGS & PROFILE SUB-PAGES (Exact Match to Mockup Screens)[cite: 1]
+        // CATEGORY FILTER HANDLER RESTORED
+        function filterCategory(cat) {
+            activeCategory = cat;
+            const buttons = document.querySelectorAll('.cat-btn');
+            buttons.forEach(btn => {
+                if (btn.innerText.includes(cat) || (cat === 'All' && btn.innerText.includes('All'))) {
+                    btn.className = 'cat-btn bg-[#800f2f] text-white px-3 py-1.5 rounded-full font-medium whitespace-nowrap shadow-xs min-h-[36px]';
+                } else {
+                    btn.className = 'cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]';
+                }
+            });
+            renderProducts();
+        }
+
+        // SETTINGS & PROFILE SUB-PAGES[cite: 1]
         window.openSettingsSubPage = function(section) {
             const modal = document.getElementById('settings-sub-modal');
             const titleEl = document.getElementById('settings-modal-title');
@@ -838,7 +855,7 @@
             }
         };
 
-        // DELIVERY ADDRESSES SCREEN (Matching Mockup UI)[cite: 1]
+        // DELIVERY ADDRESSES SCREEN[cite: 1]
         window.renderDeliveryAddressesScreen = function() {
             const titleEl = document.getElementById('settings-modal-title');
             const bodyEl = document.getElementById('settings-modal-body');
@@ -870,7 +887,7 @@
             `).join('');
         };
 
-        // ADD / EDIT ADDRESS FORM SCREEN (Matching Mockup Form with Labels)[cite: 1]
+        // ADD / EDIT ADDRESS FORM SCREEN[cite: 1]
         window.openAddAddressForm = function(addrId = null) {
             const titleEl = document.getElementById('settings-modal-title');
             const bodyEl = document.getElementById('settings-modal-body');
@@ -1102,7 +1119,6 @@
             `).join('');
         }
 
-        function filterCategory(cat) { activeCategory = cat; renderProducts(); }
         function filterProducts() { renderProducts(); }
         function toggleWishlist(id) { wishlist = wishlist.includes(id) ? wishlist.filter(i => i !== id) : [...wishlist, id]; renderProducts(); }
         function renderWishlist() {
