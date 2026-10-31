@@ -180,7 +180,7 @@
             </div>
         </div>
 
-        <!-- ================= COMPLETE RESTORED ADMIN PORTAL ================= -->
+        <!-- ================= COMPLETE ADMIN PORTAL (WITH ENHANCED PMS) ================= -->
         <div id="admin-view" class="hidden space-y-4">
             <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs flex justify-between items-center">
                 <div class="flex items-center space-x-2">
@@ -245,7 +245,7 @@
             <div id="admin-sec-products" class="hidden space-y-4">
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden p-4 space-y-3">
                     <div class="flex justify-between items-center">
-                        <h2 class="text-sm font-bold text-gray-900">Product Management</h2>
+                        <h2 class="text-sm font-bold text-gray-900">Product Management (PMS)</h2>
                         <button onclick="openProductModal()" class="bg-[#800f2f] text-white text-xs px-3 py-1.5 rounded-xl font-bold">+ Add Product</button>
                     </div>
                     <div class="overflow-x-auto">
@@ -256,6 +256,7 @@
                                     <th class="p-3">SKU</th>
                                     <th class="p-3">Category</th>
                                     <th class="p-3">Price</th>
+                                    <th class="p-3">Views 👁️</th>
                                     <th class="p-3 text-right">Actions</th>
                                 </tr>
                             </thead>
@@ -265,11 +266,14 @@
                 </div>
             </div>
 
-            <!-- STOCK SECTION -->
+            <!-- STOCK SECTION WITH INTELLIGENT ALERTS -->
             <div id="admin-sec-inventory" class="hidden space-y-4">
                 <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden p-4 space-y-3">
                     <div class="flex justify-between items-center">
-                        <h2 class="text-sm font-bold text-gray-900">Stock Management</h2>
+                        <div>
+                            <h2 class="text-sm font-bold text-gray-900">Stock Management & Intelligence</h2>
+                            <p class="text-[10px] text-gray-400">Manage reorder points & batch restock items</p>
+                        </div>
                         <button onclick="filterLowStock()" id="low-stock-filter-btn" class="border border-gray-200 px-3 py-1.5 rounded-xl text-xs text-gray-600 font-medium hover:bg-gray-50">
                             <i class="fa-solid fa-triangle-exclamation text-amber-500 mr-1"></i> Low Stock Alert
                         </button>
@@ -281,9 +285,9 @@
                                     <th class="p-3">Product Name</th>
                                     <th class="p-3">SKU</th>
                                     <th class="p-3">Category</th>
-                                    <th class="p-3">Stock</th>
-                                    <th class="p-3">Reorder Pt</th>
-                                    <th class="p-3 text-right">Actions</th>
+                                    <th class="p-3">Stock Level</th>
+                                    <th class="p-3">Reorder Point</th>
+                                    <th class="p-3 text-right">Quick Restock</th>
                                 </tr>
                             </thead>
                             <tbody id="admin-inventory-table-body" class="divide-y divide-gray-50 text-[11px]"></tbody>
@@ -296,7 +300,7 @@
             <div id="admin-sec-reviews" class="hidden space-y-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
                 <div class="space-y-1">
                     <h2 class="text-sm font-bold text-gray-900">Customer Reviews Moderation</h2>
-                    <p class="text-[11px] text-gray-400">Review recent comments, reply as admin, react with likes, or delete comments</p>
+                    <p class="text-[11px] text-gray-400">Review all comments, reply as admin, react with likes, or delete comments</p>
                 </div>
                 <div id="admin-reviews-list-container" class="space-y-3 max-h-[60vh] overflow-y-auto text-xs"></div>
             </div>
@@ -356,13 +360,13 @@
 
             <div class="border-t border-gray-100 pt-3 space-y-2">
                 <h4 class="font-bold text-xs text-gray-900 flex justify-between items-center">
-                    <span>Recent Comments & Reviews ⭐</span>
+                    <span>Customer Reviews & Comments ⭐</span>
                     <span id="prod-avg-rating" class="text-amber-500 text-[11px]">0.0 / 5.0</span>
                 </h4>
-                <div id="prod-reviews-list" class="space-y-1.5 max-h-32 overflow-y-auto text-[11px]"></div>
+                <div id="prod-reviews-list" class="space-y-1.5 max-h-40 overflow-y-auto text-[11px]"></div>
                 
                 <div class="bg-gray-50 p-2.5 rounded-2xl border border-gray-100 space-y-1.5 mt-2">
-                    <p class="font-bold text-[10px] text-gray-600">Leave a Review (Short Period Display):</p>
+                    <p class="font-bold text-[10px] text-gray-600">Leave a Review:</p>
                     <div class="flex items-center space-x-1 text-amber-400 text-xs" id="star-rating-select">
                         <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(1)"></i>
                         <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(2)"></i>
@@ -474,7 +478,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, setDoc, getDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDz6snwoujsmp8IQ5-1c2_IL-JmEOx2tIM",
@@ -609,6 +613,7 @@
             } else {
                 productData.createdAt = new Date().toISOString();
                 productData.reviews = [];
+                productData.viewsCount = 0;
                 await addDoc(collection(db, "products"), productData);
                 postToTelegramChannel(image, `<b>✨ NEW ARRIVAL AT MININIZE STUDIO! ✨</b>\n\n<b>${name}</b>\n🏷️ Category: ${category}\n🔢 SKU: <code>${sku}</code>\n💰 Price: <b>$${price.toFixed(2)}</b>\n📦 Stock: ${stock}\n\n🛍️ <i>Shop now in our Telegram Mini App!</i>`);
                 alert('New product saved & posted to Telegram channel! 🎉');
@@ -672,7 +677,7 @@
 
                 document.getElementById('new-review-text').value = '';
                 openProductDetailModal(window.currentSelectedProdId, true);
-                alert('Thank you for your review! ⭐ Posted to app & Telegram channel.');
+                alert('Thank you for your review! ⭐ Saved permanently & posted to Telegram channel.');
             }
         };
 
@@ -706,8 +711,8 @@
 
         async function seedFullCatalog(db) {
             const catalog = [
-                { name: 'Pearl Butterfly Hairpin', sku: 'HRP-001', category: 'Hairpins', price: 12.50, stock: 15, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80', reviews: [] },
-                { name: 'Gold Pendant Necklace', sku: 'NC-001', category: 'Necklaces', price: 24.50, stock: 10, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80', reviews: [] }
+                { name: 'Pearl Butterfly Hairpin', sku: 'HRP-001', category: 'Hairpins', price: 12.50, stock: 15, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80', reviews: [], viewsCount: 12 },
+                { name: 'Gold Pendant Necklace', sku: 'NC-001', category: 'Necklaces', price: 24.50, stock: 3, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80', reviews: [], viewsCount: 25 }
             ];
             for (let item of catalog) await addDoc(collection(db, "products"), { ...item, isPublished: true });
         }
@@ -957,10 +962,18 @@
             }
         }
 
-        window.openProductDetailModal = function(id, silent = false) {
+        window.openProductDetailModal = async function(id, silent = false) {
             const p = window.products.find(item => item.id === id);
             if (!p) return;
             window.currentSelectedProdId = id;
+
+            // Increment Analytics View Counter in Firebase
+            if (!silent) {
+                try {
+                    const { doc, updateDoc, increment } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+                    await updateDoc(doc(window.firebaseDb, "products", id), { viewsCount: increment(1) });
+                } catch(e) { console.error("View increment error:", e); }
+            }
 
             document.getElementById('view-prod-image').src = p.image || FALLBACK_IMAGE;
             document.getElementById('view-prod-category').innerText = p.category || 'Accessories';
@@ -974,11 +987,8 @@
             document.getElementById('prod-avg-rating').innerText = `⭐ ${avgRating} / 5.0 (${reviews.length})`;
 
             const listEl = document.getElementById('prod-reviews-list');
-            // SHORT PERIOD REVIEW FILTER: Show comments submitted recently (e.g. within 30 days or last 10 items)
-            const recentReviews = [...reviews].reverse().slice(0, 5);
-
-            listEl.innerHTML = recentReviews.length === 0 ? `<p class="text-gray-400 text-[10px] py-1">No recent comments yet.</p>` :
-                recentReviews.map(r => `
+            listEl.innerHTML = reviews.length === 0 ? `<p class="text-gray-400 text-[10px] py-1">No comments yet. Be the first!</p>` :
+                reviews.map(r => `
                     <div class="bg-gray-50 p-2.5 rounded-xl border border-gray-100 space-y-1">
                         <div class="flex justify-between items-center text-[9px]">
                             <b class="text-gray-800">${r.author}</b>
@@ -1145,6 +1155,7 @@
                     <td class="p-3 font-mono">${p.sku || 'N/A'}</td>
                     <td class="p-3">${p.category}</td>
                     <td class="p-3 font-bold text-[#a4133c]">$${Number(p.price).toFixed(2)}</td>
+                    <td class="p-3 text-gray-600">${p.viewsCount || 0} views</td>
                     <td class="p-3 text-right"><button onclick="deleteProduct('${p.id}')" class="text-red-500">Delete</button></td>
                 </tr>
             `).join('');
@@ -1154,16 +1165,24 @@
             const tbody = document.getElementById('admin-inventory-table-body');
             if (!tbody) return;
             let list = window.products.filter(p => !showLowStockOnly || (p.stock ?? 10) <= 5);
-            tbody.innerHTML = list.map(p => `
-                <tr class="border-b border-gray-50">
-                    <td class="p-3"><b>${p.name}</b></td>
-                    <td class="p-3 font-mono">${p.sku || 'N/A'}</td>
-                    <td class="p-3">${p.category}</td>
-                    <td class="p-3"><span class="${(p.stock ?? 10) <= 5 ? 'text-red-600 font-bold bg-red-50 px-2 py-0.5 rounded' : 'text-emerald-600'}">${p.stock ?? 10} units</span></td>
-                    <td class="p-3 text-gray-400">5</td>
-                    <td class="p-3 text-right"><button onclick="restockProduct('${p.id}')" class="text-[#a4133c] font-medium">+ Restock</button></td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = list.map(p => {
+                const stock = p.stock ?? 10;
+                const isLow = stock <= 5;
+                return `
+                    <tr class="border-b border-gray-50">
+                        <td class="p-3"><b>${p.name}</b></td>
+                        <td class="p-3 font-mono">${p.sku || 'N/A'}</td>
+                        <td class="p-3">${p.category}</td>
+                        <td class="p-3">
+                            <span class="${isLow ? 'text-red-600 font-bold bg-red-50 px-2 py-0.5 rounded flex items-center w-max' : 'text-emerald-600 font-medium'}">
+                                ${isLow ? '<i class="fa-solid fa-triangle-exclamation mr-1"></i>' : ''} ${stock} units
+                            </span>
+                        </td>
+                        <td class="p-3 text-gray-400">5 units</td>
+                        <td class="p-3 text-right"><button onclick="restockProduct('${p.id}')" class="bg-pink-50 text-[#a4133c] font-bold px-3 py-1.5 rounded-xl hover:bg-pink-100">+ Restock</button></td>
+                    </tr>
+                `;
+            }).join('');
         };
 
         window.renderAdminReviews = function() {
