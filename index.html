@@ -472,7 +472,7 @@
         </div>
     </div>
 
-    <!-- FIREBASE MODULE & REALTIME LOGIC -->
+    <!-- FIREBASE MODULE & SIGN OUT HANDLER -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -493,6 +493,21 @@
 
         window.firebaseDb = db;
         window.firebaseAuth = auth;
+
+        // Working Sign Out Function with Redirect to Shop
+        window.handleSignOut = async function() {
+            try {
+                await signOut(auth);
+                window.currentUser = null;
+                window.currentUserData = null;
+                if (window.exitAdminMode) window.exitAdminMode();
+                if (window.switchCustomerTab) window.switchCustomerTab('shop');
+                alert('Signed out successfully.');
+            } catch (err) {
+                console.error("Sign out error:", err);
+                alert("Error signing out.");
+            }
+        };
 
         const TELEGRAM_BOT_TOKEN = "8799522797:AAG5hhzhfDjXxftdlkJ7zVgcDQqhV7hR-4k";
         const TELEGRAM_CHANNEL_ID = "@songsashop";
@@ -763,6 +778,7 @@
             if (tab === 'shop') renderProducts();
             if (tab === 'wishlist') renderWishlist();
         }
+        window.switchCustomerTab = switchCustomerTab;
 
         function filterCategory(cat) {
             activeCategory = cat;
@@ -1093,6 +1109,8 @@
             document.getElementById('customer-nav').classList.remove('hidden');
             switchCustomerTab('shop');
         }
+        window.exitAdminMode = exitAdminMode;
+
         function switchAdminNav(sec) {
             ['orders', 'products', 'inventory', 'reviews', 'promotions'].forEach(s => {
                 document.getElementById(`admin-sec-${s}`).classList.add('hidden');
