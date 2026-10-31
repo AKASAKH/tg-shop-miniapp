@@ -472,7 +472,7 @@
         </div>
     </div>
 
-    <!-- FIREBASE & REALTIME LOGIC -->
+    <!-- FIREBASE MODULE & REALTIME LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -589,7 +589,6 @@
             if (window.renderAdminBanners) window.renderAdminBanners();
         });
 
-        // ENHANCED PRODUCT SAVE WITH SKU VALIDATION & DEFENSIVE INVENTORY BOUNDS
         window.saveAdminProduct = async function() {
             const prodId = document.getElementById('prod-id').value;
             const name = document.getElementById('prod-name').value.trim();
@@ -601,9 +600,8 @@
 
             if (!name) return alert('Please enter a valid product name.');
             if (isNaN(price) || price < 0) return alert('Please enter a valid positive price.');
-            if (isNaN(stock) || stock < 0) stock = 0; // Prevent negative inventory bugs
+            if (isNaN(stock) || stock < 0) stock = 0;
 
-            // Automatic SKU generation if left blank or duplicate check safeguards
             if (!sku) {
                 sku = `SKU-${Math.floor(1000 + Math.random() * 9000)}`;
             }
@@ -724,7 +722,7 @@
         }
     </script>
 
-    <!-- UI STOREFRONT & ADMIN LOGIC -->
+    <!-- STOREFRONT, PROFILE & ADMIN UI LOGIC -->
     <script>
         const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
         window.products = []; window.orders = []; window.banners = [];
@@ -1014,7 +1012,7 @@
             }
         }
 
-        function closeProductDetailModal() { 
+        window.closeProductDetailModal = function() { 
             window.currentSelectedProdId = null;
             document.getElementById('product-detail-modal').classList.add('hidden'); 
         }
@@ -1159,7 +1157,10 @@
                     <td class="p-3">${p.category}</td>
                     <td class="p-3 font-bold text-[#a4133c]">$${Number(p.price).toFixed(2)}</td>
                     <td class="p-3 text-gray-600">${p.viewsCount || 0} views</td>
-                    <td class="p-3 text-right"><button onclick="deleteProduct('${p.id}')" class="text-red-500">Delete</button></td>
+                    <td class="p-3 text-right space-x-2">
+                        <button onclick="openEditProductModal('${p.id}')" class="text-sky-600 font-medium">Edit</button>
+                        <button onclick="deleteProduct('${p.id}')" class="text-red-500 font-medium">Delete</button>
+                    </td>
                 </tr>
             `).join('');
         };
@@ -1271,8 +1272,34 @@
             document.getElementById('cust-promo-code').value = '';
         };
 
-        function openProductModal() { document.getElementById('admin-product-modal').classList.remove('hidden'); }
-        function closeAdminProductModal() { document.getElementById('admin-product-modal').classList.add('hidden'); }
+        window.openProductModal = function() {
+            document.getElementById('prod-id').value = '';
+            document.getElementById('prod-name').value = '';
+            document.getElementById('prod-sku').value = '';
+            document.getElementById('prod-price').value = '';
+            document.getElementById('prod-stock').value = '';
+            document.getElementById('prod-image').value = '';
+            document.getElementById('product-modal-title').innerText = "Add Product to Database";
+            document.getElementById('admin-product-modal').classList.remove('hidden');
+        };
+
+        window.openEditProductModal = function(id) {
+            const p = window.products.find(item => item.id === id);
+            if (!p) return;
+            document.getElementById('prod-id').value = p.id;
+            document.getElementById('prod-name').value = p.name;
+            document.getElementById('prod-sku').value = p.sku || '';
+            document.getElementById('prod-category').value = p.category || 'Hairpins';
+            document.getElementById('prod-price').value = p.price;
+            document.getElementById('prod-stock').value = p.stock ?? 10;
+            document.getElementById('prod-image').value = p.image || '';
+            document.getElementById('product-modal-title').innerText = "Edit Product Record";
+            document.getElementById('admin-product-modal').classList.remove('hidden');
+        };
+
+        function closeAdminProductModal() { 
+            document.getElementById('admin-product-modal').classList.add('hidden'); 
+        }
     </script>
 </body>
 </html>
