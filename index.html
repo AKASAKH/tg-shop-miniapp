@@ -472,10 +472,10 @@
         </div>
     </div>
 
-    <!-- FIREBASE MODULE & SIGN OUT HANDLER -->
+    <!-- FIREBASE MODULE & AUTHENTICATION HANDLERS -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, setDoc, getDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -494,7 +494,78 @@
         window.firebaseDb = db;
         window.firebaseAuth = auth;
 
-        // Working Sign Out Function with Redirect to Shop
+        // --- WORKING AUTH HANDLERS ---
+        window.handleEmailLogin = async function() {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            if (!email || !password) return alert('Please enter your email and password.');
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                alert('Logged in successfully! ✨');
+            } catch (err) {
+                console.error("Login error:", err);
+                alert("Login failed: " + err.message);
+            }
+        };
+
+        window.handleEmailSignUp = async function() {
+            const name = document.getElementById('signup-name').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
+            const password = document.getElementById('signup-password').value;
+            if (!name || !email || !password) return alert('Please fill in all sign up fields.');
+            if (password.length < 6) return alert('Password must be at least 6 characters.');
+            try {
+                const cred = await createUserWithEmailAndPassword(auth, email, password);
+                const user = cred.user;
+                const generatedUserId = `USR-${user.uid.substring(0, 6).toUpperCase()}`;
+                
+                await setDoc(doc(db, "users", user.uid), {
+                    uid: user.uid, customId: generatedUserId,
+                    email: user.email, name: name,
+                    phone: "+855 12 345 678",
+                    addressesList: [
+                        { id: 'addr_1', label: 'Home', fullName: name, phone: '+855 12 345 678', street: '123 Main Street', city: 'Phnom Penh', province: 'Phnom Penh', district: 'Sen Sok', commune: 'Ou Baek K\'am', village: 'Phnom Penh Thmey', houseNo: '#123', streetRoad: 'Main Street', isDefault: true }
+                    ],
+                    preferences: { currency: 'USD', language: 'English', theme: 'Light' },
+                    role: email.toLowerCase().endsWith("@mininize.com") || user.uid === "NoIYk9Uwlc75YLdlpzx1" ? "admin" : "customer",
+                    createdAt: new Date().toISOString()
+                });
+                alert('Account created successfully! 🎉');
+            } catch (err) {
+                console.error("Sign up error:", err);
+                alert("Sign up failed: " + err.message);
+            }
+        };
+
+        window.handleTelegramSignIn = async function() {
+            try {
+                // If running inside Telegram WebApp environment, grab telegram user info
+                const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+                const email = tgUser ? `${tgUser.id}@telegram.org` : `telegram_${Math.floor(100000 + Math.random() * 900000)}@telegram.org`;
+                const password = tgUser ? `tg_pass_${tgUser.id}` : `tg_pass_default`;
+                const name = tgUser ? `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() : 'Telegram Shopper';
+
+                try {
+                    await signInWithEmailAndPassword(auth, email, password);
+                } catch(e) {
+                    const cred = await createUserWithEmailAndPassword(auth, email, password);
+                    const user = cred.user;
+                    await setDoc(doc(db, "users", user.uid), {
+                        uid: user.uid, customId: `USR-${user.uid.substring(0, 6).toUpperCase()}`,
+                        email: email, name: name, phone: "+855 12 345 678",
+                        addressesList: [{ id: 'addr_1', label: 'Home', fullName: name, phone: '+855 12 345 678', street: 'Telegram St', province: 'Phnom Penh', isDefault: true }],
+                        role: "customer", createdAt: new Date().toISOString()
+                    });
+                }
+                alert('Signed in with Telegram successfully! 🚀');
+            } catch (err) {
+                console.error("Telegram sign in error:", err);
+                // Fallback anonymous sign in if offline/testing in browser
+                await signInAnonymously(auth);
+                alert('Signed in as Guest/Telegram user.');
+            }
+        };
+
         window.handleSignOut = async function() {
             try {
                 await signOut(auth);
@@ -505,7 +576,6 @@
                 alert('Signed out successfully.');
             } catch (err) {
                 console.error("Sign out error:", err);
-                alert("Error signing out.");
             }
         };
 
