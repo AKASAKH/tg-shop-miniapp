@@ -34,11 +34,11 @@
             </button>
             <div class="w-10 h-10 bg-pink-50 text-[#a4133c] rounded-full flex items-center justify-center mx-auto text-base"><i class="fa-solid fa-tag"></i></div>
             <div>
-                <span id="promo-tag-text" class="bg-pink-50 text-[#a4133c] text-[9px] uppercase font-bold px-2.5 py-0.5 rounded-md">Special Offer</span>
-                <h3 id="promo-title-text" class="text-sm font-bold mt-1 text-gray-900">Get 30% OFF Your Order!</h3>
-                <p id="promo-desc-text" class="text-[11px] text-gray-500 mt-0.5">Use code <span id="promo-code-text" class="font-bold text-gray-800 underline">MINI10</span> at checkout.</p>
+                <span id="promo-tag-text" class="bg-pink-50 text-[#a4133c] text-[9px] uppercase font-bold px-2.5 py-0.5 rounded-md">Grand Opening Special</span>
+                <h3 id="promo-title-text" class="text-sm font-bold mt-1 text-gray-900">Get 15% OFF Your First Order!</h3>
+                <p id="promo-desc-text" class="text-[11px] text-gray-500 mt-0.5">Use code <span id="promo-code-text" class="font-bold text-gray-800 underline">MININIZE15</span> at checkout.</p>
             </div>
-            <button onclick="closePromoPopup()" class="w-full bg-[#800f2f] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs active:scale-95 transition-transform">Shop Now ✨</button>
+            <button onclick="closePromoPopup()" class="w-full bg-[#800f2f] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs active:scale-95 transition-transform">Shop Collection ✨</button>
         </div>
     </div>
 
@@ -67,12 +67,12 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-6xl mx-auto px-4 py-3">
 
-        <!-- CUSTOMER STOREFRONT -->
+        <!-- CUSTOMER STOREFRONT VIEW -->
         <div id="customer-view" class="space-y-3">
             <div id="page-shop" class="space-y-3">
                 <div class="relative max-w-md mx-auto">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-[11px]"></i></span>
-                    <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search products..." class="w-full pl-8 pr-3 py-2 bg-white border border-gray-200 rounded-xl text-xs shadow-xs focus:outline-none focus:border-[#a4133c]">
+                    <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search aesthetic pieces..." class="w-full pl-8 pr-3 py-2 bg-white border border-gray-200 rounded-xl text-xs shadow-xs focus:outline-none focus:border-[#a4133c]">
                 </div>
                 
                 <!-- CATEGORY FILTER BAR -->
@@ -84,8 +84,6 @@
                     <button onclick="filterCategory('Earrings')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Earrings 💎</button>
                     <button onclick="filterCategory('Phone Charms')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Phone Charms 📱</button>
                     <button onclick="filterCategory('Bags & Pouches')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Bags & Pouches 👜</button>
-                    <button onclick="filterCategory('Hair Accessories')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Hair Accessories 🌸</button>
-                    <button onclick="filterCategory('Makeup Accessories')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Makeup Accessories 💄</button>
                 </div>
 
                 <div id="product-grid" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
@@ -154,37 +152,43 @@
             </div>
         </div>
 
-        <!-- ADMIN PORTAL -->
+        <!-- ADMIN PORTAL VIEW -->
         <div id="admin-view" class="hidden space-y-4">
             <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs flex justify-between items-center">
-                <span class="font-bold text-xs text-gray-900 flex items-center"><i class="fa-solid fa-shield-halved text-[#a4133c] mr-1.5"></i> Mininize Studio Admin</span>
+                <span class="font-bold text-xs text-gray-900 flex items-center"><i class="fa-solid fa-shield-halved text-[#a4133c] mr-1.5"></i> Mininize Studio Admin Portal</span>
                 <div class="flex items-center space-x-2">
                     <button onclick="openProductModal()" class="bg-[#800f2f] text-white text-xs px-3 py-2 rounded-xl font-bold">+ Add Product</button>
                     <button onclick="handleSignOut()" class="text-xs bg-red-50 text-red-600 px-3 py-2 rounded-xl font-medium">Sign Out</button>
                 </div>
             </div>
             <div class="flex space-x-1 border-b border-gray-200 text-xs font-semibold overflow-x-auto">
-                <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c]">Orders</button>
-                <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Products</button>
-                <button onclick="switchAdminNav('reviews')" id="adtab-reviews" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Reviews ⭐</button>
+                <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c]">Orders Management</button>
+                <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Products Inventory</button>
+                <button onclick="switchAdminNav('reviews')" id="adtab-reviews" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Reviews Moderation ⭐</button>
             </div>
+            
             <div id="admin-sec-orders" class="space-y-4">
                 <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100">
+                    <h3 class="font-bold text-xs text-gray-900 mb-3">Customer Orders</h3>
                     <table class="w-full text-left text-xs">
                         <thead><tr class="text-gray-400 border-b text-[10px]"><th class="p-2">Order</th><th class="p-2">Customer</th><th class="p-2">Status</th><th class="p-2">Total</th><th class="p-2 text-right">Date</th></tr></thead>
                         <tbody id="admin-orders-table-body" class="divide-y text-[11px]"></tbody>
                     </table>
                 </div>
             </div>
+
             <div id="admin-sec-products" class="hidden space-y-4">
                 <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100">
+                    <h3 class="font-bold text-xs text-gray-900 mb-3">Product Catalog</h3>
                     <table class="w-full text-left text-xs">
                         <thead><tr class="text-gray-400 border-b text-[10px]"><th class="p-2">Name</th><th class="p-2">Category</th><th class="p-2">Price</th><th class="p-2 text-right">Actions</th></tr></thead>
                         <tbody id="admin-products-table-body" class="divide-y text-[11px]"></tbody>
                     </table>
                 </div>
             </div>
+
             <div id="admin-sec-reviews" class="hidden bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-3">
+                <h3 class="font-bold text-xs text-gray-900">Customer Feedback & Reviews</h3>
                 <div id="admin-reviews-list-container" class="space-y-3 max-h-[60vh] overflow-y-auto text-xs"></div>
             </div>
         </div>
@@ -198,8 +202,8 @@
             <div class="relative w-full aspect-square bg-gray-50 rounded-2xl overflow-hidden">
                 <img id="view-prod-image" src="" class="w-full h-full object-cover">
                 <span id="view-prod-category" class="absolute bottom-2 left-2 bg-white/90 text-gray-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full">Category</span>
-                <button onclick="shareProduct()" class="absolute top-3 left-3 bg-white/90 text-gray-700 w-8 h-8 rounded-full flex items-center justify-center shadow-xs">
-                    <i class="fa-solid fa-[#a4133c] fa-share-nodes text-xs"></i>
+                <button onclick="shareProduct()" class="absolute top-3 left-3 bg-white/90 text-[#a4133c] w-8 h-8 rounded-full flex items-center justify-center shadow-xs">
+                    <i class="fa-solid fa-share-nodes text-xs"></i>
                 </button>
             </div>
             <div class="space-y-1">
@@ -305,8 +309,6 @@
                     <option value="Earrings">Earrings 💎</option>
                     <option value="Phone Charms">Phone Charms 📱</option>
                     <option value="Bags & Pouches">Bags & Pouches 👜</option>
-                    <option value="Hair Accessories">Hair Accessories 🌸</option>
-                    <option value="Makeup Accessories">Makeup Accessories 💄</option>
                 </select>
                 <input type="number" step="0.01" id="prod-price" placeholder="Price ($)" class="w-full border rounded-xl px-3 py-1.5">
                 <input type="number" id="prod-stock" placeholder="Stock Quantity" class="w-full border rounded-xl px-3 py-1.5">
@@ -348,7 +350,6 @@
         window.firebaseDb = db;
         window.firebaseAuth = auth;
 
-        // ITEM 3: ROBUST DOM XSS SANITIZATION HELPER
         window.sanitizeHTML = function(str) {
             if (!str) return '';
             return String(str)
@@ -359,7 +360,6 @@
                 .replace(/'/g, '&#039;');
         };
 
-        // ITEM 2: UNIVERSAL HAPTICS (TELEGRAM SDK WITH WEB VIBRATE FALLBACK)
         window.triggerTelegramHaptic = function(type = 'light') {
             try {
                 if (window.Telegram?.WebApp?.HapticFeedback) {
@@ -380,6 +380,7 @@
         onSnapshot(query(collection(db, "products"), limit(50)), (snapshot) => {
             window.products = [];
             snapshot.forEach(docSnap => window.products.push({ id: docSnap.id, ...docSnap.data() }));
+            if (window.products.length === 0) seedCatalog(db);
             if (window.renderProducts) window.renderProducts();
             if (window.renderAdminProducts) window.renderAdminProducts();
             if (window.checkInitialDeepLink) window.checkInitialDeepLink();
@@ -391,15 +392,70 @@
             if (window.renderAdminOrders) window.renderAdminOrders();
         });
 
-        // AUTH HANDLERS
+        async function seedCatalog(db) {
+            const initialCatalog = [
+                { name: 'Pearl Butterfly Hairpin', sku: 'HRP-001', category: 'Hairpins', price: 12.50, stock: 15, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80', reviews: [] },
+                { name: 'Gold Pendant Necklace', sku: 'NC-001', category: 'Necklaces', price: 24.50, stock: 8, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=80', reviews: [] },
+                { name: 'Minimalist Dainty Ring', sku: 'RNG-001', category: 'Rings', price: 9.99, stock: 20, image: 'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=600&q=80', reviews: [] }
+            ];
+            for (let item of initialCatalog) {
+                await addDoc(collection(db, "products"), { ...item, isPublished: true, createdAt: new Date().toISOString() });
+            }
+        }
+
+        const TELEGRAM_BOT_TOKEN = "8799522797:AAG5hhzhfDjXxftdlkJ7zVgcDQqhV7hR-4k";
+        const TELEGRAM_CHANNEL_ID = "@songsashop";
+        const TELEGRAM_MINIAPP_URL = "https://t.me/songsashop";
+
+        async function postToTelegramChannel(photoUrl, captionText) {
+            try {
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHANNEL_ID,
+                        photo: photoUrl || "https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80",
+                        caption: captionText,
+                        parse_mode: 'HTML',
+                        reply_markup: { inline_keyboard: [[{ text: "Shop Now 🛍️", url: TELEGRAM_MINIAPP_URL }]] }
+                    })
+                });
+            } catch (err) { console.error('Telegram broadcast error:', err); }
+        }
+
+        window.saveAdminProduct = async function() {
+            const name = sanitizeHTML(document.getElementById('prod-name').value.trim());
+            let sku = sanitizeHTML(document.getElementById('prod-sku').value.trim().toUpperCase());
+            const category = document.getElementById('prod-category').value;
+            const price = parseFloat(document.getElementById('prod-price').value);
+            let stock = parseInt(document.getElementById('prod-stock').value);
+            const image = document.getElementById('prod-image').value.trim() || 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80';
+
+            if (!name) return alert('Enter product name.');
+            if (isNaN(price)) return alert('Enter valid price.');
+            if (!sku) sku = `SKU-${Math.floor(1000 + Math.random() * 9000)}`;
+
+            const productData = { name, sku, category, price, stock: isNaN(stock) ? 10 : stock, image, isPublished: true, reviews: [], createdAt: new Date().toISOString() };
+            await addDoc(collection(db, "products"), productData);
+            postToTelegramChannel(image, `<b>✨ NEW ARRIVAL! ✨</b>\n\n<b>${name}</b>\n🏷️ Category: ${category}\n💰 Price: <b>$${price.toFixed(2)}</b>`);
+            triggerTelegramHaptic('success');
+            alert('Product saved & broadcasted to @songsashop! 🎉');
+            closeAdminProductModal();
+        };
+
+        window.deleteProduct = async function(id) {
+            if (confirm("Delete this product?")) {
+                await deleteDoc(doc(db, "products", id));
+                triggerTelegramHaptic('warning');
+                alert('Product deleted.');
+            }
+        };
+
         window.handleEmailLogin = async function() {
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
             if (!email || !password) return alert('Enter email and password.');
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                triggerTelegramHaptic('success');
-            } catch (err) { alert("Login failed: " + err.message); }
+            try { await signInWithEmailAndPassword(auth, email, password); triggerTelegramHaptic('success'); } catch (err) { alert("Login failed: " + err.message); }
         };
 
         window.handleEmailSignUp = async function() {
@@ -411,7 +467,7 @@
                 const cred = await createUserWithEmailAndPassword(auth, email, password);
                 await setDoc(doc(db, "users", cred.user.uid), {
                     uid: cred.user.uid, customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
-                    email, name, phone: "+855 12 345 678", role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer"
+                    email, name, role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer"
                 });
                 triggerTelegramHaptic('success');
                 alert('Account created!');
@@ -424,23 +480,16 @@
                 const email = tgUser ? `${tgUser.id}@telegram.org` : `telegram_${Math.floor(100000 + Math.random() * 900000)}@telegram.org`;
                 const password = tgUser ? `tg_pass_${tgUser.id}` : `tg_pass_default`;
                 const name = tgUser ? sanitizeHTML(`${tgUser.first_name || ''}`.trim()) : 'Telegram Shopper';
-                try {
-                    await signInWithEmailAndPassword(auth, email, password);
-                } catch(e) {
+                try { await signInWithEmailAndPassword(auth, email, password); }
+                catch(e) {
                     const cred = await createUserWithEmailAndPassword(auth, email, password);
-                    await setDoc(doc(db, "users", cred.user.uid), {
-                        uid: cred.user.uid, customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
-                        email, name, phone: "+855 12 345 678", role: "customer"
-                    });
+                    await setDoc(doc(db, "users", cred.user.uid), { uid: cred.user.uid, customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`, email, name, role: "customer" });
                 }
                 triggerTelegramHaptic('success');
             } catch (err) { await signInAnonymously(auth); }
         };
 
-        window.handleSignOut = async function() {
-            await signOut(auth);
-            if (window.exitAdminMode) window.exitAdminMode();
-        };
+        window.handleSignOut = async function() { await signOut(auth); if (window.exitAdminMode) window.exitAdminMode(); };
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -450,9 +499,11 @@
                 const userData = userSnap.exists() ? userSnap.data() : { name: "Shopper", role: "customer" };
                 window.currentUserData = userData;
 
-                if (userData.role === "admin" || (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1") {
+                const isAdmin = userData.role === "admin" || (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
+                if (isAdmin) {
                     enterAdminMode();
                 } else {
+                    exitAdminMode();
                     document.getElementById('profile-auth-box').classList.add('hidden');
                     document.getElementById('customer-dashboard-view').classList.remove('hidden');
                     document.getElementById('cust-profile-name').innerText = userData.name;
@@ -460,8 +511,7 @@
                     document.getElementById('cust-profile-id-display').innerText = `ID: ${userData.customId || 'USR-000'}`;
                 }
             } else {
-                window.currentUser = null;
-                window.currentUserData = null;
+                window.currentUser = null; window.currentUserData = null;
                 document.getElementById('session-user-badge').innerText = 'Guest Mode';
                 document.getElementById('profile-auth-box').classList.remove('hidden');
                 document.getElementById('customer-dashboard-view').classList.add('hidden');
@@ -502,23 +552,15 @@
             const customerName = sanitizeHTML(document.getElementById('checkout-name').value.trim());
             const phone = sanitizeHTML(document.getElementById('checkout-phone').value.trim());
             const address = sanitizeHTML(document.getElementById('checkout-address').value.trim());
-            if (!customerName || !phone || !address) return alert('Please complete delivery details.');
+            if (!customerName || !phone || !address) return alert('Complete delivery details.');
 
             const total = window.cart.reduce((s, i) => s + (i.price * i.qty), 0);
             const orderNum = `#ORD-${Math.floor(1000 + Math.random() * 9000)}`;
 
-            const newOrder = {
-                orderNum, customerName, phone, address,
-                items: window.cart, total, status: 'Pending',
-                date: new Date().toISOString().split('T')[0],
-                createdAt: new Date().toISOString()
-            };
-
             try {
-                const docRef = await addDoc(collection(db, "orders"), newOrder);
+                const docRef = await addDoc(collection(db, "orders"), { orderNum, customerName, phone, address, items: window.cart, total, status: 'Pending', date: new Date().toISOString().split('T')[0] });
                 window.currentActiveOrderId = docRef.id;
-                window.cart = [];
-                localStorage.removeItem('mininize_cart');
+                window.cart = []; localStorage.removeItem('mininize_cart');
                 document.getElementById('cart-badge').innerText = '0';
                 closeCheckoutModal();
 
@@ -526,35 +568,35 @@
                 document.getElementById('bakong-pay-ordernum').innerText = `Order: ${orderNum}`;
                 document.getElementById('bakong-qr-img').src = `https://quickchart.io/qr?text=mininize@bakong&size=250`;
                 document.getElementById('bakong-payment-modal').classList.remove('hidden');
-
                 triggerTelegramHaptic('medium');
-            } catch (err) { alert("Order creation failed: " + err.message); }
+            } catch (err) { alert("Order failed: " + err.message); }
         };
 
-        // ITEM 2: CROSS-PLATFORM PRODUCT SHARING
+        window.verifyBakongTransactionManual = async function() {
+            if (window.currentActiveOrderId) await updateDoc(doc(db, "orders", window.currentActiveOrderId), { status: "Paid" });
+            triggerTelegramHaptic('success');
+            document.getElementById('bakong-payment-modal').classList.add('hidden');
+            alert('Payment Verified Successfully! 🎉');
+        };
+
         window.shareProduct = function() {
             triggerTelegramHaptic('medium');
             const p = window.products.find(item => item.id === window.currentSelectedProdId);
             if (!p) return;
             const miniAppUrl = `https://t.me/songsashop?startapp=prod_${p.id}`;
             const shareText = `Check out ${p.name} ($${Number(p.price).toFixed(2)}) on Mininize Studio! ✨`;
-
             if (window.Telegram?.WebApp?.openTelegramLink) {
                 window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(miniAppUrl)}&text=${encodeURIComponent(shareText)}`);
-            } else if (navigator.share) {
-                navigator.share({ title: p.name, text: shareText, url: miniAppUrl }).catch(() => {});
             } else {
                 navigator.clipboard.writeText(`${shareText} ${miniAppUrl}`);
                 alert('Product link copied to clipboard!');
             }
         };
 
-        // ITEM 2: STARTUP DEEP LINK PARSER
         let hasProcessedInitialLink = false;
         window.checkInitialDeepLink = function() {
             if (hasProcessedInitialLink || window.products.length === 0) return;
             hasProcessedInitialLink = true;
-            
             let startParam = '';
             if (window.Telegram?.WebApp?.initDataUnsafe?.start_param) {
                 startParam = window.Telegram.WebApp.initDataUnsafe.start_param;
@@ -562,20 +604,17 @@
                 const params = new URLSearchParams(window.location.search);
                 startParam = params.get('startapp') || params.get('tgWebAppStartParam') || '';
             }
-
             if (startParam && startParam.startsWith('prod_')) {
                 const targetProdId = startParam.replace('prod_', '');
-                if (window.products.some(p => p.id === targetProdId)) {
-                    openProductDetailModal(targetProdId);
-                }
+                if (window.products.some(p => p.id === targetProdId)) openProductDetailModal(targetProdId);
             }
         };
     </script>
 
     <!-- STOREFRONT & UI LOGIC -->
     <script>
-        const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
-        window.products = []; window.orders = []; window.banners = [];
+        const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80';
+        window.products = []; window.orders = [];
         window.cart = JSON.parse(localStorage.getItem('mininize_cart') || '[]');
         let wishlist = []; let activeCategory = 'All';
         window.currentSelectedProdId = null;
@@ -598,6 +637,7 @@
             const targetBtn = document.getElementById(`nav-btn-${tab}`);
             if (targetBtn) targetBtn.className = 'flex flex-col items-center text-[#a4133c] font-bold';
             if (tab === 'shop') renderProducts();
+            if (tab === 'wishlist') renderWishlist();
         }
         window.switchCustomerTab = switchCustomerTab;
 
@@ -710,15 +750,16 @@
         window.renderAdminOrders = function() {
             const tbody = document.getElementById('admin-orders-table-body');
             if (!tbody) return;
-            tbody.innerHTML = (window.orders || []).map(o => `
-                <tr class="border-b">
-                    <td class="p-2 font-mono"><b>${sanitizeHTML(o.orderNum || '#ORD-101')}</b></td>
-                    <td class="p-2">${sanitizeHTML(o.customerName || 'Shopper')}</td>
-                    <td class="p-2"><span class="${o.status === 'Paid' ? 'text-emerald-600 font-bold' : 'text-amber-500'}">${sanitizeHTML(o.status || 'Pending')}</span></td>
-                    <td class="p-2 font-bold text-[#a4133c]">$${o.total || 0}</td>
-                    <td class="p-2 text-right">${sanitizeHTML(o.date || '')}</td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = (window.orders || []).length === 0 ? `<tr><td colspan="5" class="p-4 text-center text-gray-400">No orders received yet.</td></tr>` :
+                window.orders.map(o => `
+                    <tr class="border-b">
+                        <td class="p-2 font-mono"><b>${sanitizeHTML(o.orderNum || '#ORD-101')}</b></td>
+                        <td class="p-2">${sanitizeHTML(o.customerName || 'Shopper')}</td>
+                        <td class="p-2"><span class="${o.status === 'Paid' ? 'text-emerald-600 font-bold' : 'text-amber-500'}">${sanitizeHTML(o.status || 'Pending')}</span></td>
+                        <td class="p-2 font-bold text-[#a4133c]">$${o.total || 0}</td>
+                        <td class="p-2 text-right">${sanitizeHTML(o.date || '')}</td>
+                    </tr>
+                `).join('');
         };
 
         window.renderAdminProducts = function() {
