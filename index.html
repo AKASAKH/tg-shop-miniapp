@@ -503,20 +503,46 @@
         window.firebaseDb = db;
         window.firebaseAuth = auth;
 
+        // OPTION 1: DOM XSS SANITIZATION HELPER
+        window.sanitizeHTML = function(str) {
+            if (!str) return '';
+            const temp = document.createElement('div');
+            temp.textContent = str;
+            return temp.innerHTML;
+        };
+
+        // OPTION 2: NATIVE TELEGRAM HAPTICS UTILITY
+        window.triggerTelegramHaptic = function(type = 'light') {
+            try {
+                if (window.Telegram?.WebApp?.HapticFeedback) {
+                    if (type === 'success' || type === 'warning' || type === 'error') {
+                        window.Telegram.WebApp.HapticFeedback.notificationOccurred(type);
+                    } else {
+                        window.Telegram.WebApp.HapticFeedback.impactOccurred(type);
+                    }
+                }
+            } catch (err) {
+                console.log("Haptic feedback error:", err);
+            }
+        };
+
         window.handleEmailLogin = async function() {
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
             if (!email || !password) return alert('Please enter your email and password.');
             try {
                 await signInWithEmailAndPassword(auth, email, password);
+                triggerTelegramHaptic('success');
                 alert('Logged in successfully! ✨');
             } catch (err) {
+                triggerTelegramHaptic('error');
                 alert("Login failed: " + err.message);
             }
         };
 
         window.handleEmailSignUp = async function() {
-            const name = document.getElementById('signup-name').value.trim();
+            const rawName = document.getElementById('signup-name').value;
+            const name = sanitizeHTML(rawName.trim());
             const email = document.getElementById('signup-email').value.trim();
             const password = document.getElementById('signup-password').value;
             if (!name || !email || !password) return alert('Please fill in all sign up fields.');
@@ -530,8 +556,10 @@
                     role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer",
                     createdAt: new Date().toISOString()
                 });
+                triggerTelegramHaptic('success');
                 alert('Account created successfully! 🎉');
             } catch (err) {
+                triggerTelegramHaptic('error');
                 alert("Sign up failed: " + err.message);
             }
         };
@@ -541,7 +569,7 @@
                 const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
                 const email = tgUser ? `${tgUser.id}@telegram.org` : `telegram_${Math.floor(100000 + Math.random() * 900000)}@telegram.org`;
                 const password = tgUser ? `tg_pass_${tgUser.id}` : `tg_pass_default`;
-                const name = tgUser ? `${tgUser.first_name || ''}`.trim() : 'Telegram Shopper';
+                const name = tgUser ? sanitizeHTML(`${tgUser.first_name || ''}`.trim()) : 'Telegram Shopper';
                 try {
                     await signInWithEmailAndPassword(auth, email, password);
                 } catch(e) {
@@ -553,6 +581,7 @@
                         role: "customer", createdAt: new Date().toISOString()
                     });
                 }
+                triggerTelegramHaptic('success');
                 alert('Signed in with Telegram successfully! 🚀');
             } catch (err) {
                 await signInAnonymously(auth);
@@ -565,6 +594,7 @@
                 await signOut(auth);
                 window.currentUser = null;
                 window.currentUserData = null;
+                triggerTelegramHaptic('medium');
                 if (window.exitAdminMode) window.exitAdminMode();
                 if (window.switchCustomerTab) window.switchCustomerTab('shop');
                 alert('Signed out successfully.');
@@ -605,7 +635,7 @@
                     await setDoc(userRef, {
                         uid: user.uid, customId: generatedUserId,
                         email: user.email || `${user.uid}@telegram.org`,
-                        name: user.displayName || (user.email ? user.email.split('@')[0] : "Sokha Chan"),
+                        name: sanitizeHTML(user.displayName || (user.email ? user.email.split('@')[0] : "Sokha Chan")),
                         phone: "+855 12 345 678",
                         addressesList: [{ id: 'addr_1', label: 'Home', fullName: 'Sokha Chan', phone: '+855 12 345 678', street: '123 Main Street', province: 'Phnom Penh', isDefault: true }],
                         role: (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1" ? "admin" : "customer",
@@ -661,8 +691,8 @@
 
         window.saveAdminProduct = async function() {
             const prodId = document.getElementById('prod-id').value;
-            const name = document.getElementById('prod-name').value.trim();
-            let sku = document.getElementById('prod-sku').value.trim().toUpperCase();
+            const name = sanitizeHTML(document.getElementById('prod-name').value.trim());
+            let sku = sanitizeHTML(document.getElementById('prod-sku').value.trim().toUpperCase());
             const category = document.getElementById('prod-category').value;
             const price = parseFloat(document.getElementById('prod-price').value);
             let stock = parseInt(document.getElementById('prod-stock').value);
@@ -675,6 +705,7 @@
             const productData = { name, sku, category, price, stock: isNaN(stock) ? 10 : stock, image, isPublished: true, updatedAt: new Date().toISOString() };
             if (prodId) {
                 await updateDoc(doc(db, "products", prodId), productData);
+                triggerTelegramHaptic('success');
                 alert('Product updated successfully! ✨');
             } else {
                 productData.createdAt = new Date().toISOString();
@@ -682,6 +713,7 @@
                 productData.viewsCount = 0;
                 await addDoc(collection(db, "products"), productData);
                 postToTelegramChannel(image, `<b>✨ NEW ARRIVAL! ✨</b>\n\n<b>${name}</b>\n🏷️ Category: ${category}\n💰 Price: <b>$${price.toFixed(2)}</b>`);
+                triggerTelegramHaptic('success');
                 alert('New product saved & posted to Telegram channel! 🎉');
             }
             closeAdminProductModal();
@@ -690,32 +722,36 @@
         window.deleteProduct = async function(id) {
             if (confirm("Delete this product?")) {
                 await deleteDoc(doc(db, "products", id));
+                triggerTelegramHaptic('warning');
                 alert('Product deleted.');
             }
         };
 
         window.updateOrderStatus = async function(docId, newStatus) {
             await updateDoc(doc(db, "orders", docId), { status: newStatus });
+            triggerTelegramHaptic('light');
         };
 
         window.saveAdminBannerSettings = async function() {
             const promoId = document.getElementById('cust-promo-id').value;
             const bannerData = {
-                tag: document.getElementById('cust-promo-tag').value || 'Special Offer',
-                title: document.getElementById('cust-promo-title').value || 'Get 30% OFF Your Order!',
-                desc: document.getElementById('cust-promo-desc').value || 'Use code MINI10 at checkout.',
-                code: document.getElementById('cust-promo-code').value || 'MINI10',
+                tag: sanitizeHTML(document.getElementById('cust-promo-tag').value || 'Special Offer'),
+                title: sanitizeHTML(document.getElementById('cust-promo-title').value || 'Get 30% OFF Your Order!'),
+                desc: sanitizeHTML(document.getElementById('cust-promo-desc').value || 'Use code MINI10 at checkout.'),
+                code: sanitizeHTML(document.getElementById('cust-promo-code').value || 'MINI10'),
                 updatedAt: new Date().toISOString()
             };
             if (promoId) await updateDoc(doc(db, "banners", promoId), bannerData);
             else await addDoc(collection(db, "banners"), bannerData);
+            triggerTelegramHaptic('success');
             alert('Promo banner saved! ✨');
         };
 
-        // --- NEW FEATURES: COMMENT LIKES & PRODUCT SHARING ---
+        // --- SANITIZED REVIEWS & COMMENT LIKES ---
         window.submitProductReview = async function() {
             if (!window.currentSelectedProdId) return alert('No product selected.');
-            const reviewText = document.getElementById('new-review-text').value.trim();
+            const rawText = document.getElementById('new-review-text').value.trim();
+            const reviewText = sanitizeHTML(rawText);
             if (!reviewText) return alert('Please enter review text.');
 
             const prodRef = doc(db, "products", window.currentSelectedProdId);
@@ -723,7 +759,7 @@
             if (prodSnap.exists()) {
                 const p = prodSnap.data();
                 const reviews = p.reviews || [];
-                const authorName = window.currentUserData?.name || "Shopper";
+                const authorName = sanitizeHTML(window.currentUserData?.name || "Shopper");
                 const newRev = {
                     id: `rev_${Date.now()}`,
                     author: authorName,
@@ -735,6 +771,7 @@
                 };
                 reviews.push(newRev);
                 await updateDoc(prodRef, { reviews });
+                triggerTelegramHaptic('success');
                 document.getElementById('new-review-text').value = '';
                 openProductDetailModal(window.currentSelectedProdId, true);
                 alert('Thank you for your review! ⭐');
@@ -742,6 +779,7 @@
         };
 
         window.likeProductReview = async function(prodId, reviewId) {
+            triggerTelegramHaptic('light');
             const p = window.products.find(item => item.id === prodId);
             if (!p) return;
             let reviews = p.reviews || [];
@@ -750,26 +788,35 @@
             openProductDetailModal(prodId, true);
         };
 
+        // OPTION 2: TELEGRAM DEEP-LINKING AND SHARING
         window.shareProduct = function() {
+            triggerTelegramHaptic('medium');
             const p = window.products.find(item => item.id === window.currentSelectedProdId);
             if (!p) return;
+            
+            // Telegram Mini App Deep Link URL
+            const deepLinkUrl = `https://t.me/songsashop?startapp=prod_${p.id}`;
             const shareText = `Check out ${p.name} ($${Number(p.price).toFixed(2)}) on Mininize Studio! ✨`;
-            const shareUrl = `${window.location.origin}${window.location.pathname}`;
-            if (navigator.share) {
-                navigator.share({ title: p.name, text: shareText, url: shareUrl }).catch(() => {});
+
+            if (window.Telegram?.WebApp?.openTelegramLink) {
+                window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(deepLinkUrl)}&text=${encodeURIComponent(shareText)}`);
+            } else if (navigator.share) {
+                navigator.share({ title: p.name, text: shareText, url: deepLinkUrl }).catch(() => {});
             } else {
-                navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+                navigator.clipboard.writeText(`${shareText} ${deepLinkUrl}`);
                 alert('Product link copied to clipboard! 📲');
             }
         };
 
         window.adminReplyReview = async function(prodId, reviewId) {
-            const replyText = prompt("Enter admin response to this review:");
-            if (replyText === null) return;
+            const rawReply = prompt("Enter admin response to this review:");
+            if (rawReply === null) return;
+            const replyText = sanitizeHTML(rawReply);
             const p = window.products.find(item => item.id === prodId);
             if (!p) return;
             let reviews = (p.reviews || []).map(r => r.id === reviewId ? { ...r, adminReply: replyText } : r);
             await updateDoc(doc(db, "products", prodId), { reviews });
+            triggerTelegramHaptic('success');
             alert("Admin reply saved! ✨");
         };
 
@@ -783,6 +830,7 @@
             if (!p) return;
             let reviews = (p.reviews || []).filter(r => r.id !== reviewId);
             await updateDoc(doc(db, "products", prodId), { reviews });
+            triggerTelegramHaptic('warning');
             alert("Comment removed.");
         };
 
@@ -807,10 +855,17 @@
         document.addEventListener("DOMContentLoaded", () => {
             const badge = document.getElementById('cart-badge');
             if (badge) badge.innerText = cart.reduce((s, i) => s + i.qty, 0);
+
+            // OPTION 2: TELEGRAM MINI APP AUTO-EXPAND
+            if (window.Telegram?.WebApp) {
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
+            }
         });
 
         function closePromoPopup() { document.getElementById('promo-popup').classList.add('hidden'); }
         function switchAuthTab(mode) {
+            if (window.triggerTelegramHaptic) triggerTelegramHaptic('light');
             ['login', 'signup'].forEach(m => {
                 document.getElementById(`auth-form-${m}`).classList.add('hidden');
                 document.getElementById(`authtab-${m}`).className = 'flex-1 py-1 text-gray-500 rounded-lg';
@@ -820,6 +875,7 @@
         }
 
         function switchCustomerTab(tab) {
+            if (window.triggerTelegramHaptic) triggerTelegramHaptic('light');
             ['shop', 'wishlist', 'profile'].forEach(t => {
                 document.getElementById(`page-${t}`).classList.add('hidden');
                 const btn = document.getElementById(`nav-btn-${t}`);
@@ -834,6 +890,7 @@
         window.switchCustomerTab = switchCustomerTab;
 
         function filterCategory(cat) {
+            if (window.triggerTelegramHaptic) triggerTelegramHaptic('light');
             activeCategory = cat;
             document.querySelectorAll('.cat-btn').forEach(btn => {
                 btn.className = (btn.innerText.includes(cat) || (cat === 'All' && btn.innerText.includes('All'))) 
@@ -844,6 +901,7 @@
         }
 
         window.openProfileSection = function(section) {
+            if (window.triggerTelegramHaptic) triggerTelegramHaptic('light');
             const modal = document.getElementById('profile-sub-modal');
             const titleEl = document.getElementById('profile-modal-title');
             const bodyEl = document.getElementById('profile-modal-body');
@@ -853,19 +911,19 @@
             if (section === 'personal') {
                 titleEl.innerText = "Personal Information";
                 bodyEl.innerHTML = `<div class="space-y-3">
-                    <input type="text" id="edit-name" value="${uData.name || ''}" class="w-full border rounded-xl px-3 py-2">
-                    <input type="email" id="edit-email" value="${uData.email || ''}" class="w-full border rounded-xl px-3 py-2">
+                    <input type="text" id="edit-name" value="${sanitizeHTML(uData.name || '')}" class="w-full border rounded-xl px-3 py-2">
+                    <input type="email" id="edit-email" value="${sanitizeHTML(uData.email || '')}" class="w-full border rounded-xl px-3 py-2">
                     <button onclick="savePersonalData()" class="w-full bg-[#800f2f] text-white font-bold py-2 rounded-xl">Save</button>
                 </div>`;
             } else if (section === 'orders') {
                 titleEl.innerText = "My Orders";
                 bodyEl.innerHTML = (window.orders || []).length === 0 ? `<p class="text-xs text-gray-400 text-center py-4">No orders.</p>` :
-                    window.orders.map(o => `<div class="bg-gray-50 p-2.5 rounded-xl border flex justify-between"><b>${o.orderNum || '#ORD-101'}</b><span class="text-[#a4133c] font-bold">$${o.total || 0}</span></div>`).join('');
+                    window.orders.map(o => `<div class="bg-gray-50 p-2.5 rounded-xl border flex justify-between"><b>${sanitizeHTML(o.orderNum || '#ORD-101')}</b><span class="text-[#a4133c] font-bold">$${o.total || 0}</span></div>`).join('');
             } else if (section === 'favorites') {
                 titleEl.innerText = "My Favorites";
                 let favs = window.products.filter(p => wishlist.includes(p.id));
                 bodyEl.innerHTML = favs.length === 0 ? `<p class="text-xs text-gray-400 text-center py-4">No favorites.</p>` :
-                    `<div class="grid grid-cols-2 gap-2">${favs.map(p => `<div onclick="closeProfileSubModal(); openProductDetailModal('${p.id}')" class="bg-gray-50 p-2 rounded-xl border cursor-pointer"><img src="${p.image}" class="w-full aspect-square object-cover rounded mb-1"><b class="text-[11px] truncate block">${p.name}</b></div>`).join('')}</div>`;
+                    `<div class="grid grid-cols-2 gap-2">${favs.map(p => `<div onclick="closeProfileSubModal(); openProductDetailModal('${p.id}')" class="bg-gray-50 p-2 rounded-xl border cursor-pointer"><img src="${p.image}" class="w-full aspect-square object-cover rounded mb-1"><b class="text-[11px] truncate block">${sanitizeHTML(p.name)}</b></div>`).join('')}</div>`;
             } else {
                 titleEl.innerText = "Section Details";
                 bodyEl.innerHTML = `<p class="text-gray-500 text-center py-4">Content available soon.</p>`;
@@ -874,19 +932,22 @@
         window.closeProfileSubModal = function() { document.getElementById('profile-sub-modal').classList.add('hidden'); };
 
         window.savePersonalData = async function() {
-            const name = document.getElementById('edit-name').value;
+            const rawName = document.getElementById('edit-name').value;
+            const name = sanitizeHTML(rawName);
             const email = document.getElementById('edit-email').value;
             if (window.currentUser) {
                 await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { name, email });
                 window.currentUserData.name = name;
                 window.currentUserData.email = email;
                 document.getElementById('cust-profile-name').innerText = name;
+                if (window.triggerTelegramHaptic) triggerTelegramHaptic('success');
                 alert('Updated successfully!');
                 closeProfileSubModal();
             }
         };
 
         function setReviewRating(rating) {
+            if (window.triggerTelegramHaptic) triggerTelegramHaptic('light');
             window.currentSelectedStarRating = rating;
             const stars = document.getElementById('star-rating-select').children;
             for (let i = 0; i < 5; i++) stars[i].className = i < rating ? "fa-solid fa-star cursor-pointer text-amber-400" : "fa-regular fa-star cursor-pointer text-gray-300";
@@ -897,11 +958,12 @@
             if (!p) return;
             window.currentSelectedProdId = id;
             if (!silent) {
+                if (window.triggerTelegramHaptic) triggerTelegramHaptic('light');
                 try { await updateDoc(doc(window.firebaseDb, "products", id), { viewsCount: increment(1) }); } catch(e){}
             }
             document.getElementById('view-prod-image').src = p.image || FALLBACK_IMAGE;
             document.getElementById('view-prod-category').innerText = p.category || 'Accessories';
-            document.getElementById('view-prod-name').innerText = p.name;
+            document.getElementById('view-prod-name').innerText = sanitizeHTML(p.name);
             document.getElementById('view-prod-price').innerText = `$${Number(p.price).toFixed(2)}`;
             document.getElementById('view-prod-sku').innerText = `SKU: ${p.sku || 'N/A'}`;
             document.getElementById('view-prod-stock').innerText = `${p.stock ?? 10} available`;
@@ -911,9 +973,9 @@
             document.getElementById('prod-reviews-list').innerHTML = reviews.length === 0 ? `<p class="text-gray-400 text-[10px]">No comments yet.</p>` :
                 reviews.map(r => `
                     <div class="bg-gray-50 p-2 rounded-xl border space-y-1">
-                        <div class="flex justify-between text-[9px]"><b class="text-gray-800">${r.author}</b><span class="text-amber-400">★ ${r.rating}.0</span></div>
-                        <p class="text-gray-700 text-[10px]">${r.text}</p>
-                        ${r.adminReply ? `<div class="bg-pink-50 p-1 rounded text-[9px] text-[#a4133c]"><b>Admin:</b> ${r.adminReply}</div>` : ''}
+                        <div class="flex justify-between text-[9px]"><b class="text-gray-800">${sanitizeHTML(r.author)}</b><span class="text-amber-400">★ ${r.rating}.0</span></div>
+                        <p class="text-gray-700 text-[10px]">${sanitizeHTML(r.text)}</p>
+                        ${r.adminReply ? `<div class="bg-pink-50 p-1 rounded text-[9px] text-[#a4133c]"><b>Admin:</b> ${sanitizeHTML(r.adminReply)}</div>` : ''}
                         <button onclick="likeProductReview('${p.id}', '${r.id}')" class="text-red-500 text-[9px] font-bold"><i class="fa-solid fa-heart"></i> ${r.likes || 0} Likes</button>
                     </div>
                 `).join('');
@@ -939,7 +1001,7 @@
                             <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full h-full object-cover">
                             <button onclick="event.stopPropagation(); toggleWishlist('${p.id}')" class="absolute top-2 right-2 w-6 h-6 bg-white/90 rounded-full flex items-center justify-center text-[10px] ${wishlist.includes(p.id) ? 'text-red-500' : 'text-gray-400'}"><i class="fa-solid fa-heart"></i></button>
                         </div>
-                        <h4 class="font-serif italic font-bold text-xs text-gray-900 truncate">${p.name}</h4>
+                        <h4 class="font-serif italic font-bold text-xs text-gray-900 truncate">${sanitizeHTML(p.name)}</h4>
                     </div>
                     <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-50">
                         <span class="font-bold text-xs text-[#a4133c]">$${Number(p.price).toFixed(2)}</span>
@@ -950,14 +1012,19 @@
         }
 
         function filterProducts() { renderProducts(); }
-        function toggleWishlist(id) { wishlist = wishlist.includes(id) ? wishlist.filter(i => i !== id) : [...wishlist, id]; renderProducts(); }
+        function toggleWishlist(id) {
+            if (window.triggerTelegramHaptic) triggerTelegramHaptic('medium');
+            wishlist = wishlist.includes(id) ? wishlist.filter(i => i !== id) : [...wishlist, id];
+            renderProducts();
+        }
         function renderWishlist() {
             let favs = window.products.filter(p => wishlist.includes(p.id));
             document.getElementById('wishlist-grid').innerHTML = favs.length === 0 ? `<p class="text-xs text-gray-400 col-span-2 text-center py-6">No saved items.</p>` :
-                favs.map(p => `<div onclick="openProductDetailModal('${p.id}')" class="bg-white rounded-2xl p-2.5 border shadow-xs cursor-pointer"><img src="${p.image}" class="w-full aspect-square object-cover rounded-xl mb-2"><h4 class="font-serif italic font-bold text-xs truncate">${p.name}</h4></div>`).join('');
+                favs.map(p => `<div onclick="openProductDetailModal('${p.id}')" class="bg-white rounded-2xl p-2.5 border shadow-xs cursor-pointer"><img src="${p.image}" class="w-full aspect-square object-cover rounded-xl mb-2"><h4 class="font-serif italic font-bold text-xs truncate">${sanitizeHTML(p.name)}</h4></div>`).join('');
         }
 
         function addToCart(id) {
+            if (window.triggerTelegramHaptic) triggerTelegramHaptic('success');
             const prod = window.products.find(p => p.id === id);
             const existing = cart.find(i => i.id === id);
             if (existing) existing.qty += 1; else cart.push({ ...prod, qty: 1 });
@@ -967,8 +1034,9 @@
         }
 
         function openCartDrawer() {
+            if (window.triggerTelegramHaptic) triggerTelegramHaptic('light');
             document.getElementById('cart-items-container').innerHTML = cart.length === 0 ? `<p class="text-xs text-gray-400 text-center py-8">Your cart is empty</p>` :
-                cart.map(item => `<div class="flex justify-between items-center text-xs border-b pb-2"><span><b>${item.name}</b> (x${item.qty})</span><span class="font-bold text-[#a4133c]">$${(item.price * item.qty).toFixed(2)}</span></div>`).join('');
+                cart.map(item => `<div class="flex justify-between items-center text-xs border-b pb-2"><span><b>${sanitizeHTML(item.name)}</b> (x${item.qty})</span><span class="font-bold text-[#a4133c]">$${(item.price * item.qty).toFixed(2)}</span></div>`).join('');
             document.getElementById('cart-total').innerText = `$${cart.reduce((s, i) => s + (i.price * i.qty), 0).toFixed(2)}`;
             document.getElementById('cart-drawer').classList.remove('hidden');
         }
@@ -977,7 +1045,10 @@
         function closeCheckoutModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
 
         window.initiateBakongPayment = function() {
-            if (!document.getElementById('checkout-name').value || !document.getElementById('checkout-phone').value) return alert('Fill details.');
+            const rawName = document.getElementById('checkout-name').value;
+            const rawPhone = document.getElementById('checkout-phone').value;
+            if (!rawName || !rawPhone) return alert('Fill details.');
+            if (window.triggerTelegramHaptic) triggerTelegramHaptic('medium');
             const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
             document.getElementById('bakong-pay-amount').innerText = `$${total.toFixed(2)}`;
             document.getElementById('bakong-qr-img').src = `https://quickchart.io/qr?text=mininize@bakong&size=250`;
@@ -1026,8 +1097,8 @@
             if (!tbody) return;
             tbody.innerHTML = (window.orders || []).map(o => `
                 <tr class="border-b">
-                    <td class="p-3 font-mono"><b>${o.orderNum || '#ORD-101'}</b></td>
-                    <td class="p-3">${o.customerName || 'Shopper'}</td>
+                    <td class="p-3 font-mono"><b>${sanitizeHTML(o.orderNum || '#ORD-101')}</b></td>
+                    <td class="p-3">${sanitizeHTML(o.customerName || 'Shopper')}</td>
                     <td class="p-3"><select onchange="updateOrderStatus('${o.docId}', this.value)" class="border rounded px-1"><option>Processing</option><option>Shipped</option></select></td>
                     <td class="p-3 font-bold text-[#a4133c]">$${o.total || 0}</td>
                     <td class="p-3 text-right">View</td>
@@ -1040,8 +1111,8 @@
             if (!tbody) return;
             tbody.innerHTML = window.products.map(p => `
                 <tr class="border-b">
-                    <td class="p-3"><b>${p.name}</b></td>
-                    <td class="p-3">${p.category}</td>
+                    <td class="p-3"><b>${sanitizeHTML(p.name)}</b></td>
+                    <td class="p-3">${sanitizeHTML(p.category)}</td>
                     <td class="p-3 font-bold">$${p.price}</td>
                     <td class="p-3 text-right"><button onclick="deleteProduct('${p.id}')" class="text-red-500">Delete</button></td>
                 </tr>
@@ -1056,8 +1127,8 @@
             container.innerHTML = allReviews.length === 0 ? `<p class="text-gray-400 text-center py-4">No reviews.</p>` :
                 allReviews.map(r => `
                     <div class="bg-gray-50 p-3 rounded-xl border space-y-1">
-                        <b>${r.productName}</b> - <span>${r.author}</span>
-                        <p>${r.text}</p>
+                        <b>${sanitizeHTML(r.productName)}</b> - <span>${sanitizeHTML(r.author)}</span>
+                        <p>${sanitizeHTML(r.text)}</p>
                         <button onclick="adminDeleteReview('${r.productId}', '${r.id}')" class="text-red-600 font-bold">Remove</button>
                     </div>
                 `).join('');
