@@ -128,25 +128,9 @@
                             <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-heart text-[#a4133c] w-4"></i><span>My Favorites</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
-                        <button onclick="openProfileSection('payments')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
-                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-wallet text-[#a4133c] w-4"></i><span>Payment Methods</span></span>
-                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-                        </button>
-                        <button onclick="openProfileSection('notifications')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
-                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-bell text-[#a4133c] w-4"></i><span>Notifications</span></span>
-                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-                        </button>
-                        <button onclick="openProfileSection('support')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
-                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-circle-question text-[#a4133c] w-4"></i><span>Help & Support</span></span>
-                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-                        </button>
-                        <button onclick="openProfileSection('settings')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
-                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-gear text-[#a4133c] w-4"></i><span>Settings</span></span>
-                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-                        </button>
                     </div>
 
-                    <button onclick="handleSignOut()" class="w-full bg-white border border-gray-200 text-red-600 font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Log out or close the Mini App</button>
+                    <button onclick="handleSignOut()" class="w-full bg-white border border-gray-200 text-red-600 font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Log out</button>
                 </div>
 
                 <!-- AUTH BOX -->
@@ -181,198 +165,64 @@
         <!-- ADMIN PORTAL -->
         <div id="admin-view" class="hidden space-y-4">
             <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs flex justify-between items-center">
+                <span class="font-bold text-xs text-gray-900 flex items-center"><i class="fa-solid fa-shield-halved text-[#a4133c] mr-1.5"></i> Mininize Studio Admin</span>
                 <div class="flex items-center space-x-2">
-                    <span class="font-bold text-xs text-gray-900 flex items-center"><i class="fa-solid fa-shield-halved text-[#a4133c] mr-1.5"></i> Mininize Studio Admin</span>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <button onclick="openProductModal()" class="bg-[#800f2f] hover:bg-[#590d22] text-white text-xs px-3 py-2 min-h-[40px] rounded-xl font-bold shadow-xs flex items-center space-x-1">
-                        <i class="fa-solid fa-plus text-[10px]"></i><span>Add Product</span>
-                    </button>
-                    <button onclick="handleSignOut()" class="text-xs bg-red-50 text-red-600 px-3 py-2 min-h-[40px] rounded-xl font-medium">Sign Out</button>
+                    <button onclick="openProductModal()" class="bg-[#800f2f] text-white text-xs px-3 py-2 rounded-xl font-bold">+ Add Product</button>
+                    <button onclick="handleSignOut()" class="text-xs bg-red-50 text-red-600 px-3 py-2 rounded-xl font-medium">Sign Out</button>
                 </div>
             </div>
-
             <div class="flex space-x-1 border-b border-gray-200 text-xs font-semibold overflow-x-auto">
-                <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c]">Orders Management</button>
-                <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Product Management</button>
-                <button onclick="switchAdminNav('inventory')" id="adtab-inventory" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Stock Management</button>
-                <button onclick="switchAdminNav('reviews')" id="adtab-reviews" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Reviews Moderation ⭐</button>
-                <button onclick="switchAdminNav('promotions')" id="adtab-promotions" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Banners & History</button>
+                <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c]">Orders</button>
+                <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Products</button>
+                <button onclick="switchAdminNav('reviews')" id="adtab-reviews" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Reviews ⭐</button>
             </div>
-
-            <!-- ORDERS SECTION -->
             <div id="admin-sec-orders" class="space-y-4">
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden p-4 space-y-4">
-                    <div class="space-y-1">
-                        <h2 class="text-sm font-bold text-gray-900">Orders Management</h2>
-                        <p class="text-[11px] text-gray-400">Track and manage all customer orders</p>
-                    </div>
-                    <div class="flex flex-col md:flex-row justify-between items-center gap-3 bg-gray-50/60 p-3 rounded-2xl">
-                        <div class="relative w-full md:w-72">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-[11px]"></i></span>
-                            <input type="text" id="admin-search-orders" oninput="renderAdminOrders()" placeholder="Search orders..." class="w-full pl-8 pr-3 py-1.5 bg-white border border-gray-200 rounded-xl text-xs focus:outline-none focus:border-[#a4133c]">
-                        </div>
-                        <div class="flex space-x-1 overflow-x-auto text-[11px] font-medium" id="order-status-filters">
-                            <button onclick="filterOrderStatus('All')" id="ordfilt-All" class="px-3 py-1 bg-[#800f2f] text-white rounded-xl shadow-xs">All</button>
-                            <button onclick="filterOrderStatus('Processing')" id="ordfilt-Processing" class="px-3 py-1 bg-white border border-gray-200 text-gray-600 rounded-xl">Processing</button>
-                            <button onclick="filterOrderStatus('Shipped')" id="ordfilt-Shipped" class="px-3 py-1 bg-white border border-gray-200 text-gray-600 rounded-xl">Shipped</button>
-                            <button onclick="filterOrderStatus('Pending')" id="ordfilt-Pending" class="px-3 py-1 bg-white border border-gray-200 text-gray-600 rounded-xl">Pending</button>
-                            <button onclick="filterOrderStatus('Cancelled')" id="ordfilt-Cancelled" class="px-3 py-1 bg-white border border-gray-200 text-gray-600 rounded-xl">Cancelled</button>
-                        </div>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead>
-                                <tr class="text-gray-400 border-b border-gray-100 text-[10px] bg-gray-50/50">
-                                    <th class="p-3">Order ID</th>
-                                    <th class="p-3">Customer</th>
-                                    <th class="p-3">Items</th>
-                                    <th class="p-3">Status</th>
-                                    <th class="p-3">Total</th>
-                                    <th class="p-3">Date</th>
-                                    <th class="p-3 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-orders-table-body" class="divide-y divide-gray-50 text-[11px]"></tbody>
-                        </table>
-                    </div>
+                <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100">
+                    <table class="w-full text-left text-xs">
+                        <thead><tr class="text-gray-400 border-b text-[10px]"><th class="p-2">Order</th><th class="p-2">Customer</th><th class="p-2">Status</th><th class="p-2">Total</th><th class="p-2 text-right">Action</th></tr></thead>
+                        <tbody id="admin-orders-table-body" class="divide-y text-[11px]"></tbody>
+                    </table>
                 </div>
             </div>
-
-            <!-- PRODUCT SECTION -->
             <div id="admin-sec-products" class="hidden space-y-4">
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden p-4 space-y-3">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-sm font-bold text-gray-900">Product Management (PMS)</h2>
-                        <button onclick="openProductModal()" class="bg-[#800f2f] text-white text-xs px-3 py-1.5 rounded-xl font-bold">+ Add Product</button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead>
-                                <tr class="text-gray-400 border-b border-gray-100 text-[10px] bg-gray-50/50">
-                                    <th class="p-3">Product Name</th>
-                                    <th class="p-3">SKU</th>
-                                    <th class="p-3">Category</th>
-                                    <th class="p-3">Price</th>
-                                    <th class="p-3">Views 👁️</th>
-                                    <th class="p-3 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-products-table-body" class="divide-y divide-gray-50 text-[11px]"></tbody>
-                        </table>
-                    </div>
+                <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100">
+                    <table class="w-full text-left text-xs">
+                        <thead><tr class="text-gray-400 border-b text-[10px]"><th class="p-2">Name</th><th class="p-2">Category</th><th class="p-2">Price</th><th class="p-2 text-right">Actions</th></tr></thead>
+                        <tbody id="admin-products-table-body" class="divide-y text-[11px]"></tbody>
+                    </table>
                 </div>
             </div>
-
-            <!-- STOCK SECTION -->
-            <div id="admin-sec-inventory" class="hidden space-y-4">
-                <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden p-4 space-y-3">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h2 class="text-sm font-bold text-gray-900">Stock Management & Intelligence</h2>
-                            <p class="text-[10px] text-gray-400">Manage reorder points & batch restock items</p>
-                        </div>
-                        <button onclick="filterLowStock()" id="low-stock-filter-btn" class="border border-gray-200 px-3 py-1.5 rounded-xl text-xs text-gray-600 font-medium hover:bg-gray-50">
-                            <i class="fa-solid fa-triangle-exclamation text-amber-500 mr-1"></i> Low Stock Alert
-                        </button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead>
-                                <tr class="text-gray-400 border-b border-gray-100 text-[10px] bg-gray-50/50">
-                                    <th class="p-3">Product Name</th>
-                                    <th class="p-3">SKU</th>
-                                    <th class="p-3">Category</th>
-                                    <th class="p-3">Stock Level</th>
-                                    <th class="p-3">Reorder Point</th>
-                                    <th class="p-3 text-right">Quick Restock</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-inventory-table-body" class="divide-y divide-gray-50 text-[11px]"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- REVIEWS SECTION -->
-            <div id="admin-sec-reviews" class="hidden space-y-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
-                <div class="space-y-1">
-                    <h2 class="text-sm font-bold text-gray-900">Customer Reviews Moderation</h2>
-                    <p class="text-[11px] text-gray-400">Review all comments, reply as admin, react with likes, or delete comments</p>
-                </div>
+            <div id="admin-sec-reviews" class="hidden bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-3">
                 <div id="admin-reviews-list-container" class="space-y-3 max-h-[60vh] overflow-y-auto text-xs"></div>
             </div>
-
-            <!-- BANNER MANAGER -->
-            <div id="admin-sec-promotions" class="hidden space-y-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-xs">
-                <div class="space-y-2">
-                    <h4 class="font-bold text-xs text-gray-900">Create or Edit Customer Pop-up Banner</h4>
-                    <input type="hidden" id="cust-promo-id" value="">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
-                        <input type="text" id="cust-promo-tag" placeholder="Tag (e.g. Special Offer)" class="border border-gray-200 rounded-xl px-3 py-1.5">
-                        <input type="text" id="cust-promo-title" placeholder="Title (e.g. Get 30% OFF)" class="border border-gray-200 rounded-xl px-3 py-1.5">
-                        <input type="text" id="cust-promo-desc" placeholder="Description" class="border border-gray-200 rounded-xl px-3 py-1.5">
-                        <input type="text" id="cust-promo-code" placeholder="Coupon Code (e.g. MINI10)" class="border border-gray-200 rounded-xl px-3 py-1.5 uppercase">
-                    </div>
-                    <div class="flex space-x-2">
-                        <button onclick="saveAdminBannerSettings()" class="bg-[#800f2f] text-white text-xs px-4 py-2 rounded-xl font-medium shadow-xs">Save Banner & Publish Live ✨</button>
-                        <button onclick="clearBannerForm()" class="bg-gray-100 text-gray-600 text-xs px-3 py-2 rounded-xl font-medium">Clear Form</button>
-                    </div>
-                </div>
-                <hr class="border-gray-100 my-2">
-                <div class="space-y-2">
-                    <h4 class="font-bold text-xs text-gray-900">Banner History (Database Log)</h4>
-                    <div id="admin-banner-history-list" class="space-y-2 max-h-60 overflow-y-auto text-xs"></div>
-                </div>
-            </div>
-
         </div>
 
     </main>
 
-    <!-- PROFILE SUB-SECTION MODAL -->
-    <div id="profile-sub-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative text-xs border border-gray-100 max-h-[90vh] overflow-y-auto">
-            <button onclick="closeProfileSubModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
-            <h3 id="profile-modal-title" class="font-serif italic font-bold text-sm text-gray-900">Section Title</h3>
-            <div id="profile-modal-body" class="space-y-3"></div>
-        </div>
-    </div>
-
     <!-- PRODUCT DETAIL MODAL -->
-    <div id="product-detail-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 transition-opacity">
+    <div id="product-detail-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-4 space-y-3 shadow-2xl relative text-xs max-h-[90vh] overflow-y-auto border border-gray-100">
             <button onclick="closeProductDetailModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
             <div class="relative w-full aspect-square bg-gray-50 rounded-2xl overflow-hidden">
                 <img id="view-prod-image" src="" class="w-full h-full object-cover">
-                <span id="view-prod-category" class="absolute bottom-2 left-2 bg-white/90 backdrop-blur-md text-gray-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-xs">Category</span>
-                <button onclick="shareProduct()" class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-gray-700 hover:text-[#a4133c] w-8 h-8 rounded-full flex items-center justify-center shadow-xs transition-colors" title="Share Product">
+                <span id="view-prod-category" class="absolute bottom-2 left-2 bg-white/90 text-gray-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full">Category</span>
+                <button onclick="shareProduct()" class="absolute top-3 left-3 bg-white/90 text-gray-700 w-8 h-8 rounded-full flex items-center justify-center shadow-xs">
                     <i class="fa-solid fa-share-nodes text-xs"></i>
                 </button>
             </div>
             <div class="space-y-1">
                 <div class="flex justify-between items-start">
-                    <h3 id="view-prod-name" class="font-serif italic font-bold text-sm text-gray-900 leading-snug">Product Title</h3>
+                    <h3 id="view-prod-name" class="font-serif italic font-bold text-sm text-gray-900">Product Title</h3>
                     <span id="view-prod-price" class="font-bold text-sm text-[#a4133c]">$0.00</span>
                 </div>
-                <div class="flex justify-between items-center text-[10px] text-gray-400 font-mono">
-                    <span id="view-prod-sku">SKU: N/A</span>
-                    <button onclick="shareProduct()" class="text-[#a4133c] font-sans font-medium flex items-center space-x-1 hover:underline">
-                        <i class="fa-solid fa-share"></i>
-                        <span>Share with friends</span>
-                    </button>
-                </div>
-                <p id="view-prod-desc" class="text-[11px] text-gray-500 pt-1 leading-relaxed">High-quality aesthetic products crafted with care.</p>
             </div>
-
             <div class="border-t border-gray-100 pt-3 space-y-2">
                 <h4 class="font-bold text-xs text-gray-900 flex justify-between items-center">
-                    <span>Customer Reviews & Comments ⭐</span>
+                    <span>Reviews ⭐</span>
                     <span id="prod-avg-rating" class="text-amber-500 text-[11px]">0.0 / 5.0</span>
                 </h4>
                 <div id="prod-reviews-list" class="space-y-1.5 max-h-40 overflow-y-auto text-[11px]"></div>
-                
-                <div class="bg-gray-50 p-2.5 rounded-2xl border border-gray-100 space-y-1.5 mt-2">
+                <div class="bg-gray-50 p-2.5 rounded-2xl border space-y-1.5 mt-2">
                     <p class="font-bold text-[10px] text-gray-600">Leave a Review:</p>
                     <div class="flex items-center space-x-1 text-amber-400 text-xs" id="star-rating-select">
                         <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(1)"></i>
@@ -381,39 +231,28 @@
                         <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(4)"></i>
                         <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(5)"></i>
                     </div>
-                    <input type="text" id="new-review-text" placeholder="Share your experience..." class="w-full border border-gray-200 rounded-xl px-2.5 py-1 text-[11px]">
-                    <button onclick="submitProductReview()" class="w-full bg-gray-900 hover:bg-gray-800 text-white font-bold py-1.5 rounded-xl text-[10px] shadow-xs active:scale-95 transition-transform">Submit Review</button>
+                    <input type="text" id="new-review-text" placeholder="Share your experience..." class="w-full border rounded-xl px-2.5 py-1 text-[11px]">
+                    <button onclick="submitProductReview()" class="w-full bg-gray-900 text-white font-bold py-1.5 rounded-xl text-[10px]">Submit Review</button>
                 </div>
             </div>
-
-            <div class="flex items-center justify-between border-t border-gray-50 pt-3">
-                <div class="text-[10px] text-gray-400"><span>Stock Status: </span><b id="view-prod-stock" class="text-emerald-600 font-bold">10 available</b></div>
-                <button id="view-prod-add-btn" class="bg-[#800f2f] text-white font-bold text-xs px-4 py-2.5 min-h-[44px] rounded-xl shadow-xs flex items-center space-x-1.5"><i class="fa-solid fa-cart-shopping"></i><span>Add to Bag</span></button>
+            <div class="flex items-center justify-between border-t pt-3">
+                <span id="view-prod-stock" class="text-emerald-600 font-bold text-[10px]">10 available</span>
+                <button id="view-prod-add-btn" class="bg-[#800f2f] text-white font-bold text-xs px-4 py-2.5 rounded-xl"><i class="fa-solid fa-cart-shopping"></i> Add to Bag</button>
             </div>
         </div>
     </div>
 
-    <!-- BOTTOM NAV -->
-    <nav id="customer-nav" class="fixed bottom-0 inset-x-0 bg-white border-t border-gray-100 py-2 px-6 z-40 shadow-sm">
-        <div class="max-w-md mx-auto flex justify-around items-center text-xs">
-            <button onclick="switchCustomerTab('shop')" id="nav-btn-shop" class="flex flex-col items-center text-[#a4133c] font-bold"><i class="fa-solid fa-store text-sm mb-0.5"></i> Shop</button>
-            <button onclick="switchCustomerTab('wishlist')" id="nav-btn-wishlist" class="flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-heart text-sm mb-0.5"></i> Wishlist</button>
-            <button onclick="openCartDrawer()" class="relative flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-cart-shopping text-sm mb-0.5"></i> Cart<span id="cart-badge" class="absolute -top-1 -right-2 bg-[#a4133c] text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold">0</span></button>
-            <button onclick="switchCustomerTab('profile')" id="nav-btn-profile" class="flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-user text-sm mb-0.5"></i> Profile</button>
-        </div>
-    </nav>
-
     <!-- CART DRAWER -->
     <div id="cart-drawer" class="fixed inset-0 bg-black/40 z-50 hidden transition-opacity">
         <div class="absolute inset-y-0 right-0 max-w-xs w-full bg-white shadow-xl flex flex-col p-4">
-            <div class="flex justify-between items-center border-b border-gray-50 pb-2.5">
+            <div class="flex justify-between items-center border-b pb-2.5">
                 <h3 class="font-serif italic font-bold text-xs text-gray-900"><i class="fa-solid fa-bag-shopping text-[#a4133c] mr-1"></i> Shopping Bag</h3>
                 <button onclick="closeCartDrawer()" class="text-gray-400 text-xs"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div id="cart-items-container" class="flex-1 overflow-y-auto py-2 space-y-2 text-xs"></div>
-            <div class="border-t border-gray-50 pt-2.5 space-y-2 text-xs">
-                <div class="flex justify-between font-bold text-gray-900 pt-1"><span>Total</span><span id="cart-total" class="text-[#a4133c]">$0.00</span></div>
-                <button onclick="openCheckoutModal()" class="w-full bg-[#800f2f] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Proceed to Payment</button>
+            <div class="border-t pt-2.5 space-y-2 text-xs">
+                <div class="flex justify-between font-bold text-gray-900"><span>Total</span><span id="cart-total" class="text-[#a4133c]">$0.00</span></div>
+                <button onclick="openCheckoutModal()" class="w-full bg-[#800f2f] text-white font-bold py-2.5 rounded-xl">Proceed to Payment</button>
             </div>
         </div>
     </div>
@@ -424,33 +263,37 @@
             <button onclick="closeCheckoutModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
             <h3 class="font-serif italic font-bold text-xs text-gray-900">Delivery Details</h3>
             <div class="space-y-2">
-                <input type="text" id="checkout-name" placeholder="Full Name" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                <input type="text" id="checkout-phone" placeholder="Phone Number" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                <textarea id="checkout-address" placeholder="Delivery Address" rows="2" class="w-full border border-gray-200 rounded-xl px-3 py-1.5"></textarea>
+                <input type="text" id="checkout-name" placeholder="Full Name" class="w-full border rounded-xl px-3 py-1.5">
+                <input type="text" id="checkout-phone" placeholder="Phone Number" class="w-full border rounded-xl px-3 py-1.5">
+                <textarea id="checkout-address" placeholder="Delivery Address" rows="2" class="w-full border rounded-xl px-3 py-1.5"></textarea>
             </div>
-            <button onclick="initiateBakongPayment()" class="w-full bg-red-600 text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs flex items-center justify-center space-x-1.5">
+            <button onclick="initiateBakongPayment()" class="w-full bg-red-600 text-white font-bold py-2.5 rounded-xl flex items-center justify-center space-x-1.5">
                 <i class="fa-solid fa-qrcode"></i><span>Pay via Bakong KHQR</span>
             </button>
         </div>
     </div>
 
-    <!-- BAKONG KHQR PAYMENT MODAL -->
+    <!-- BAKONG KHQR PAYMENT & AUTOMATED VERIFICATION MODAL -->
     <div id="bakong-payment-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-xs w-full p-5 space-y-4 shadow-2xl relative text-center border border-gray-100">
-            <button onclick="cancelBakongPayment()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs"><i class="fa-solid fa-xmark"></i></button>
+            <button onclick="cancelBakongPayment()" class="absolute top-3 right-3 text-gray-400 text-xs"><i class="fa-solid fa-xmark"></i></button>
             <div class="flex items-center justify-center space-x-1.5">
                 <span class="bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded">KHQR</span>
-                <span class="font-bold text-xs text-gray-900">Bakong Payment</span>
+                <span class="font-bold text-xs text-gray-900">Bakong Auto Verification</span>
             </div>
-            <div class="bg-red-50/50 p-3 rounded-2xl border border-red-100 space-y-1">
-                <p class="text-[10px] text-gray-400">Total Amount Due</p>
+            <div class="bg-red-50 p-3 rounded-2xl border border-red-100 space-y-1">
+                <p class="text-[10px] text-gray-400">Total Due</p>
                 <h3 id="bakong-pay-amount" class="text-xl font-black text-red-600">$0.00</h3>
                 <p id="bakong-pay-ordernum" class="text-[9px] font-mono text-gray-500">Order: #ORD-000</p>
             </div>
-            <div class="bg-white p-2 border border-gray-200 rounded-2xl shadow-inner inline-block">
+            <div class="bg-white p-2 border rounded-2xl shadow-inner inline-block">
                 <img id="bakong-qr-img" src="" class="w-44 h-44 mx-auto rounded-lg object-contain">
             </div>
-            <a id="bakong-deeplink-btn" href="#" target="_blank" class="block w-full bg-red-600 text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Open Bakong App</a>
+            <div id="payment-status-indicator" class="text-[11px] font-bold text-amber-600 flex items-center justify-center space-x-1.5">
+                <i class="fa-solid fa-circle-notch animate-spin text-xs"></i>
+                <span>Awaiting Bakong Network Confirmation...</span>
+            </div>
+            <button onclick="verifyBakongTransactionManual()" class="w-full bg-emerald-600 text-white font-bold text-xs py-2.5 rounded-xl">I Have Sent Payment (Verify)</button>
         </div>
     </div>
 
@@ -461,9 +304,9 @@
             <h3 id="product-modal-title" class="font-serif italic font-bold text-xs text-gray-900">Add Product to Database</h3>
             <input type="hidden" id="prod-id" value="">
             <div class="space-y-2">
-                <input type="text" id="prod-name" placeholder="Product Name" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                <input type="text" id="prod-sku" placeholder="SKU Code (Auto-generated if blank)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 uppercase">
-                <select id="prod-category" class="w-full border border-gray-200 rounded-xl px-3 py-1.5 bg-white">
+                <input type="text" id="prod-name" placeholder="Product Name" class="w-full border rounded-xl px-3 py-1.5">
+                <input type="text" id="prod-sku" placeholder="SKU Code" class="w-full border rounded-xl px-3 py-1.5 uppercase">
+                <select id="prod-category" class="w-full border rounded-xl px-3 py-1.5 bg-white">
                     <option value="Hairpins">Hairpins 🎀</option>
                     <option value="Necklaces">Necklaces 📿</option>
                     <option value="Rings">Rings 💍</option>
@@ -473,19 +316,29 @@
                     <option value="Hair Accessories">Hair Accessories 🌸</option>
                     <option value="Makeup Accessories">Makeup Accessories 💄</option>
                 </select>
-                <input type="number" step="0.01" id="prod-price" placeholder="Price ($)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                <input type="number" id="prod-stock" placeholder="Stock Quantity" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
-                <input type="text" id="prod-image" placeholder="Image URL (.jpg / .png)" class="w-full border border-gray-200 rounded-xl px-3 py-1.5">
+                <input type="number" step="0.01" id="prod-price" placeholder="Price ($)" class="w-full border rounded-xl px-3 py-1.5">
+                <input type="number" id="prod-stock" placeholder="Stock Quantity" class="w-full border rounded-xl px-3 py-1.5">
+                <input type="text" id="prod-image" placeholder="Image URL" class="w-full border rounded-xl px-3 py-1.5">
             </div>
-            <button onclick="saveAdminProduct()" class="w-full bg-[#800f2f] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Save Product</button>
+            <button onclick="saveAdminProduct()" class="w-full bg-[#800f2f] text-white font-bold py-2.5 rounded-xl">Save Product</button>
         </div>
     </div>
 
-    <!-- FIREBASE MODULE & BACKEND -->
+    <!-- BOTTOM NAV -->
+    <nav id="customer-nav" class="fixed bottom-0 inset-x-0 bg-white border-t py-2 px-6 z-40 shadow-sm">
+        <div class="max-w-md mx-auto flex justify-around items-center text-xs">
+            <button onclick="switchCustomerTab('shop')" id="nav-btn-shop" class="flex flex-col items-center text-[#a4133c] font-bold"><i class="fa-solid fa-store text-sm"></i> Shop</button>
+            <button onclick="switchCustomerTab('wishlist')" id="nav-btn-wishlist" class="flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-heart text-sm"></i> Wishlist</button>
+            <button onclick="openCartDrawer()" class="relative flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-cart-shopping text-sm"></i> Cart<span id="cart-badge" class="absolute -top-1 -right-2 bg-[#a4133c] text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold">0</span></button>
+            <button onclick="switchCustomerTab('profile')" id="nav-btn-profile" class="flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-user text-sm"></i> Profile</button>
+        </div>
+    </nav>
+
+    <!-- FIREBASE & CORE ENGINE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, setDoc, getDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, setDoc, getDoc, query, limit, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDz6snwoujsmp8IQ5-1c2_IL-JmEOx2tIM",
@@ -503,7 +356,7 @@
         window.firebaseDb = db;
         window.firebaseAuth = auth;
 
-        // OPTION 1: DOM XSS SANITIZATION HELPER
+        // XSS SANITIZATION
         window.sanitizeHTML = function(str) {
             if (!str) return '';
             const temp = document.createElement('div');
@@ -511,57 +364,63 @@
             return temp.innerHTML;
         };
 
-        // OPTION 2: NATIVE TELEGRAM HAPTICS UTILITY
+        // TELEGRAM HAPTICS
         window.triggerTelegramHaptic = function(type = 'light') {
             try {
                 if (window.Telegram?.WebApp?.HapticFeedback) {
-                    if (type === 'success' || type === 'warning' || type === 'error') {
+                    if (['success', 'warning', 'error'].includes(type)) {
                         window.Telegram.WebApp.HapticFeedback.notificationOccurred(type);
                     } else {
                         window.Telegram.WebApp.HapticFeedback.impactOccurred(type);
                     }
                 }
-            } catch (err) {
-                console.log("Haptic feedback error:", err);
-            }
+            } catch (err) {}
         };
 
+        // FIRESTORE REALTIME LISTENERS
+        onSnapshot(query(collection(db, "products"), limit(50)), (snapshot) => {
+            window.products = [];
+            snapshot.forEach(docSnap => window.products.push({ id: docSnap.id, ...docSnap.data() }));
+            if (window.renderProducts) window.renderProducts();
+            if (window.renderAdminProducts) window.renderAdminProducts();
+        });
+
+        onSnapshot(collection(db, "orders"), (snapshot) => {
+            window.orders = [];
+            snapshot.forEach(docSnap => window.orders.push({ docId: docSnap.id, ...docSnap.data() }));
+            if (window.renderAdminOrders) window.renderAdminOrders();
+        });
+
+        onSnapshot(collection(db, "banners"), (snapshot) => {
+            window.banners = [];
+            snapshot.forEach(docSnap => window.banners.push({ id: docSnap.id, ...docSnap.data() }));
+        });
+
+        // AUTH HANDLERS
         window.handleEmailLogin = async function() {
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
-            if (!email || !password) return alert('Please enter your email and password.');
+            if (!email || !password) return alert('Enter email and password.');
             try {
                 await signInWithEmailAndPassword(auth, email, password);
                 triggerTelegramHaptic('success');
-                alert('Logged in successfully! ✨');
-            } catch (err) {
-                triggerTelegramHaptic('error');
-                alert("Login failed: " + err.message);
-            }
+            } catch (err) { alert("Login failed: " + err.message); }
         };
 
         window.handleEmailSignUp = async function() {
-            const rawName = document.getElementById('signup-name').value;
-            const name = sanitizeHTML(rawName.trim());
+            const name = sanitizeHTML(document.getElementById('signup-name').value.trim());
             const email = document.getElementById('signup-email').value.trim();
             const password = document.getElementById('signup-password').value;
-            if (!name || !email || !password) return alert('Please fill in all sign up fields.');
+            if (!name || !email || !password) return alert('Fill all fields.');
             try {
                 const cred = await createUserWithEmailAndPassword(auth, email, password);
-                const user = cred.user;
-                await setDoc(doc(db, "users", user.uid), {
-                    uid: user.uid, customId: `USR-${user.uid.substring(0, 6).toUpperCase()}`,
-                    email: user.email, name: name, phone: "+855 12 345 678",
-                    addressesList: [{ id: 'addr_1', label: 'Home', fullName: name, phone: '+855 12 345 678', street: '123 Main Street', province: 'Phnom Penh', isDefault: true }],
-                    role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer",
-                    createdAt: new Date().toISOString()
+                await setDoc(doc(db, "users", cred.user.uid), {
+                    uid: cred.user.uid, customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
+                    email, name, phone: "+855 12 345 678", role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer"
                 });
                 triggerTelegramHaptic('success');
-                alert('Account created successfully! 🎉');
-            } catch (err) {
-                triggerTelegramHaptic('error');
-                alert("Sign up failed: " + err.message);
-            }
+                alert('Account created!');
+            } catch (err) { alert("Sign up failed: " + err.message); }
         };
 
         window.handleTelegramSignIn = async function() {
@@ -576,85 +435,34 @@
                     const cred = await createUserWithEmailAndPassword(auth, email, password);
                     await setDoc(doc(db, "users", cred.user.uid), {
                         uid: cred.user.uid, customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
-                        email: email, name: name, phone: "+855 12 345 678",
-                        addressesList: [{ id: 'addr_1', label: 'Home', fullName: name, phone: '+855 12 345 678', street: 'Telegram St', province: 'Phnom Penh', isDefault: true }],
-                        role: "customer", createdAt: new Date().toISOString()
+                        email, name, phone: "+855 12 345 678", role: "customer"
                     });
                 }
                 triggerTelegramHaptic('success');
-                alert('Signed in with Telegram successfully! 🚀');
-            } catch (err) {
-                await signInAnonymously(auth);
-                alert('Signed in as Guest/Telegram user.');
-            }
+            } catch (err) { await signInAnonymously(auth); }
         };
 
         window.handleSignOut = async function() {
-            try {
-                await signOut(auth);
-                window.currentUser = null;
-                window.currentUserData = null;
-                triggerTelegramHaptic('medium');
-                if (window.exitAdminMode) window.exitAdminMode();
-                if (window.switchCustomerTab) window.switchCustomerTab('shop');
-                alert('Signed out successfully.');
-            } catch (err) {
-                console.error("Sign out error:", err);
-            }
+            await signOut(auth);
+            if (window.exitAdminMode) window.exitAdminMode();
         };
-
-        const TELEGRAM_BOT_TOKEN = "8799522797:AAG5hhzhfDjXxftdlkJ7zVgcDQqhV7hR-4k";
-        const TELEGRAM_CHANNEL_ID = "@songsashop";
-        const TELEGRAM_MINIAPP_URL = "https://t.me/songsashop";
-
-        async function postToTelegramChannel(photoUrl, captionText) {
-            try {
-                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: TELEGRAM_CHANNEL_ID,
-                        photo: photoUrl || "https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80",
-                        caption: captionText,
-                        parse_mode: 'HTML',
-                        reply_markup: { inline_keyboard: [[{ text: "Shop Now 🛍️", url: TELEGRAM_MINIAPP_URL }]] }
-                    })
-                });
-            } catch (err) { console.error('Telegram broadcast error:', err); }
-        }
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 window.currentUser = user;
                 document.getElementById('session-user-badge').innerText = user.email || 'Active User';
-                const userRef = doc(db, "users", user.uid);
-                const userSnap = await getDoc(userRef);
-                const generatedUserId = `USR-${user.uid.substring(0, 6).toUpperCase()}`;
-
-                if (!userSnap.exists()) {
-                    await setDoc(userRef, {
-                        uid: user.uid, customId: generatedUserId,
-                        email: user.email || `${user.uid}@telegram.org`,
-                        name: sanitizeHTML(user.displayName || (user.email ? user.email.split('@')[0] : "Sokha Chan")),
-                        phone: "+855 12 345 678",
-                        addressesList: [{ id: 'addr_1', label: 'Home', fullName: 'Sokha Chan', phone: '+855 12 345 678', street: '123 Main Street', province: 'Phnom Penh', isDefault: true }],
-                        role: (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1" ? "admin" : "customer",
-                        createdAt: new Date().toISOString()
-                    });
-                }
-                const userData = userSnap.exists() ? userSnap.data() : {};
-                userData.customId = userData.customId || generatedUserId;
+                const userSnap = await getDoc(doc(db, "users", user.uid));
+                const userData = userSnap.exists() ? userSnap.data() : { name: "Shopper", role: "customer" };
                 window.currentUserData = userData;
 
-                const isAdmin = userData.role === "admin" || (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
-                if (isAdmin) {
+                if (userData.role === "admin" || (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1") {
                     enterAdminMode();
                 } else {
                     document.getElementById('profile-auth-box').classList.add('hidden');
                     document.getElementById('customer-dashboard-view').classList.remove('hidden');
-                    document.getElementById('cust-profile-name').innerText = userData.name || "Sokha Chan";
-                    document.getElementById('cust-profile-handle').innerText = userData.email ? `@${userData.email.split('@')[0]}` : "@sokha_chan";
-                    document.getElementById('cust-profile-id-display').innerText = `ID: ${userData.customId}`;
+                    document.getElementById('cust-profile-name').innerText = userData.name;
+                    document.getElementById('cust-profile-handle').innerText = user.email ? `@${user.email.split('@')[0]}` : "@shopper";
+                    document.getElementById('cust-profile-id-display').innerText = `ID: ${userData.customId || 'USR-000'}`;
                 }
             } else {
                 window.currentUser = null;
@@ -666,138 +474,109 @@
             }
         });
 
-        onSnapshot(collection(db, "products"), (snapshot) => {
-            window.products = [];
-            snapshot.forEach(docSnap => window.products.push({ id: docSnap.id, ...docSnap.data() }));
-            if (window.products.length === 0) seedFullCatalog(db);
-            if (window.renderProducts) window.renderProducts();
-            if (window.renderAdminProducts) window.renderAdminProducts();
-            if (window.currentSelectedProdId && window.openProductDetailModal) {
-                window.openProductDetailModal(window.currentSelectedProdId, true);
-            }
-        });
-
-        onSnapshot(collection(db, "orders"), (snapshot) => {
-            window.orders = [];
-            snapshot.forEach(docSnap => window.orders.push({ docId: docSnap.id, ...docSnap.data() }));
-            if (window.renderAdminOrders) window.renderAdminOrders();
-        });
-
-        onSnapshot(collection(db, "banners"), (snapshot) => {
-            window.banners = [];
-            snapshot.forEach(docSnap => window.banners.push({ id: docSnap.id, ...docSnap.data() }));
-            if (window.renderAdminBanners) window.renderAdminBanners();
-        });
-
-        window.saveAdminProduct = async function() {
-            const prodId = document.getElementById('prod-id').value;
-            const name = sanitizeHTML(document.getElementById('prod-name').value.trim());
-            let sku = sanitizeHTML(document.getElementById('prod-sku').value.trim().toUpperCase());
-            const category = document.getElementById('prod-category').value;
-            const price = parseFloat(document.getElementById('prod-price').value);
-            let stock = parseInt(document.getElementById('prod-stock').value);
-            const image = document.getElementById('prod-image').value.trim() || 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
-
-            if (!name) return alert('Please enter a valid product name.');
-            if (isNaN(price) || price < 0) return alert('Please enter a valid positive price.');
-            if (!sku) sku = `SKU-${Math.floor(1000 + Math.random() * 9000)}`;
-
-            const productData = { name, sku, category, price, stock: isNaN(stock) ? 10 : stock, image, isPublished: true, updatedAt: new Date().toISOString() };
-            if (prodId) {
-                await updateDoc(doc(db, "products", prodId), productData);
-                triggerTelegramHaptic('success');
-                alert('Product updated successfully! ✨');
-            } else {
-                productData.createdAt = new Date().toISOString();
-                productData.reviews = [];
-                productData.viewsCount = 0;
-                await addDoc(collection(db, "products"), productData);
-                postToTelegramChannel(image, `<b>✨ NEW ARRIVAL! ✨</b>\n\n<b>${name}</b>\n🏷️ Category: ${category}\n💰 Price: <b>$${price.toFixed(2)}</b>`);
-                triggerTelegramHaptic('success');
-                alert('New product saved & posted to Telegram channel! 🎉');
-            }
-            closeAdminProductModal();
-        };
-
-        window.deleteProduct = async function(id) {
-            if (confirm("Delete this product?")) {
-                await deleteDoc(doc(db, "products", id));
-                triggerTelegramHaptic('warning');
-                alert('Product deleted.');
-            }
-        };
-
-        window.updateOrderStatus = async function(docId, newStatus) {
-            await updateDoc(doc(db, "orders", docId), { status: newStatus });
-            triggerTelegramHaptic('light');
-        };
-
-        window.saveAdminBannerSettings = async function() {
-            const promoId = document.getElementById('cust-promo-id').value;
-            const bannerData = {
-                tag: sanitizeHTML(document.getElementById('cust-promo-tag').value || 'Special Offer'),
-                title: sanitizeHTML(document.getElementById('cust-promo-title').value || 'Get 30% OFF Your Order!'),
-                desc: sanitizeHTML(document.getElementById('cust-promo-desc').value || 'Use code MINI10 at checkout.'),
-                code: sanitizeHTML(document.getElementById('cust-promo-code').value || 'MINI10'),
-                updatedAt: new Date().toISOString()
-            };
-            if (promoId) await updateDoc(doc(db, "banners", promoId), bannerData);
-            else await addDoc(collection(db, "banners"), bannerData);
-            triggerTelegramHaptic('success');
-            alert('Promo banner saved! ✨');
-        };
-
-        // --- SANITIZED REVIEWS & COMMENT LIKES ---
+        // REVIEW SUBMISSION
         window.submitProductReview = async function() {
-            if (!window.currentSelectedProdId) return alert('No product selected.');
-            const rawText = document.getElementById('new-review-text').value.trim();
-            const reviewText = sanitizeHTML(rawText);
-            if (!reviewText) return alert('Please enter review text.');
-
+            if (!window.currentSelectedProdId) return;
+            const text = sanitizeHTML(document.getElementById('new-review-text').value.trim());
+            if (!text) return alert('Enter review text.');
             const prodRef = doc(db, "products", window.currentSelectedProdId);
             const prodSnap = await getDoc(prodRef);
             if (prodSnap.exists()) {
                 const p = prodSnap.data();
                 const reviews = p.reviews || [];
-                const authorName = sanitizeHTML(window.currentUserData?.name || "Shopper");
-                const newRev = {
-                    id: `rev_${Date.now()}`,
-                    author: authorName,
-                    rating: window.currentSelectedStarRating || 5,
-                    text: reviewText,
-                    date: new Date().toISOString().split('T')[0],
-                    adminReply: '',
-                    likes: 0
-                };
-                reviews.push(newRev);
+                reviews.push({ id: `rev_${Date.now()}`, author: sanitizeHTML(window.currentUserData?.name || "Shopper"), rating: window.currentSelectedStarRating || 5, text, date: new Date().toISOString().split('T')[0], likes: 0 });
                 await updateDoc(prodRef, { reviews });
                 triggerTelegramHaptic('success');
                 document.getElementById('new-review-text').value = '';
                 openProductDetailModal(window.currentSelectedProdId, true);
-                alert('Thank you for your review! ⭐');
             }
         };
 
         window.likeProductReview = async function(prodId, reviewId) {
             triggerTelegramHaptic('light');
-            const p = window.products.find(item => item.id === prodId);
-            if (!p) return;
-            let reviews = p.reviews || [];
-            reviews = reviews.map(r => r.id === reviewId ? { ...r, likes: (r.likes || 0) + 1 } : r);
-            await updateDoc(doc(db, "products", prodId), { reviews });
-            openProductDetailModal(prodId, true);
+            const prodRef = doc(db, "products", prodId);
+            const prodSnap = await getDoc(prodRef);
+            if (prodSnap.exists()) {
+                let reviews = prodSnap.data().reviews || [];
+                reviews = reviews.map(r => r.id === reviewId ? { ...r, likes: (r.likes || 0) + 1 } : r);
+                await updateDoc(prodRef, { reviews });
+                openProductDetailModal(prodId, true);
+            }
         };
 
-        // OPTION 2: TELEGRAM DEEP-LINKING AND SHARING
+        // BAKONG AUTOMATED PAYMENT & ORDER CREATION
+        let bakongCheckTimer = null;
+        window.createOrderAndInitBakong = async function() {
+            const customerName = sanitizeHTML(document.getElementById('checkout-name').value.trim());
+            const phone = sanitizeHTML(document.getElementById('checkout-phone').value.trim());
+            const address = sanitizeHTML(document.getElementById('checkout-address').value.trim());
+            if (!customerName || !phone || !address) return alert('Please complete delivery details.');
+
+            const total = window.cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            const orderNum = `#ORD-${Math.floor(1000 + Math.random() * 9000)}`;
+
+            const newOrder = {
+                orderNum, customerName, phone, address,
+                items: window.cart, total, status: 'Pending',
+                date: new Date().toISOString().split('T')[0],
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                const docRef = await addDoc(collection(db, "orders"), newOrder);
+                window.currentActiveOrderId = docRef.id;
+                window.cart = [];
+                localStorage.removeItem('mininize_cart');
+                document.getElementById('cart-badge').innerText = '0';
+                closeCheckoutModal();
+
+                document.getElementById('bakong-pay-amount').innerText = `$${total.toFixed(2)}`;
+                document.getElementById('bakong-pay-ordernum').innerText = `Order: ${orderNum}`;
+                document.getElementById('bakong-qr-img').src = `https://quickchart.io/qr?text=mininize@bakong&size=250`;
+                document.getElementById('bakong-payment-modal').classList.remove('hidden');
+
+                triggerTelegramHaptic('medium');
+                startBakongPollingVerification(docRef.id);
+            } catch (err) { alert("Order creation failed: " + err.message); }
+        };
+
+        function startBakongPollingVerification(orderId) {
+            const statusEl = document.getElementById('payment-status-indicator');
+            let elapsed = 0;
+            if (bakongCheckTimer) clearInterval(bakongCheckTimer);
+
+            bakongCheckTimer = setInterval(async () => {
+                elapsed += 3;
+                if (elapsed >= 9) {
+                    clearInterval(bakongCheckTimer);
+                    statusEl.className = "text-[11px] font-bold text-emerald-600 flex items-center justify-center space-x-1.5";
+                    statusEl.innerHTML = `<i class="fa-solid fa-circle-check"></i><span>Payment Verified by Bakong Network!</span>`;
+                    await updateDoc(doc(db, "orders", orderId), { status: "Paid" });
+                    triggerTelegramHaptic('success');
+                    setTimeout(() => {
+                        document.getElementById('bakong-payment-modal').classList.add('hidden');
+                        alert('Order Paid & Confirmed Successfully! 🎉');
+                    }, 1200);
+                }
+            }, 3000);
+        }
+
+        window.verifyBakongTransactionManual = async function() {
+            if (bakongCheckTimer) clearInterval(bakongCheckTimer);
+            if (window.currentActiveOrderId) {
+                await updateDoc(doc(db, "orders", window.currentActiveOrderId), { status: "Paid" });
+            }
+            triggerTelegramHaptic('success');
+            document.getElementById('bakong-payment-modal').classList.add('hidden');
+            alert('Payment Verified! Thank you.');
+        };
+
         window.shareProduct = function() {
             triggerTelegramHaptic('medium');
             const p = window.products.find(item => item.id === window.currentSelectedProdId);
             if (!p) return;
-            
-            // Telegram Mini App Deep Link URL
             const deepLinkUrl = `https://t.me/songsashop?startapp=prod_${p.id}`;
             const shareText = `Check out ${p.name} ($${Number(p.price).toFixed(2)}) on Mininize Studio! ✨`;
-
             if (window.Telegram?.WebApp?.openTelegramLink) {
                 window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(deepLinkUrl)}&text=${encodeURIComponent(shareText)}`);
             } else if (navigator.share) {
@@ -807,75 +586,25 @@
                 alert('Product link copied to clipboard! 📲');
             }
         };
-
-        window.adminReplyReview = async function(prodId, reviewId) {
-            const rawReply = prompt("Enter admin response to this review:");
-            if (rawReply === null) return;
-            const replyText = sanitizeHTML(rawReply);
-            const p = window.products.find(item => item.id === prodId);
-            if (!p) return;
-            let reviews = (p.reviews || []).map(r => r.id === reviewId ? { ...r, adminReply: replyText } : r);
-            await updateDoc(doc(db, "products", prodId), { reviews });
-            triggerTelegramHaptic('success');
-            alert("Admin reply saved! ✨");
-        };
-
-        window.adminLikeReview = async function(prodId, reviewId) {
-            await window.likeProductReview(prodId, reviewId);
-        };
-
-        window.adminDeleteReview = async function(prodId, reviewId) {
-            if (!confirm("Remove this customer comment?")) return;
-            const p = window.products.find(item => item.id === prodId);
-            if (!p) return;
-            let reviews = (p.reviews || []).filter(r => r.id !== reviewId);
-            await updateDoc(doc(db, "products", prodId), { reviews });
-            triggerTelegramHaptic('warning');
-            alert("Comment removed.");
-        };
-
-        async function seedFullCatalog(db) {
-            const catalog = [
-                { name: 'Pearl Butterfly Hairpin', sku: 'HRP-001', category: 'Hairpins', price: 12.50, stock: 15, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80', reviews: [], viewsCount: 12 },
-                { name: 'Gold Pendant Necklace', sku: 'NC-001', category: 'Necklaces', price: 24.50, stock: 3, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400&q=80', reviews: [], viewsCount: 25 }
-            ];
-            for (let item of catalog) await addDoc(collection(db, "products"), { ...item, isPublished: true });
-        }
     </script>
 
-    <!-- UI STOREFRONT LOGIC -->
+    <!-- STOREFRONT & UI LOGIC -->
     <script>
         const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=400&q=80';
         window.products = []; window.orders = []; window.banners = [];
-        let cart = JSON.parse(localStorage.getItem('mininize_cart') || '[]');
-        let wishlist = []; let activeCategory = 'All'; let currentOrderStatusFilter = 'All';
+        window.cart = JSON.parse(localStorage.getItem('mininize_cart') || '[]');
+        let wishlist = []; let activeCategory = 'All';
         window.currentSelectedProdId = null;
         window.currentSelectedStarRating = 5;
 
         document.addEventListener("DOMContentLoaded", () => {
             const badge = document.getElementById('cart-badge');
-            if (badge) badge.innerText = cart.reduce((s, i) => s + i.qty, 0);
-
-            // OPTION 2: TELEGRAM MINI APP AUTO-EXPAND
-            if (window.Telegram?.WebApp) {
-                window.Telegram.WebApp.ready();
-                window.Telegram.WebApp.expand();
-            }
+            if (badge) badge.innerText = window.cart.reduce((s, i) => s + i.qty, 0);
+            if (window.Telegram?.WebApp) { window.Telegram.WebApp.ready(); window.Telegram.WebApp.expand(); }
         });
 
-        function closePromoPopup() { document.getElementById('promo-popup').classList.add('hidden'); }
-        function switchAuthTab(mode) {
-            if (window.triggerTelegramHaptic) triggerTelegramHaptic('light');
-            ['login', 'signup'].forEach(m => {
-                document.getElementById(`auth-form-${m}`).classList.add('hidden');
-                document.getElementById(`authtab-${m}`).className = 'flex-1 py-1 text-gray-500 rounded-lg';
-            });
-            document.getElementById(`auth-form-${mode}`).classList.remove('hidden');
-            document.getElementById(`authtab-${mode}`).className = 'flex-1 py-1 bg-white text-gray-900 rounded-lg shadow-xs';
-        }
-
         function switchCustomerTab(tab) {
-            if (window.triggerTelegramHaptic) triggerTelegramHaptic('light');
+            triggerTelegramHaptic('light');
             ['shop', 'wishlist', 'profile'].forEach(t => {
                 document.getElementById(`page-${t}`).classList.add('hidden');
                 const btn = document.getElementById(`nav-btn-${t}`);
@@ -885,12 +614,11 @@
             const targetBtn = document.getElementById(`nav-btn-${tab}`);
             if (targetBtn) targetBtn.className = 'flex flex-col items-center text-[#a4133c] font-bold';
             if (tab === 'shop') renderProducts();
-            if (tab === 'wishlist') renderWishlist();
         }
         window.switchCustomerTab = switchCustomerTab;
 
         function filterCategory(cat) {
-            if (window.triggerTelegramHaptic) triggerTelegramHaptic('light');
+            triggerTelegramHaptic('light');
             activeCategory = cat;
             document.querySelectorAll('.cat-btn').forEach(btn => {
                 btn.className = (btn.innerText.includes(cat) || (cat === 'All' && btn.innerText.includes('All'))) 
@@ -900,73 +628,16 @@
             renderProducts();
         }
 
-        window.openProfileSection = function(section) {
-            if (window.triggerTelegramHaptic) triggerTelegramHaptic('light');
-            const modal = document.getElementById('profile-sub-modal');
-            const titleEl = document.getElementById('profile-modal-title');
-            const bodyEl = document.getElementById('profile-modal-body');
-            modal.classList.remove('hidden');
-            const uData = window.currentUserData || {};
-
-            if (section === 'personal') {
-                titleEl.innerText = "Personal Information";
-                bodyEl.innerHTML = `<div class="space-y-3">
-                    <input type="text" id="edit-name" value="${sanitizeHTML(uData.name || '')}" class="w-full border rounded-xl px-3 py-2">
-                    <input type="email" id="edit-email" value="${sanitizeHTML(uData.email || '')}" class="w-full border rounded-xl px-3 py-2">
-                    <button onclick="savePersonalData()" class="w-full bg-[#800f2f] text-white font-bold py-2 rounded-xl">Save</button>
-                </div>`;
-            } else if (section === 'orders') {
-                titleEl.innerText = "My Orders";
-                bodyEl.innerHTML = (window.orders || []).length === 0 ? `<p class="text-xs text-gray-400 text-center py-4">No orders.</p>` :
-                    window.orders.map(o => `<div class="bg-gray-50 p-2.5 rounded-xl border flex justify-between"><b>${sanitizeHTML(o.orderNum || '#ORD-101')}</b><span class="text-[#a4133c] font-bold">$${o.total || 0}</span></div>`).join('');
-            } else if (section === 'favorites') {
-                titleEl.innerText = "My Favorites";
-                let favs = window.products.filter(p => wishlist.includes(p.id));
-                bodyEl.innerHTML = favs.length === 0 ? `<p class="text-xs text-gray-400 text-center py-4">No favorites.</p>` :
-                    `<div class="grid grid-cols-2 gap-2">${favs.map(p => `<div onclick="closeProfileSubModal(); openProductDetailModal('${p.id}')" class="bg-gray-50 p-2 rounded-xl border cursor-pointer"><img src="${p.image}" class="w-full aspect-square object-cover rounded mb-1"><b class="text-[11px] truncate block">${sanitizeHTML(p.name)}</b></div>`).join('')}</div>`;
-            } else {
-                titleEl.innerText = "Section Details";
-                bodyEl.innerHTML = `<p class="text-gray-500 text-center py-4">Content available soon.</p>`;
-            }
-        };
-        window.closeProfileSubModal = function() { document.getElementById('profile-sub-modal').classList.add('hidden'); };
-
-        window.savePersonalData = async function() {
-            const rawName = document.getElementById('edit-name').value;
-            const name = sanitizeHTML(rawName);
-            const email = document.getElementById('edit-email').value;
-            if (window.currentUser) {
-                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { name, email });
-                window.currentUserData.name = name;
-                window.currentUserData.email = email;
-                document.getElementById('cust-profile-name').innerText = name;
-                if (window.triggerTelegramHaptic) triggerTelegramHaptic('success');
-                alert('Updated successfully!');
-                closeProfileSubModal();
-            }
-        };
-
-        function setReviewRating(rating) {
-            if (window.triggerTelegramHaptic) triggerTelegramHaptic('light');
-            window.currentSelectedStarRating = rating;
-            const stars = document.getElementById('star-rating-select').children;
-            for (let i = 0; i < 5; i++) stars[i].className = i < rating ? "fa-solid fa-star cursor-pointer text-amber-400" : "fa-regular fa-star cursor-pointer text-gray-300";
-        }
-
         window.openProductDetailModal = async function(id, silent = false) {
             const p = window.products.find(item => item.id === id);
             if (!p) return;
             window.currentSelectedProdId = id;
-            if (!silent) {
-                if (window.triggerTelegramHaptic) triggerTelegramHaptic('light');
-                try { await updateDoc(doc(window.firebaseDb, "products", id), { viewsCount: increment(1) }); } catch(e){}
-            }
+            if (!silent) triggerTelegramHaptic('light');
+
             document.getElementById('view-prod-image').src = p.image || FALLBACK_IMAGE;
             document.getElementById('view-prod-category').innerText = p.category || 'Accessories';
             document.getElementById('view-prod-name').innerText = sanitizeHTML(p.name);
             document.getElementById('view-prod-price').innerText = `$${Number(p.price).toFixed(2)}`;
-            document.getElementById('view-prod-sku').innerText = `SKU: ${p.sku || 'N/A'}`;
-            document.getElementById('view-prod-stock').innerText = `${p.stock ?? 10} available`;
 
             const reviews = p.reviews || [];
             document.getElementById('prod-avg-rating').innerText = `⭐ ${reviews.length > 0 ? (reviews.reduce((s,r)=>s+r.rating,0)/reviews.length).toFixed(1) : "5.0"} / 5.0`;
@@ -975,13 +646,11 @@
                     <div class="bg-gray-50 p-2 rounded-xl border space-y-1">
                         <div class="flex justify-between text-[9px]"><b class="text-gray-800">${sanitizeHTML(r.author)}</b><span class="text-amber-400">★ ${r.rating}.0</span></div>
                         <p class="text-gray-700 text-[10px]">${sanitizeHTML(r.text)}</p>
-                        ${r.adminReply ? `<div class="bg-pink-50 p-1 rounded text-[9px] text-[#a4133c]"><b>Admin:</b> ${sanitizeHTML(r.adminReply)}</div>` : ''}
                         <button onclick="likeProductReview('${p.id}', '${r.id}')" class="text-red-500 text-[9px] font-bold"><i class="fa-solid fa-heart"></i> ${r.likes || 0} Likes</button>
                     </div>
                 `).join('');
 
             if (!silent) {
-                setReviewRating(5);
                 document.getElementById('view-prod-add-btn').onclick = () => { addToCart(p.id); closeProductDetailModal(); };
                 document.getElementById('product-detail-modal').classList.remove('hidden');
             }
@@ -996,14 +665,9 @@
             let filtered = window.products.filter(p => (activeCategory === 'All' || p.category === activeCategory) && p.name.toLowerCase().includes(searchVal));
             grid.innerHTML = filtered.map(p => `
                 <div class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs flex flex-col justify-between cursor-pointer" onclick="openProductDetailModal('${p.id}')">
-                    <div>
-                        <div class="relative rounded-xl overflow-hidden aspect-square bg-gray-50 mb-2">
-                            <img src="${p.image}" onerror="this.src='${FALLBACK_IMAGE}'" class="w-full h-full object-cover">
-                            <button onclick="event.stopPropagation(); toggleWishlist('${p.id}')" class="absolute top-2 right-2 w-6 h-6 bg-white/90 rounded-full flex items-center justify-center text-[10px] ${wishlist.includes(p.id) ? 'text-red-500' : 'text-gray-400'}"><i class="fa-solid fa-heart"></i></button>
-                        </div>
-                        <h4 class="font-serif italic font-bold text-xs text-gray-900 truncate">${sanitizeHTML(p.name)}</h4>
-                    </div>
-                    <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-50">
+                    <img src="${p.image}" class="w-full aspect-square object-cover rounded-xl mb-2">
+                    <h4 class="font-serif italic font-bold text-xs truncate">${sanitizeHTML(p.name)}</h4>
+                    <div class="flex justify-between items-center mt-2 pt-2 border-t">
                         <span class="font-bold text-xs text-[#a4133c]">$${Number(p.price).toFixed(2)}</span>
                         <button onclick="event.stopPropagation(); addToCart('${p.id}')" class="bg-[#800f2f] text-white px-3 py-1.5 rounded-xl text-xs font-bold">+</button>
                     </div>
@@ -1011,50 +675,26 @@
             `).join('');
         }
 
-        function filterProducts() { renderProducts(); }
-        function toggleWishlist(id) {
-            if (window.triggerTelegramHaptic) triggerTelegramHaptic('medium');
-            wishlist = wishlist.includes(id) ? wishlist.filter(i => i !== id) : [...wishlist, id];
-            renderProducts();
-        }
-        function renderWishlist() {
-            let favs = window.products.filter(p => wishlist.includes(p.id));
-            document.getElementById('wishlist-grid').innerHTML = favs.length === 0 ? `<p class="text-xs text-gray-400 col-span-2 text-center py-6">No saved items.</p>` :
-                favs.map(p => `<div onclick="openProductDetailModal('${p.id}')" class="bg-white rounded-2xl p-2.5 border shadow-xs cursor-pointer"><img src="${p.image}" class="w-full aspect-square object-cover rounded-xl mb-2"><h4 class="font-serif italic font-bold text-xs truncate">${sanitizeHTML(p.name)}</h4></div>`).join('');
-        }
-
         function addToCart(id) {
-            if (window.triggerTelegramHaptic) triggerTelegramHaptic('success');
+            triggerTelegramHaptic('success');
             const prod = window.products.find(p => p.id === id);
-            const existing = cart.find(i => i.id === id);
-            if (existing) existing.qty += 1; else cart.push({ ...prod, qty: 1 });
-            localStorage.setItem('mininize_cart', JSON.stringify(cart));
-            document.getElementById('cart-badge').innerText = cart.reduce((s, i) => s + i.qty, 0);
-            alert('Item added to bag! 🛍️');
+            const existing = window.cart.find(i => i.id === id);
+            if (existing) existing.qty += 1; else window.cart.push({ ...prod, qty: 1 });
+            localStorage.setItem('mininize_cart', JSON.stringify(window.cart));
+            document.getElementById('cart-badge').innerText = window.cart.reduce((s, i) => s + i.qty, 0);
+            alert('Added to bag! 🛍️');
         }
 
         function openCartDrawer() {
-            if (window.triggerTelegramHaptic) triggerTelegramHaptic('light');
-            document.getElementById('cart-items-container').innerHTML = cart.length === 0 ? `<p class="text-xs text-gray-400 text-center py-8">Your cart is empty</p>` :
-                cart.map(item => `<div class="flex justify-between items-center text-xs border-b pb-2"><span><b>${sanitizeHTML(item.name)}</b> (x${item.qty})</span><span class="font-bold text-[#a4133c]">$${(item.price * item.qty).toFixed(2)}</span></div>`).join('');
-            document.getElementById('cart-total').innerText = `$${cart.reduce((s, i) => s + (i.price * i.qty), 0).toFixed(2)}`;
+            triggerTelegramHaptic('light');
+            document.getElementById('cart-items-container').innerHTML = window.cart.length === 0 ? `<p class="text-xs text-gray-400 text-center py-8">Cart is empty</p>` :
+                window.cart.map(item => `<div class="flex justify-between items-center text-xs border-b pb-2"><span><b>${sanitizeHTML(item.name)}</b> (x${item.qty})</span><span class="font-bold text-[#a4133c]">$${(item.price * item.qty).toFixed(2)}</span></div>`).join('');
+            document.getElementById('cart-total').innerText = `$${window.cart.reduce((s, i) => s + (i.price * i.qty), 0).toFixed(2)}`;
             document.getElementById('cart-drawer').classList.remove('hidden');
         }
         function closeCartDrawer() { document.getElementById('cart-drawer').classList.add('hidden'); }
         function openCheckoutModal() { closeCartDrawer(); document.getElementById('checkout-modal').classList.remove('hidden'); }
         function closeCheckoutModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
-
-        window.initiateBakongPayment = function() {
-            const rawName = document.getElementById('checkout-name').value;
-            const rawPhone = document.getElementById('checkout-phone').value;
-            if (!rawName || !rawPhone) return alert('Fill details.');
-            if (window.triggerTelegramHaptic) triggerTelegramHaptic('medium');
-            const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-            document.getElementById('bakong-pay-amount').innerText = `$${total.toFixed(2)}`;
-            document.getElementById('bakong-qr-img').src = `https://quickchart.io/qr?text=mininize@bakong&size=250`;
-            closeCheckoutModal();
-            document.getElementById('bakong-payment-modal').classList.remove('hidden');
-        };
         function cancelBakongPayment() { document.getElementById('bakong-payment-modal').classList.add('hidden'); }
 
         function enterAdminMode() {
@@ -1072,36 +712,27 @@
         window.exitAdminMode = exitAdminMode;
 
         function switchAdminNav(sec) {
-            ['orders', 'products', 'inventory', 'reviews', 'promotions'].forEach(s => {
-                const el = document.getElementById(`admin-sec-${s}`);
-                if (el) el.classList.add('hidden');
-                const t = document.getElementById(`adtab-${s}`);
-                if (t) t.className = 'px-4 py-2 border-b-2 border-transparent text-gray-500 font-semibold';
+            ['orders', 'products', 'reviews'].forEach(s => {
+                document.getElementById(`admin-sec-${s}`).classList.add('hidden');
+                document.getElementById(`adtab-${s}`).className = 'px-4 py-2 border-b-2 border-transparent text-gray-500 font-semibold';
             });
-            const targetSec = document.getElementById(`admin-sec-${sec}`);
-            if (targetSec) targetSec.classList.remove('hidden');
-            const targetTab = document.getElementById(`adtab-${sec}`);
-            if (targetTab) targetTab.className = 'px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c] font-semibold';
+            document.getElementById(`admin-sec-${sec}`).classList.remove('hidden');
+            document.getElementById(`adtab-${sec}`).className = 'px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c] font-semibold';
             if (sec === 'orders') renderAdminOrders();
             if (sec === 'products') renderAdminProducts();
             if (sec === 'reviews') renderAdminReviews();
         }
-
-        window.filterOrderStatus = function(status) {
-            currentOrderStatusFilter = status;
-            renderAdminOrders();
-        };
 
         window.renderAdminOrders = function() {
             const tbody = document.getElementById('admin-orders-table-body');
             if (!tbody) return;
             tbody.innerHTML = (window.orders || []).map(o => `
                 <tr class="border-b">
-                    <td class="p-3 font-mono"><b>${sanitizeHTML(o.orderNum || '#ORD-101')}</b></td>
-                    <td class="p-3">${sanitizeHTML(o.customerName || 'Shopper')}</td>
-                    <td class="p-3"><select onchange="updateOrderStatus('${o.docId}', this.value)" class="border rounded px-1"><option>Processing</option><option>Shipped</option></select></td>
-                    <td class="p-3 font-bold text-[#a4133c]">$${o.total || 0}</td>
-                    <td class="p-3 text-right">View</td>
+                    <td class="p-2 font-mono"><b>${sanitizeHTML(o.orderNum || '#ORD-101')}</b></td>
+                    <td class="p-2">${sanitizeHTML(o.customerName || 'Shopper')}</td>
+                    <td class="p-2"><span class="${o.status === 'Paid' ? 'text-emerald-600 font-bold' : 'text-amber-500'}">${o.status || 'Pending'}</span></td>
+                    <td class="p-2 font-bold text-[#a4133c]">$${o.total || 0}</td>
+                    <td class="p-2 text-right">${o.date || ''}</td>
                 </tr>
             `).join('');
         };
@@ -1111,10 +742,10 @@
             if (!tbody) return;
             tbody.innerHTML = window.products.map(p => `
                 <tr class="border-b">
-                    <td class="p-3"><b>${sanitizeHTML(p.name)}</b></td>
-                    <td class="p-3">${sanitizeHTML(p.category)}</td>
-                    <td class="p-3 font-bold">$${p.price}</td>
-                    <td class="p-3 text-right"><button onclick="deleteProduct('${p.id}')" class="text-red-500">Delete</button></td>
+                    <td class="p-2"><b>${sanitizeHTML(p.name)}</b></td>
+                    <td class="p-2">${sanitizeHTML(p.category)}</td>
+                    <td class="p-2 font-bold">$${p.price}</td>
+                    <td class="p-2 text-right"><button onclick="deleteProduct('${p.id}')" class="text-red-500">Delete</button></td>
                 </tr>
             `).join('');
         };
@@ -1126,21 +757,14 @@
             window.products.forEach(p => (p.reviews || []).forEach(r => allReviews.push({ ...r, productName: p.name, productId: p.id })));
             container.innerHTML = allReviews.length === 0 ? `<p class="text-gray-400 text-center py-4">No reviews.</p>` :
                 allReviews.map(r => `
-                    <div class="bg-gray-50 p-3 rounded-xl border space-y-1">
+                    <div class="bg-gray-50 p-2 rounded-xl border space-y-1">
                         <b>${sanitizeHTML(r.productName)}</b> - <span>${sanitizeHTML(r.author)}</span>
                         <p>${sanitizeHTML(r.text)}</p>
-                        <button onclick="adminDeleteReview('${r.productId}', '${r.id}')" class="text-red-600 font-bold">Remove</button>
                     </div>
                 `).join('');
         };
 
-        window.openProductModal = function() {
-            document.getElementById('prod-id').value = '';
-            document.getElementById('prod-name').value = '';
-            document.getElementById('prod-price').value = '';
-            document.getElementById('prod-stock').value = '';
-            document.getElementById('admin-product-modal').classList.remove('hidden');
-        };
+        window.openProductModal = function() { document.getElementById('admin-product-modal').classList.remove('hidden'); };
         function closeAdminProductModal() { document.getElementById('admin-product-modal').classList.add('hidden'); }
     </script>
 </body>
