@@ -120,14 +120,6 @@
                             <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-box-archive text-[#a4133c] w-4"></i><span>My Orders</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
-                        <button onclick="openProfileSection('addresses')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
-                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-location-dot text-[#a4133c] w-4"></i><span>Delivery Addresses</span></span>
-                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-                        </button>
-                        <button onclick="openProfileSection('favorites')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
-                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-heart text-[#a4133c] w-4"></i><span>My Favorites</span></span>
-                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
-                        </button>
                     </div>
 
                     <button onclick="handleSignOut()" class="w-full bg-white border border-gray-200 text-red-600 font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Log out</button>
@@ -179,7 +171,7 @@
             <div id="admin-sec-orders" class="space-y-4">
                 <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100">
                     <table class="w-full text-left text-xs">
-                        <thead><tr class="text-gray-400 border-b text-[10px]"><th class="p-2">Order</th><th class="p-2">Customer</th><th class="p-2">Status</th><th class="p-2">Total</th><th class="p-2 text-right">Action</th></tr></thead>
+                        <thead><tr class="text-gray-400 border-b text-[10px]"><th class="p-2">Order</th><th class="p-2">Customer</th><th class="p-2">Status</th><th class="p-2">Total</th><th class="p-2 text-right">Date</th></tr></thead>
                         <tbody id="admin-orders-table-body" class="divide-y text-[11px]"></tbody>
                     </table>
                 </div>
@@ -207,7 +199,7 @@
                 <img id="view-prod-image" src="" class="w-full h-full object-cover">
                 <span id="view-prod-category" class="absolute bottom-2 left-2 bg-white/90 text-gray-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full">Category</span>
                 <button onclick="shareProduct()" class="absolute top-3 left-3 bg-white/90 text-gray-700 w-8 h-8 rounded-full flex items-center justify-center shadow-xs">
-                    <i class="fa-solid fa-share-nodes text-xs"></i>
+                    <i class="fa-solid fa-[#a4133c] fa-share-nodes text-xs"></i>
                 </button>
             </div>
             <div class="space-y-1">
@@ -267,13 +259,13 @@
                 <input type="text" id="checkout-phone" placeholder="Phone Number" class="w-full border rounded-xl px-3 py-1.5">
                 <textarea id="checkout-address" placeholder="Delivery Address" rows="2" class="w-full border rounded-xl px-3 py-1.5"></textarea>
             </div>
-            <button onclick="initiateBakongPayment()" class="w-full bg-red-600 text-white font-bold py-2.5 rounded-xl flex items-center justify-center space-x-1.5">
+            <button onclick="createOrderAndInitBakong()" class="w-full bg-red-600 text-white font-bold py-2.5 rounded-xl flex items-center justify-center space-x-1.5">
                 <i class="fa-solid fa-qrcode"></i><span>Pay via Bakong KHQR</span>
             </button>
         </div>
     </div>
 
-    <!-- BAKONG KHQR PAYMENT & AUTOMATED VERIFICATION MODAL -->
+    <!-- BAKONG KHQR PAYMENT MODAL -->
     <div id="bakong-payment-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-xs w-full p-5 space-y-4 shadow-2xl relative text-center border border-gray-100">
             <button onclick="cancelBakongPayment()" class="absolute top-3 right-3 text-gray-400 text-xs"><i class="fa-solid fa-xmark"></i></button>
@@ -338,7 +330,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, setDoc, getDoc, query, limit, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, setDoc, getDoc, query, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDz6snwoujsmp8IQ5-1c2_IL-JmEOx2tIM",
@@ -356,15 +348,18 @@
         window.firebaseDb = db;
         window.firebaseAuth = auth;
 
-        // XSS SANITIZATION
+        // ITEM 3: ROBUST DOM XSS SANITIZATION HELPER
         window.sanitizeHTML = function(str) {
             if (!str) return '';
-            const temp = document.createElement('div');
-            temp.textContent = str;
-            return temp.innerHTML;
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         };
 
-        // TELEGRAM HAPTICS
+        // ITEM 2: UNIVERSAL HAPTICS (TELEGRAM SDK WITH WEB VIBRATE FALLBACK)
         window.triggerTelegramHaptic = function(type = 'light') {
             try {
                 if (window.Telegram?.WebApp?.HapticFeedback) {
@@ -373,27 +368,27 @@
                     } else {
                         window.Telegram.WebApp.HapticFeedback.impactOccurred(type);
                     }
+                } else if (navigator.vibrate) {
+                    if (type === 'success') navigator.vibrate([30, 50, 30]);
+                    else if (type === 'error' || type === 'warning') navigator.vibrate([50, 100, 50]);
+                    else navigator.vibrate(20);
                 }
             } catch (err) {}
         };
 
-        // FIRESTORE REALTIME LISTENERS
+        // FIRESTORE LISTENERS
         onSnapshot(query(collection(db, "products"), limit(50)), (snapshot) => {
             window.products = [];
             snapshot.forEach(docSnap => window.products.push({ id: docSnap.id, ...docSnap.data() }));
             if (window.renderProducts) window.renderProducts();
             if (window.renderAdminProducts) window.renderAdminProducts();
+            if (window.checkInitialDeepLink) window.checkInitialDeepLink();
         });
 
         onSnapshot(collection(db, "orders"), (snapshot) => {
             window.orders = [];
             snapshot.forEach(docSnap => window.orders.push({ docId: docSnap.id, ...docSnap.data() }));
             if (window.renderAdminOrders) window.renderAdminOrders();
-        });
-
-        onSnapshot(collection(db, "banners"), (snapshot) => {
-            window.banners = [];
-            snapshot.forEach(docSnap => window.banners.push({ id: docSnap.id, ...docSnap.data() }));
         });
 
         // AUTH HANDLERS
@@ -474,7 +469,6 @@
             }
         });
 
-        // REVIEW SUBMISSION
         window.submitProductReview = async function() {
             if (!window.currentSelectedProdId) return;
             const text = sanitizeHTML(document.getElementById('new-review-text').value.trim());
@@ -504,8 +498,6 @@
             }
         };
 
-        // BAKONG AUTOMATED PAYMENT & ORDER CREATION
-        let bakongCheckTimer = null;
         window.createOrderAndInitBakong = async function() {
             const customerName = sanitizeHTML(document.getElementById('checkout-name').value.trim());
             const phone = sanitizeHTML(document.getElementById('checkout-phone').value.trim());
@@ -536,54 +528,46 @@
                 document.getElementById('bakong-payment-modal').classList.remove('hidden');
 
                 triggerTelegramHaptic('medium');
-                startBakongPollingVerification(docRef.id);
             } catch (err) { alert("Order creation failed: " + err.message); }
         };
 
-        function startBakongPollingVerification(orderId) {
-            const statusEl = document.getElementById('payment-status-indicator');
-            let elapsed = 0;
-            if (bakongCheckTimer) clearInterval(bakongCheckTimer);
-
-            bakongCheckTimer = setInterval(async () => {
-                elapsed += 3;
-                if (elapsed >= 9) {
-                    clearInterval(bakongCheckTimer);
-                    statusEl.className = "text-[11px] font-bold text-emerald-600 flex items-center justify-center space-x-1.5";
-                    statusEl.innerHTML = `<i class="fa-solid fa-circle-check"></i><span>Payment Verified by Bakong Network!</span>`;
-                    await updateDoc(doc(db, "orders", orderId), { status: "Paid" });
-                    triggerTelegramHaptic('success');
-                    setTimeout(() => {
-                        document.getElementById('bakong-payment-modal').classList.add('hidden');
-                        alert('Order Paid & Confirmed Successfully! 🎉');
-                    }, 1200);
-                }
-            }, 3000);
-        }
-
-        window.verifyBakongTransactionManual = async function() {
-            if (bakongCheckTimer) clearInterval(bakongCheckTimer);
-            if (window.currentActiveOrderId) {
-                await updateDoc(doc(db, "orders", window.currentActiveOrderId), { status: "Paid" });
-            }
-            triggerTelegramHaptic('success');
-            document.getElementById('bakong-payment-modal').classList.add('hidden');
-            alert('Payment Verified! Thank you.');
-        };
-
+        // ITEM 2: CROSS-PLATFORM PRODUCT SHARING
         window.shareProduct = function() {
             triggerTelegramHaptic('medium');
             const p = window.products.find(item => item.id === window.currentSelectedProdId);
             if (!p) return;
-            const deepLinkUrl = `https://t.me/songsashop?startapp=prod_${p.id}`;
+            const miniAppUrl = `https://t.me/songsashop?startapp=prod_${p.id}`;
             const shareText = `Check out ${p.name} ($${Number(p.price).toFixed(2)}) on Mininize Studio! ✨`;
+
             if (window.Telegram?.WebApp?.openTelegramLink) {
-                window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(deepLinkUrl)}&text=${encodeURIComponent(shareText)}`);
+                window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(miniAppUrl)}&text=${encodeURIComponent(shareText)}`);
             } else if (navigator.share) {
-                navigator.share({ title: p.name, text: shareText, url: deepLinkUrl }).catch(() => {});
+                navigator.share({ title: p.name, text: shareText, url: miniAppUrl }).catch(() => {});
             } else {
-                navigator.clipboard.writeText(`${shareText} ${deepLinkUrl}`);
-                alert('Product link copied to clipboard! 📲');
+                navigator.clipboard.writeText(`${shareText} ${miniAppUrl}`);
+                alert('Product link copied to clipboard!');
+            }
+        };
+
+        // ITEM 2: STARTUP DEEP LINK PARSER
+        let hasProcessedInitialLink = false;
+        window.checkInitialDeepLink = function() {
+            if (hasProcessedInitialLink || window.products.length === 0) return;
+            hasProcessedInitialLink = true;
+            
+            let startParam = '';
+            if (window.Telegram?.WebApp?.initDataUnsafe?.start_param) {
+                startParam = window.Telegram.WebApp.initDataUnsafe.start_param;
+            } else {
+                const params = new URLSearchParams(window.location.search);
+                startParam = params.get('startapp') || params.get('tgWebAppStartParam') || '';
+            }
+
+            if (startParam && startParam.startsWith('prod_')) {
+                const targetProdId = startParam.replace('prod_', '');
+                if (window.products.some(p => p.id === targetProdId)) {
+                    openProductDetailModal(targetProdId);
+                }
             }
         };
     </script>
@@ -730,9 +714,9 @@
                 <tr class="border-b">
                     <td class="p-2 font-mono"><b>${sanitizeHTML(o.orderNum || '#ORD-101')}</b></td>
                     <td class="p-2">${sanitizeHTML(o.customerName || 'Shopper')}</td>
-                    <td class="p-2"><span class="${o.status === 'Paid' ? 'text-emerald-600 font-bold' : 'text-amber-500'}">${o.status || 'Pending'}</span></td>
+                    <td class="p-2"><span class="${o.status === 'Paid' ? 'text-emerald-600 font-bold' : 'text-amber-500'}">${sanitizeHTML(o.status || 'Pending')}</span></td>
                     <td class="p-2 font-bold text-[#a4133c]">$${o.total || 0}</td>
-                    <td class="p-2 text-right">${o.date || ''}</td>
+                    <td class="p-2 text-right">${sanitizeHTML(o.date || '')}</td>
                 </tr>
             `).join('');
         };
