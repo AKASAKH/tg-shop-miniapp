@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.12.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         html, body, button, a, img, input { touch-action: manipulation; }
@@ -114,4 +114,1573 @@
                 <div id="wishlist-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
             </div>
 
-            <!-- PROFILE
+            <!-- PROFILE SECTION -->
+            <div id="page-profile" class="hidden space-y-3 max-w-md mx-auto">
+                <div id="customer-dashboard-view" class="space-y-3 hidden">
+                    <!-- VIP LOYALTY BANNER -->
+                    <div class="bg-gradient-to-r from-[#800f2f] to-[#a4133c] text-white p-4 rounded-2xl shadow-sm flex items-center justify-between">
+                        <div>
+                            <span id="vip-tier-badge" class="bg-white/20 text-white text-[9px] uppercase font-black px-2 py-0.5 rounded-md">VIP Silver Member</span>
+                            <h3 id="vip-points-text" class="text-sm font-bold mt-1">120 Loyalty Points</h3>
+                            <p class="text-[10px] text-pink-100">Earn points on every aesthetic purchase.</p>
+                        </div>
+                        <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-lg"><i class="fa-solid fa-crown text-amber-300"></i></div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 rounded-full bg-pink-50 text-[#a4133c] font-bold flex items-center justify-center text-lg"><i class="fa-solid fa-user"></i></div>
+                            <div>
+                                <h3 id="cust-profile-name" class="font-bold text-sm text-gray-900">Your Name</h3>
+                                <p id="cust-profile-handle" class="text-[11px] text-gray-400">@telegram_username</p>
+                                <p id="cust-profile-id-display" class="text-[9px] font-mono text-[#a4133c] font-semibold mt-0.5">ID: USR-000000</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-xs border border-gray-100 overflow-hidden text-xs divide-y divide-gray-50">
+                        <button onclick="openProfileSection('personal')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
+                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-user text-[#a4133c] w-4"></i><span>Personal Information</span></span>
+                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+                        </button>
+                        <button onclick="openProfileSection('orders')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
+                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-box-archive text-[#a4133c] w-4"></i><span>My Orders & PDF Invoices</span></span>
+                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+                        </button>
+                        <button onclick="openProfileSection('wallet')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
+                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-wallet text-[#a4133c] w-4"></i><span>Loyalty Voucher Wallet</span></span>
+                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+                        </button>
+                        <button onclick="openProfileSection('favorites')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
+                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-heart text-[#a4133c] w-4"></i><span>My Cloud Wishlist</span></span>
+                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+                        </button>
+                        <button onclick="openProfileSection('addresses')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
+                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-location-dot text-[#a4133c] w-4"></i><span>Delivery Addresses</span></span>
+                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+                        </button>
+                        <button onclick="openProfileSection('notifications')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
+                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-bell text-[#a4133c] w-4"></i><span>Notifications Preferences</span></span>
+                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+                        </button>
+                    </div>
+
+                    <button onclick="handleSignOut()" class="w-full bg-white border border-gray-200 text-red-600 font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Log out</button>
+                </div>
+
+                <!-- AUTH BOX -->
+                <div id="profile-auth-box" class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3 max-w-sm mx-auto hidden">
+                    <div class="text-center space-y-0.5">
+                        <h3 class="font-serif italic font-bold text-xs text-gray-900">Welcome to Mininize Studio</h3>
+                        <p class="text-[10px] text-gray-400">Sign in to access your personal dashboard</p>
+                    </div>
+                    <div class="flex bg-gray-50 p-0.5 rounded-xl text-[11px] font-medium">
+                        <button onclick="switchAuthTab('login')" id="authtab-login" class="flex-1 py-1 bg-white text-gray-900 rounded-lg shadow-xs">Log In</button>
+                        <button onclick="switchAuthTab('signup')" id="authtab-signup" class="flex-1 py-1 text-gray-500 rounded-lg">Sign Up</button>
+                    </div>
+                    <div id="auth-form-login" class="space-y-2 text-xs">
+                        <input type="email" id="login-email" placeholder="Email address" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
+                        <input type="password" id="login-password" placeholder="Password" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
+                        <button onclick="handleEmailLogin()" class="w-full bg-[#800f2f] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Log In</button>
+                    </div>
+                    <div id="auth-form-signup" class="space-y-2 text-xs hidden">
+                        <input type="text" id="signup-name" placeholder="Full Name" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
+                        <input type="email" id="signup-email" placeholder="Email address" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
+                        <input type="password" id="signup-password" placeholder="Password (min 6 chars)" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
+                        <button onclick="handleEmailSignUp()" class="w-full bg-[#800f2f] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Create Account</button>
+                    </div>
+                    <button onclick="handleTelegramSignIn()" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl flex items-center justify-center space-x-1.5 shadow-xs">
+                        <i class="fa-brands fa-telegram text-sm"></i>
+                        <span>Continue with Telegram</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN PORTAL VIEW -->
+        <div id="admin-view" class="hidden space-y-4">
+            <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs flex justify-between items-center">
+                <span class="font-bold text-xs text-gray-900 flex items-center"><i class="fa-solid fa-shield-halved text-[#a4133c] mr-1.5"></i> Mininize Studio Admin Portal</span>
+                <div class="flex items-center space-x-2">
+                    <button onclick="openProductModal()" class="bg-[#800f2f] text-white text-xs px-3 py-2 rounded-xl font-bold">+ Add Product</button>
+                    <button onclick="handleSignOut()" class="text-xs bg-red-50 text-red-600 px-3 py-2 rounded-xl font-medium">Sign Out</button>
+                </div>
+            </div>
+
+            <!-- EXECUTIVE METRICS SUMMARY CARDS -->
+            <div class="grid grid-cols-4 gap-2.5">
+                <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs">
+                    <p class="text-[10px] text-gray-400 font-medium">Total Revenue</p>
+                    <h3 id="admin-metric-revenue" class="text-sm font-black text-[#a4133c] mt-0.5">$0.00</h3>
+                </div>
+                <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs">
+                    <p class="text-[10px] text-gray-400 font-medium">Pending Orders</p>
+                    <h3 id="admin-metric-pending" class="text-sm font-black text-amber-600 mt-0.5">0</h3>
+                </div>
+                <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs">
+                    <p class="text-[10px] text-gray-400 font-medium">Low Stock</p>
+                    <h3 id="admin-metric-lowstock" class="text-sm font-black text-red-600 mt-0.5">0</h3>
+                </div>
+                <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs">
+                    <p class="text-[10px] text-gray-400 font-medium">Total Discounts</p>
+                    <h3 id="admin-metric-discounts" class="text-sm font-black text-emerald-600 mt-0.5">$0.00</h3>
+                </div>
+            </div>
+
+            <!-- ADMIN NAVIGATION TABS -->
+            <div class="flex space-x-1 border-b border-gray-200 text-xs font-semibold overflow-x-auto">
+                <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c]">Orders</button>
+                <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Products & Inventory</button>
+                <button onclick="switchAdminNav('coupons')" id="adtab-coupons" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Coupons & Analytics 🎟️</button>
+                <button onclick="switchAdminNav('reviews')" id="adtab-reviews" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Reviews ⭐</button>
+            </div>
+            
+            <!-- ORDERS SECTION -->
+            <div id="admin-sec-orders" class="space-y-4">
+                <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                        <h3 class="font-bold text-xs text-gray-900">Customer Orders & Status Management</h3>
+                        <div class="flex items-center space-x-2 overflow-x-auto">
+                            <div class="flex space-x-1 text-[10px] font-medium">
+                                <button onclick="filterAdminOrders('All')" id="ord-filter-all" class="px-2.5 py-1 bg-[#800f2f] text-white rounded-lg">All</button>
+                                <button onclick="filterAdminOrders('Pending')" id="ord-filter-pending" class="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-lg">Pending</button>
+                                <button onclick="filterAdminOrders('Paid')" id="ord-filter-paid" class="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-lg">Paid</button>
+                                <button onclick="filterAdminOrders('Shipped')" id="ord-filter-shipped" class="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-lg">Shipped</button>
+                            </div>
+                            <button onclick="exportOrdersCSV()" class="bg-gray-900 text-white text-[10px] px-3 py-1.5 rounded-lg font-bold flex items-center space-x-1"><i class="fa-solid fa-download"></i><span>Export CSV</span></button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead><tr class="text-gray-400 border-b text-[10px]"><th class="p-2">Order</th><th class="p-2">Customer</th><th class="p-2">Status</th><th class="p-2">Total</th><th class="p-2 text-right">Date</th></tr></thead>
+                            <tbody id="admin-orders-table-body" class="divide-y text-[11px]"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRODUCTS & INVENTORY SECTION -->
+            <div id="admin-sec-products" class="hidden space-y-4">
+                <div id="low-stock-alert-banner" class="hidden bg-red-50 border border-red-200 text-red-700 p-3 rounded-2xl flex items-center justify-between text-xs shadow-xs">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-triangle-exclamation text-red-600 text-sm"></i>
+                        <span id="low-stock-alert-text" class="font-bold">Warning: Items are running low on stock (<= 5 units)!</span>
+                    </div>
+                    <button onclick="filterLowStockProducts()" class="bg-red-600 text-white px-3 py-1 rounded-xl text-[10px] font-bold shadow-xs">View Low Stock Only</button>
+                </div>
+
+                <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                        <h3 class="font-bold text-xs text-gray-900">Product Catalog & Stock Management</h3>
+                        <div class="flex items-center space-x-2 w-full sm:w-auto">
+                            <div class="relative flex-1 sm:w-48">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-2.5 text-gray-400"><i class="fa-solid fa-magnifying-glass text-[10px]"></i></span>
+                                <input type="text" id="admin-product-search" oninput="renderAdminProducts()" placeholder="Search Name, SKU..." class="w-full pl-7 pr-2.5 py-1.5 bg-gray-50 border border-gray-200 rounded-xl text-[11px] focus:outline-none focus:border-[#a4133c]">
+                            </div>
+                            <button onclick="openAdminBarcodeScanner()" class="bg-sky-600 text-white text-[10px] px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-camera"></i><span>Scan Barcode 📷</span></button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead><tr class="text-gray-400 border-b text-[10px]"><th class="p-2">Name</th><th class="p-2">Category</th><th class="p-2">Price</th><th class="p-2">Stock Level</th><th class="p-2 text-right">Quick Restock</th></tr></thead>
+                            <tbody id="admin-products-table-body" class="divide-y text-[11px]"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COUPONS & ANALYTICS SECTION -->
+            <div id="admin-sec-coupons" class="hidden space-y-4">
+                <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-xs text-gray-900">Coupon Usage Analytics & Vouchers</h3>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="exportCouponsCSV()" class="bg-gray-900 text-white text-[10px] px-3 py-1.5 rounded-lg font-bold flex items-center space-x-1"><i class="fa-solid fa-download"></i><span>Export CSV</span></button>
+                            <button onclick="openCouponModal()" class="bg-[#800f2f] text-white text-xs px-3 py-1.5 rounded-xl font-bold">+ New Coupon</button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead><tr class="text-gray-400 border-b text-[10px]"><th class="p-2">Code</th><th class="p-2">Discount</th><th class="p-2">Usage Count</th><th class="p-2">Total Discount Given</th><th class="p-2">Status</th><th class="p-2 text-right">Actions</th></tr></thead>
+                            <tbody id="admin-coupons-table-body" class="divide-y text-[11px]"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REVIEWS SECTION -->
+            <div id="admin-sec-reviews" class="hidden bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-3">
+                <h3 class="font-bold text-xs text-gray-900">Customer Feedback & Reviews</h3>
+                <div id="admin-reviews-list-container" class="space-y-3 max-h-[60vh] overflow-y-auto text-xs"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- BARCODE SCANNER MODAL -->
+    <div id="admin-scanner-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative text-center border border-gray-100">
+            <button onclick="closeAdminBarcodeScanner()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="font-serif italic font-bold text-sm text-gray-900">Scan Product Barcode 📷</h3>
+            <p class="text-[10px] text-gray-500">Point your camera at a product SKU barcode or QR code.</p>
+            <div id="reader" class="w-full rounded-2xl overflow-hidden border bg-black"></div>
+            <div id="scan-result-banner" class="hidden bg-emerald-50 text-emerald-700 p-2.5 rounded-xl text-xs font-bold"></div>
+        </div>
+    </div>
+
+    <!-- PROFILE SUB-SECTION MODAL -->
+    <div id="profile-sub-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative text-xs border border-gray-100 max-h-[90vh] overflow-y-auto">
+            <button onclick="closeProfileSubModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
+            <h3 id="profile-modal-title" class="font-serif italic font-bold text-sm text-gray-900">Section Title</h3>
+            <div id="profile-modal-body" class="space-y-3"></div>
+        </div>
+    </div>
+
+    <!-- PRODUCT DETAIL MODAL -->
+    <div id="product-detail-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-4 space-y-3 shadow-2xl relative text-xs max-h-[90vh] overflow-y-auto border border-gray-100">
+            <button onclick="closeProductDetailModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
+            <div class="relative w-full aspect-square bg-gray-50 rounded-2xl overflow-hidden">
+                <img id="view-prod-image" src="" class="w-full h-full object-cover">
+                <span id="view-prod-category" class="absolute bottom-2 left-2 bg-white/90 text-gray-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full">Category</span>
+                <button onclick="shareProduct()" class="absolute top-3 left-3 bg-white/90 text-[#a4133c] w-8 h-8 rounded-full flex items-center justify-center shadow-xs">
+                    <i class="fa-solid fa-share-nodes text-xs"></i>
+                </button>
+            </div>
+            <div class="space-y-1">
+                <div class="flex justify-between items-start">
+                    <h3 id="view-prod-name" class="font-serif italic font-bold text-sm text-gray-900">Product Title</h3>
+                    <span id="view-prod-price" class="font-bold text-sm text-[#a4133c]">$0.00</span>
+                </div>
+            </div>
+            <div class="border-t border-gray-100 pt-3 space-y-2">
+                <h4 class="font-bold text-xs text-gray-900 flex justify-between items-center">
+                    <span>Reviews ⭐</span>
+                    <span id="prod-avg-rating" class="text-amber-500 text-[11px]">0.0 / 5.0</span>
+                </h4>
+                <div id="prod-reviews-list" class="space-y-1.5 max-h-40 overflow-y-auto text-[11px]"></div>
+                <div class="bg-gray-50 p-2.5 rounded-2xl border space-y-1.5 mt-2">
+                    <p class="font-bold text-[10px] text-gray-600">Leave a Review:</p>
+                    <div class="flex items-center space-x-1 text-amber-400 text-xs" id="star-rating-select">
+                        <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(1)"></i>
+                        <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(2)"></i>
+                        <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(3)"></i>
+                        <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(4)"></i>
+                        <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(5)"></i>
+                    </div>
+                    <input type="text" id="new-review-text" placeholder="Share your experience..." class="w-full border rounded-xl px-2.5 py-1 text-[11px]">
+                    <button onclick="submitProductReview()" class="w-full bg-gray-900 text-white font-bold py-1.5 rounded-xl text-[10px]">Submit Review</button>
+                </div>
+            </div>
+            <div class="flex items-center justify-between border-t pt-3">
+                <span id="view-prod-stock" class="text-emerald-600 font-bold text-[10px]">10 available</span>
+                <button id="view-prod-add-btn" class="bg-[#800f2f] text-white font-bold text-xs px-4 py-2.5 rounded-xl"><i class="fa-solid fa-cart-shopping"></i> Add to Bag</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CART DRAWER -->
+    <div id="cart-drawer" class="fixed inset-0 bg-black/40 z-50 hidden transition-opacity">
+        <div class="absolute inset-y-0 right-0 max-w-xs w-full bg-white shadow-xl flex flex-col p-4">
+            <div class="flex justify-between items-center border-b pb-2.5">
+                <h3 class="font-serif italic font-bold text-xs text-gray-900"><i class="fa-solid fa-bag-shopping text-[#a4133c] mr-1"></i> Shopping Bag</h3>
+                <button onclick="closeCartDrawer()" class="text-gray-400 text-xs"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="cart-items-container" class="flex-1 overflow-y-auto py-2 space-y-2 text-xs"></div>
+            <div class="border-t pt-2.5 space-y-2 text-xs">
+                <div class="flex justify-between font-bold text-gray-900"><span>Total</span><span id="cart-total" class="text-[#a4133c]">$0.00</span></div>
+                <button onclick="openCheckoutModal()" class="w-full bg-[#800f2f] text-white font-bold py-2.5 rounded-xl">Proceed to Payment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHECKOUT MODAL -->
+    <div id="checkout-modal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs">
+            <button onclick="closeCheckoutModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="font-serif italic font-bold text-xs text-gray-900">Delivery Details & Voucher</h3>
+            <div class="space-y-2">
+                <input type="text" id="checkout-name" placeholder="Full Name" class="w-full border rounded-xl px-3 py-1.5">
+                <input type="text" id="checkout-phone" placeholder="Phone Number" class="w-full border rounded-xl px-3 py-1.5">
+                <textarea id="checkout-address" placeholder="Delivery Address" rows="2" class="w-full border rounded-xl px-3 py-1.5"></textarea>
+                <input type="text" id="checkout-promo" placeholder="Promo Code (e.g. MININIZE15)" class="w-full border rounded-xl px-3 py-1.5 uppercase font-mono">
+            </div>
+            <button onclick="createOrderAndInitBakong()" class="w-full bg-red-600 text-white font-bold py-2.5 rounded-xl flex items-center justify-center space-x-1.5">
+                <i class="fa-solid fa-qrcode"></i><span>Pay via Bakong KHQR</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- BAKONG KHQR PAYMENT MODAL -->
+    <div id="bakong-payment-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative text-center border border-gray-100">
+            <button onclick="cancelBakongPayment()" class="absolute top-3 right-3 text-gray-400 text-xs"><i class="fa-solid fa-xmark"></i></button>
+            <div class="flex items-center justify-center space-x-1.5">
+                <span class="bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded">KHQR</span>
+                <span class="font-bold text-xs text-gray-900">Bakong Auto Verification</span>
+            </div>
+            <div class="bg-red-50 p-3 rounded-2xl border border-red-100 space-y-1">
+                <p class="text-[10px] text-gray-400">Total Due</p>
+                <h3 id="bakong-pay-amount" class="text-xl font-black text-red-600">$0.00</h3>
+                <p id="bakong-pay-ordernum" class="text-[9px] font-mono text-gray-500">Order: #ORD-000</p>
+            </div>
+            <div class="bg-white p-2 border rounded-2xl shadow-inner inline-block">
+                <img id="bakong-qr-img" src="" class="w-44 h-44 mx-auto rounded-lg object-contain">
+            </div>
+            <div id="payment-status-indicator" class="text-[11px] font-bold text-amber-600 flex items-center justify-center space-x-1.5">
+                <i class="fa-solid fa-circle-notch animate-spin text-xs"></i>
+                <span>Awaiting Bakong Network Confirmation...</span>
+            </div>
+            <button onclick="verifyBakongTransactionManual()" class="w-full bg-emerald-600 text-white font-bold text-xs py-2.5 rounded-xl">I Have Sent Payment (Verify)</button>
+        </div>
+    </div>
+
+    <!-- ADD / EDIT PRODUCT MODAL -->
+    <div id="admin-product-modal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs">
+            <button onclick="closeAdminProductModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
+            <h3 id="product-modal-title" class="font-serif italic font-bold text-xs text-gray-900">Add or Edit Product</h3>
+            <input type="hidden" id="prod-id" value="">
+            <div class="space-y-2">
+                <input type="text" id="prod-name" placeholder="Product Name" class="w-full border rounded-xl px-3 py-1.5">
+                <input type="text" id="prod-sku" placeholder="SKU Code" class="w-full border rounded-xl px-3 py-1.5 uppercase">
+                <select id="prod-category" class="w-full border rounded-xl px-3 py-1.5 bg-white">
+                    <option value="Hairpins">Hairpins 🎀</option>
+                    <option value="Necklaces">Necklaces 📿</option>
+                    <option value="Rings">Rings 💍</option>
+                    <option value="Earrings">Earrings 💎</option>
+                    <option value="Phone Charms">Phone Charms 📱</option>
+                    <option value="Bags & Pouches">Bags & Pouches 👜</option>
+                </select>
+                <input type="number" step="0.01" id="prod-price" placeholder="Price ($)" class="w-full border rounded-xl px-3 py-1.5">
+                <input type="number" id="prod-stock" placeholder="Stock Quantity" class="w-full border rounded-xl px-3 py-1.5">
+                <input type="text" id="prod-image" placeholder="Image URL" class="w-full border rounded-xl px-3 py-1.5">
+            </div>
+            <button onclick="saveAdminProduct()" class="w-full bg-[#800f2f] text-white font-bold py-2.5 rounded-xl">Save Product</button>
+        </div>
+    </div>
+
+    <!-- ADMIN COUPON MODAL -->
+    <div id="admin-coupon-modal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs">
+            <button onclick="closeAdminCouponModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="font-serif italic font-bold text-xs text-gray-900">Add Promo Code & Voucher</h3>
+            <div class="space-y-2">
+                <input type="text" id="coupon-code-input" placeholder="Coupon Code (e.g. SUMMER20)" class="w-full border rounded-xl px-3 py-1.5 uppercase font-mono">
+                <input type="number" id="coupon-discount-input" placeholder="Discount Percentage (e.g. 15)" class="w-full border rounded-xl px-3 py-1.5">
+            </div>
+            <button onclick="saveAdminCoupon()" class="w-full bg-[#800f2f] text-white font-bold py-2.5 rounded-xl">Save Coupon</button>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <nav id="customer-nav" class="fixed bottom-0 inset-x-0 bg-white border-t py-2 px-6 z-40 shadow-sm">
+        <div class="max-w-md mx-auto flex justify-around items-center text-xs">
+            <button onclick="switchCustomerTab('shop')" id="nav-btn-shop" class="flex flex-col items-center text-[#a4133c] font-bold"><i class="fa-solid fa-store text-sm"></i> Shop</button>
+            <button onclick="switchCustomerTab('wishlist')" id="nav-btn-wishlist" class="flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-heart text-sm"></i> Wishlist</button>
+            <button onclick="openCartDrawer()" class="relative flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-cart-shopping text-sm"></i> Cart<span id="cart-badge" class="absolute -top-1 -right-2 bg-[#a4133c] text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold">0</span></button>
+            <button onclick="switchCustomerTab('profile')" id="nav-btn-profile" class="flex flex-col items-center text-gray-400 font-medium"><i class="fa-solid fa-user text-sm"></i> Profile</button>
+        </div>
+    </nav>
+
+    <!-- FIREBASE & CLOUDFLARE WORKER PROXY ENGINE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, setDoc, getDoc, getDocs, query, where, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDz6snwoujsmp8IQ5-1c2_IL-JmEOx2tIM",
+            authDomain: "songsashop-be6d7.firebaseapp.com",
+            projectId: "songsashop-be6d7",
+            storageBucket: "songsashop-be6d7.firebasestorage.app",
+            messagingSenderId: "1037278824991",
+            appId: "1:1037278824991:web:84e107c0141046c74ce32a"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Expose global variables & Firestore functions
+        window.firebaseDb = db;
+        window.firebaseAuth = auth;
+        window.doc = doc;
+        window.getDoc = getDoc;
+        window.getDocs = getDocs;
+        window.setDoc = setDoc;
+        window.updateDoc = updateDoc;
+        window.deleteDoc = deleteDoc;
+        window.addDoc = addDoc;
+        window.collection = collection;
+        window.query = query;
+        window.where = where;
+        window.limit = limit;
+
+        window.sanitizeHTML = function(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        };
+
+        // MULTI-CURRENCY CONVERSION ENGINE
+        window.currentCurrency = 'USD';
+        window.exchangeRate = 4100;
+
+        window.formatPrice = function(usdAmount) {
+            const amount = Number(usdAmount) || 0;
+            if (window.currentCurrency === 'KHR') {
+                const khrAmount = Math.round(amount * window.exchangeRate);
+                return '៛' + khrAmount.toLocaleString();
+            } else {
+                return '$' + amount.toFixed(2);
+            }
+        };
+
+        window.changeCurrency = function(curr) {
+            window.currentCurrency = curr;
+            triggerTelegramHaptic('light');
+            if (window.renderProducts) window.renderProducts();
+            if (window.renderWishlist) window.renderWishlist();
+            const cartDrawer = document.getElementById('cart-drawer');
+            if (cartDrawer && !cartDrawer.classList.contains('hidden')) {
+                openCartDrawer();
+            }
+        };
+
+        window.triggerTelegramHaptic = function(type = 'light') {
+            try {
+                if (window.Telegram?.WebApp?.HapticFeedback) {
+                    if (['success', 'warning', 'error'].includes(type)) {
+                        window.Telegram.WebApp.HapticFeedback.notificationOccurred(type);
+                    } else {
+                        window.Telegram.WebApp.HapticFeedback.impactOccurred(type);
+                    }
+                } else if (navigator.vibrate) {
+                    if (type === 'success') navigator.vibrate([30, 50, 30]);
+                    else if (type === 'error' || type === 'warning') navigator.vibrate([50, 100, 50]);
+                    else navigator.vibrate(20);
+                }
+            } catch (err) {}
+        };
+
+        // PDF INVOICE GENERATOR FUNCTION
+        window.downloadOrderInvoice = function(orderNum, customerName, phone, address, itemsEncoded, total, date, promoCode) {
+            triggerTelegramHaptic('medium');
+            const items = JSON.parse(decodeURIComponent(itemsEncoded));
+
+            const invoiceDiv = document.createElement('div');
+            invoiceDiv.style.padding = '30px';
+            invoiceDiv.style.fontFamily = 'sans-serif';
+            invoiceDiv.style.color = '#333';
+            invoiceDiv.style.background = '#ffffff';
+            invoiceDiv.style.width = '450px';
+            invoiceDiv.innerHTML = `
+                <div style="text-align: center; border-bottom: 2px solid #800f2f; padding-bottom: 15px; margin-bottom: 20px;">
+                    <h2 style="color: #800f2f; margin: 0; font-family: serif; letter-spacing: 2px;">MININIZE STUDIO</h2>
+                    <p style="font-size: 10px; color: #777; margin: 5px 0 0 0;">Official Order Receipt & Tax Invoice</p>
+                </div>
+                <div style="font-size: 11px; margin-bottom: 15px; line-height: 1.5;">
+                    <p><b>Order Number:</b> ${orderNum}</p>
+                    <p><b>Date:</b> ${date}</p>
+                    <p><b>Customer:</b> ${customerName} (${phone})</p>
+                    <p><b>Delivery Address:</b> ${address}</p>
+                    <p><b>Promo Applied:</b> ${promoCode || 'None'}</p>
+                </div>
+                <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 20px;">
+                    <thead>
+                        <tr style="background: #fff0f3; color: #800f2f; text-align: left;">
+                            <th style="padding: 6px; border-bottom: 1px solid #ffccd5;">Item</th>
+                            <th style="padding: 6px; border-bottom: 1px solid #ffccd5; text-align: center;">Qty</th>
+                            <th style="padding: 6px; border-bottom: 1px solid #ffccd5; text-align: right;">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${items.map(i => `
+                            <tr>
+                                <td style="padding: 6px; border-bottom: 1px solid #f3f4f6;">${sanitizeHTML(i.name)}</td>
+                                <td style="padding: 6px; border-bottom: 1px solid #f3f4f6; text-align: center;">${i.qty}</td>
+                                <td style="padding: 6px; border-bottom: 1px solid #f3f4f6; text-align: right;">${formatPrice(i.price * i.qty)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <div style="text-align: right; font-size: 12px; font-weight: bold; color: #800f2f; border-top: 1px solid #eee; padding-top: 10px;">
+                    Total Paid: ${formatPrice(total)}
+                </div>
+                <div style="text-align: center; margin-top: 30px; font-size: 9px; color: #aaa;">
+                    Thank you for shopping with Mininize Studio! ✨<br/>Telegram: @songsashop
+                </div>
+            `;
+
+            document.body.appendChild(invoiceDiv);
+            html2pdf().from(invoiceDiv).set({
+                margin: 10,
+                filename: `Mininize_Invoice_${orderNum.replace('#', '')}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            }).save().then(() => {
+                invoiceDiv.remove();
+            });
+        };
+
+        let productsUnsubscribe = null;
+        let ordersUnsubscribe = null;
+        let couponsUnsubscribe = null;
+        let userDocUnsubscribe = null;
+
+        productsUnsubscribe = onSnapshot(query(collection(db, "products"), limit(50)), (snapshot) => {
+            window.products = [];
+            snapshot.forEach(docSnap => window.products.push({ id: docSnap.id, ...docSnap.data() }));
+            if (window.products.length === 0) seedCatalog(db);
+            if (window.renderProducts) window.renderProducts();
+            if (window.renderAdminProducts) window.renderAdminProducts();
+            if (window.updateAdminMetrics) window.updateAdminMetrics();
+            if (window.checkInitialDeepLink) window.checkInitialDeepLink();
+        });
+
+        couponsUnsubscribe = onSnapshot(collection(db, "coupons"), (snapshot) => {
+            window.coupons = [];
+            snapshot.forEach(docSnap => window.coupons.push({ id: docSnap.id, ...docSnap.data() }));
+            if (window.coupons.length === 0) seedCoupons(db);
+            if (window.renderAdminCoupons) window.renderAdminCoupons();
+            if (window.updateAdminMetrics) window.updateAdminMetrics();
+        });
+
+        async function seedCatalog(db) {
+            const initialCatalog = [
+                { name: 'Pearl Butterfly Hairpin', sku: 'HRP-001', category: 'Hairpins', price: 12.50, stock: 4, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80', reviews: [] },
+                { name: 'Gold Pendant Necklace', sku: 'NC-001', category: 'Necklaces', price: 24.50, stock: 3, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=80', reviews: [] },
+                { name: 'Minimalist Dainty Ring', sku: 'RNG-001', category: 'Rings', price: 9.99, stock: 20, image: 'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=600&q=80', reviews: [] }
+            ];
+            for (let item of initialCatalog) {
+                await addDoc(collection(db, "products"), { ...item, isPublished: true, createdAt: new Date().toISOString() });
+            }
+        }
+
+        async function seedCoupons(db) {
+            await setDoc(doc(db, "coupons", "MININIZE15"), { code: "MININIZE15", discountPercent: 15, isActive: true, usageCount: 0, totalDiscountGiven: 0, createdAt: new Date().toISOString() });
+        }
+
+        const WORKER_PROXY_URL = "https://mininize-telegram-proxy.your-subdomain.workers.dev";
+
+        async function postToTelegramChannel(photoUrl, captionText) {
+            try {
+                await fetch(WORKER_PROXY_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ photoUrl, caption: captionText })
+                });
+            } catch (err) { console.error('Proxy broadcast error:', err); }
+        }
+
+        async function sendTelegramLowStockAlert(productName, stockCount) {
+            try {
+                const message = `<b>🚨 LOW STOCK ALERT! 🚨</b>\n\nProduct: <b>${productName}</b>\nRemaining Stock: <b>${stockCount} units</b>\nPlease restock inventory immediately!`;
+                await fetch(WORKER_PROXY_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+            } catch (err) { console.error('Proxy stock alert error:', err); }
+        }
+
+        window.saveAdminProduct = async function() {
+            const prodId = document.getElementById('prod-id').value;
+            const name = sanitizeHTML(document.getElementById('prod-name').value.trim());
+            let sku = sanitizeHTML(document.getElementById('prod-sku').value.trim().toUpperCase());
+            const category = document.getElementById('prod-category').value;
+            const price = parseFloat(document.getElementById('prod-price').value);
+            let stock = parseInt(document.getElementById('prod-stock').value);
+            const image = document.getElementById('prod-image').value.trim() || 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80';
+
+            if (!name) return alert('Enter product name.');
+            if (isNaN(price)) return alert('Enter valid price.');
+            if (!sku) sku = `SKU-${Math.floor(1000 + Math.random() * 9000)}`;
+
+            const productData = { name, sku, category, price, stock: isNaN(stock) ? 10 : stock, image, isPublished: true, updatedAt: new Date().toISOString() };
+            
+            if (prodId) {
+                await updateDoc(doc(db, "products", prodId), productData);
+                triggerTelegramHaptic('success');
+                alert('Product updated successfully!');
+            } else {
+                productData.createdAt = new Date().toISOString();
+                productData.reviews = [];
+                await addDoc(collection(db, "products"), productData);
+                postToTelegramChannel(image, `<b>✨ NEW ARRIVAL! ✨</b>\n\n<b>${name}</b>\n🏷️ Category: ${category}\n💰 Price: <b>$${price.toFixed(2)}</b>`);
+                triggerTelegramHaptic('success');
+                alert('Product saved & broadcasted to @songsashop! 🎉');
+            }
+            closeAdminProductModal();
+        };
+
+        window.adjustProductStock = async function(prodId, delta) {
+            triggerTelegramHaptic('light');
+            const p = window.products.find(item => item.id === prodId);
+            if (!p) return;
+            const newStock = Math.max(0, (p.stock ?? 10) + delta);
+            await updateDoc(doc(db, "products", prodId), { stock: newStock, updatedAt: new Date().toISOString() });
+        };
+
+        window.deleteProduct = async function(id) {
+            if (confirm("Delete this product?")) {
+                await deleteDoc(doc(db, "products", id));
+                triggerTelegramHaptic('warning');
+                alert('Product deleted.');
+            }
+        };
+
+        window.saveAdminCoupon = async function() {
+            const code = sanitizeHTML(document.getElementById('coupon-code-input').value.trim().toUpperCase());
+            const discountPercent = parseFloat(document.getElementById('coupon-discount-input').value);
+            if (!code || isNaN(discountPercent)) return alert('Enter valid coupon code and discount percentage.');
+
+            await setDoc(doc(db, "coupons", code), { 
+                code, discountPercent, isActive: true, usageCount: 0, totalDiscountGiven: 0, createdAt: new Date().toISOString() 
+            }, { merge: true });
+            triggerTelegramHaptic('success');
+            alert(`Coupon ${code} saved successfully!`);
+            closeAdminCouponModal();
+        };
+
+        window.toggleCouponStatus = async function(code, currentStatus) {
+            await updateDoc(doc(db, "coupons", code), { isActive: !currentStatus });
+            triggerTelegramHaptic('light');
+        };
+
+        window.deleteCoupon = async function(code) {
+            if (confirm(`Delete coupon ${code}?`)) {
+                await deleteDoc(doc(db, "coupons", code));
+                triggerTelegramHaptic('warning');
+            }
+        };
+
+        window.updateOrderStatus = async function(docId, newStatus) {
+            await updateDoc(doc(db, "orders", docId), { status: newStatus });
+            triggerTelegramHaptic('success');
+        };
+
+        window.exportOrdersCSV = function() {
+            triggerTelegramHaptic('medium');
+            if (!window.orders || window.orders.length === 0) return alert('No orders to export.');
+            let csvContent = "data:text/csv;charset=utf-8,OrderNum,Customer,Phone,Address,Status,Total,Date\n";
+            window.orders.forEach(o => {
+                csvContent += `"${o.orderNum}","${o.customerName}","${o.phone}","${o.address.replace(/"/g, '""')}","${o.status}","${o.total}","${o.date}"\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `mininize_orders_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+
+        window.exportCouponsCSV = function() {
+            triggerTelegramHaptic('medium');
+            if (!window.coupons || window.coupons.length === 0) return alert('No coupons to export.');
+            let csvContent = "data:text/csv;charset=utf-8,Code,DiscountPercent,UsageCount,TotalDiscountGiven,Status\n";
+            window.coupons.forEach(c => {
+                csvContent += `"${c.code}","${c.discountPercent}%","${c.usageCount || 0}","$${(c.totalDiscountGiven || 0).toFixed(2)}","${c.isActive ? 'Active' : 'Inactive'}"\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `mininize_coupons_analytics_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+
+        window.handleEmailLogin = async function() {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            if (!email || !password) return alert('Enter email and password.');
+            try { 
+                const cred = await signInWithEmailAndPassword(auth, email, password); 
+                const userRef = doc(db, "users", cred.user.uid);
+                await setDoc(userRef, {
+                    uid: cred.user.uid,
+                    customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
+                    email, name: email.split('@')[0], loyaltyPoints: 120,
+                    role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer",
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
+                triggerTelegramHaptic('success'); 
+            } catch (err) { alert("Login failed: " + err.message); }
+        };
+
+        window.handleEmailSignUp = async function() {
+            const name = sanitizeHTML(document.getElementById('signup-name').value.trim());
+            const email = sanitizeHTML(document.getElementById('signup-email').value.trim());
+            const password = document.getElementById('signup-password').value;
+            if (!name || !email || !password) return alert('Fill all fields.');
+            try {
+                const cred = await createUserWithEmailAndPassword(auth, email, password);
+                await setDoc(doc(db, "users", cred.user.uid), {
+                    uid: cred.user.uid, customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
+                    email, name, loyaltyPoints: 50,
+                    role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer",
+                    wishlist: [],
+                    addresses: [{ label: 'Home', street: '123 Main Street', province: 'Phnom Penh', isDefault: true }],
+                    notifications: { emailAlerts: true, telegramAlerts: true }
+                }, { merge: true });
+                triggerTelegramHaptic('success');
+                alert('Account created successfully!');
+            } catch (err) { alert("Sign up failed: " + err.message); }
+        };
+
+        window.handleTelegramSignIn = async function() {
+            try {
+                const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+                const email = tgUser ? `${tgUser.id}@telegram.org` : `telegram_${Math.floor(100000 + Math.random() * 900000)}@telegram.org`;
+                const password = tgUser ? `tg_pass_${tgUser.id}` : `tg_pass_default`;
+                const name = tgUser ? sanitizeHTML(`${tgUser.first_name || ''}`.trim()) : 'Telegram Shopper';
+                try { 
+                    await signInWithEmailAndPassword(auth, email, password); 
+                } catch(e) {
+                    const cred = await createUserWithEmailAndPassword(auth, email, password);
+                    await setDoc(doc(db, "users", cred.user.uid), {
+                        uid: cred.user.uid, customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
+                        email, name, loyaltyPoints: 100,
+                        role: "customer", wishlist: [],
+                        addresses: [{ label: 'Home', street: 'Telegram St', province: 'Phnom Penh', isDefault: true }],
+                        notifications: { emailAlerts: true, telegramAlerts: true }
+                    }, { merge: true });
+                }
+                triggerTelegramHaptic('success');
+            } catch (err) { 
+                try { await signInAnonymously(auth); } catch (anonErr) { alert("Authentication failed: " + anonErr.message); }
+            }
+        };
+
+        window.handleSignOut = async function() { await signOut(auth); if (window.exitAdminMode) window.exitAdminMode(); };
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                window.currentUser = user;
+                document.getElementById('session-user-badge').innerText = user.email || 'Active User';
+
+                if (userDocUnsubscribe) { userDocUnsubscribe(); userDocUnsubscribe = null; }
+
+                userDocUnsubscribe = onSnapshot(doc(db, "users", user.uid), (docSnap) => {
+                    if (docSnap.exists()) {
+                        window.currentUserData = docSnap.data();
+                    } else {
+                        window.currentUserData = { name: "Shopper", role: "customer", loyaltyPoints: 80, wishlist: [], addresses: [], notifications: { emailAlerts: true, telegramAlerts: true } };
+                    }
+
+                    const isAdmin = window.currentUserData.role === "admin" || (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
+                    if (isAdmin) {
+                        enterAdminMode();
+                        if (!ordersUnsubscribe) {
+                            ordersUnsubscribe = onSnapshot(collection(db, "orders"), (snapshot) => {
+                                window.orders = [];
+                                snapshot.forEach(docSnap => window.orders.push({ docId: docSnap.id, ...docSnap.data() }));
+                                if (window.renderAdminOrders) window.renderAdminOrders();
+                                if (window.updateAdminMetrics) window.updateAdminMetrics();
+                            });
+                        }
+                    } else {
+                        exitAdminMode();
+                        if (ordersUnsubscribe) { ordersUnsubscribe(); ordersUnsubscribe = null; }
+                        window.orders = [];
+                        if (window.updateProfileViewUI) window.updateProfileViewUI();
+                        if (window.renderProducts) window.renderProducts();
+                    }
+                });
+            } else {
+                if (userDocUnsubscribe) { userDocUnsubscribe(); userDocUnsubscribe = null; }
+                if (ordersUnsubscribe) { ordersUnsubscribe(); ordersUnsubscribe = null; }
+                window.orders = [];
+                window.currentUser = null; window.currentUserData = null;
+                document.getElementById('session-user-badge').innerText = 'Guest Mode';
+                exitAdminMode();
+                if (window.updateProfileViewUI) window.updateProfileViewUI();
+            }
+        });
+
+        window.submitProductReview = async function() {
+            if (!window.currentSelectedProdId) return;
+            const text = sanitizeHTML(document.getElementById('new-review-text').value.trim());
+            if (!text) return alert('Enter review text.');
+            const prodRef = doc(db, "products", window.currentSelectedProdId);
+            const prodSnap = await getDoc(prodRef);
+            if (prodSnap.exists()) {
+                const p = prodSnap.data();
+                const reviews = p.reviews || [];
+                reviews.push({ id: `rev_${Date.now()}`, author: sanitizeHTML(window.currentUserData?.name || "Shopper"), rating: window.currentSelectedStarRating || 5, text, date: new Date().toISOString().split('T')[0], likes: 0 });
+                await updateDoc(prodRef, { reviews });
+                triggerTelegramHaptic('success');
+                document.getElementById('new-review-text').value = '';
+                openProductDetailModal(window.currentSelectedProdId, true);
+            }
+        };
+
+        window.likeProductReview = async function(prodId, reviewId) {
+            triggerTelegramHaptic('light');
+            const prodRef = doc(db, "products", prodId);
+            const prodSnap = await getDoc(prodRef);
+            if (prodSnap.exists()) {
+                let reviews = prodSnap.data().reviews || [];
+                reviews = reviews.map(r => r.id === reviewId ? { ...r, likes: (r.likes || 0) + 1 } : r);
+                await updateDoc(prodRef, { reviews });
+                openProductDetailModal(prodId, true);
+            }
+        };
+
+        window.createOrderAndInitBakong = async function() {
+            const customerName = sanitizeHTML(document.getElementById('checkout-name').value.trim());
+            const phone = sanitizeHTML(document.getElementById('checkout-phone').value.trim());
+            const address = sanitizeHTML(document.getElementById('checkout-address').value.trim());
+            const promoCodeInput = sanitizeHTML(document.getElementById('checkout-promo').value.trim().toUpperCase());
+            if (!customerName || !phone || !address) return alert('Complete delivery details.');
+
+            let subtotal = window.cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            let discount = 0;
+            let appliedCouponCode = 'NONE';
+
+            if (promoCodeInput) {
+                const couponRef = doc(db, "coupons", promoCodeInput);
+                const couponSnap = await getDoc(couponRef);
+                if (couponSnap.exists() && couponSnap.data().isActive) {
+                    const cData = couponSnap.data();
+                    discount = subtotal * (cData.discountPercent / 100);
+                    appliedCouponCode = promoCodeInput;
+                    await updateDoc(couponRef, {
+                        usageCount: (cData.usageCount || 0) + 1,
+                        totalDiscountGiven: (cData.totalDiscountGiven || 0) + discount
+                    });
+                } else if (promoCodeInput === 'MININIZE15') {
+                    discount = subtotal * 0.15;
+                    appliedCouponCode = 'MININIZE15';
+                }
+            }
+
+            const total = subtotal - discount;
+            const orderNum = `#ORD-${Math.floor(1000 + Math.random() * 9000)}`;
+
+            try {
+                for (let cartItem of window.cart) {
+                    const prodRef = doc(db, "products", cartItem.id);
+                    const prodSnap = await getDoc(prodRef);
+                    if (prodSnap.exists()) {
+                        const currentStock = prodSnap.data().stock ?? 10;
+                        if (currentStock < cartItem.qty) return alert(`Sorry, "${cartItem.name}" only has ${currentStock} units left in stock!`);
+                        const updatedStock = Math.max(0, currentStock - cartItem.qty);
+                        await updateDoc(prodRef, { stock: updatedStock });
+                        if (updatedStock <= 5) sendTelegramLowStockAlert(cartItem.name, updatedStock);
+                    }
+                }
+
+                const docRef = await addDoc(collection(db, "orders"), { 
+                    orderNum, userId: window.currentUser ? window.currentUser.uid : 'guest', customerName, phone, address, items: window.cart, subtotal, discount, total, promoCode: appliedCouponCode, status: 'Pending', date: new Date().toISOString().split('T')[0] 
+                });
+                window.currentActiveOrderId = docRef.id;
+                
+                if (window.currentUser) {
+                    const earnedPoints = Math.floor(total * 10);
+                    const newPoints = (window.currentUserData.loyaltyPoints || 0) + earnedPoints;
+                    await updateDoc(doc(db, "users", window.currentUser.uid), { loyaltyPoints: newPoints });
+                    window.currentUserData.loyaltyPoints = newPoints;
+                }
+
+                window.cart = []; localStorage.removeItem('mininize_cart');
+                document.getElementById('cart-badge').innerText = '0';
+                closeCheckoutModal();
+
+                document.getElementById('bakong-pay-amount').innerText = formatPrice(total);
+                document.getElementById('bakong-pay-ordernum').innerText = `Order: ${orderNum}`;
+                document.getElementById('bakong-qr-img').src = `https://quickchart.io/qr?text=mininize@bakong&size=250`;
+                document.getElementById('bakong-payment-modal').classList.remove('hidden');
+                triggerTelegramHaptic('medium');
+            } catch (err) { alert("Order failed: " + err.message); }
+        };
+
+        window.verifyBakongTransactionManual = async function() {
+            if (window.currentActiveOrderId) await updateDoc(doc(db, "orders", window.currentActiveOrderId), { status: "Paid" });
+            triggerTelegramHaptic('success');
+            document.getElementById('bakong-payment-modal').classList.add('hidden');
+            alert('Payment Verified Successfully! 🎉');
+        };
+
+        window.shareProduct = function() {
+            triggerTelegramHaptic('medium');
+            const p = window.products.find(item => item.id === window.currentSelectedProdId);
+            if (!p) return;
+            const miniAppUrl = `https://t.me/songsashop?startapp=prod_${p.id}`;
+            const shareText = `Check out ${p.name} (${formatPrice(p.price)}) on Mininize Studio! ✨`;
+            if (window.Telegram?.WebApp?.openTelegramLink) {
+                window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(miniAppUrl)}&text=${encodeURIComponent(shareText)}`);
+            } else {
+                navigator.clipboard.writeText(`${shareText} ${miniAppUrl}`);
+                alert('Product link copied to clipboard!');
+            }
+        };
+
+        let hasProcessedInitialLink = false;
+        window.checkInitialDeepLink = function() {
+            if (hasProcessedInitialLink || window.products.length === 0) return;
+            hasProcessedInitialLink = true;
+            let startParam = '';
+            if (window.Telegram?.WebApp?.initDataUnsafe?.start_param) {
+                startParam = window.Telegram.WebApp.initDataUnsafe.start_param;
+            } else {
+                const params = new URLSearchParams(window.location.search);
+                startParam = params.get('startapp') || params.get('tgWebAppStartParam') || '';
+            }
+            if (startParam && startParam.startsWith('prod_')) {
+                const targetProdId = startParam.replace('prod_', '');
+                if (window.products.some(p => p.id === targetProdId)) openProductDetailModal(targetProdId);
+            }
+        };
+    </script>
+
+    <!-- STOREFRONT & UI LOGIC -->
+    <script>
+        const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80';
+        window.products = []; window.orders = []; window.coupons = [];
+        window.cart = JSON.parse(localStorage.getItem('mininize_cart') || '[]');
+        let activeCategory = 'All';
+        let adminOrderFilter = 'All';
+        let lowStockFilterActive = false;
+        window.currentSelectedProdId = null;
+        window.currentSelectedStarRating = 5;
+        let html5QrCodeScannerInstance = null;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const badge = document.getElementById('cart-badge');
+            if (badge) badge.innerText = window.cart.reduce((s, i) => s + i.qty, 0);
+            if (window.Telegram?.WebApp) { window.Telegram.WebApp.ready(); window.Telegram.WebApp.expand(); }
+
+            setTimeout(() => { closePromoPopup(); }, 4000);
+        });
+
+        function closePromoPopup() {
+            const banner = document.getElementById('promo-popup');
+            if (banner && !banner.classList.contains('hidden')) banner.classList.add('hidden');
+        }
+
+        function switchAuthTab(mode) {
+            triggerTelegramHaptic('light');
+            ['login', 'signup'].forEach(m => {
+                document.getElementById(`auth-form-${m}`).classList.add('hidden');
+                document.getElementById(`authtab-${m}`).className = 'flex-1 py-1 text-gray-500 rounded-lg';
+            });
+            document.getElementById(`auth-form-${mode}`).classList.remove('hidden');
+            document.getElementById(`authtab-${mode}`).className = 'flex-1 py-1 bg-white text-gray-900 rounded-lg shadow-xs';
+        }
+        window.switchAuthTab = switchAuthTab;
+
+        window.updateProfileViewUI = function() {
+            const authBox = document.getElementById('profile-auth-box');
+            const dashboardView = document.getElementById('customer-dashboard-view');
+            const greetingBanner = document.getElementById('user-greeting-banner');
+            if (!authBox || !dashboardView) return;
+
+            if (window.currentUser) {
+                authBox.classList.add('hidden');
+                dashboardView.classList.remove('hidden');
+                const uData = window.currentUserData || {};
+                document.getElementById('cust-profile-name').innerText = uData.name || 'Shopper';
+                document.getElementById('cust-profile-handle').innerText = window.currentUser.email ? `@${window.currentUser.email.split('@')[0]}` : "@shopper";
+                document.getElementById('cust-profile-id-display').innerText = `ID: ${uData.customId || 'USR-000'}`;
+                
+                const pts = uData.loyaltyPoints || 100;
+                document.getElementById('vip-points-text').innerText = `${pts} Loyalty Points`;
+                document.getElementById('vip-tier-badge').innerText = pts >= 250 ? "VIP Gold Member 🌟" : "VIP Silver Member ✨";
+
+                if (greetingBanner) {
+                    greetingBanner.classList.remove('hidden');
+                    document.getElementById('welcome-user-name').innerText = `Welcome back, ${uData.name || 'Shopper'}! ✨`;
+                    document.getElementById('welcome-user-id').innerText = uData.customId || 'USR-000';
+                }
+            } else {
+                authBox.classList.remove('hidden');
+                dashboardView.classList.add('hidden');
+                if (greetingBanner) greetingBanner.classList.add('hidden');
+            }
+        };
+
+        function switchCustomerTab(tab) {
+            triggerTelegramHaptic('light');
+            ['shop', 'wishlist', 'profile'].forEach(t => {
+                document.getElementById(`page-${t}`).classList.add('hidden');
+                const btn = document.getElementById(`nav-btn-${t}`);
+                if (btn) btn.className = 'flex flex-col items-center text-gray-400 font-medium';
+            });
+            document.getElementById(`page-${tab}`).classList.remove('hidden');
+            const targetBtn = document.getElementById(`nav-btn-${tab}`);
+            if (targetBtn) targetBtn.className = 'flex flex-col items-center text-[#a4133c] font-bold';
+            
+            if (tab === 'shop') renderProducts();
+            if (tab === 'wishlist') renderWishlist();
+            if (tab === 'profile') updateProfileViewUI();
+        }
+        window.switchCustomerTab = switchCustomerTab;
+
+        function filterCategory(cat) {
+            triggerTelegramHaptic('light');
+            activeCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.className = (btn.innerText.includes(cat) || (cat === 'All' && btn.innerText.includes('All'))) 
+                    ? 'cat-btn bg-[#800f2f] text-white px-3 py-1.5 rounded-full font-medium whitespace-nowrap shadow-xs min-h-[36px]' 
+                    : 'cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]';
+            });
+            renderProducts();
+        }
+
+        window.openProfileSection = async function(section) {
+            triggerTelegramHaptic('light');
+            const modal = document.getElementById('profile-sub-modal');
+            const titleEl = document.getElementById('profile-modal-title');
+            const bodyEl = document.getElementById('profile-modal-body');
+            modal.classList.remove('hidden');
+            const uData = window.currentUserData || {};
+            const isAdmin = uData.role === "admin" || window.currentUser?.uid === "NoIYk9Uwlc75YLdlpzx1";
+
+            if (section === 'personal') {
+                titleEl.innerText = "Personal Information 👤";
+                bodyEl.innerHTML = `
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 mb-1">Full Name</label>
+                            <input type="text" id="edit-name" value="${sanitizeHTML(uData.name || '')}" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 mb-1">Email Address</label>
+                            <input type="email" id="edit-email" value="${sanitizeHTML(uData.email || '')}" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 mb-1">Phone Number</label>
+                            <input type="tel" id="edit-phone" value="${sanitizeHTML(uData.phone || '')}" placeholder="+855 XX XXX XXX" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
+                        </div>
+                        <div class="pt-2">
+                            <button id="save-profile-btn" onclick="savePersonalData()" class="w-full bg-[#800f2f] text-white font-bold py-2.5 rounded-xl shadow-xs active:scale-95 transition-transform flex items-center justify-center space-x-2">
+                                <span>Save Changes</span>
+                            </button>
+                        </div>
+                    </div>`;
+            } else if (section === 'orders') {
+                titleEl.innerText = "My Orders & PDF Invoices 📦";
+                bodyEl.innerHTML = `<p class="text-xs text-gray-400 text-center py-4">Loading your orders...</p>`;
+                try {
+                    let ordersList = [];
+                    if (isAdmin) {
+                        ordersList = window.orders || [];
+                    } else if (window.currentUser) {
+                        const q = window.query(window.collection(window.firebaseDb, "orders"), window.where("userId", "==", window.currentUser.uid));
+                        const querySnapshot = await window.getDocs(q);
+                        querySnapshot.forEach(docSnap => ordersList.push({ docId: docSnap.id, ...docSnap.data() }));
+                    }
+                    const statuses = ['Pending', 'Paid', 'Processing', 'Shipped', 'Delivered'];
+                    bodyEl.innerHTML = ordersList.length === 0 ? `<p class="text-xs text-gray-400 text-center py-4">You have no active orders yet.</p>` :
+                        ordersList.map(o => {
+                            const currentStatusIdx = statuses.indexOf(o.status || 'Pending');
+                            const encodedItems = encodeURIComponent(JSON.stringify(o.items || []));
+                            return `
+                                <div class="bg-gray-50 p-3 rounded-2xl border space-y-2.5 text-xs">
+                                    <div class="flex justify-between items-center">
+                                        <b>${sanitizeHTML(o.orderNum)}</b>
+                                        <span class="font-bold text-[#a4133c]">${formatPrice(o.total || 0)}</span>
+                                    </div>
+                                    <p class="text-[10px] text-gray-400">Ordered: ${o.date} | Status: <span class="font-bold text-emerald-600">${o.status}</span></p>
+                                    <div class="flex justify-between items-center pt-2 border-t text-[9px] text-gray-500">
+                                        ${statuses.map((st, idx) => `
+                                            <div class="flex flex-col items-center space-y-1">
+                                                <div class="w-5 h-5 rounded-full flex items-center justify-center font-bold text-[8px] ${idx <= currentStatusIdx ? 'bg-[#a4133c] text-white' : 'bg-gray-200 text-gray-600'}">
+                                                    ${idx <= currentStatusIdx ? '<i class="fa-solid fa-check text-[7px]"></i>' : idx + 1}
+                                                </div>
+                                                <span class="${idx <= currentStatusIdx ? 'text-[#a4133c] font-bold' : 'text-gray-400'}">${st}</span>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                    <div class="pt-2">
+                                        <button onclick="downloadOrderInvoice('${o.orderNum}', '${sanitizeHTML(o.customerName)}', '${sanitizeHTML(o.phone)}', '${sanitizeHTML(o.address)}', '${encodedItems}', ${o.total}, '${o.date}', '${o.promoCode || ''}')" class="w-full bg-gray-900 text-white font-bold py-2 rounded-xl text-[10px] flex items-center justify-center space-x-1.5 shadow-xs">
+                                            <i class="fa-solid fa-file-pdf text-red-400"></i><span>Download PDF Invoice 📄</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                } catch (err) {
+                    bodyEl.innerHTML = `<p class="text-xs text-red-500 text-center py-4">Failed to load orders.</p>`;
+                }
+            } else if (section === 'wallet') {
+                titleEl.innerText = "Loyalty Voucher Wallet 🎟️";
+                const pts = uData.loyaltyPoints || 100;
+                bodyEl.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="bg-gradient-to-r from-pink-50 to-pink-100 p-3 rounded-2xl border border-pink-200 text-center space-y-1">
+                            <span class="text-[10px] text-[#a4133c] font-bold uppercase">Available Balance</span>
+                            <h3 class="text-lg font-black text-[#a4133c]">${pts} Points</h3>
+                            <p class="text-[10px] text-gray-500">Redeem points for exclusive discount vouchers below!</p>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="bg-white p-3 rounded-2xl border shadow-xs flex justify-between items-center">
+                                <div>
+                                    <span class="font-mono font-bold text-xs text-[#a4133c]">MININIZE15</span>
+                                    <p class="text-[10px] text-gray-500">15% OFF Grand Opening Special</p>
+                                </div>
+                                <button onclick="navigator.clipboard.writeText('MININIZE15'); alert('Coupon code MININIZE15 copied!');" class="bg-gray-900 text-white text-[10px] px-3 py-1.5 rounded-xl font-bold">Copy</button>
+                            </div>
+                            ${pts >= 200 ? `
+                            <div class="bg-white p-3 rounded-2xl border shadow-xs flex justify-between items-center">
+                                <div>
+                                    <span class="font-mono font-bold text-xs text-emerald-600">VIP20OFF</span>
+                                    <p class="text-[10px] text-gray-500">20% OFF VIP Reward Voucher</p>
+                                </div>
+                                <button onclick="navigator.clipboard.writeText('VIP20OFF'); alert('VIP Voucher copied!');" class="bg-emerald-600 text-white text-[10px] px-3 py-1.5 rounded-xl font-bold">Copy</button>
+                            </div>` : `<div class="bg-gray-50 p-3 rounded-2xl border text-center"><p class="text-[10px] text-gray-400">Earn 200+ points to unlock VIP20OFF voucher!</p></div>`}
+                        </div>
+                    </div>`;
+            } else if (section === 'favorites') {
+                titleEl.innerText = "My Cloud Wishlist";
+                let userWishlist = uData.wishlist || [];
+                let favs = window.products.filter(p => userWishlist.includes(p.id));
+                bodyEl.innerHTML = favs.length === 0 ? `<p class="text-xs text-gray-400 text-center py-4">No cloud favorite items saved.</p>` :
+                    `<div class="grid grid-cols-2 gap-2">${favs.map(p => `<div onclick="closeProfileSubModal(); openProductDetailModal('${p.id}')" class="bg-gray-50 p-2 rounded-xl border cursor-pointer"><img src="${p.image}" class="w-full aspect-square object-cover rounded mb-1"><b class="text-[11px] truncate block">${sanitizeHTML(p.name)}</b></div>`).join('')}</div>`;
+            } else if (section === 'addresses') {
+                titleEl.innerText = "Delivery Addresses";
+                const addrs = uData.addresses || [{ label: 'Home', street: '123 Main Street', province: 'Phnom Penh', isDefault: true }];
+                bodyEl.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="space-y-2">
+                            ${addrs.map((a, idx) => `
+                                <div class="bg-gray-50 p-3 rounded-xl border flex justify-between items-center">
+                                    <div>
+                                        <span class="font-bold text-gray-900">${sanitizeHTML(a.label)} ${a.isDefault ? '<span class="text-[9px] bg-pink-100 text-[#a4133c] px-1.5 py-0.5 rounded font-bold">Default</span>' : ''}</span>
+                                        <p class="text-gray-500 text-[10px]">${sanitizeHTML(a.street)}, ${sanitizeHTML(a.province)}</p>
+                                    </div>
+                                    <button onclick="removeAddress(${idx})" class="text-red-500 text-xs"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="border-t pt-2 space-y-2">
+                            <p class="font-bold text-gray-800 text-[11px]">Add New Address:</p>
+                            <input type="text" id="new-addr-label" placeholder="Label (e.g. Office, Home)" class="w-full border rounded-xl px-2.5 py-1.5">
+                            <input type="text" id="new-addr-street" placeholder="Street Address" class="w-full border rounded-xl px-2.5 py-1.5">
+                            <input type="text" id="new-addr-province" placeholder="City / Province" class="w-full border rounded-xl px-2.5 py-1.5">
+                            <button onclick="addNewAddress()" class="w-full bg-[#800f2f] text-white font-bold py-2 rounded-xl">Save Address</button>
+                        </div>
+                    </div>`;
+            } else if (section === 'notifications') {
+                titleEl.innerText = "Notification Preferences";
+                const notifs = uData.notifications || { emailAlerts: true, telegramAlerts: true };
+                bodyEl.innerHTML = `
+                    <div class="space-y-3 text-xs">
+                        <div class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border">
+                            <div><b class="block text-gray-900">Email Notifications</b><span class="text-[10px] text-gray-400">Receive order receipts via email</span></div>
+                            <input type="checkbox" id="notif-email" ${notifs.emailAlerts !== false ? 'checked' : ''} onchange="updateNotificationSettings()" class="w-4 h-4 accent-[#a4133c]">
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border">
+                            <div><b class="block text-gray-900">Telegram Messages</b><span class="text-[10px] text-gray-400">Receive instant alerts in Telegram</span></div>
+                            <input type="checkbox" id="notif-telegram" ${notifs.telegramAlerts !== false ? 'checked' : ''} onchange="updateNotificationSettings()" class="w-4 h-4 accent-[#a4133c]">
+                        </div>
+                    </div>`;
+            }
+        };
+        window.closeProfileSubModal = function() { document.getElementById('profile-sub-modal').classList.add('hidden'); };
+
+        window.savePersonalData = async function() {
+            const name = sanitizeHTML(document.getElementById('edit-name').value.trim());
+            const email = sanitizeHTML(document.getElementById('edit-email').value.trim());
+            const phone = sanitizeHTML(document.getElementById('edit-phone').value.trim());
+            if (!name) return alert('Name cannot be empty.');
+            const saveBtn = document.getElementById('save-profile-btn');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i><span>Syncing...</span>`;
+            try {
+                if (window.currentUser) {
+                    await window.updateDoc(window.doc(window.firebaseDb, "users", window.currentUser.uid), { name, email, phone, updatedAt: new Date().toISOString() });
+                    triggerTelegramHaptic('success');
+                    alert('Profile updated successfully!');
+                    closeProfileSubModal();
+                }
+            } catch (err) {
+                alert('Failed to sync: ' + err.message);
+                saveBtn.disabled = false;
+                saveBtn.innerText = 'Save Changes';
+            }
+        };
+
+        window.addNewAddress = async function() {
+            const label = sanitizeHTML(document.getElementById('new-addr-label').value.trim());
+            const street = sanitizeHTML(document.getElementById('new-addr-street').value.trim());
+            const province = sanitizeHTML(document.getElementById('new-addr-province').value.trim());
+            if (!label || !street || !province) return alert('Please fill in all fields.');
+            let addrs = window.currentUserData.addresses || [];
+            addrs.push({ label, street, province, isDefault: addrs.length === 0 });
+            if (window.currentUser) {
+                await window.updateDoc(window.doc(window.firebaseDb, "users", window.currentUser.uid), { addresses: addrs });
+                triggerTelegramHaptic('success');
+                openProfileSection('addresses');
+            }
+        };
+
+        window.removeAddress = async function(index) {
+            let addrs = window.currentUserData.addresses || [];
+            addrs.splice(index, 1);
+            if (window.currentUser) {
+                await window.updateDoc(window.doc(window.firebaseDb, "users", window.currentUser.uid), { addresses: addrs });
+                triggerTelegramHaptic('medium');
+                openProfileSection('addresses');
+            }
+        };
+
+        window.updateNotificationSettings = async function() {
+            const emailAlerts = document.getElementById('notif-email').checked;
+            const telegramAlerts = document.getElementById('notif-telegram').checked;
+            if (window.currentUser) {
+                await window.updateDoc(window.doc(window.firebaseDb, "users", window.currentUser.uid), { notifications: { emailAlerts, telegramAlerts } });
+                triggerTelegramHaptic('light');
+            }
+        };
+
+        window.toggleWishlist = async function(id) {
+            triggerTelegramHaptic('medium');
+            if (window.currentUser) {
+                let wishlist = window.currentUserData.wishlist || [];
+                if (wishlist.includes(id)) wishlist = wishlist.filter(i => i !== id); else wishlist.push(id);
+                await window.updateDoc(window.doc(window.firebaseDb, "users", window.currentUser.uid), { wishlist });
+            } else {
+                let localWish = JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
+                localWish = localWish.includes(id) ? localWish.filter(i => i !== id) : [...localWish, id];
+                localStorage.setItem('mininize_wishlist', JSON.stringify(localWish));
+                window.currentUserData = window.currentUserData || {};
+                window.currentUserData.wishlist = localWish;
+                renderProducts();
+                if (!document.getElementById('page-wishlist').classList.contains('hidden')) renderWishlist();
+            }
+        };
+
+        function setReviewRating(rating) {
+            triggerTelegramHaptic('light');
+            window.currentSelectedStarRating = rating;
+            const stars = document.getElementById('star-rating-select').children;
+            for (let i = 0; i < 5; i++) stars[i].className = i < rating ? "fa-solid fa-star cursor-pointer text-amber-400" : "fa-regular fa-star cursor-pointer text-gray-300";
+        }
+
+        window.openProductDetailModal = async function(id, silent = false) {
+            const p = window.products.find(item => item.id === id);
+            if (!p) return;
+            window.currentSelectedProdId = id;
+            if (!silent) triggerTelegramHaptic('light');
+
+            document.getElementById('view-prod-image').src = p.image || FALLBACK_IMAGE;
+            document.getElementById('view-prod-category').innerText = p.category || 'Accessories';
+            document.getElementById('view-prod-name').innerText = sanitizeHTML(p.name);
+            document.getElementById('view-prod-price').innerText = formatPrice(p.price);
+            document.getElementById('view-prod-stock').innerText = `${p.stock ?? 10} available`;
+
+            const reviews = p.reviews || [];
+            document.getElementById('prod-avg-rating').innerText = `⭐ ${reviews.length > 0 ? (reviews.reduce((s,r)=>s+r.rating,0)/reviews.length).toFixed(1) : "5.0"} / 5.0`;
+            document.getElementById('prod-reviews-list').innerHTML = reviews.length === 0 ? `<p class="text-gray-400 text-[10px]">No comments yet.</p>` :
+                reviews.map(r => `
+                    <div class="bg-gray-50 p-2 rounded-xl border space-y-1">
+                        <div class="flex justify-between text-[9px]"><b class="text-gray-800">${sanitizeHTML(r.author)}</b><span class="text-amber-400">★ ${r.rating}.0</span></div>
+                        <p class="text-gray-700 text-[10px]">${sanitizeHTML(r.text)}</p>
+                        <button onclick="likeProductReview('${p.id}', '${r.id}')" class="text-red-500 text-[9px] font-bold"><i class="fa-solid fa-heart"></i> ${r.likes || 0} Likes</button>
+                    </div>
+                `).join('');
+
+            if (!silent) {
+                setReviewRating(5);
+                document.getElementById('view-prod-add-btn').onclick = () => { addToCart(p.id); closeProductDetailModal(); };
+                document.getElementById('product-detail-modal').classList.remove('hidden');
+            }
+        };
+
+        window.closeProductDetailModal = function() { window.currentSelectedProdId = null; document.getElementById('product-detail-modal').classList.add('hidden'); };
+
+        function renderProducts() {
+            const grid = document.getElementById('product-grid');
+            if (!grid) return;
+            const searchVal = document.getElementById('search-input').value.toLowerCase();
+            const userWishlist = window.currentUserData?.wishlist || JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
+            let filtered = window.products.filter(p => (activeCategory === 'All' || p.category === activeCategory) && p.name.toLowerCase().includes(searchVal));
+            
+            grid.innerHTML = filtered.map(p => `
+                <div class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs flex flex-col justify-between cursor-pointer relative" onclick="openProductDetailModal('${p.id}')">
+                    <button onclick="event.stopPropagation(); toggleWishlist('${p.id}')" class="absolute top-3 right-3 w-7 h-7 bg-white/90 rounded-full flex items-center justify-center text-xs shadow-xs ${userWishlist.includes(p.id) ? 'text-red-500' : 'text-gray-400'}"><i class="fa-solid fa-heart"></i></button>
+                    <img src="${p.image}" class="w-full aspect-square object-cover rounded-xl mb-2">
+                    <h4 class="font-serif italic font-bold text-xs truncate">${sanitizeHTML(p.name)}</h4>
+                    <div class="flex justify-between items-center mt-2 pt-2 border-t">
+                        <span class="font-bold text-xs text-[#a4133c]">${formatPrice(p.price)}</span>
+                        <button onclick="event.stopPropagation(); addToCart('${p.id}')" class="bg-[#800f2f] text-white px-3 py-1.5 rounded-xl text-xs font-bold">+</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        window.renderProducts = renderProducts;
+
+        function renderWishlist() {
+            const userWishlist = window.currentUserData?.wishlist || JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
+            let favs = window.products.filter(p => userWishlist.includes(p.id));
+            document.getElementById('wishlist-grid').innerHTML = favs.length === 0 ? `<p class="text-xs text-gray-400 col-span-2 text-center py-6">No saved favorite items.</p>` :
+                favs.map(p => `<div onclick="openProductDetailModal('${p.id}')" class="bg-white rounded-2xl p-2.5 border shadow-xs cursor-pointer"><img src="${p.image}" class="w-full aspect-square object-cover rounded-xl mb-2"><h4 class="font-serif italic font-bold text-xs truncate">${sanitizeHTML(p.name)}</h4></div>`).join('');
+        }
+        window.renderWishlist = renderWishlist;
+
+        function addToCart(id) {
+            triggerTelegramHaptic('success');
+            const prod = window.products.find(p => p.id === id);
+            const existing = window.cart.find(i => i.id === id);
+            if (existing) existing.qty += 1; else window.cart.push({ ...prod, qty: 1 });
+            localStorage.setItem('mininize_cart', JSON.stringify(window.cart));
+            document.getElementById('cart-badge').innerText = window.cart.reduce((s, i) => s + i.qty, 0);
+            alert('Added to bag! 🛍️');
+        }
+
+        function openCartDrawer() {
+            triggerTelegramHaptic('light');
+            document.getElementById('cart-items-container').innerHTML = window.cart.length === 0 ? `<p class="text-xs text-gray-400 text-center py-8">Cart is empty</p>` :
+                window.cart.map(item => `<div class="flex justify-between items-center text-xs border-b pb-2"><span><b>${sanitizeHTML(item.name)}</b> (x${item.qty})</span><span class="font-bold text-[#a4133c]">${formatPrice(item.price * item.qty)}</span></div>`).join('');
+            document.getElementById('cart-total').innerText = formatPrice(window.cart.reduce((s, i) => s + (i.price * i.qty), 0));
+            document.getElementById('cart-drawer').classList.remove('hidden');
+        }
+        window.openCartDrawer = openCartDrawer;
+        function closeCartDrawer() { document.getElementById('cart-drawer').classList.add('hidden'); }
+        function openCheckoutModal() { closeCartDrawer(); document.getElementById('checkout-modal').classList.remove('hidden'); }
+        function closeCheckoutModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
+        function cancelBakongPayment() { document.getElementById('bakong-payment-modal').classList.add('hidden'); }
+
+        function enterAdminMode() {
+            document.getElementById('customer-view').classList.add('hidden');
+            document.getElementById('admin-view').classList.remove('hidden');
+            document.getElementById('customer-nav').classList.add('hidden');
+            switchAdminNav('orders');
+            updateAdminMetrics();
+        }
+        function exitAdminMode() {
+            document.getElementById('customer-view').classList.remove('hidden');
+            document.getElementById('admin-view').classList.add('hidden');
+            document.getElementById('customer-nav').classList.remove('hidden');
+            switchCustomerTab('shop');
+        }
+        window.exitAdminMode = exitAdminMode;
+
+        function switchAdminNav(sec) {
+            ['orders', 'products', 'coupons', 'reviews'].forEach(s => {
+                document.getElementById(`admin-sec-${s}`).classList.add('hidden');
+                document.getElementById(`adtab-${s}`).className = 'px-4 py-2 border-b-2 border-transparent text-gray-500 font-semibold';
+            });
+            document.getElementById(`admin-sec-${sec}`).classList.remove('hidden');
+            document.getElementById(`adtab-${sec}`).className = 'px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c] font-semibold';
+            if (sec === 'orders') renderAdminOrders();
+            if (sec === 'products') renderAdminProducts();
+            if (sec === 'coupons') renderAdminCoupons();
+            if (sec === 'reviews') renderAdminReviews();
+        }
+
+        window.updateAdminMetrics = function() {
+            const totalRevenue = (window.orders || []).reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+            const pendingCount = (window.orders || []).filter(o => o.status === 'Pending').length;
+            const lowStockItems = (window.products || []).filter(p => (p.stock ?? 10) <= 5);
+            const lowStockCount = lowStockItems.length;
+            const totalDiscounts = (window.coupons || []).reduce((sum, c) => sum + (Number(c.totalDiscountGiven) || 0), 0);
+
+            if (document.getElementById('admin-metric-revenue')) document.getElementById('admin-metric-revenue').innerText = `$${totalRevenue.toFixed(2)}`;
+            if (document.getElementById('admin-metric-pending')) document.getElementById('admin-metric-pending').innerText = pendingCount;
+            if (document.getElementById('admin-metric-lowstock')) document.getElementById('admin-metric-lowstock').innerText = lowStockCount;
+            if (document.getElementById('admin-metric-discounts')) document.getElementById('admin-metric-discounts').innerText = `$${totalDiscounts.toFixed(2)}`;
+        };
+
+        window.filterLowStockProducts = function() {
+            triggerTelegramHaptic('light');
+            lowStockFilterActive = !lowStockFilterActive;
+            renderAdminProducts();
+        };
+
+        window.filterAdminOrders = function(status) {
+            triggerTelegramHaptic('light');
+            adminOrderFilter = status;
+            ['All', 'Pending', 'Paid', 'Shipped'].forEach(s => {
+                const btn = document.getElementById(`ord-filter-${s.toLowerCase()}`);
+                if (btn) btn.className = s === status ? 'px-2.5 py-1 bg-[#800f2f] text-white rounded-lg' : 'px-2.5 py-1 bg-gray-100 text-gray-600 rounded-lg';
+            });
+            renderAdminOrders();
+        };
+
+        window.renderAdminOrders = function() {
+            const tbody = document.getElementById('admin-orders-table-body');
+            if (!tbody) return;
+            const filteredOrders = (window.orders || []).filter(o => adminOrderFilter === 'All' || o.status === adminOrderFilter);
+            tbody.innerHTML = filteredOrders.length === 0 ? `<tr><td colspan="5" class="p-4 text-center text-gray-400">No orders found.</td></tr>` :
+                filteredOrders.map(o => `
+                    <tr class="border-b">
+                        <td class="p-2 font-mono"><b>${sanitizeHTML(o.orderNum || '#ORD-101')}</b></td>
+                        <td class="p-2">${sanitizeHTML(o.customerName || 'Shopper')}</td>
+                        <td class="p-2">
+                            <select onchange="updateOrderStatus('${o.docId}', this.value)" class="border rounded px-1 py-0.5 text-xs bg-white font-medium ${o.status === 'Paid' ? 'text-emerald-600' : 'text-amber-500'}">
+                                <option ${o.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                <option ${o.status === 'Paid' ? 'selected' : ''}>Paid</option>
+                                <option ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
+                                <option ${o.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
+                                <option ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                            </select>
+                        </td>
+                        <td class="p-2 font-bold text-[#a4133c]">$${Number(o.total || 0).toFixed(2)}</td>
+                        <td class="p-2 text-right">${sanitizeHTML(o.date || '')}</td>
+                    </tr>
+                `).join('');
+        };
+
+        window.renderAdminProducts = function() {
+            const tbody = document.getElementById('admin-products-table-body');
+            if (!tbody) return;
+            const searchInput = document.getElementById('admin-product-search');
+            const query = searchInput ? searchInput.value.toLowerCase() : '';
+
+            let filteredProducts = (window.products || []).filter(p => {
+                const matchesQuery = (p.name && p.name.toLowerCase().includes(query)) || 
+                                     (p.sku && p.sku.toLowerCase().includes(query)) ||
+                                     (p.category && p.category.toLowerCase().includes(query));
+                const matchesLowStock = !lowStockFilterActive || ((p.stock ?? 10) <= 5);
+                return matchesQuery && matchesLowStock;
+            });
+
+            tbody.innerHTML = filteredProducts.length === 0 ? `<tr><td colspan="5" class="p-4 text-center text-gray-400">No products found.</td></tr>` :
+                filteredProducts.map(p => {
+                    const stock = p.stock ?? 10;
+                    const isLow = stock <= 5;
+                    return `
+                        <tr class="border-b ${isLow ? 'bg-red-50/50' : ''}">
+                            <td class="p-2 font-medium"><b>${sanitizeHTML(p.name)}</b><span class="block text-[9px] font-mono text-gray-400">${sanitizeHTML(p.sku || 'SKU')}</span></td>
+                            <td class="p-2">${sanitizeHTML(p.category)}</td>
+                            <td class="p-2 font-bold">$${Number(p.price).toFixed(2)}</td>
+                            <td class="p-2">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isLow ? 'bg-red-100 text-red-700 animate-pulse' : 'bg-emerald-50 text-emerald-600'}">
+                                    ${stock} left ${isLow ? '⚠️' : ''}
+                                </span>
+                            </td>
+                            <td class="p-2 text-right space-x-1">
+                                <button onclick="adjustProductStock('${p.id}', 5)" class="bg-emerald-600 text-white px-2 py-1 rounded text-[10px] font-bold" title="Restock +5">+5</button>
+                                <button onclick="editProduct('${p.id}')" class="text-sky-600 font-bold px-1">Edit</button>
+                                <button onclick="deleteProduct('${p.id}')" class="text-red-500 px-1">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+        };
+
+        window.renderAdminCoupons = function() {
+            const tbody = document.getElementById('admin-coupons-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = (window.coupons || []).length === 0 ? `<tr><td colspan="6" class="p-4 text-center text-gray-400">No active coupons.</td></tr>` :
+                (window.coupons || []).map(c => `
+                    <tr class="border-b">
+                        <td class="p-2 font-mono font-bold text-[#a4133c]">${sanitizeHTML(c.code)}</td>
+                        <td class="p-2 font-semibold">${c.discountPercent}% OFF</td>
+                        <td class="p-2 font-bold text-gray-700">${c.usageCount || 0} times</td>
+                        <td class="p-2 font-bold text-emerald-600">$${(c.totalDiscountGiven || 0).toFixed(2)}</td>
+                        <td class="p-2"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${c.isActive ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-500'}">${c.isActive ? 'Active' : 'Inactive'}</span></td>
+                        <td class="p-2 text-right space-x-2">
+                            <button onclick="toggleCouponStatus('${c.code}', ${c.isActive})" class="text-sky-600 font-bold">${c.isActive ? 'Disable' : 'Enable'}</button>
+                            <button onclick="deleteCoupon('${c.code}')" class="text-red-500">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+        };
+
+        window.renderAdminReviews = function() {
+            const container = document.getElementById('admin-reviews-list-container');
+            if (!container) return;
+            let allReviews = [];
+            window.products.forEach(p => (p.reviews || []).forEach(r => allReviews.push({ ...r, productName: p.name, productId: p.id })));
+            container.innerHTML = allReviews.length === 0 ? `<p class="text-gray-400 text-center py-4">No reviews.</p>` :
+                allReviews.map(r => `
+                    <div class="bg-gray-50 p-2 rounded-xl border space-y-1">
+                        <b>${sanitizeHTML(r.productName)}</b> - <span>${sanitizeHTML(r.author)}</span>
+                        <p>${sanitizeHTML(r.text)}</p>
+                    </div>
+                `).join('');
+        };
+
+        window.openProductModal = function() {
+            document.getElementById('prod-id').value = '';
+            document.getElementById('prod-name').value = '';
+            document.getElementById('prod-sku').value = '';
+            document.getElementById('prod-price').value = '';
+            document.getElementById('prod-stock').value = '';
+            document.getElementById('prod-image').value = '';
+            document.getElementById('admin-product-modal').classList.remove('hidden');
+        };
+
+        window.editProduct = function(id) {
+            const p = window.products.find(item => item.id === id);
+            if (!p) return;
+            document.getElementById('prod-id').value = p.id;
+            document.getElementById('prod-name').value = p.name;
+            document.getElementById('prod-sku').value = p.sku || '';
+            document.getElementById('prod-category').value = p.category || 'Hairpins';
+            document.getElementById('prod-price').value = p.price;
+            document.getElementById('prod-stock').value = p.stock ?? 10;
+            document.getElementById('prod-image').value = p.image || '';
+            document.getElementById('admin-product-modal').classList.remove('hidden');
+        };
+
+        function closeAdminProductModal() { document.getElementById('admin-product-modal').classList.add('hidden'); }
+        
+        window.openCouponModal = function() {
+            document.getElementById('coupon-code-input').value = '';
+            document.getElementById('coupon-discount-input').value = '';
+            document.getElementById('admin-coupon-modal').classList.remove('hidden');
+        };
+        function closeAdminCouponModal() { document.getElementById('admin-coupon-modal').classList.add('hidden'); }
+
+        window.openAdminBarcodeScanner = function() {
+            triggerTelegramHaptic('medium');
+            document.getElementById('admin-scanner-modal').classList.remove('hidden');
+            document.getElementById('scan-result-banner').classList.add('hidden');
+
+            setTimeout(() => {
+                try {
+                    html5QrCodeScannerInstance = new Html5Qrcode("reader");
+                    html5QrCodeScannerInstance.start(
+                        { facingMode: "environment" },
+                        { fps: 10, qrbox: { width: 250, height: 150 } },
+                        (decodedText) => {
+                            triggerTelegramHaptic('success');
+                            const banner = document.getElementById('scan-result-banner');
+                            banner.innerText = `Scanned Code: ${decodedText}`;
+                            banner.classList.remove('hidden');
+
+                            const searchInput = document.getElementById('admin-product-search');
+                            if (searchInput) {
+                                searchInput.value = decodedText;
+                                renderAdminProducts();
+                            }
+
+                            setTimeout(() => {
+                                closeAdminBarcodeScanner();
+                            }, 1500);
+                        },
+                        (errorMessage) => {}
+                    ).catch(err => {
+                        console.error("Camera start error:", err);
+                        alert("Unable to access camera for scanning.");
+                    });
+                } catch (e) { console.error(e); }
+            }, 300);
+        };
+
+        window.closeAdminBarcodeScanner = function() {
+            if (html5QrCodeScannerInstance) {
+                html5QrCodeScannerInstance.stop().then(() => {
+                    html5QrCodeScannerInstance.clear();
+                }).catch(err => {});
+                html5QrCodeScannerInstance = null;
+            }
+            document.getElementById('admin-scanner-modal').classList.add('hidden');
+        };
+    </script>
+</body>
+</html>
