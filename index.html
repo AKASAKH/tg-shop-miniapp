@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mininize Studio - Enterprise Scaled Edition</title>
+    <title>Mininize Studio - Enterprise Fully Scaled Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
@@ -529,7 +529,7 @@
         </div>
     </nav>
 
-    <!-- FIREBASE & ENTERPRISE SCALED ENGINE SCRIPT -->
+    <!-- FIREBASE & SCALED ENGINE SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -920,7 +920,6 @@
                     notifications: { emailAlerts: true, telegramAlerts: true }
                 }, { merge: true });
                 
-                // Seed initial default address in subcollection
                 await addDoc(collection(db, "users", cred.user.uid, "addresses"), {
                     label: 'Home', street: '123 Main Street', province: 'Phnom Penh', isDefault: true, createdAt: new Date().toISOString()
                 });
@@ -971,7 +970,6 @@
                 if (addressesUnsubscribe) { addressesUnsubscribe(); addressesUnsubscribe = null; }
                 if (wishlistUnsubscribe) { wishlistUnsubscribe(); wishlistUnsubscribe = null; }
 
-                // Listen to User Profile Document
                 userDocUnsubscribe = onSnapshot(doc(db, "users", user.uid), (docSnap) => {
                     if (docSnap.exists()) {
                         window.currentUserData = docSnap.data();
@@ -1000,13 +998,11 @@
                     }
                 });
 
-                // Listen to Addresses Subcollection
                 addressesUnsubscribe = onSnapshot(collection(db, "users", user.uid, "addresses"), (snapshot) => {
                     window.currentUserAddresses = [];
                     snapshot.forEach(docSnap => window.currentUserAddresses.push({ id: docSnap.id, ...docSnap.data() }));
                 });
 
-                // Listen to Wishlist Subcollection
                 wishlistUnsubscribe = onSnapshot(collection(db, "users", user.uid, "wishlist"), (snapshot) => {
                     window.currentUserWishlist = [];
                     snapshot.forEach(docSnap => window.currentUserWishlist.push(docSnap.data().productId));
@@ -1106,7 +1102,7 @@
                 });
                 window.currentActiveOrderId = docRef.id;
                 
-                // ATOMIC TRANSACTIONAL LOYALTY POINTS UPDATE
+                // ATOMIC TRANSACTIONAL LOYALTY POINTS & VIP TIER UPDATE
                 if (window.currentUser) {
                     const earnedPoints = Math.floor(total * 10);
                     await runTransaction(db, async (transaction) => {
@@ -1503,10 +1499,8 @@
                 const q = query(wishRef, where("productId", "==", id));
                 const snap = await getDocs(q);
                 if (!snap.empty) {
-                    // Remove from wishlist subcollection
                     await deleteDoc(doc(db, "users", window.currentUser.uid, "wishlist", snap.docs[0].id));
                 } else {
-                    // Add to wishlist subcollection
                     await addDoc(wishRef, { productId: id, createdAt: new Date().toISOString() });
                 }
             } else {
