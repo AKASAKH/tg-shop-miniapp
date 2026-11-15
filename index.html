@@ -58,7 +58,6 @@
                 </div>
             </div>
             <div class="flex items-center space-x-2">
-                <!-- CURRENCY SELECTOR -->
                 <select id="currency-select" onchange="changeCurrency(this.value)" class="text-[11px] bg-gray-50 border border-gray-200 rounded-lg px-2 py-1 font-medium focus:outline-none focus:border-[#a4133c]">
                     <option value="USD">USD ($)</option>
                     <option value="KHR">KHR (៛)</option>
@@ -81,7 +80,6 @@
         <div id="customer-view" class="space-y-4">
             <div id="page-shop" class="space-y-3">
                 
-                <!-- PERSONALIZED MEMBER GREETING BANNER -->
                 <div id="user-greeting-banner" class="hidden bg-pink-50/80 p-3 rounded-2xl border border-pink-100 flex items-center justify-between text-xs shadow-xs">
                     <div>
                         <span class="font-bold text-[#a4133c]" id="welcome-user-name">Welcome back, Shopper! ✨</span>
@@ -108,7 +106,6 @@
 
                 <div id="product-grid" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
                 
-                <!-- PAGINATION LOAD MORE BUTTON -->
                 <div id="load-more-container" class="text-center pt-2">
                     <button onclick="loadMoreProducts()" id="load-more-btn" class="hidden bg-white border border-gray-200 text-gray-700 text-xs font-bold px-5 py-2.5 rounded-xl shadow-xs">Load More Products 🌀</button>
                 </div>
@@ -123,7 +120,6 @@
             <!-- PROFILE SECTION -->
             <div id="page-profile" class="hidden space-y-3 max-w-md mx-auto">
                 <div id="customer-dashboard-view" class="space-y-3 hidden">
-                    <!-- VIP LOYALTY TIER BANNER WITH PROGRESS BAR -->
                     <div class="bg-gradient-to-r from-[#800f2f] to-[#a4133c] text-white p-4 rounded-2xl shadow-sm space-y-3">
                         <div class="flex items-center justify-between">
                             <div>
@@ -143,7 +139,6 @@
                         </div>
                     </div>
 
-                    <!-- REFERRAL EARNINGS CARD -->
                     <div class="bg-pink-50/70 p-3.5 rounded-2xl border border-pink-100 flex items-center justify-between text-xs">
                         <div>
                             <b class="text-[#a4133c] block font-bold">Affiliate Referral Link 🚀</b>
@@ -193,7 +188,6 @@
                     <button onclick="handleSignOut()" class="w-full bg-white border border-gray-200 text-red-600 font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Log out</button>
                 </div>
 
-                <!-- AUTH BOX -->
                 <div id="profile-auth-box" class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3 max-w-sm mx-auto hidden">
                     <div class="text-center space-y-0.5">
                         <h3 class="font-serif italic font-bold text-xs text-gray-900">Welcome to Mininize Studio</h3>
@@ -261,26 +255,45 @@
                 <button onclick="switchAdminNav('reviews')" id="adtab-reviews" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Reviews ⭐</button>
             </div>
             
-            <!-- ORDERS SECTION -->
+            <!-- HIGH-DENSITY PAGINATED ORDERS SECTION -->
             <div id="admin-sec-orders" class="space-y-4">
-                <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                        <h3 class="font-bold text-xs text-gray-900">Customer Orders & Courier Handshake</h3>
-                        <div class="flex items-center space-x-2 overflow-x-auto">
-                            <div class="flex space-x-1 text-[10px] font-medium">
-                                <button onclick="filterAdminOrders('All')" id="ord-filter-all" class="px-2.5 py-1 bg-[#800f2f] text-white rounded-lg">All</button>
-                                <button onclick="filterAdminOrders('Pending')" id="ord-filter-pending" class="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-lg">Pending</button>
-                                <button onclick="filterAdminOrders('Paid')" id="ord-filter-paid" class="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-lg">Paid</button>
-                                <button onclick="filterAdminOrders('Shipped')" id="ord-filter-shipped" class="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-lg">Shipped</button>
+                <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3 text-xs">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                        <div class="flex space-x-1 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 scrollbar-none text-[11px] font-medium">
+                            <button onclick="setAdminOrderStatusFilter('All')" id="ord-pill-all" class="px-3 py-1.5 bg-[#a4133c] text-white rounded-xl shadow-xs">All Orders</button>
+                            <button onclick="setAdminOrderStatusFilter('Pending')" id="ord-pill-pending" class="px-3 py-1.5 bg-gray-50 text-gray-600 hover:bg-gray-100 rounded-xl border border-gray-200">Pending</button>
+                            <button onclick="setAdminOrderStatusFilter('Paid')" id="ord-pill-paid" class="px-3 py-1.5 bg-gray-50 text-gray-600 hover:bg-gray-100 rounded-xl border border-gray-200">Paid</button>
+                            <button onclick="setAdminOrderStatusFilter('Shipped')" id="ord-pill-shipped" class="px-3 py-1.5 bg-gray-50 text-gray-600 hover:bg-gray-100 rounded-xl border border-gray-200">Shipped</button>
+                        </div>
+                        <div class="flex items-center space-x-2 w-full md:w-auto">
+                            <div class="relative flex-1 md:w-64">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-[10px]"></i></span>
+                                <input type="text" id="admin-order-search" oninput="debounceOrderSearch(this.value)" placeholder="Search order #, customer..." class="w-full pl-8 pr-3 py-1.5 bg-gray-50 border border-gray-200 rounded-xl text-[11px] focus:outline-none focus:border-[#a4133c]">
                             </div>
-                            <button onclick="exportOrdersCSV()" class="bg-gray-900 text-white text-[10px] px-3 py-1.5 rounded-lg font-bold flex items-center space-x-1"><i class="fa-solid fa-download"></i><span>Export CSV</span></button>
+                            <button onclick="exportOrdersCSV()" class="bg-gray-900 text-white text-[10px] px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-download"></i><span>Export CSV</span></button>
                         </div>
                     </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead><tr class="text-gray-400 border-b text-[10px]"><th class="p-2">Order</th><th class="p-2">Customer</th><th class="p-2">Status</th><th class="p-2">Total</th><th class="p-2 text-right">Date</th></tr></thead>
-                            <tbody id="admin-orders-table-body" class="divide-y text-[11px]"></tbody>
+                    <div class="overflow-x-auto rounded-xl border border-gray-100">
+                        <table class="w-full text-left text-[11px] divide-y divide-gray-100">
+                            <thead class="bg-gray-50 text-gray-400 font-bold uppercase tracking-wider text-[9px]">
+                                <tr>
+                                    <th class="py-2.5 px-3">Order #</th>
+                                    <th class="py-2.5 px-3">Customer & Phone</th>
+                                    <th class="py-2.5 px-3">Status</th>
+                                    <th class="py-2.5 px-3">Items</th>
+                                    <th class="py-2.5 px-3 text-right">Total</th>
+                                    <th class="py-2.5 px-3 text-right">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="high-density-orders-tbody" class="divide-y divide-gray-50 bg-white"></tbody>
                         </table>
+                    </div>
+                    <div class="flex justify-between items-center pt-2 text-[11px] text-gray-500">
+                        <span id="pagination-info">Showing page 1</span>
+                        <div class="flex space-x-2">
+                            <button onclick="fetchPreviousOrdersPage()" id="prev-page-btn" class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl disabled:opacity-40" disabled>Previous</button>
+                            <button onclick="fetchNextOrdersPage()" id="next-page-btn" class="px-3 py-1.5 bg-[#800f2f] hover:bg-[#800f2f]/90 text-white font-bold rounded-xl disabled:opacity-40" disabled>Next Page ➔</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -529,11 +542,11 @@
         </div>
     </nav>
 
-    <!-- FIREBASE & SCALED ENGINE SCRIPT -->
+    <!-- FIREBASE & ENTERPRISE FULL SCALED ENGINE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, setDoc, getDoc, getDocs, query, where, limit, startAfter, orderBy, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, setDoc, getDoc, getDocs, query, where, limit, startAfter, orderBy, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDz6snwoujsmp8IQ5-1c2_IL-JmEOx2tIM",
@@ -616,7 +629,6 @@
         window.downloadOrderInvoice = function(orderNum, customerName, phone, address, itemsEncoded, total, date, promoCode) {
             triggerTelegramHaptic('medium');
             const items = JSON.parse(decodeURIComponent(itemsEncoded));
-
             const invoiceDiv = document.createElement('div');
             invoiceDiv.style.padding = '30px';
             invoiceDiv.style.fontFamily = 'sans-serif';
@@ -660,7 +672,6 @@
                     Thank you for shopping with Mininize Studio! ✨<br/>Telegram: @songsashop
                 </div>
             `;
-
             document.body.appendChild(invoiceDiv);
             html2pdf().from(invoiceDiv).set({
                 margin: 10,
@@ -671,7 +682,7 @@
             }).save().then(() => invoiceDiv.remove());
         };
 
-        // SCALED PAGINATED PRODUCT FETCHING
+        // PAGINATED PRODUCT FETCHING
         window.products = [];
         let lastVisibleProductDoc = null;
         const PAGE_LIMIT = 8;
@@ -980,18 +991,8 @@
                     const isAdmin = window.currentUserData.role === "admin" || window.currentUserData.role === "staff" || (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
                     if (isAdmin) {
                         enterAdminMode();
-                        if (!ordersUnsubscribe) {
-                            ordersUnsubscribe = onSnapshot(collection(db, "orders"), (snapshot) => {
-                                window.orders = [];
-                                snapshot.forEach(docSnap => window.orders.push({ docId: docSnap.id, ...docSnap.data() }));
-                                if (window.renderAdminOrders) window.renderAdminOrders();
-                                if (window.updateAdminMetrics) window.updateAdminMetrics();
-                                if (window.renderAdminAnalyticsCharts) window.renderAdminAnalyticsCharts();
-                            });
-                        }
                     } else {
                         exitAdminMode();
-                        if (ordersUnsubscribe) { ordersUnsubscribe(); ordersUnsubscribe = null; }
                         window.orders = [];
                         if (window.updateProfileViewUI) window.updateProfileViewUI();
                         if (window.renderProducts) window.renderProducts();
@@ -1014,7 +1015,6 @@
                 if (userDocUnsubscribe) { userDocUnsubscribe(); userDocUnsubscribe = null; }
                 if (addressesUnsubscribe) { addressesUnsubscribe(); addressesUnsubscribe = null; }
                 if (wishlistUnsubscribe) { wishlistUnsubscribe(); wishlistUnsubscribe = null; }
-                if (ordersUnsubscribe) { ordersUnsubscribe(); ordersUnsubscribe = null; }
                 window.orders = [];
                 window.currentUser = null; window.currentUserData = null;
                 window.currentUserAddresses = []; window.currentUserWishlist = [];
@@ -1098,11 +1098,10 @@
                 }
 
                 const docRef = await addDoc(collection(db, "orders"), { 
-                    orderNum, userId: window.currentUser ? window.currentUser.uid : 'guest', customerName, phone, address, items: window.cart, subtotal, discount, total, promoCode: appliedCouponCode, status: 'Pending', date: new Date().toISOString().split('T')[0] 
+                    orderNum, userId: window.currentUser ? window.currentUser.uid : 'guest', customerName, phone, address, items: window.cart, subtotal, discount, total, promoCode: appliedCouponCode, status: 'Pending', date: new Date().toISOString().split('T')[0], createdAt: serverTimestamp() 
                 });
                 window.currentActiveOrderId = docRef.id;
                 
-                // ATOMIC TRANSACTIONAL LOYALTY POINTS & VIP TIER UPDATE
                 if (window.currentUser) {
                     const earnedPoints = Math.floor(total * 10);
                     await runTransaction(db, async (transaction) => {
@@ -1160,24 +1159,29 @@
         };
     </script>
 
-    <!-- STOREFRONT & UI LOGIC -->
+    <!-- STOREFRONT, PROFILE & HIGH-DENSITY PAGINATED ADMIN LOGIC -->
     <script>
         const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80';
         window.products = []; window.orders = []; window.coupons = [];
         window.cart = JSON.parse(localStorage.getItem('mininize_cart') || '[]');
         window.currentUserAddresses = []; window.currentUserWishlist = [];
         let activeCategory = 'All';
-        let adminOrderFilter = 'All';
-        let lowStockFilterActive = false;
         window.currentSelectedProdId = null;
         window.currentSelectedStarRating = 5;
         let html5QrCodeScannerInstance = null;
+
+        // Admin High-Density Pagination State
+        let orderPageSize = 10;
+        let lastVisibleOrderDoc = null;
+        let firstVisibleOrderDoc = null;
+        let orderPaginationStack = [];
+        let currentAdminOrderStatusFilter = 'All';
+        let adminOrderSearchQuery = '';
 
         document.addEventListener("DOMContentLoaded", () => {
             const badge = document.getElementById('cart-badge');
             if (badge) badge.innerText = window.cart.reduce((s, i) => s + i.qty, 0);
             if (window.Telegram?.WebApp) { window.Telegram.WebApp.ready(); window.Telegram.WebApp.expand(); }
-
             setTimeout(() => { closePromoPopup(); }, 4000);
         });
 
@@ -1317,10 +1321,11 @@
                 try {
                     let ordersList = [];
                     if (isAdmin) {
-                        ordersList = window.orders || [];
+                        const snap = await getDocs(query(collection(window.firebaseDb, "orders"), orderBy("createdAt", "desc"), limit(20)));
+                        snap.forEach(d => ordersList.push({ docId: d.id, ...d.data() }));
                     } else if (window.currentUser) {
-                        const q = window.query(window.collection(window.firebaseDb, "orders"), window.where("userId", "==", window.currentUser.uid));
-                        const querySnapshot = await window.getDocs(q);
+                        const q = query(collection(window.firebaseDb, "orders"), where("userId", "==", window.currentUser.uid));
+                        const querySnapshot = await getDocs(q);
                         querySnapshot.forEach(docSnap => ordersList.push({ docId: docSnap.id, ...docSnap.data() }));
                     }
                     const statuses = ['Pending', 'Paid', 'Processing', 'Shipped', 'Delivered'];
@@ -1459,7 +1464,6 @@
             }
         };
 
-        // SUBCOLLECTION ADDRESS OPERATIONS
         window.addNewAddressSubcoll = async function() {
             const label = sanitizeHTML(document.getElementById('new-addr-label').value.trim());
             const street = sanitizeHTML(document.getElementById('new-addr-street').value.trim());
@@ -1491,7 +1495,6 @@
             }
         };
 
-        // SUBCOLLECTION WISHLIST OPERATIONS
         window.toggleWishlist = async function(id) {
             triggerTelegramHaptic('medium');
             if (window.currentUser) {
@@ -1604,6 +1607,7 @@
         function closeCheckoutModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
         function cancelBakongPayment() { document.getElementById('bakong-payment-modal').classList.add('hidden'); }
 
+        // ADMIN MODE & HIGH-DENSITY PAGINATION LOGIC
         function enterAdminMode() {
             document.getElementById('customer-view').classList.add('hidden');
             document.getElementById('admin-view').classList.remove('hidden');
@@ -1619,6 +1623,7 @@
             switchAdminNav('orders');
             updateAdminMetrics();
         }
+
         function exitAdminMode() {
             document.getElementById('customer-view').classList.remove('hidden');
             document.getElementById('admin-view').classList.add('hidden');
@@ -1639,24 +1644,132 @@
             if (activeSec) activeSec.classList.remove('hidden');
             if (activeTab) activeTab.className = 'px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c] font-semibold';
 
-            if (sec === 'orders') renderAdminOrders();
+            if (sec === 'orders') loadAdminOrdersPage('initial');
             if (sec === 'products') renderAdminProducts();
             if (sec === 'coupons') renderAdminCoupons();
             if (sec === 'analytics') renderAdminAnalyticsCharts();
             if (sec === 'reviews') renderAdminReviews();
         }
 
-        window.updateAdminMetrics = function() {
-            const totalRevenue = (window.orders || []).reduce((sum, o) => sum + (Number(o.total) || 0), 0);
-            const pendingCount = (window.orders || []).filter(o => o.status === 'Pending').length;
-            const lowStockItems = (window.products || []).filter(p => (p.stock ?? 10) <= 5);
-            const lowStockCount = lowStockItems.length;
-            const totalDiscounts = (window.coupons || []).reduce((sum, c) => sum + (Number(c.totalDiscountGiven) || 0), 0);
+        window.updateAdminMetrics = async function() {
+            try {
+                const snap = await getDocs(collection(db, "orders"));
+                window.orders = [];
+                snap.forEach(d => window.orders.push({ docId: d.id, ...d.data() }));
 
-            if (document.getElementById('admin-metric-revenue')) document.getElementById('admin-metric-revenue').innerText = `$${totalRevenue.toFixed(2)}`;
-            if (document.getElementById('admin-metric-pending')) document.getElementById('admin-metric-pending').innerText = pendingCount;
-            if (document.getElementById('admin-metric-lowstock')) document.getElementById('admin-metric-lowstock').innerText = lowStockCount;
-            if (document.getElementById('admin-metric-discounts')) document.getElementById('admin-metric-discounts').innerText = `$${totalDiscounts.toFixed(2)}`;
+                const totalRevenue = (window.orders || []).reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+                const pendingCount = (window.orders || []).filter(o => o.status === 'Pending').length;
+                const lowStockItems = (window.products || []).filter(p => (p.stock ?? 10) <= 5);
+                const lowStockCount = lowStockItems.length;
+                const totalDiscounts = (window.coupons || []).reduce((sum, c) => sum + (Number(c.totalDiscountGiven) || 0), 0);
+
+                if (document.getElementById('admin-metric-revenue')) document.getElementById('admin-metric-revenue').innerText = `$${totalRevenue.toFixed(2)}`;
+                if (document.getElementById('admin-metric-pending')) document.getElementById('admin-metric-pending').innerText = pendingCount;
+                if (document.getElementById('admin-metric-lowstock')) document.getElementById('admin-metric-lowstock').innerText = lowStockCount;
+                if (document.getElementById('admin-metric-discounts')) document.getElementById('admin-metric-discounts').innerText = `$${totalDiscounts.toFixed(2)}`;
+            } catch (err) { console.error(err); }
+        };
+
+        // HIGH-DENSITY PAGINATED ORDERS ENGINE
+        window.loadAdminOrdersPage = async function(direction = 'initial') {
+            try {
+                let q = query(collection(db, "orders"), orderBy("createdAt", "desc"), limit(orderPageSize));
+                if (currentAdminOrderStatusFilter !== 'All') {
+                    q = query(collection(db, "orders"), where("status", "==", currentAdminOrderStatusFilter), orderBy("createdAt", "desc"), limit(orderPageSize));
+                }
+
+                if (direction === 'next' && lastVisibleOrderDoc) {
+                    q = query(collection(db, "orders"), orderBy("createdAt", "desc"), startAfter(lastVisibleOrderDoc), limit(orderPageSize));
+                } else if (direction === 'prev' && orderPaginationStack.length > 0) {
+                    orderPaginationStack.pop();
+                    const prevCursor = orderPaginationStack[orderPaginationStack.length - 1];
+                    if (prevCursor) {
+                        q = query(collection(db, "orders"), orderBy("createdAt", "desc"), startAfter(prevCursor), limit(orderPageSize));
+                    }
+                } else if (direction === 'initial') {
+                    orderPaginationStack = [];
+                    lastVisibleOrderDoc = null;
+                }
+
+                const snapshot = await getDocs(q);
+                if (snapshot.empty && direction !== 'initial') {
+                    if (direction === 'next') document.getElementById('next-page-btn').disabled = true;
+                    return;
+                }
+
+                if (!snapshot.empty) {
+                    firstVisibleOrderDoc = snapshot.docs[0];
+                    lastVisibleOrderDoc = snapshot.docs[snapshot.docs.length - 1];
+                    if (direction === 'next' || direction === 'initial') {
+                        if (orderPaginationStack.length === 0 || orderPaginationStack[orderPaginationStack.length - 1] !== firstVisibleOrderDoc) {
+                            orderPaginationStack.push(firstVisibleOrderDoc);
+                        }
+                    }
+                }
+
+                const tbody = document.getElementById('high-density-orders-tbody');
+                if (!tbody) return;
+
+                tbody.innerHTML = snapshot.empty ? `<tr><td colspan="6" class="p-4 text-center text-gray-400">No orders found.</td></tr>` :
+                    snapshot.docs.map(docSnap => {
+                        const o = docSnap.data();
+                        const docId = docSnap.id;
+                        if (adminOrderSearchQuery && !o.orderNum.toLowerCase().includes(adminOrderSearchQuery) && !o.customerName.toLowerCase().includes(adminOrderSearchQuery)) {
+                            return '';
+                        }
+                        return `
+                            <tr class="hover:bg-gray-50/80 transition-colors">
+                                <td class="py-2.5 px-3 font-mono font-bold text-[#a4133c]">${sanitizeHTML(o.orderNum)}</td>
+                                <td class="py-2.5 px-3">
+                                    <span class="font-bold block text-gray-900">${sanitizeHTML(o.customerName)}</span>
+                                    <span class="text-[10px] text-gray-400">${sanitizeHTML(o.phone)}</span>
+                                </td>
+                                <td class="py-2.5 px-3">
+                                    <select onchange="updateOrderStatus('${docId}', this.value)" class="border border-gray-200 rounded-lg px-2 py-0.5 text-[10px] bg-white font-medium ${o.status === 'Paid' ? 'text-emerald-600' : 'text-amber-500'}">
+                                        <option ${o.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                        <option ${o.status === 'Paid' ? 'selected' : ''}>Paid</option>
+                                        <option ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
+                                        <option ${o.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
+                                        <option ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                                    </select>
+                                </td>
+                                <td class="py-2.5 px-3 text-gray-600">${(o.items || []).reduce((s,i)=>s+i.qty,0)} items</td>
+                                <td class="py-2.5 px-3 text-right font-bold text-gray-900">${formatPrice(o.total)}</td>
+                                <td class="py-2.5 px-3 text-right text-gray-400 text-[10px]">${o.date}</td>
+                            </tr>
+                        `;
+                    }).join('');
+
+                document.getElementById('prev-page-btn').disabled = orderPaginationStack.length <= 1;
+                document.getElementById('next-page-btn').disabled = snapshot.docs.length < orderPageSize;
+                document.getElementById('pagination-info').innerText = `Page stack depth: ${orderPaginationStack.length}`;
+            } catch (err) { console.error("Pagination error:", err); }
+        };
+
+        window.fetchNextOrdersPage = () => loadAdminOrdersPage('next');
+        window.fetchPreviousOrdersPage = () => loadAdminOrdersPage('prev');
+
+        let searchDebounceTimer = null;
+        window.debounceOrderSearch = function(val) {
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(() => {
+                adminOrderSearchQuery = val.trim().toLowerCase();
+                loadAdminOrdersPage('initial');
+            }, 300);
+        };
+
+        window.setAdminOrderStatusFilter = function(status) {
+            triggerTelegramHaptic('light');
+            currentAdminOrderStatusFilter = status;
+            ['all', 'pending', 'paid', 'shipped'].forEach(s => {
+                const btn = document.getElementById(`ord-pill-${s}`);
+                if (btn) {
+                    btn.className = s === status.toLowerCase() 
+                        ? 'px-3 py-1.5 bg-[#a4133c] text-white rounded-xl shadow-xs' 
+                        : 'px-3 py-1.5 bg-gray-50 text-gray-600 hover:bg-gray-100 rounded-xl border border-gray-200';
+                }
+            });
+            loadAdminOrdersPage('initial');
         };
 
         let categoryChartInstance = null;
@@ -1717,40 +1830,6 @@
             triggerTelegramHaptic('light');
             lowStockFilterActive = !lowStockFilterActive;
             renderAdminProducts();
-        };
-
-        window.filterAdminOrders = function(status) {
-            triggerTelegramHaptic('light');
-            adminOrderFilter = status;
-            ['All', 'Pending', 'Paid', 'Shipped'].forEach(s => {
-                const btn = document.getElementById(`ord-filter-${s.toLowerCase()}`);
-                if (btn) btn.className = s === status ? 'px-2.5 py-1 bg-[#800f2f] text-white rounded-lg' : 'px-2.5 py-1 bg-gray-100 text-gray-600 rounded-lg';
-            });
-            renderAdminOrders();
-        };
-
-        window.renderAdminOrders = function() {
-            const tbody = document.getElementById('admin-orders-table-body');
-            if (!tbody) return;
-            const filteredOrders = (window.orders || []).filter(o => adminOrderFilter === 'All' || o.status === adminOrderFilter);
-            tbody.innerHTML = filteredOrders.length === 0 ? `<tr><td colspan="5" class="p-4 text-center text-gray-400">No orders found.</td></tr>` :
-                filteredOrders.map(o => `
-                    <tr class="border-b">
-                        <td class="p-2 font-mono"><b>${sanitizeHTML(o.orderNum || '#ORD-101')}</b></td>
-                        <td class="p-2">${sanitizeHTML(o.customerName || 'Shopper')}</td>
-                        <td class="p-2">
-                            <select onchange="updateOrderStatus('${o.docId}', this.value)" class="border rounded px-1 py-0.5 text-xs bg-white font-medium ${o.status === 'Paid' ? 'text-emerald-600' : 'text-amber-500'}">
-                                <option ${o.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                                <option ${o.status === 'Paid' ? 'selected' : ''}>Paid</option>
-                                <option ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
-                                <option ${o.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
-                                <option ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
-                            </select>
-                        </td>
-                        <td class="p-2 font-bold text-[#a4133c]">$${Number(o.total || 0).toFixed(2)}</td>
-                        <td class="p-2 text-right">${sanitizeHTML(o.date || '')}</td>
-                    </tr>
-                `).join('');
         };
 
         window.renderAdminProducts = function() {
@@ -1881,7 +1960,6 @@
                                 searchInput.value = decodedText;
                                 renderAdminProducts();
                             }
-
                             setTimeout(() => { closeAdminBarcodeScanner(); }, 1500);
                         },
                         (errorMessage) => {}
