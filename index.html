@@ -250,7 +250,7 @@
             <div class="flex space-x-1 border-b border-gray-200 text-xs font-semibold overflow-x-auto">
                 <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c]">Orders & Fulfillment</button>
                 <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Products & Inventory</button>
-                <button onclick="switchAdminNav('coupons')" id="adtab-coupons" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Coupons 🎟️</button>
+                <button onclick="switchAdminNav('coupons')" id="adtab-coupons" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Coupons & Limits 🎟️</button>
                 <button onclick="switchAdminNav('analytics')" id="adtab-analytics" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Analytics & Reports 📈</button>
                 <button onclick="switchAdminNav('reviews')" id="adtab-reviews" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Reviews ⭐</button>
             </div>
@@ -332,7 +332,7 @@
             <div id="admin-sec-coupons" class="hidden space-y-4">
                 <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3">
                     <div class="flex justify-between items-center">
-                        <h3 class="font-bold text-xs text-gray-900">Coupon Usage Analytics & Vouchers</h3>
+                        <h3 class="font-bold text-xs text-gray-900">Promo Codes & Usage Limits</h3>
                         <div class="flex items-center space-x-2">
                             <button onclick="exportCouponsCSV()" class="bg-gray-900 text-white text-[10px] px-3 py-1.5 rounded-lg font-bold flex items-center space-x-1"><i class="fa-solid fa-download"></i><span>Export CSV</span></button>
                             <button onclick="openCouponModal()" class="bg-[#800f2f] text-white text-xs px-3 py-1.5 rounded-xl font-bold">+ New Coupon</button>
@@ -340,7 +340,7 @@
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs">
-                            <thead><tr class="text-gray-400 border-b text-[10px]"><th class="p-2">Code</th><th class="p-2">Discount</th><th class="p-2">Usage Count</th><th class="p-2">Total Discount Given</th><th class="p-2">Status</th><th class="p-2 text-right">Actions</th></tr></thead>
+                            <thead><tr class="text-gray-400 border-b text-[10px]"><th class="p-2">Code</th><th class="p-2">Discount</th><th class="p-2">Redemptions</th><th class="p-2">Total Given</th><th class="p-2">Status</th><th class="p-2 text-right">Actions</th></tr></thead>
                             <tbody id="admin-coupons-table-body" class="divide-y text-[11px]"></tbody>
                         </table>
                     </div>
@@ -367,7 +367,7 @@
 
             <!-- REVIEWS SECTION -->
             <div id="admin-sec-reviews" class="hidden bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-3">
-                <h3 class="font-bold text-xs text-gray-900">Customer Feedback & Reviews</h3>
+                <h3 class="font-bold text-xs text-gray-900">Customer Feedback & Verified Reviews</h3>
                 <div id="admin-reviews-list-container" class="space-y-3 max-h-[60vh] overflow-y-auto text-xs"></div>
             </div>
         </div>
@@ -395,7 +395,7 @@
         <div id="profile-modal-body" class="flex-1 overflow-y-auto py-4 space-y-3 text-xs"></div>
     </div>
 
-    <!-- PRODUCT DETAIL MODAL -->
+    <!-- ENHANCED PRODUCT DETAIL MODAL -->
     <div id="product-detail-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-4 space-y-3 shadow-2xl relative text-xs max-h-[90vh] overflow-y-auto border border-gray-100">
             <button onclick="closeProductDetailModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
@@ -412,9 +412,18 @@
                     <span id="view-prod-price" class="font-bold text-sm text-[#a4133c]">$0.00</span>
                 </div>
             </div>
+
+            <!-- RICH SPECIFICATIONS CONTAINER -->
+            <div id="view-prod-specs" class="bg-gray-50 p-3 rounded-2xl border text-[11px] space-y-1">
+                <p class="font-bold text-gray-900">Specifications & Care ✨</p>
+                <p><span class="text-gray-500">Material:</span> <span id="spec-material">18k Gold-Plated Brass</span></p>
+                <p><span class="text-gray-500">Dimensions:</span> <span id="spec-dimensions">Standard Fit</span></p>
+                <p><span class="text-gray-500">Care:</span> <span id="spec-care">Avoid direct contact with water and perfumes.</span></p>
+            </div>
+
             <div class="border-t border-gray-100 pt-3 space-y-2">
                 <h4 class="font-bold text-xs text-gray-900 flex justify-between items-center">
-                    <span>Reviews ⭐</span>
+                    <span>Verified Reviews ⭐</span>
                     <span id="prod-avg-rating" class="text-amber-500 text-[11px]">0.0 / 5.0</span>
                 </h4>
                 <div id="prod-reviews-list" class="space-y-1.5 max-h-40 overflow-y-auto text-[11px]"></div>
@@ -519,14 +528,15 @@
         </div>
     </div>
 
-    <!-- ADMIN COUPON MODAL -->
+    <!-- ADMIN COUPON MODAL WITH USAGE LIMIT -->
     <div id="admin-coupon-modal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs">
             <button onclick="closeAdminCouponModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="font-serif italic font-bold text-xs text-gray-900">Add Promo Code & Voucher</h3>
+            <h3 class="font-serif italic font-bold text-xs text-gray-900">Add Promo Code & Redemption Limit</h3>
             <div class="space-y-2">
                 <input type="text" id="coupon-code-input" placeholder="Coupon Code (e.g. SUMMER20)" class="w-full border rounded-xl px-3 py-1.5 uppercase font-mono">
                 <input type="number" id="coupon-discount-input" placeholder="Discount Percentage (e.g. 15)" class="w-full border rounded-xl px-3 py-1.5">
+                <input type="number" id="coupon-max-usage" placeholder="Max Usage Limit (e.g. 50)" class="w-full border rounded-xl px-3 py-1.5">
             </div>
             <button onclick="saveAdminCoupon()" class="w-full bg-[#800f2f] text-white font-bold py-2.5 rounded-xl">Save Coupon</button>
         </div>
@@ -542,7 +552,7 @@
         </div>
     </nav>
 
-    <!-- FIREBASE & ENTERPRISE FULL SCALED ENGINE -->
+    <!-- FIREBASE & ENTERPRISE ENGINE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -738,9 +748,24 @@
 
         async function seedCatalog(db) {
             const initialCatalog = [
-                { name: 'Pearl Butterfly Hairpin', sku: 'HRP-001', category: 'Hairpins', price: 12.50, stock: 4, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80', reviews: [] },
-                { name: 'Gold Pendant Necklace', sku: 'NC-001', category: 'Necklaces', price: 24.50, stock: 3, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=80', reviews: [] },
-                { name: 'Minimalist Dainty Ring', sku: 'RNG-001', category: 'Rings', price: 9.99, stock: 20, image: 'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=600&q=80', reviews: [] }
+                { 
+                    name: 'Pearl Butterfly Hairpin', sku: 'HRP-001', category: 'Hairpins', price: 12.50, stock: 4, 
+                    image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80',
+                    details: { material: "18k Gold-Plated Brass, Simulated Pearl", dimensions: "6.5cm x 3.2cm", care: "Avoid direct contact with water and perfumes." },
+                    reviews: [] 
+                },
+                { 
+                    name: 'Gold Pendant Necklace', sku: 'NC-001', category: 'Necklaces', price: 24.50, stock: 3, 
+                    image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=80',
+                    details: { material: "Titanium Steel with 18k Gold PVD Coating", dimensions: "45cm chain + 5cm extension", care: "Water-resistant and hypoallergenic." },
+                    reviews: [] 
+                },
+                { 
+                    name: 'Minimalist Dainty Ring', sku: 'RNG-001', category: 'Rings', price: 9.99, stock: 20, 
+                    image: 'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=600&q=80',
+                    details: { material: "Sterling Silver 925", dimensions: "Adjustable Band", care: "Store in airtight pouch when not worn." },
+                    reviews: [] 
+                }
             ];
             for (let item of initialCatalog) {
                 await addDoc(collection(db, "products"), { ...item, isPublished: true, createdAt: new Date().toISOString() });
@@ -749,7 +774,7 @@
         }
 
         async function seedCoupons(db) {
-            await setDoc(doc(db, "coupons", "MININIZE15"), { code: "MININIZE15", discountPercent: 15, isActive: true, usageCount: 0, totalDiscountGiven: 0, createdAt: new Date().toISOString() });
+            await setDoc(doc(db, "coupons", "MININIZE15"), { code: "MININIZE15", discountPercent: 15, maxUsage: 50, usageCount: 0, totalDiscountGiven: 0, isActive: true, createdAt: new Date().toISOString() });
         }
 
         const WORKER_PROXY_URL = "https://mininize-telegram-proxy.your-subdomain.workers.dev";
@@ -775,15 +800,25 @@
             } catch (err) { console.error('Proxy stock alert error:', err); }
         }
 
+        async function sendTelegramCouponExhaustedAlert(couponCode, maxUsage) {
+            try {
+                const message = `<b>🎟️ COUPON EXHAUSTED & DEACTIVATED! 🎟️</b>\n\nPromo Code: <b>${couponCode}</b>\nRedemption Limit Reached: <b>${maxUsage} / ${maxUsage} uses</b>\nThe voucher is now locked against further redemptions.`;
+                await fetch(WORKER_PROXY_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+            } catch (err) { console.error('Proxy coupon exhaustion alert error:', err); }
+        }
+
         async function triggerCourierDispatchHandshake(orderNum, customerName, address) {
             try {
-                const courierPayload = { orderNum, customerName, address, timestamp: new Date().toISOString() };
-                console.log("Dispatching order to local courier partner API:", courierPayload);
+                console.log("Dispatching order to local courier partner API:", { orderNum, customerName, address });
             } catch (err) { console.error("Courier dispatch error:", err); }
         }
 
         window.saveAdminProduct = async function() {
-            if (window.currentUserData?.role === 'staff') return alert('Staff role is restricted from creating/editing products. Super Admin access required.');
+            if (window.currentUserData?.role === 'staff') return alert('Staff role is restricted from creating/editing products.');
             const prodId = document.getElementById('prod-id').value;
             const name = sanitizeHTML(document.getElementById('prod-name').value.trim());
             let sku = sanitizeHTML(document.getElementById('prod-sku').value.trim().toUpperCase());
@@ -796,7 +831,11 @@
             if (isNaN(price)) return alert('Enter valid price.');
             if (!sku) sku = `SKU-${Math.floor(1000 + Math.random() * 9000)}`;
 
-            const productData = { name, sku, category, price, stock: isNaN(stock) ? 10 : stock, image, isPublished: true, updatedAt: new Date().toISOString() };
+            const productData = { 
+                name, sku, category, price, stock: isNaN(stock) ? 10 : stock, image, 
+                details: { material: "Premium Alloy / Plated Metal", dimensions: "Standard Fit", care: "Keep away from moisture and harsh chemicals." },
+                isPublished: true, updatedAt: new Date().toISOString() 
+            };
             
             if (prodId) {
                 await updateDoc(doc(db, "products", prodId), productData);
@@ -836,13 +875,14 @@
             if (window.currentUserData?.role === 'staff') return alert('Staff role cannot manage coupons.');
             const code = sanitizeHTML(document.getElementById('coupon-code-input').value.trim().toUpperCase());
             const discountPercent = parseFloat(document.getElementById('coupon-discount-input').value);
+            const maxUsage = parseInt(document.getElementById('coupon-max-usage').value) || 50;
             if (!code || isNaN(discountPercent)) return alert('Enter valid coupon code and discount percentage.');
 
             await setDoc(doc(db, "coupons", code), { 
-                code, discountPercent, isActive: true, usageCount: 0, totalDiscountGiven: 0, createdAt: new Date().toISOString() 
+                code, discountPercent, maxUsage, usageCount: 0, totalDiscountGiven: 0, isActive: true, createdAt: new Date().toISOString() 
             }, { merge: true });
             triggerTelegramHaptic('success');
-            alert(`Coupon ${code} saved successfully!`);
+            alert(`Coupon ${code} saved with a limit of ${maxUsage} redemptions!`);
             closeAdminCouponModal();
         };
 
@@ -886,14 +926,14 @@
         window.exportCouponsCSV = function() {
             triggerTelegramHaptic('medium');
             if (!window.coupons || window.coupons.length === 0) return alert('No coupons to export.');
-            let csvContent = "data:text/csv;charset=utf-8,Code,DiscountPercent,UsageCount,TotalDiscountGiven,Status\n";
+            let csvContent = "data:text/csv;charset=utf-8,Code,DiscountPercent,UsageCount,MaxUsage,TotalDiscountGiven,Status\n";
             window.coupons.forEach(c => {
-                csvContent += `"${c.code}","${c.discountPercent}%","${c.usageCount || 0}","$${(c.totalDiscountGiven || 0).toFixed(2)}","${c.isActive ? 'Active' : 'Inactive'}"\n`;
+                csvContent += `"${c.code}","${c.discountPercent}%","${c.usageCount || 0}","${c.maxUsage || 50}","$${(c.totalDiscountGiven || 0).toFixed(2)}","${c.isActive ? 'Active' : 'Inactive'}"\n`;
             });
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `mininize_coupons_analytics_${new Date().toISOString().split('T')[0]}.csv`);
+            link.setAttribute("download", `mininize_coupons_${new Date().toISOString().split('T')[0]}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -1024,35 +1064,70 @@
             }
         });
 
+        // VERIFIED REVIEWS & LIKES LOGIC
         window.submitProductReview = async function() {
+            if (!window.currentUser) return alert('Please sign in to leave a review.');
             if (!window.currentSelectedProdId) return;
+
             const text = sanitizeHTML(document.getElementById('new-review-text').value.trim());
-            if (!text) return alert('Enter review text.');
+            if (!text) return alert('Please enter review text.');
+
             const prodRef = doc(db, "products", window.currentSelectedProdId);
             const prodSnap = await getDoc(prodRef);
+
             if (prodSnap.exists()) {
                 const p = prodSnap.data();
                 const reviews = p.reviews || [];
-                reviews.push({ id: `rev_${Date.now()}`, author: sanitizeHTML(window.currentUserData?.name || "Shopper"), rating: window.currentSelectedStarRating || 5, text, date: new Date().toISOString().split('T')[0], likes: 0 });
+                
+                reviews.push({
+                    id: `rev_${Date.now()}`,
+                    userId: window.currentUser.uid,
+                    author: sanitizeHTML(window.currentUserData?.name || "Shopper"),
+                    rating: window.currentSelectedStarRating || 5,
+                    text,
+                    date: new Date().toISOString().split('T')[0],
+                    likes: 0,
+                    likedBy: []
+                });
+
                 await updateDoc(prodRef, { reviews });
                 triggerTelegramHaptic('success');
                 document.getElementById('new-review-text').value = '';
                 openProductDetailModal(window.currentSelectedProdId, true);
+                alert('Review posted successfully! ⭐');
             }
         };
 
-        window.likeProductReview = async function(prodId, reviewId) {
+        window.toggleReviewLike = async function(prodId, reviewId) {
+            if (!window.currentUser) return alert('Please sign in to like reviews.');
             triggerTelegramHaptic('light');
+
             const prodRef = doc(db, "products", prodId);
             const prodSnap = await getDoc(prodRef);
+
             if (prodSnap.exists()) {
                 let reviews = prodSnap.data().reviews || [];
-                reviews = reviews.map(r => r.id === reviewId ? { ...r, likes: (r.likes || 0) + 1 } : r);
+                const userId = window.currentUser.uid;
+
+                reviews = reviews.map(r => {
+                    if (r.id === reviewId) {
+                        const likedBy = r.likedBy || [];
+                        const hasLiked = likedBy.includes(userId);
+                        return {
+                            ...r,
+                            likes: hasLiked ? Math.max(0, (r.likes || 1) - 1) : (r.likes || 0) + 1,
+                            likedBy: hasLiked ? likedBy.filter(id => id !== userId) : [...likedBy, userId]
+                        };
+                    }
+                    return r;
+                });
+
                 await updateDoc(prodRef, { reviews });
                 openProductDetailModal(prodId, true);
             }
         };
 
+        // CHECKOUT & COUPON SAFEGUARD ENGINE
         window.createOrderAndInitBakong = async function() {
             const customerName = sanitizeHTML(document.getElementById('checkout-name').value.trim());
             const phone = sanitizeHTML(document.getElementById('checkout-phone').value.trim());
@@ -1063,21 +1138,37 @@
             let subtotal = window.cart.reduce((s, i) => s + (i.price * i.qty), 0);
             let discount = 0;
             let appliedCouponCode = 'NONE';
+            let couponRef = null;
 
             if (promoCodeInput) {
-                const couponRef = doc(db, "coupons", promoCodeInput);
+                couponRef = doc(db, "coupons", promoCodeInput);
                 const couponSnap = await getDoc(couponRef);
-                if (couponSnap.exists() && couponSnap.data().isActive) {
+                if (couponSnap.exists()) {
                     const cData = couponSnap.data();
-                    discount = subtotal * (cData.discountPercent / 100);
-                    appliedCouponCode = promoCodeInput;
-                    await updateDoc(couponRef, {
-                        usageCount: (cData.usageCount || 0) + 1,
-                        totalDiscountGiven: (cData.totalDiscountGiven || 0) + discount
-                    });
-                } else if (promoCodeInput === 'MININIZE15') {
-                    discount = subtotal * 0.15;
-                    appliedCouponCode = 'MININIZE15';
+                    const currentUsage = cData.usageCount || 0;
+                    const maxAllowed = cData.maxUsage || 50;
+
+                    if (cData.isActive && currentUsage < maxAllowed) {
+                        discount = subtotal * (cData.discountPercent / 100);
+                        appliedCouponCode = promoCodeInput;
+
+                        const newUsageCount = currentUsage + 1;
+                        const shouldDeactivate = newUsageCount >= maxAllowed;
+
+                        await updateDoc(couponRef, {
+                            usageCount: newUsageCount,
+                            totalDiscountGiven: (cData.totalDiscountGiven || 0) + discount,
+                            isActive: shouldDeactivate ? false : cData.isActive
+                        });
+
+                        if (shouldDeactivate) {
+                            sendTelegramCouponExhaustedAlert(promoCodeInput, maxAllowed);
+                        }
+                    } else {
+                        return alert('This promo code is either expired or has reached its maximum redemption limit.');
+                    }
+                } else {
+                    return alert('Invalid promo code.');
                 }
             }
 
@@ -1379,14 +1470,6 @@
                                 </div>
                                 <button onclick="navigator.clipboard.writeText('MININIZE15'); alert('Coupon code MININIZE15 copied!');" class="bg-gray-900 text-white text-[10px] px-3 py-1.5 rounded-xl font-bold">Copy</button>
                             </div>
-                            ${pts >= 200 ? `
-                            <div class="bg-white p-3 rounded-2xl border shadow-xs flex justify-between items-center">
-                                <div>
-                                    <span class="font-mono font-bold text-xs text-emerald-600">VIP20OFF</span>
-                                    <p class="text-[10px] text-gray-500">20% OFF VIP Reward Voucher</p>
-                                </div>
-                                <button onclick="navigator.clipboard.writeText('VIP20OFF'); alert('VIP Voucher copied!');" class="bg-emerald-600 text-white text-[10px] px-3 py-1.5 rounded-xl font-bold">Copy</button>
-                            </div>` : `<div class="bg-gray-50 p-3 rounded-2xl border text-center"><p class="text-[10px] text-gray-400">Earn 200+ points to unlock VIP20OFF voucher!</p></div>`}
                         </div>
                     </div>`;
             } else if (section === 'favorites') {
@@ -1523,6 +1606,7 @@
             for (let i = 0; i < 5; i++) stars[i].className = i < rating ? "fa-solid fa-star cursor-pointer text-amber-400" : "fa-regular fa-star cursor-pointer text-gray-300";
         }
 
+        // ENHANCED PRODUCT DETAIL MODAL RENDERER
         window.openProductDetailModal = async function(id, silent = false) {
             const p = window.products.find(item => item.id === id);
             if (!p) return;
@@ -1535,16 +1619,34 @@
             document.getElementById('view-prod-price').innerText = formatPrice(p.price);
             document.getElementById('view-prod-stock').innerText = `${p.stock ?? 10} available`;
 
+            const specs = p.details || { material: "Premium Alloy / Plated Metal", dimensions: "Standard Fit", care: "Keep away from moisture and harsh chemicals." };
+            document.getElementById('spec-material').innerText = sanitizeHTML(specs.material);
+            document.getElementById('spec-dimensions').innerText = sanitizeHTML(specs.dimensions);
+            document.getElementById('spec-care').innerText = sanitizeHTML(specs.care);
+
             const reviews = p.reviews || [];
             document.getElementById('prod-avg-rating').innerText = `⭐ ${reviews.length > 0 ? (reviews.reduce((s,r)=>s+r.rating,0)/reviews.length).toFixed(1) : "5.0"} / 5.0`;
+            
+            const currentUserId = window.currentUser?.uid;
             document.getElementById('prod-reviews-list').innerHTML = reviews.length === 0 ? `<p class="text-gray-400 text-[10px]">No comments yet.</p>` :
-                reviews.map(r => `
-                    <div class="bg-gray-50 p-2 rounded-xl border space-y-1">
-                        <div class="flex justify-between text-[9px]"><b class="text-gray-800">${sanitizeHTML(r.author)}</b><span class="text-amber-400">★ ${r.rating}.0</span></div>
-                        <p class="text-gray-700 text-[10px]">${sanitizeHTML(r.text)}</p>
-                        <button onclick="likeProductReview('${p.id}', '${r.id}')" class="text-red-500 text-[9px] font-bold"><i class="fa-solid fa-heart"></i> ${r.likes || 0} Likes</button>
-                    </div>
-                `).join('');
+                reviews.map(r => {
+                    const hasLiked = (r.likedBy || []).includes(currentUserId);
+                    return `
+                        <div class="bg-gray-50 p-2.5 rounded-xl border space-y-1">
+                            <div class="flex justify-between text-[9px]">
+                                <b>${sanitizeHTML(r.author)}</b>
+                                <span class="text-amber-400">★ ${r.rating}.0</span>
+                            </div>
+                            <p class="text-gray-700 text-[10px]">${sanitizeHTML(r.text)}</p>
+                            <div class="flex justify-between items-center pt-1">
+                                <span class="text-[8px] text-gray-400">${r.date}</span>
+                                <button onclick="toggleReviewLike('${p.id}', '${r.id}')" class="${hasLiked ? 'text-red-600 font-bold' : 'text-gray-500'} text-[10px] flex items-center space-x-1">
+                                    <i class="fa-solid fa-heart"></i> <span>${r.likes || 0}</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
 
             if (!silent) {
                 setReviewRating(5);
@@ -1607,7 +1709,7 @@
         function closeCheckoutModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
         function cancelBakongPayment() { document.getElementById('bakong-payment-modal').classList.add('hidden'); }
 
-        // ADMIN MODE & HIGH-DENSITY PAGINATION LOGIC
+        // ADMIN MODE & PAGINATION LOGIC
         function enterAdminMode() {
             document.getElementById('customer-view').classList.add('hidden');
             document.getElementById('admin-view').classList.remove('hidden');
@@ -1879,7 +1981,7 @@
                     <tr class="border-b">
                         <td class="p-2 font-mono font-bold text-[#a4133c]">${sanitizeHTML(c.code)}</td>
                         <td class="p-2 font-semibold">${c.discountPercent}% OFF</td>
-                        <td class="p-2 font-bold text-gray-700">${c.usageCount || 0} times</td>
+                        <td class="p-2 font-bold text-gray-700">${c.usageCount || 0} / ${c.maxUsage || 50}</td>
                         <td class="p-2 font-bold text-emerald-600">$${(c.totalDiscountGiven || 0).toFixed(2)}</td>
                         <td class="p-2"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${c.isActive ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-500'}">${c.isActive ? 'Active' : 'Inactive'}</span></td>
                         <td class="p-2 text-right space-x-2">
@@ -1897,7 +1999,7 @@
             container.innerHTML = allReviews.length === 0 ? `<p class="text-gray-400 text-center py-4">No reviews.</p>` :
                 allReviews.map(r => `
                     <div class="bg-gray-50 p-2 rounded-xl border space-y-1">
-                        <b>${sanitizeHTML(r.productName)}</b> - <span>${sanitizeHTML(r.author)}</span>
+                        <b>${sanitizeHTML(r.productName)}</b> - <span>${sanitizeHTML(r.author)}</span> (★ ${r.rating}.0)
                         <p>${sanitizeHTML(r.text)}</p>
                     </div>
                 `).join('');
@@ -1934,6 +2036,7 @@
             if (window.currentUserData?.role === 'staff') return alert('Staff role cannot create coupons.');
             document.getElementById('coupon-code-input').value = '';
             document.getElementById('coupon-discount-input').value = '';
+            document.getElementById('coupon-max-usage').value = '50';
             document.getElementById('admin-coupon-modal').classList.remove('hidden');
         };
         function closeAdminCouponModal() { document.getElementById('admin-coupon-modal').classList.add('hidden'); }
