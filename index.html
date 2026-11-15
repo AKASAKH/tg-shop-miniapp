@@ -55,12 +55,19 @@
                     </div>
                 </div>
             </div>
-            <div class="flex items-center space-x-1.5">
-                <span class="flex h-1.5 w-1.5 relative">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
-                </span>
-                <span class="text-[11px] font-medium text-gray-500" id="session-user-badge">Guest Mode</span>
+            <div class="flex items-center space-x-2">
+                <!-- CURRENCY SELECTOR -->
+                <select id="currency-select" onchange="changeCurrency(this.value)" class="text-[11px] bg-gray-50 border border-gray-200 rounded-lg px-2 py-1 font-medium focus:outline-none focus:border-[#a4133c]">
+                    <option value="USD">USD ($)</option>
+                    <option value="KHR">KHR (៛)</option>
+                </select>
+                <div class="flex items-center space-x-1.5">
+                    <span class="flex h-1.5 w-1.5 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                    </span>
+                    <span class="text-[11px] font-medium text-gray-500" id="session-user-badge">Guest Mode</span>
+                </div>
             </div>
         </div>
     </header>
@@ -406,7 +413,7 @@
 
     <!-- BAKONG KHQR PAYMENT MODAL -->
     <div id="bakong-payment-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-xs w-full p-5 space-y-4 shadow-2xl relative text-center border border-gray-100">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative text-center border border-gray-100">
             <button onclick="cancelBakongPayment()" class="absolute top-3 right-3 text-gray-400 text-xs"><i class="fa-solid fa-xmark"></i></button>
             <div class="flex items-center justify-center space-x-1.5">
                 <span class="bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded">KHQR</span>
@@ -518,6 +525,33 @@
                 .replace(/'/g, '&#039;');
         };
 
+        // ==========================================
+        // MULTI-CURRENCY CONVERSION ENGINE
+        // ==========================================
+        window.currentCurrency = 'USD'; // 'USD' or 'KHR'
+        window.exchangeRate = 4100;     // 1 USD = 4,100 KHR
+
+        window.formatPrice = function(usdAmount) {
+            const amount = Number(usdAmount) || 0;
+            if (window.currentCurrency === 'KHR') {
+                const khrAmount = Math.round(amount * window.exchangeRate);
+                return '៛' + khrAmount.toLocaleString();
+            } else {
+                return '$' + amount.toFixed(2);
+            }
+        };
+
+        window.changeCurrency = function(curr) {
+            window.currentCurrency = curr;
+            triggerTelegramHaptic('light');
+            if (window.renderProducts) window.renderProducts();
+            if (window.renderWishlist) window.renderWishlist();
+            const cartDrawer = document.getElementById('cart-drawer');
+            if (cartDrawer && !cartDrawer.classList.contains('hidden')) {
+                openCartDrawer();
+            }
+        };
+
         window.triggerTelegramHaptic = function(type = 'light') {
             try {
                 if (window.Telegram?.WebApp?.HapticFeedback) {
@@ -534,7 +568,12 @@
             } catch (err) {}
         };
 
-        onSnapshot(query(collection(db, "products"), limit(50)), (snapshot) => {
+        let productsUnsubscribe = null;
+        let ordersUnsubscribe = null;
+        let couponsUnsubscribe = null;
+        let userDocUnsubscribe = null;
+
+        productsUnsubscribe = onSnapshot(query(collection(db, "products"), limit(50)), (snapshot) => {
             window.products = [];
             snapshot.forEach(docSnap => window.products.push({ id: docSnap.id, ...docSnap.data() }));
             if (window.products.length === 0) seedCatalog(db);
@@ -544,14 +583,7 @@
             if (window.checkInitialDeepLink) window.checkInitialDeepLink();
         });
 
-        onSnapshot(collection(db, "orders"), (snapshot) => {
-            window.orders = [];
-            snapshot.forEach(docSnap => window.orders.push({ docId: docSnap.id, ...docSnap.data() }));
-            if (window.renderAdminOrders) window.renderAdminOrders();
-            if (window.updateAdminMetrics) window.updateAdminMetrics();
-        });
-
-        onSnapshot(collection(db, "coupons"), (snapshot) => {
+        couponsUnsubscribe = onSnapshot(collection(db, "coupons"), (snapshot) => {
             window.coupons = [];
             snapshot.forEach(docSnap => window.coupons.push({ id: docSnap.id, ...docSnap.data() }));
             if (window.coupons.length === 0) seedCoupons(db);
@@ -577,7 +609,7 @@
         // ==========================================
         // CLOUDFLARE WORKER SECURE TELEGRAM PROXY
         // ==========================================
-        const WORKER_PROXY_URL = "https://mininize-telegram-proxy.your-subdomain.workers.dev"; // Replace with your Worker URL
+        const WORKER_PROXY_URL = "https://mininize-telegram-proxy.your-subdomain.workers.dev";
 
         async function postToTelegramChannel(photoUrl, captionText) {
             try {
@@ -772,8 +804,6 @@
 
         window.handleSignOut = async function() { await signOut(auth); if (window.exitAdminMode) window.exitAdminMode(); };
 
-        let userDocUnsubscribe = null;
-
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 window.currentUser = user;
@@ -791,14 +821,26 @@
                     const isAdmin = window.currentUserData.role === "admin" || (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
                     if (isAdmin) {
                         enterAdminMode();
+                        if (!ordersUnsubscribe) {
+                            ordersUnsubscribe = onSnapshot(collection(db, "orders"), (snapshot) => {
+                                window.orders = [];
+                                snapshot.forEach(docSnap => window.orders.push({ docId: docSnap.id, ...docSnap.data() }));
+                                if (window.renderAdminOrders) window.renderAdminOrders();
+                                if (window.updateAdminMetrics) window.updateAdminMetrics();
+                            });
+                        }
                     } else {
                         exitAdminMode();
+                        if (ordersUnsubscribe) { ordersUnsubscribe(); ordersUnsubscribe = null; }
+                        window.orders = [];
                         if (window.updateProfileViewUI) window.updateProfileViewUI();
                         if (window.renderProducts) window.renderProducts();
                     }
                 });
             } else {
                 if (userDocUnsubscribe) { userDocUnsubscribe(); userDocUnsubscribe = null; }
+                if (ordersUnsubscribe) { ordersUnsubscribe(); ordersUnsubscribe = null; }
+                window.orders = [];
                 window.currentUser = null; window.currentUserData = null;
                 document.getElementById('session-user-badge').innerText = 'Guest Mode';
                 exitAdminMode();
@@ -875,15 +917,12 @@
                         if (currentStock < cartItem.qty) return alert(`Sorry, "${cartItem.name}" only has ${currentStock} units left in stock!`);
                         const updatedStock = Math.max(0, currentStock - cartItem.qty);
                         await updateDoc(prodRef, { stock: updatedStock });
-                        
-                        if (updatedStock <= 5) {
-                            sendTelegramLowStockAlert(cartItem.name, updatedStock);
-                        }
+                        if (updatedStock <= 5) sendTelegramLowStockAlert(cartItem.name, updatedStock);
                     }
                 }
 
                 const docRef = await addDoc(collection(db, "orders"), { 
-                    orderNum, customerName, phone, address, items: window.cart, subtotal, discount, total, promoCode: appliedCouponCode, status: 'Pending', date: new Date().toISOString().split('T')[0] 
+                    orderNum, userId: window.currentUser ? window.currentUser.uid : 'guest', customerName, phone, address, items: window.cart, subtotal, discount, total, promoCode: appliedCouponCode, status: 'Pending', date: new Date().toISOString().split('T')[0] 
                 });
                 window.currentActiveOrderId = docRef.id;
                 
@@ -898,7 +937,7 @@
                 document.getElementById('cart-badge').innerText = '0';
                 closeCheckoutModal();
 
-                document.getElementById('bakong-pay-amount').innerText = `$${total.toFixed(2)}`;
+                document.getElementById('bakong-pay-amount').innerText = formatPrice(total);
                 document.getElementById('bakong-pay-ordernum').innerText = `Order: ${orderNum}`;
                 document.getElementById('bakong-qr-img').src = `https://quickchart.io/qr?text=mininize@bakong&size=250`;
                 document.getElementById('bakong-payment-modal').classList.remove('hidden');
@@ -918,7 +957,7 @@
             const p = window.products.find(item => item.id === window.currentSelectedProdId);
             if (!p) return;
             const miniAppUrl = `https://t.me/songsashop?startapp=prod_${p.id}`;
-            const shareText = `Check out ${p.name} ($${Number(p.price).toFixed(2)}) on Mininize Studio! ✨`;
+            const shareText = `Check out ${p.name} (${formatPrice(p.price)}) on Mininize Studio! ✨`;
             if (window.Telegram?.WebApp?.openTelegramLink) {
                 window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(miniAppUrl)}&text=${encodeURIComponent(shareText)}`);
             } else {
@@ -1039,13 +1078,14 @@
             renderProducts();
         }
 
-        window.openProfileSection = function(section) {
+        window.openProfileSection = async function(section) {
             triggerTelegramHaptic('light');
             const modal = document.getElementById('profile-sub-modal');
             const titleEl = document.getElementById('profile-modal-title');
             const bodyEl = document.getElementById('profile-modal-body');
             modal.classList.remove('hidden');
             const uData = window.currentUserData || {};
+            const isAdmin = uData.role === "admin" || window.currentUser?.uid === "NoIYk9Uwlc75YLdlpzx1";
 
             if (section === 'personal') {
                 titleEl.innerText = "Personal Information 👤";
@@ -1071,30 +1111,43 @@
                     </div>`;
             } else if (section === 'orders') {
                 titleEl.innerText = "My Orders & Live Timeline 📦";
-                const statuses = ['Pending', 'Paid', 'Processing', 'Shipped', 'Delivered'];
-                bodyEl.innerHTML = (window.orders || []).length === 0 ? `<p class="text-xs text-gray-400 text-center py-4">No active orders found.</p>` :
-                    window.orders.map(o => {
-                        const currentStatusIdx = statuses.indexOf(o.status || 'Pending');
-                        return `
-                            <div class="bg-gray-50 p-3 rounded-2xl border space-y-2.5">
-                                <div class="flex justify-between items-center text-xs">
-                                    <b>${sanitizeHTML(o.orderNum)}</b>
-                                    <span class="font-bold text-[#a4133c]">$${o.total}</span>
-                                </div>
-                                <p class="text-[10px] text-gray-400">Ordered: ${o.date} | Promo: ${o.promoCode || 'None'}</p>
-                                <div class="flex justify-between items-center pt-2 border-t text-[9px] text-gray-500">
-                                    ${statuses.map((st, idx) => `
-                                        <div class="flex flex-col items-center space-y-1">
-                                            <div class="w-5 h-5 rounded-full flex items-center justify-center font-bold text-[8px] ${idx <= currentStatusIdx ? 'bg-[#a4133c] text-white' : 'bg-gray-200 text-gray-600'}">
-                                                ${idx <= currentStatusIdx ? '<i class="fa-solid fa-check text-[7px]"></i>' : idx + 1}
+                bodyEl.innerHTML = `<p class="text-xs text-gray-400 text-center py-4">Loading your orders...</p>`;
+                try {
+                    let ordersList = [];
+                    if (isAdmin) {
+                        ordersList = window.orders || [];
+                    } else if (window.currentUser) {
+                        const q = window.query(window.collection(window.firebaseDb, "orders"), window.where("userId", "==", window.currentUser.uid));
+                        const querySnapshot = await window.getDocs(q);
+                        querySnapshot.forEach(docSnap => ordersList.push({ docId: docSnap.id, ...docSnap.data() }));
+                    }
+                    const statuses = ['Pending', 'Paid', 'Processing', 'Shipped', 'Delivered'];
+                    bodyEl.innerHTML = ordersList.length === 0 ? `<p class="text-xs text-gray-400 text-center py-4">You have no active orders yet.</p>` :
+                        ordersList.map(o => {
+                            const currentStatusIdx = statuses.indexOf(o.status || 'Pending');
+                            return `
+                                <div class="bg-gray-50 p-3 rounded-2xl border space-y-2.5 text-xs">
+                                    <div class="flex justify-between items-center">
+                                        <b>${sanitizeHTML(o.orderNum)}</b>
+                                        <span class="font-bold text-[#a4133c]">${formatPrice(o.total || 0)}</span>
+                                    </div>
+                                    <p class="text-[10px] text-gray-400">Ordered: ${o.date} | Status: <span class="font-bold text-emerald-600">${o.status}</span></p>
+                                    <div class="flex justify-between items-center pt-2 border-t text-[9px] text-gray-500">
+                                        ${statuses.map((st, idx) => `
+                                            <div class="flex flex-col items-center space-y-1">
+                                                <div class="w-5 h-5 rounded-full flex items-center justify-center font-bold text-[8px] ${idx <= currentStatusIdx ? 'bg-[#a4133c] text-white' : 'bg-gray-200 text-gray-600'}">
+                                                    ${idx <= currentStatusIdx ? '<i class="fa-solid fa-check text-[7px]"></i>' : idx + 1}
+                                                </div>
+                                                <span class="${idx <= currentStatusIdx ? 'text-[#a4133c] font-bold' : 'text-gray-400'}">${st}</span>
                                             </div>
-                                            <span class="${idx <= currentStatusIdx ? 'text-[#a4133c] font-bold' : 'text-gray-400'}">${st}</span>
-                                        </div>
-                                    `).join('')}
+                                        `).join('')}
+                                    </div>
                                 </div>
-                            </div>
-                        `;
-                    }).join('');
+                            `;
+                        }).join('');
+                } catch (err) {
+                    bodyEl.innerHTML = `<p class="text-xs text-red-500 text-center py-4">Failed to load orders.</p>`;
+                }
             } else if (section === 'wallet') {
                 titleEl.innerText = "Loyalty Voucher Wallet 🎟️";
                 const pts = uData.loyaltyPoints || 100;
@@ -1176,16 +1229,14 @@
             const email = sanitizeHTML(document.getElementById('edit-email').value.trim());
             const phone = sanitizeHTML(document.getElementById('edit-phone').value.trim());
             if (!name) return alert('Name cannot be empty.');
-
             const saveBtn = document.getElementById('save-profile-btn');
             saveBtn.disabled = true;
-            saveBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i><span>Syncing to Database...</span>`;
-
+            saveBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i><span>Syncing...</span>`;
             try {
                 if (window.currentUser) {
-                    await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { name, email, phone, updatedAt: new Date().toISOString() });
+                    await window.updateDoc(window.doc(window.firebaseDb, "users", window.currentUser.uid), { name, email, phone, updatedAt: new Date().toISOString() });
                     triggerTelegramHaptic('success');
-                    alert('Profile updated and synced across devices! 🎉');
+                    alert('Profile updated successfully!');
                     closeProfileSubModal();
                 }
             } catch (err) {
@@ -1200,11 +1251,10 @@
             const street = sanitizeHTML(document.getElementById('new-addr-street').value.trim());
             const province = sanitizeHTML(document.getElementById('new-addr-province').value.trim());
             if (!label || !street || !province) return alert('Please fill in all fields.');
-
             let addrs = window.currentUserData.addresses || [];
             addrs.push({ label, street, province, isDefault: addrs.length === 0 });
             if (window.currentUser) {
-                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { addresses: addrs });
+                await window.updateDoc(window.doc(window.firebaseDb, "users", window.currentUser.uid), { addresses: addrs });
                 triggerTelegramHaptic('success');
                 openProfileSection('addresses');
             }
@@ -1214,7 +1264,7 @@
             let addrs = window.currentUserData.addresses || [];
             addrs.splice(index, 1);
             if (window.currentUser) {
-                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { addresses: addrs });
+                await window.updateDoc(window.doc(window.firebaseDb, "users", window.currentUser.uid), { addresses: addrs });
                 triggerTelegramHaptic('medium');
                 openProfileSection('addresses');
             }
@@ -1223,9 +1273,8 @@
         window.updateNotificationSettings = async function() {
             const emailAlerts = document.getElementById('notif-email').checked;
             const telegramAlerts = document.getElementById('notif-telegram').checked;
-            const notifications = { emailAlerts, telegramAlerts };
             if (window.currentUser) {
-                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { notifications });
+                await window.updateDoc(window.doc(window.firebaseDb, "users", window.currentUser.uid), { notifications: { emailAlerts, telegramAlerts } });
                 triggerTelegramHaptic('light');
             }
         };
@@ -1235,7 +1284,7 @@
             if (window.currentUser) {
                 let wishlist = window.currentUserData.wishlist || [];
                 if (wishlist.includes(id)) wishlist = wishlist.filter(i => i !== id); else wishlist.push(id);
-                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { wishlist });
+                await window.updateDoc(window.doc(window.firebaseDb, "users", window.currentUser.uid), { wishlist });
             } else {
                 let localWish = JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
                 localWish = localWish.includes(id) ? localWish.filter(i => i !== id) : [...localWish, id];
@@ -1263,7 +1312,7 @@
             document.getElementById('view-prod-image').src = p.image || FALLBACK_IMAGE;
             document.getElementById('view-prod-category').innerText = p.category || 'Accessories';
             document.getElementById('view-prod-name').innerText = sanitizeHTML(p.name);
-            document.getElementById('view-prod-price').innerText = `$${Number(p.price).toFixed(2)}`;
+            document.getElementById('view-prod-price').innerText = formatPrice(p.price);
             document.getElementById('view-prod-stock').innerText = `${p.stock ?? 10} available`;
 
             const reviews = p.reviews || [];
@@ -1299,12 +1348,13 @@
                     <img src="${p.image}" class="w-full aspect-square object-cover rounded-xl mb-2">
                     <h4 class="font-serif italic font-bold text-xs truncate">${sanitizeHTML(p.name)}</h4>
                     <div class="flex justify-between items-center mt-2 pt-2 border-t">
-                        <span class="font-bold text-xs text-[#a4133c]">$${Number(p.price).toFixed(2)}</span>
+                        <span class="font-bold text-xs text-[#a4133c]">${formatPrice(p.price)}</span>
                         <button onclick="event.stopPropagation(); addToCart('${p.id}')" class="bg-[#800f2f] text-white px-3 py-1.5 rounded-xl text-xs font-bold">+</button>
                     </div>
                 </div>
             `).join('');
         }
+        window.renderProducts = renderProducts;
 
         function renderWishlist() {
             const userWishlist = window.currentUserData?.wishlist || JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
@@ -1312,6 +1362,7 @@
             document.getElementById('wishlist-grid').innerHTML = favs.length === 0 ? `<p class="text-xs text-gray-400 col-span-2 text-center py-6">No saved favorite items.</p>` :
                 favs.map(p => `<div onclick="openProductDetailModal('${p.id}')" class="bg-white rounded-2xl p-2.5 border shadow-xs cursor-pointer"><img src="${p.image}" class="w-full aspect-square object-cover rounded-xl mb-2"><h4 class="font-serif italic font-bold text-xs truncate">${sanitizeHTML(p.name)}</h4></div>`).join('');
         }
+        window.renderWishlist = renderWishlist;
 
         function addToCart(id) {
             triggerTelegramHaptic('success');
@@ -1326,10 +1377,11 @@
         function openCartDrawer() {
             triggerTelegramHaptic('light');
             document.getElementById('cart-items-container').innerHTML = window.cart.length === 0 ? `<p class="text-xs text-gray-400 text-center py-8">Cart is empty</p>` :
-                window.cart.map(item => `<div class="flex justify-between items-center text-xs border-b pb-2"><span><b>${sanitizeHTML(item.name)}</b> (x${item.qty})</span><span class="font-bold text-[#a4133c]">$${(item.price * item.qty).toFixed(2)}</span></div>`).join('');
-            document.getElementById('cart-total').innerText = `$${window.cart.reduce((s, i) => s + (i.price * i.qty), 0).toFixed(2)}`;
+                window.cart.map(item => `<div class="flex justify-between items-center text-xs border-b pb-2"><span><b>${sanitizeHTML(item.name)}</b> (x${item.qty})</span><span class="font-bold text-[#a4133c]">${formatPrice(item.price * item.qty)}</span></div>`).join('');
+            document.getElementById('cart-total').innerText = formatPrice(window.cart.reduce((s, i) => s + (i.price * i.qty), 0));
             document.getElementById('cart-drawer').classList.remove('hidden');
         }
+        window.openCartDrawer = openCartDrawer;
         function closeCartDrawer() { document.getElementById('cart-drawer').classList.add('hidden'); }
         function openCheckoutModal() { closeCartDrawer(); document.getElementById('checkout-modal').classList.remove('hidden'); }
         function closeCheckoutModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
@@ -1370,26 +1422,10 @@
             const lowStockCount = lowStockItems.length;
             const totalDiscounts = (window.coupons || []).reduce((sum, c) => sum + (Number(c.totalDiscountGiven) || 0), 0);
 
-            const revEl = document.getElementById('admin-metric-revenue');
-            const pendEl = document.getElementById('admin-metric-pending');
-            const lowEl = document.getElementById('admin-metric-lowstock');
-            const discEl = document.getElementById('admin-metric-discounts');
-            const alertBanner = document.getElementById('low-stock-alert-banner');
-            const alertText = document.getElementById('low-stock-alert-text');
-
-            if (revEl) revEl.innerText = `$${totalRevenue.toFixed(2)}`;
-            if (pendEl) pendEl.innerText = pendingCount;
-            if (lowEl) lowEl.innerText = lowStockCount;
-            if (discEl) discEl.innerText = `$${totalDiscounts.toFixed(2)}`;
-
-            if (alertBanner && alertText) {
-                if (lowStockCount > 0) {
-                    alertBanner.classList.remove('hidden');
-                    alertText.innerText = `Warning: ${lowStockCount} product(s) are running low on stock (<= 5 units)!`;
-                } else {
-                    alertBanner.classList.add('hidden');
-                }
-            }
+            if (document.getElementById('admin-metric-revenue')) document.getElementById('admin-metric-revenue').innerText = `$${totalRevenue.toFixed(2)}`;
+            if (document.getElementById('admin-metric-pending')) document.getElementById('admin-metric-pending').innerText = pendingCount;
+            if (document.getElementById('admin-metric-lowstock')) document.getElementById('admin-metric-lowstock').innerText = lowStockCount;
+            if (document.getElementById('admin-metric-discounts')) document.getElementById('admin-metric-discounts').innerText = `$${totalDiscounts.toFixed(2)}`;
         };
 
         window.filterLowStockProducts = function() {
@@ -1426,7 +1462,7 @@
                                 <option ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
                             </select>
                         </td>
-                        <td class="p-2 font-bold text-[#a4133c]">$${o.total || 0}</td>
+                        <td class="p-2 font-bold text-[#a4133c]">$${Number(o.total || 0).toFixed(2)}</td>
                         <td class="p-2 text-right">${sanitizeHTML(o.date || '')}</td>
                     </tr>
                 `).join('');
