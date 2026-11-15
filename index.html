@@ -147,7 +147,7 @@
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
                         <button onclick="openProfileSection('notifications')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
-                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-bell text-[#a4133c] w-4"></i><span>Notifications Settings</span></span>
+                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-bell text-[#a4133c] w-4"></i><span>Notifications Preferences</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
                     </div>
@@ -503,6 +503,23 @@
             } catch (err) { console.error('Telegram broadcast error:', err); }
         }
 
+        async function sendTelegramOrderStatusNotification(order, newStatus) {
+            try {
+                const message = `<b>🔔 ORDER STATUS UPDATE 🔔</b>\n\nOrder ID: <b>${order.orderNum}</b>\nCustomer: ${order.customerName}\nStatus Changed To: <b>${newStatus}</b>\nTotal: $${Number(order.total).toFixed(2)}`;
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHANNEL_ID,
+                        text: message,
+                        parse_mode: 'HTML'
+                    })
+                });
+            } catch (err) {
+                console.error('Webhook notification error:', err);
+            }
+        }
+
         window.saveAdminProduct = async function() {
             const prodId = document.getElementById('prod-id').value;
             const name = sanitizeHTML(document.getElementById('prod-name').value.trim());
@@ -543,7 +560,11 @@
 
         window.updateOrderStatus = async function(docId, newStatus) {
             await updateDoc(doc(db, "orders", docId), { status: newStatus });
-            triggerTelegramHaptic('light');
+            const updatedOrder = window.orders.find(o => o.docId === docId);
+            if (updatedOrder) {
+                await sendTelegramOrderStatusNotification(updatedOrder, newStatus);
+            }
+            triggerTelegramHaptic('success');
         };
 
         window.handleEmailLogin = async function() {
@@ -583,7 +604,7 @@
                     loyaltyPoints: 50,
                     role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer",
                     addresses: [{ label: 'Home', street: '123 Main Street', province: 'Phnom Penh', isDefault: true }],
-                    notifications: { orders: true, promos: true, restocks: false }
+                    notifications: { emailAlerts: true, telegramAlerts: true, orderUpdates: true, promoAlerts: true }
                 }, { merge: true });
                 triggerTelegramHaptic('success');
                 alert('Account created successfully!');
@@ -610,7 +631,7 @@
                         loyaltyPoints: 100,
                         role: "customer",
                         addresses: [{ label: 'Home', street: 'Telegram St', province: 'Phnom Penh', isDefault: true }],
-                        notifications: { orders: true, promos: true, restocks: false }
+                        notifications: { emailAlerts: true, telegramAlerts: true, orderUpdates: true, promoAlerts: true }
                     }, { merge: true });
                 }
                 triggerTelegramHaptic('success');
@@ -632,9 +653,9 @@
                 
                 try {
                     const userSnap = await getDoc(doc(db, "users", user.uid));
-                    window.currentUserData = userSnap.exists() ? userSnap.data() : { name: "Shopper", role: "customer", loyaltyPoints: 80, addresses: [], notifications: { orders: true, promos: true } };
+                    window.currentUserData = userSnap.exists() ? userSnap.data() : { name: "Shopper", role: "customer", loyaltyPoints: 80, addresses: [], notifications: { emailAlerts: true, telegramAlerts: true, orderUpdates: true, promoAlerts: true } };
                 } catch (dbErr) {
-                    window.currentUserData = { name: "Shopper", role: "customer", loyaltyPoints: 80, addresses: [], notifications: { orders: true, promos: true } };
+                    window.currentUserData = { name: "Shopper", role: "customer", loyaltyPoints: 80, addresses: [], notifications: { emailAlerts: true, telegramAlerts: true, orderUpdates: true, promoAlerts: true } };
                 }
 
                 const isAdmin = window.currentUserData.role === "admin" || (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
@@ -714,7 +735,6 @@
                 });
                 window.currentActiveOrderId = docRef.id;
                 
-                // Award loyalty points on order
                 if (window.currentUser) {
                     const earnedPoints = Math.floor(total * 10);
                     const newPoints = (window.currentUserData.loyaltyPoints || 0) + earnedPoints;
@@ -921,30 +941,37 @@
                         </div>
                     </div>`;
             } else if (section === 'notifications') {
-                titleEl.innerText = "Notification Settings";
-                const notifs = uData.notifications || { orders: true, promos: true, restocks: false };
+                titleEl.innerText = "Notification Preferences";
+                const notifs = uData.notifications || { emailAlerts: true, telegramAlerts: true, orderUpdates: true, promoAlerts: true };
                 bodyEl.innerHTML = `
                     <div class="space-y-3 text-xs">
                         <div class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border">
                             <div>
-                                <b class="block text-gray-900">Order Updates</b>
-                                <span class="text-[10px] text-gray-400">Receive status changes & tracking</span>
+                                <b class="block text-gray-900">Email Notifications</b>
+                                <span class="text-[10px] text-gray-400">Receive order receipts & updates via email</span>
                             </div>
-                            <input type="checkbox" id="notif-orders" ${notifs.orders ? 'checked' : ''} onchange="updateNotificationSettings()" class="w-4 h-4 accent-[#a4133c]">
+                            <input type="checkbox" id="notif-email" ${notifs.emailAlerts !== false ? 'checked' : ''} onchange="updateNotificationSettings()" class="w-4 h-4 accent-[#a4133c]">
                         </div>
                         <div class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border">
                             <div>
-                                <b class="block text-gray-900">Promos & Discounts</b>
-                                <span class="text-[10px] text-gray-400">Get special voucher codes</span>
+                                <b class="block text-gray-900">Direct Telegram Messages</b>
+                                <span class="text-[10px] text-gray-400">Receive instant alerts in Telegram bot</span>
                             </div>
-                            <input type="checkbox" id="notif-promos" ${notifs.promos ? 'checked' : ''} onchange="updateNotificationSettings()" class="w-4 h-4 accent-[#a4133c]">
+                            <input type="checkbox" id="notif-telegram" ${notifs.telegramAlerts !== false ? 'checked' : ''} onchange="updateNotificationSettings()" class="w-4 h-4 accent-[#a4133c]">
                         </div>
                         <div class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border">
                             <div>
-                                <b class="block text-gray-900">Restock Alerts</b>
-                                <span class="text-[10px] text-gray-400">Notify when favorited items return</span>
+                                <b class="block text-gray-900">Order Status Updates</b>
+                                <span class="text-[10px] text-gray-400">Get notified when fulfillment status changes</span>
                             </div>
-                            <input type="checkbox" id="notif-restocks" ${notifs.restocks ? 'checked' : ''} onchange="updateNotificationSettings()" class="w-4 h-4 accent-[#a4133c]">
+                            <input type="checkbox" id="notif-orders" ${notifs.orderUpdates !== false ? 'checked' : ''} onchange="updateNotificationSettings()" class="w-4 h-4 accent-[#a4133c]">
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border">
+                            <div>
+                                <b class="block text-gray-900">Promos & Voucher Codes</b>
+                                <span class="text-[10px] text-gray-400">Receive special discount code alerts</span>
+                            </div>
+                            <input type="checkbox" id="notif-promos" ${notifs.promoAlerts !== false ? 'checked' : ''} onchange="updateNotificationSettings()" class="w-4 h-4 accent-[#a4133c]">
                         </div>
                     </div>`;
             }
@@ -993,10 +1020,11 @@
         };
 
         window.updateNotificationSettings = async function() {
-            const orders = document.getElementById('notif-orders').checked;
-            const promos = document.getElementById('notif-promos').checked;
-            const restocks = document.getElementById('notif-restocks').checked;
-            const notifications = { orders, promos, restocks };
+            const emailAlerts = document.getElementById('notif-email').checked;
+            const telegramAlerts = document.getElementById('notif-telegram').checked;
+            const orderUpdates = document.getElementById('notif-orders').checked;
+            const promoAlerts = document.getElementById('notif-promos').checked;
+            const notifications = { emailAlerts, telegramAlerts, orderUpdates, promoAlerts };
             if (window.currentUser) {
                 await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { notifications });
                 window.currentUserData.notifications = notifications;
