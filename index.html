@@ -8,6 +8,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.12.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         html, body, button, a, img, input { touch-action: manipulation; }
@@ -231,7 +232,8 @@
             <div class="flex space-x-1 border-b border-gray-200 text-xs font-semibold overflow-x-auto">
                 <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c]">Orders</button>
                 <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Products & Inventory</button>
-                <button onclick="switchAdminNav('coupons')" id="adtab-coupons" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Coupons & Analytics 🎟️</button>
+                <button onclick="switchAdminNav('coupons')" id="adtab-coupons" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Coupons 🎟️</button>
+                <button onclick="switchAdminNav('analytics')" id="adtab-analytics" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Analytics & Reports 📈</button>
                 <button onclick="switchAdminNav('reviews')" id="adtab-reviews" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Reviews ⭐</button>
             </div>
             
@@ -304,6 +306,24 @@
                             <thead><tr class="text-gray-400 border-b text-[10px]"><th class="p-2">Code</th><th class="p-2">Discount</th><th class="p-2">Usage Count</th><th class="p-2">Total Discount Given</th><th class="p-2">Status</th><th class="p-2 text-right">Actions</th></tr></thead>
                             <tbody id="admin-coupons-table-body" class="divide-y text-[11px]"></tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ANALYTICS CHARTS SECTION -->
+            <div id="admin-sec-analytics" class="hidden space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-3">
+                        <h4 class="font-bold text-xs text-gray-900">Revenue Distribution by Category 📊</h4>
+                        <div class="relative w-full h-64 flex items-center justify-center">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-3">
+                        <h4 class="font-bold text-xs text-gray-900">Order Fulfillment Status Breakdown 📦</h4>
+                        <div class="relative w-full h-64 flex items-center justify-center">
+                            <canvas id="orderStatusChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -503,7 +523,6 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Expose global variables & Firestore functions
         window.firebaseDb = db;
         window.firebaseAuth = auth;
         window.doc = doc;
@@ -528,7 +547,6 @@
                 .replace(/'/g, '&#039;');
         };
 
-        // MULTI-CURRENCY CONVERSION ENGINE
         window.currentCurrency = 'USD';
         window.exchangeRate = 4100;
 
@@ -548,9 +566,7 @@
             if (window.renderProducts) window.renderProducts();
             if (window.renderWishlist) window.renderWishlist();
             const cartDrawer = document.getElementById('cart-drawer');
-            if (cartDrawer && !cartDrawer.classList.contains('hidden')) {
-                openCartDrawer();
-            }
+            if (cartDrawer && !cartDrawer.classList.contains('hidden')) openCartDrawer();
         };
 
         window.triggerTelegramHaptic = function(type = 'light') {
@@ -569,7 +585,6 @@
             } catch (err) {}
         };
 
-        // PDF INVOICE GENERATOR FUNCTION
         window.downloadOrderInvoice = function(orderNum, customerName, phone, address, itemsEncoded, total, date, promoCode) {
             triggerTelegramHaptic('medium');
             const items = JSON.parse(decodeURIComponent(itemsEncoded));
@@ -625,9 +640,7 @@
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2, useCORS: true },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            }).save().then(() => {
-                invoiceDiv.remove();
-            });
+            }).save().then(() => invoiceDiv.remove());
         };
 
         let productsUnsubscribe = null;
@@ -642,6 +655,7 @@
             if (window.renderProducts) window.renderProducts();
             if (window.renderAdminProducts) window.renderAdminProducts();
             if (window.updateAdminMetrics) window.updateAdminMetrics();
+            if (window.renderAdminAnalyticsCharts) window.renderAdminAnalyticsCharts();
             if (window.checkInitialDeepLink) window.checkInitialDeepLink();
         });
 
@@ -886,6 +900,7 @@
                                 snapshot.forEach(docSnap => window.orders.push({ docId: docSnap.id, ...docSnap.data() }));
                                 if (window.renderAdminOrders) window.renderAdminOrders();
                                 if (window.updateAdminMetrics) window.updateAdminMetrics();
+                                if (window.renderAdminAnalyticsCharts) window.renderAdminAnalyticsCharts();
                             });
                         }
                     } else {
@@ -1468,15 +1483,21 @@
         window.exitAdminMode = exitAdminMode;
 
         function switchAdminNav(sec) {
-            ['orders', 'products', 'coupons', 'reviews'].forEach(s => {
-                document.getElementById(`admin-sec-${s}`).classList.add('hidden');
-                document.getElementById(`adtab-${s}`).className = 'px-4 py-2 border-b-2 border-transparent text-gray-500 font-semibold';
+            ['orders', 'products', 'coupons', 'analytics', 'reviews'].forEach(s => {
+                const el = document.getElementById(`admin-sec-${s}`);
+                const tab = document.getElementById(`adtab-${s}`);
+                if (el) el.classList.add('hidden');
+                if (tab) tab.className = 'px-4 py-2 border-b-2 border-transparent text-gray-500 font-semibold';
             });
-            document.getElementById(`admin-sec-${sec}`).classList.remove('hidden');
-            document.getElementById(`adtab-${sec}`).className = 'px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c] font-semibold';
+            const activeSec = document.getElementById(`admin-sec-${sec}`);
+            const activeTab = document.getElementById(`adtab-${sec}`);
+            if (activeSec) activeSec.classList.remove('hidden');
+            if (activeTab) activeTab.className = 'px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c] font-semibold';
+
             if (sec === 'orders') renderAdminOrders();
             if (sec === 'products') renderAdminProducts();
             if (sec === 'coupons') renderAdminCoupons();
+            if (sec === 'analytics') renderAdminAnalyticsCharts();
             if (sec === 'reviews') renderAdminReviews();
         }
 
@@ -1491,6 +1512,60 @@
             if (document.getElementById('admin-metric-pending')) document.getElementById('admin-metric-pending').innerText = pendingCount;
             if (document.getElementById('admin-metric-lowstock')) document.getElementById('admin-metric-lowstock').innerText = lowStockCount;
             if (document.getElementById('admin-metric-discounts')) document.getElementById('admin-metric-discounts').innerText = `$${totalDiscounts.toFixed(2)}`;
+        };
+
+        let categoryChartInstance = null;
+        let orderStatusChartInstance = null;
+
+        window.renderAdminAnalyticsCharts = function() {
+            const categoryData = {};
+            ['Hairpins', 'Necklaces', 'Rings', 'Earrings', 'Phone Charms', 'Bags & Pouches'].forEach(c => categoryData[c] = 0);
+            
+            (window.orders || []).forEach(o => {
+                (o.items || []).forEach(item => {
+                    const cat = item.category || 'Hairpins';
+                    categoryData[cat] = (categoryData[cat] || 0) + (item.price * item.qty);
+                });
+            });
+
+            const ctxCat = document.getElementById('categoryChart')?.getContext('2d');
+            if (ctxCat) {
+                if (categoryChartInstance) categoryChartInstance.destroy();
+                categoryChartInstance = new Chart(ctxCat, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(categoryData),
+                        datasets: [{
+                            data: Object.values(categoryData),
+                            backgroundColor: ['#a4133c', '#ffccd5', '#ff4d6d', '#590d22', '#ff8fa3', '#c9184a']
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            }
+
+            const statusCount = { Pending: 0, Paid: 0, Processing: 0, Shipped: 0, Delivered: 0 };
+            (window.orders || []).forEach(o => {
+                const st = o.status || 'Pending';
+                if (statusCount[st] !== undefined) statusCount[st]++;
+            });
+
+            const ctxStatus = document.getElementById('orderStatusChart')?.getContext('2d');
+            if (ctxStatus) {
+                if (orderStatusChartInstance) orderStatusChartInstance.destroy();
+                orderStatusChartInstance = new Chart(ctxStatus, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(statusCount),
+                        datasets: [{
+                            label: 'Orders',
+                            data: Object.values(statusCount),
+                            backgroundColor: '#800f2f'
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+                });
+            }
         };
 
         window.filterLowStockProducts = function() {
@@ -1659,9 +1734,7 @@
                                 renderAdminProducts();
                             }
 
-                            setTimeout(() => {
-                                closeAdminBarcodeScanner();
-                            }, 1500);
+                            setTimeout(() => { closeAdminBarcodeScanner(); }, 1500);
                         },
                         (errorMessage) => {}
                     ).catch(err => {
