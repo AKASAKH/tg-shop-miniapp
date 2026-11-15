@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mininize Studio - Enterprise Fully Scaled Edition</title>
+    <title>Mininize Studio - Enterprise Single-File Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
@@ -574,20 +574,6 @@
 
         window.firebaseDb = db;
         window.firebaseAuth = auth;
-        window.doc = doc;
-        window.getDoc = getDoc;
-        window.getDocs = getDocs;
-        window.setDoc = setDoc;
-        window.updateDoc = updateDoc;
-        window.deleteDoc = deleteDoc;
-        window.addDoc = addDoc;
-        window.collection = collection;
-        window.query = query;
-        window.where = where;
-        window.limit = limit;
-        window.startAfter = startAfter;
-        window.orderBy = orderBy;
-        window.runTransaction = runTransaction;
 
         window.sanitizeHTML = function(str) {
             if (!str) return '';
@@ -693,7 +679,6 @@
             }).save().then(() => invoiceDiv.remove());
         };
 
-        // PAGINATED PRODUCT FETCHING
         window.products = [];
         let lastVisibleProductDoc = null;
         const PAGE_LIMIT = 8;
@@ -778,46 +763,6 @@
             await setDoc(doc(db, "coupons", "MININIZE15"), { code: "MININIZE15", discountPercent: 15, maxUsage: 50, usageCount: 0, totalDiscountGiven: 0, isActive: true, createdAt: new Date().toISOString() });
         }
 
-        const WORKER_PROXY_URL = "https://mininize-telegram-proxy.your-subdomain.workers.dev";
-
-        async function postToTelegramChannel(photoUrl, captionText) {
-            try {
-                await fetch(WORKER_PROXY_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ photoUrl, caption: captionText })
-                });
-            } catch (err) { console.error('Proxy broadcast error:', err); }
-        }
-
-        async function sendTelegramLowStockAlert(productName, stockCount) {
-            try {
-                const message = `<b>🚨 LOW STOCK ALERT! 🚨</b>\n\nProduct: <b>${productName}</b>\nRemaining Stock: <b>${stockCount} units</b>\nPlease restock inventory immediately!`;
-                await fetch(WORKER_PROXY_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message })
-                });
-            } catch (err) { console.error('Proxy stock alert error:', err); }
-        }
-
-        async function sendTelegramCouponExhaustedAlert(couponCode, maxUsage) {
-            try {
-                const message = `<b>🎟️ COUPON EXHAUSTED & DEACTIVATED! 🎟️</b>\n\nPromo Code: <b>${couponCode}</b>\nRedemption Limit Reached: <b>${maxUsage} / ${maxUsage} uses</b>\nThe voucher is now locked against further redemptions.`;
-                await fetch(WORKER_PROXY_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message })
-                });
-            } catch (err) { console.error('Proxy coupon exhaustion alert error:', err); }
-        }
-
-        async function triggerCourierDispatchHandshake(orderNum, customerName, address) {
-            try {
-                console.log("Dispatching order to local courier partner API:", { orderNum, customerName, address });
-            } catch (err) { console.error("Courier dispatch error:", err); }
-        }
-
         window.saveAdminProduct = async function() {
             if (window.currentUserData?.role === 'staff') return alert('Staff role is restricted from creating/editing products.');
             const prodId = document.getElementById('prod-id').value;
@@ -846,9 +791,8 @@
                 productData.createdAt = new Date().toISOString();
                 productData.reviews = [];
                 await addDoc(collection(db, "products"), productData);
-                postToTelegramChannel(image, `<b>✨ NEW ARRIVAL! ✨</b>\n\n<b>${name}</b>\n🏷️ Category: ${category}\n💰 Price: <b>$${price.toFixed(2)}</b>`);
                 triggerTelegramHaptic('success');
-                alert('Product saved & broadcasted to @songsashop! 🎉');
+                alert('Product saved successfully! 🎉');
             }
             closeAdminProductModal();
             loadInitialProducts();
@@ -901,10 +845,6 @@
 
         window.updateOrderStatus = async function(docId, newStatus) {
             await updateDoc(doc(db, "orders", docId), { status: newStatus });
-            if (newStatus === 'Paid' || newStatus === 'Processing') {
-                const targetOrder = (window.orders || []).find(o => o.docId === docId);
-                if (targetOrder) triggerCourierDispatchHandshake(targetOrder.orderNum, targetOrder.customerName, targetOrder.address);
-            }
             triggerTelegramHaptic('success');
         };
 
@@ -1065,7 +1005,6 @@
             }
         });
 
-        // VERIFIED REVIEWS & LIKES LOGIC
         window.submitProductReview = async function() {
             if (!window.currentUser) return alert('Please sign in to leave a review.');
             if (!window.currentSelectedProdId) return;
@@ -1128,7 +1067,6 @@
             }
         };
 
-        // CHECKOUT & COUPON SAFEGUARD ENGINE
         window.createOrderAndInitBakong = async function() {
             const customerName = sanitizeHTML(document.getElementById('checkout-name').value.trim());
             const phone = sanitizeHTML(document.getElementById('checkout-phone').value.trim());
@@ -1139,10 +1077,9 @@
             let subtotal = window.cart.reduce((s, i) => s + (i.price * i.qty), 0);
             let discount = 0;
             let appliedCouponCode = 'NONE';
-            let couponRef = null;
 
             if (promoCodeInput) {
-                couponRef = doc(db, "coupons", promoCodeInput);
+                const couponRef = doc(db, "coupons", promoCodeInput);
                 const couponSnap = await getDoc(couponRef);
                 if (couponSnap.exists()) {
                     const cData = couponSnap.data();
@@ -1153,18 +1090,11 @@
                         discount = subtotal * (cData.discountPercent / 100);
                         appliedCouponCode = promoCodeInput;
 
-                        const newUsageCount = currentUsage + 1;
-                        const shouldDeactivate = newUsageCount >= maxAllowed;
-
                         await updateDoc(couponRef, {
-                            usageCount: newUsageCount,
+                            usageCount: currentUsage + 1,
                             totalDiscountGiven: (cData.totalDiscountGiven || 0) + discount,
-                            isActive: shouldDeactivate ? false : cData.isActive
+                            isActive: (currentUsage + 1) >= maxAllowed ? false : cData.isActive
                         });
-
-                        if (shouldDeactivate) {
-                            sendTelegramCouponExhaustedAlert(promoCodeInput, maxAllowed);
-                        }
                     } else {
                         return alert('This promo code is either expired or has reached its maximum redemption limit.');
                     }
@@ -1183,9 +1113,7 @@
                     if (prodSnap.exists()) {
                         const currentStock = prodSnap.data().stock ?? 10;
                         if (currentStock < cartItem.qty) return alert(`Sorry, "${cartItem.name}" only has ${currentStock} units left in stock!`);
-                        const updatedStock = Math.max(0, currentStock - cartItem.qty);
-                        await updateDoc(prodRef, { stock: updatedStock });
-                        if (updatedStock <= 5) sendTelegramLowStockAlert(cartItem.name, updatedStock);
+                        await updateDoc(prodRef, { stock: Math.max(0, currentStock - cartItem.qty) });
                     }
                 }
 
@@ -1219,8 +1147,6 @@
         window.verifyBakongTransactionManual = async function() {
             if (window.currentActiveOrderId) {
                 await updateDoc(doc(db, "orders", window.currentActiveOrderId), { status: "Paid" });
-                const targetOrder = (window.orders || []).find(o => o.docId === window.currentActiveOrderId);
-                if (targetOrder) triggerCourierDispatchHandshake(targetOrder.orderNum, targetOrder.customerName, targetOrder.address);
             }
             triggerTelegramHaptic('success');
             document.getElementById('bakong-payment-modal').classList.add('hidden');
@@ -1262,7 +1188,6 @@
         window.currentSelectedStarRating = 5;
         let html5QrCodeScannerInstance = null;
 
-        // Admin High-Density Pagination State
         let orderPageSize = 10;
         let lastVisibleOrderDoc = null;
         let firstVisibleOrderDoc = null;
@@ -1372,7 +1297,6 @@
             renderProducts();
         }
 
-        // SLIDE-OVER PANEL CONTROLS
         window.openProfileSection = async function(section) {
             triggerTelegramHaptic('light');
             const panel = document.getElementById('profile-slide-panel');
@@ -1537,7 +1461,7 @@
             saveBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i><span>Syncing...</span>`;
             try {
                 if (window.currentUser) {
-                    await window.updateDoc(window.doc(window.firebaseDb, "users", window.currentUser.uid), { name, email, phone, updatedAt: new Date().toISOString() });
+                    await updateDoc(doc(db, "users", window.currentUser.uid), { name, email, phone, updatedAt: new Date().toISOString() });
                     triggerTelegramHaptic('success');
                     alert('Profile updated successfully!');
                     closeProfileSubModal();
@@ -1575,7 +1499,7 @@
             const emailAlerts = document.getElementById('notif-email').checked;
             const telegramAlerts = document.getElementById('notif-telegram').checked;
             if (window.currentUser) {
-                await window.updateDoc(window.doc(window.firebaseDb, "users", window.currentUser.uid), { notifications: { emailAlerts, telegramAlerts } });
+                await updateDoc(doc(db, "users", window.currentUser.uid), { notifications: { emailAlerts, telegramAlerts } });
                 triggerTelegramHaptic('light');
             }
         };
@@ -1608,7 +1532,6 @@
             for (let i = 0; i < 5; i++) stars[i].className = i < rating ? "fa-solid fa-star cursor-pointer text-amber-400" : "fa-regular fa-star cursor-pointer text-gray-300";
         }
 
-        // ENHANCED PRODUCT DETAIL MODAL RENDERER
         window.openProductDetailModal = async function(id, silent = false) {
             const p = window.products.find(item => item.id === id);
             if (!p) return;
@@ -1711,7 +1634,6 @@
         function closeCheckoutModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
         function cancelBakongPayment() { document.getElementById('bakong-payment-modal').classList.add('hidden'); }
 
-        // ADMIN MODE & PAGINATION LOGIC
         function enterAdminMode() {
             document.getElementById('customer-view').classList.add('hidden');
             document.getElementById('admin-view').classList.remove('hidden');
@@ -1774,7 +1696,6 @@
             } catch (err) { console.error(err); }
         };
 
-        // HIGH-DENSITY PAGINATED ORDERS ENGINE
         window.loadAdminOrdersPage = async function(direction = 'initial') {
             try {
                 let q = query(collection(db, "orders"), orderBy("createdAt", "desc"), limit(orderPageSize));
