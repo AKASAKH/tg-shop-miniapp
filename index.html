@@ -34,9 +34,9 @@
             </button>
             <div class="w-10 h-10 bg-pink-50 text-[#a4133c] rounded-full flex items-center justify-center mx-auto text-base"><i class="fa-solid fa-tag"></i></div>
             <div>
-                <span id="promo-tag-text" class="bg-pink-50 text-[#a4133c] text-[9px] uppercase font-bold px-2.5 py-0.5 rounded-md">Grand Opening Special</span>
-                <h3 id="promo-title-text" class="text-sm font-bold mt-1 text-gray-900">Get 15% OFF Your First Order!</h3>
-                <p id="promo-desc-text" class="text-[11px] text-gray-500 mt-0.5">Use code <span id="promo-code-text" class="font-bold text-gray-800 underline">MININIZE15</span> at checkout.</p>
+                <span class="bg-pink-50 text-[#a4133c] text-[9px] uppercase font-bold px-2.5 py-0.5 rounded-md">Grand Opening Special</span>
+                <h3 class="text-sm font-bold mt-1 text-gray-900">Get 15% OFF Your First Order!</h3>
+                <p class="text-[11px] text-gray-500 mt-0.5">Use code <span class="font-bold text-gray-800 underline">MININIZE15</span> at checkout.</p>
             </div>
             <button onclick="closePromoPopup()" class="w-full bg-[#800f2f] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs active:scale-95 transition-transform">Shop Collection ✨</button>
         </div>
@@ -108,6 +108,16 @@
             <!-- PROFILE SECTION -->
             <div id="page-profile" class="hidden space-y-3 max-w-md mx-auto">
                 <div id="customer-dashboard-view" class="space-y-3 hidden">
+                    <!-- VIP LOYALTY BANNER -->
+                    <div class="bg-gradient-to-r from-[#800f2f] to-[#a4133c] text-white p-4 rounded-2xl shadow-sm flex items-center justify-between">
+                        <div>
+                            <span id="vip-tier-badge" class="bg-white/20 text-white text-[9px] uppercase font-black px-2 py-0.5 rounded-md">VIP Silver Member</span>
+                            <h3 id="vip-points-text" class="text-sm font-bold mt-1">120 Loyalty Points</h3>
+                            <p class="text-[10px] text-pink-100">Earn points on every aesthetic purchase.</p>
+                        </div>
+                        <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-lg"><i class="fa-solid fa-crown text-amber-300"></i></div>
+                    </div>
+
                     <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 flex items-center justify-between">
                         <div class="flex items-center space-x-3">
                             <div class="w-12 h-12 rounded-full bg-pink-50 text-[#a4133c] font-bold flex items-center justify-center text-lg"><i class="fa-solid fa-user"></i></div>
@@ -206,13 +216,24 @@
                 <button onclick="switchAdminNav('reviews')" id="adtab-reviews" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Reviews Moderation ⭐</button>
             </div>
             
+            <!-- ORDERS SECTION WITH STATUS FILTER PILLS -->
             <div id="admin-sec-orders" class="space-y-4">
-                <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 overflow-x-auto">
-                    <h3 class="font-bold text-xs text-gray-900 mb-3">Customer Orders & Status Management</h3>
-                    <table class="w-full text-left text-xs">
-                        <thead><tr class="text-gray-400 border-b text-[10px]"><th class="p-2">Order</th><th class="p-2">Customer</th><th class="p-2">Status</th><th class="p-2">Total</th><th class="p-2 text-right">Date</th></tr></thead>
-                        <tbody id="admin-orders-table-body" class="divide-y text-[11px]"></tbody>
-                    </table>
+                <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                        <h3 class="font-bold text-xs text-gray-900">Customer Orders & Status Management</h3>
+                        <div class="flex space-x-1 text-[10px] font-medium overflow-x-auto">
+                            <button onclick="filterAdminOrders('All')" id="ord-filter-all" class="px-2.5 py-1 bg-[#800f2f] text-white rounded-lg">All</button>
+                            <button onclick="filterAdminOrders('Pending')" id="ord-filter-pending" class="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-lg">Pending</button>
+                            <button onclick="filterAdminOrders('Paid')" id="ord-filter-paid" class="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-lg">Paid</button>
+                            <button onclick="filterAdminOrders('Shipped')" id="ord-filter-shipped" class="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-lg">Shipped</button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead><tr class="text-gray-400 border-b text-[10px]"><th class="p-2">Order</th><th class="p-2">Customer</th><th class="p-2">Status</th><th class="p-2">Total</th><th class="p-2 text-right">Date</th></tr></thead>
+                            <tbody id="admin-orders-table-body" class="divide-y text-[11px]"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -537,6 +558,7 @@
                     customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
                     email,
                     name: email.split('@')[0],
+                    loyaltyPoints: 120,
                     role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer",
                     updatedAt: new Date().toISOString()
                 }, { merge: true });
@@ -558,6 +580,7 @@
                     customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
                     email, 
                     name, 
+                    loyaltyPoints: 50,
                     role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer",
                     addresses: [{ label: 'Home', street: '123 Main Street', province: 'Phnom Penh', isDefault: true }],
                     notifications: { orders: true, promos: true, restocks: false }
@@ -584,6 +607,7 @@
                         customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
                         email, 
                         name, 
+                        loyaltyPoints: 100,
                         role: "customer",
                         addresses: [{ label: 'Home', street: 'Telegram St', province: 'Phnom Penh', isDefault: true }],
                         notifications: { orders: true, promos: true, restocks: false }
@@ -608,9 +632,9 @@
                 
                 try {
                     const userSnap = await getDoc(doc(db, "users", user.uid));
-                    window.currentUserData = userSnap.exists() ? userSnap.data() : { name: "Shopper", role: "customer", addresses: [], notifications: { orders: true, promos: true } };
+                    window.currentUserData = userSnap.exists() ? userSnap.data() : { name: "Shopper", role: "customer", loyaltyPoints: 80, addresses: [], notifications: { orders: true, promos: true } };
                 } catch (dbErr) {
-                    window.currentUserData = { name: "Shopper", role: "customer", addresses: [], notifications: { orders: true, promos: true } };
+                    window.currentUserData = { name: "Shopper", role: "customer", loyaltyPoints: 80, addresses: [], notifications: { orders: true, promos: true } };
                 }
 
                 const isAdmin = window.currentUserData.role === "admin" || (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
@@ -689,6 +713,15 @@
                     orderNum, customerName, phone, address, items: window.cart, subtotal, discount, total, promoCode: promoCodeInput || 'NONE', status: 'Pending', date: new Date().toISOString().split('T')[0] 
                 });
                 window.currentActiveOrderId = docRef.id;
+                
+                // Award loyalty points on order
+                if (window.currentUser) {
+                    const earnedPoints = Math.floor(total * 10);
+                    const newPoints = (window.currentUserData.loyaltyPoints || 0) + earnedPoints;
+                    await updateDoc(doc(db, "users", window.currentUser.uid), { loyaltyPoints: newPoints });
+                    window.currentUserData.loyaltyPoints = newPoints;
+                }
+
                 window.cart = []; localStorage.removeItem('mininize_cart');
                 document.getElementById('cart-badge').innerText = '0';
                 closeCheckoutModal();
@@ -747,6 +780,7 @@
         window.cart = JSON.parse(localStorage.getItem('mininize_cart') || '[]');
         let wishlist = JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
         let activeCategory = 'All';
+        let adminOrderFilter = 'All';
         window.currentSelectedProdId = null;
         window.currentSelectedStarRating = 5;
 
@@ -792,6 +826,10 @@
                 document.getElementById('cust-profile-handle').innerText = window.currentUser.email ? `@${window.currentUser.email.split('@')[0]}` : "@shopper";
                 document.getElementById('cust-profile-id-display').innerText = `ID: ${uData.customId || 'USR-000'}`;
                 
+                const pts = uData.loyaltyPoints || 100;
+                document.getElementById('vip-points-text').innerText = `${pts} Loyalty Points`;
+                document.getElementById('vip-tier-badge').innerText = pts >= 250 ? "VIP Gold Member 🌟" : "VIP Silver Member ✨";
+
                 if (greetingBanner) {
                     greetingBanner.classList.remove('hidden');
                     document.getElementById('welcome-user-name').innerText = `Welcome back, ${uData.name || 'Shopper'}! ✨`;
@@ -1099,11 +1137,22 @@
             if (lowEl) lowEl.innerText = lowStockCount;
         };
 
+        window.filterAdminOrders = function(status) {
+            triggerTelegramHaptic('light');
+            adminOrderFilter = status;
+            ['All', 'Pending', 'Paid', 'Shipped'].forEach(s => {
+                const btn = document.getElementById(`ord-filter-${s.toLowerCase()}`);
+                if (btn) btn.className = s === status ? 'px-2.5 py-1 bg-[#800f2f] text-white rounded-lg' : 'px-2.5 py-1 bg-gray-100 text-gray-600 rounded-lg';
+            });
+            renderAdminOrders();
+        };
+
         window.renderAdminOrders = function() {
             const tbody = document.getElementById('admin-orders-table-body');
             if (!tbody) return;
-            tbody.innerHTML = (window.orders || []).length === 0 ? `<tr><td colspan="5" class="p-4 text-center text-gray-400">No orders received yet.</td></tr>` :
-                window.orders.map(o => `
+            const filteredOrders = (window.orders || []).filter(o => adminOrderFilter === 'All' || o.status === adminOrderFilter);
+            tbody.innerHTML = filteredOrders.length === 0 ? `<tr><td colspan="5" class="p-4 text-center text-gray-400">No orders found.</td></tr>` :
+                filteredOrders.map(o => `
                     <tr class="border-b">
                         <td class="p-2 font-mono"><b>${sanitizeHTML(o.orderNum || '#ORD-101')}</b></td>
                         <td class="p-2">${sanitizeHTML(o.customerName || 'Shopper')}</td>
