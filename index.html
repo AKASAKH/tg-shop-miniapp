@@ -27,7 +27,7 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen flex flex-col justify-between pb-24 select-none">
 
-    <!-- PROMOTIONAL POPUP BANNER (AUTO-CLOSING) -->
+    <!-- PROMOTIONAL POPUP BANNER -->
     <div id="promo-popup" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300">
         <div class="bg-white text-gray-900 rounded-2xl max-w-xs w-full p-5 space-y-3 shadow-xl relative text-center border border-gray-100">
             <button onclick="closePromoPopup()" class="absolute top-2.5 right-2.5 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs">
@@ -253,7 +253,6 @@
 
             <!-- PRODUCTS & INVENTORY SECTION -->
             <div id="admin-sec-products" class="hidden space-y-4">
-                <!-- AUTOMATED LOW-STOCK ALERT BANNER -->
                 <div id="low-stock-alert-banner" class="hidden bg-red-50 border border-red-200 text-red-700 p-3 rounded-2xl flex items-center justify-between text-xs shadow-xs">
                     <div class="flex items-center space-x-2">
                         <i class="fa-solid fa-triangle-exclamation text-red-600 text-sm"></i>
@@ -496,8 +495,18 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // Expose all core Firebase & Firestore utilities globally to prevent ReferenceErrors
         window.firebaseDb = db;
         window.firebaseAuth = auth;
+        window.doc = doc;
+        window.getDoc = getDoc;
+        window.setDoc = setDoc;
+        window.updateDoc = updateDoc;
+        window.deleteDoc = deleteDoc;
+        window.addDoc = addDoc;
+        window.collection = collection;
+        window.query = query;
+        window.limit = limit;
 
         window.sanitizeHTML = function(str) {
             if (!str) return '';
@@ -872,7 +881,6 @@
                         const updatedStock = Math.max(0, currentStock - cartItem.qty);
                         await updateDoc(prodRef, { stock: updatedStock });
                         
-                        // Check low stock threshold <= 5
                         if (updatedStock <= 5) {
                             sendTelegramLowStockAlert(cartItem.name, updatedStock);
                         }
@@ -1532,7 +1540,6 @@
         };
         function closeAdminCouponModal() { document.getElementById('admin-coupon-modal').classList.add('hidden'); }
 
-        // Live Barcode & QR Scanner Integration
         window.openAdminBarcodeScanner = function() {
             triggerTelegramHaptic('medium');
             document.getElementById('admin-scanner-modal').classList.remove('hidden');
