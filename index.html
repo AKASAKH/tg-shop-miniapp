@@ -135,7 +135,11 @@
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
                         <button onclick="openProfileSection('orders')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
-                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-box-archive text-[#a4133c] w-4"></i><span>My Orders</span></span>
+                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-box-archive text-[#a4133c] w-4"></i><span>My Orders & Live Timeline</span></span>
+                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+                        </button>
+                        <button onclick="openProfileSection('wallet')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
+                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-wallet text-[#a4133c] w-4"></i><span>Loyalty Voucher Wallet</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
                         <button onclick="openProfileSection('favorites')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
@@ -638,7 +642,6 @@
             triggerTelegramHaptic('success');
         };
 
-        // CSV EXPORT FUNCTIONS
         window.exportOrdersCSV = function() {
             triggerTelegramHaptic('medium');
             if (!window.orders || window.orders.length === 0) return alert('No orders to export.');
@@ -998,9 +1001,60 @@
                     <button onclick="savePersonalData()" class="w-full bg-[#800f2f] text-white font-bold py-2 rounded-xl">Save Changes</button>
                 </div>`;
             } else if (section === 'orders') {
-                titleEl.innerText = "My Orders History";
+                titleEl.innerText = "My Orders & Live Timeline 📦";
+                const statuses = ['Pending', 'Paid', 'Processing', 'Shipped', 'Delivered'];
                 bodyEl.innerHTML = (window.orders || []).length === 0 ? `<p class="text-xs text-gray-400 text-center py-4">No active orders found.</p>` :
-                    window.orders.map(o => `<div class="bg-gray-50 p-2.5 rounded-xl border flex justify-between items-center text-xs"><div><b>${sanitizeHTML(o.orderNum)}</b><p class="text-[10px] text-gray-500">${o.date}</p></div><span class="font-bold text-[#a4133c]">$${o.total} (${o.status})</span></div>`).join('');
+                    window.orders.map(o => {
+                        const currentStatusIdx = statuses.indexOf(o.status || 'Pending');
+                        return `
+                            <div class="bg-gray-50 p-3 rounded-2xl border space-y-2.5">
+                                <div class="flex justify-between items-center text-xs">
+                                    <b>${sanitizeHTML(o.orderNum)}</b>
+                                    <span class="font-bold text-[#a4133c]">$${o.total}</span>
+                                </div>
+                                <p class="text-[10px] text-gray-400">Ordered: ${o.date} | Promo: ${o.promoCode || 'None'}</p>
+                                <!-- Interactive Tracking Timeline -->
+                                <div class="flex justify-between items-center pt-2 border-t text-[9px] text-gray-500">
+                                    ${statuses.map((st, idx) => `
+                                        <div class="flex flex-col items-center space-y-1">
+                                            <div class="w-5 h-5 rounded-full flex items-center justify-center font-bold text-[8px] ${idx <= currentStatusIdx ? 'bg-[#a4133c] text-white' : 'bg-gray-200 text-gray-600'}">
+                                                ${idx <= currentStatusIdx ? '<i class="fa-solid fa-check text-[7px]"></i>' : idx + 1}
+                                            </div>
+                                            <span class="${idx <= currentStatusIdx ? 'text-[#a4133c] font-bold' : 'text-gray-400'}">${st}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+            } else if (section === 'wallet') {
+                titleEl.innerText = "Loyalty Voucher Wallet 🎟️";
+                const pts = uData.loyaltyPoints || 100;
+                bodyEl.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="bg-gradient-to-r from-pink-50 to-pink-100 p-3 rounded-2xl border border-pink-200 text-center space-y-1">
+                            <span class="text-[10px] text-[#a4133c] font-bold uppercase">Available Balance</span>
+                            <h3 class="text-lg font-black text-[#a4133c]">${pts} Points</h3>
+                            <p class="text-[10px] text-gray-500">Redeem points for exclusive discount vouchers below!</p>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="bg-white p-3 rounded-2xl border shadow-xs flex justify-between items-center">
+                                <div>
+                                    <span class="font-mono font-bold text-xs text-[#a4133c]">MININIZE15</span>
+                                    <p class="text-[10px] text-gray-500">15% OFF Grand Opening Special</p>
+                                </div>
+                                <button onclick="navigator.clipboard.writeText('MININIZE15'); alert('Coupon code MININIZE15 copied!');" class="bg-gray-900 text-white text-[10px] px-3 py-1.5 rounded-xl font-bold">Copy</button>
+                            </div>
+                            ${pts >= 200 ? `
+                            <div class="bg-white p-3 rounded-2xl border shadow-xs flex justify-between items-center">
+                                <div>
+                                    <span class="font-mono font-bold text-xs text-emerald-600">VIP20OFF</span>
+                                    <p class="text-[10px] text-gray-500">20% OFF VIP Reward Voucher</p>
+                                </div>
+                                <button onclick="navigator.clipboard.writeText('VIP20OFF'); alert('VIP Voucher copied!');" class="bg-emerald-600 text-white text-[10px] px-3 py-1.5 rounded-xl font-bold">Copy</button>
+                            </div>` : `<div class="bg-gray-50 p-3 rounded-2xl border text-center"><p class="text-[10px] text-gray-400">Earn 200+ points to unlock VIP20OFF voucher!</p></div>`}
+                        </div>
+                    </div>`;
             } else if (section === 'favorites') {
                 titleEl.innerText = "My Cloud Wishlist";
                 let userWishlist = uData.wishlist || [];
