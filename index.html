@@ -122,6 +122,14 @@
                             <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-heart text-[#a4133c] w-4"></i><span>My Favorites</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
+                        <button onclick="openProfileSection('addresses')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
+                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-location-dot text-[#a4133c] w-4"></i><span>Delivery Addresses</span></span>
+                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+                        </button>
+                        <button onclick="openProfileSection('notifications')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
+                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-bell text-[#a4133c] w-4"></i><span>Notifications Settings</span></span>
+                            <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
+                        </button>
                     </div>
 
                     <button onclick="handleSignOut()" class="w-full bg-white border border-gray-200 text-red-600 font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Log out</button>
@@ -389,7 +397,6 @@
             } catch (err) {}
         };
 
-        // FIRESTORE LISTENERS
         onSnapshot(query(collection(db, "products"), limit(50)), (snapshot) => {
             window.products = [];
             snapshot.forEach(docSnap => window.products.push({ id: docSnap.id, ...docSnap.data() }));
@@ -495,7 +502,9 @@
                 const cred = await createUserWithEmailAndPassword(auth, email, password);
                 await setDoc(doc(db, "users", cred.user.uid), {
                     uid: cred.user.uid, customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
-                    email, name, role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer"
+                    email, name, role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer",
+                    addresses: [{ label: 'Home', street: '123 Main Street', province: 'Phnom Penh', isDefault: true }],
+                    notifications: { orders: true, promos: true, restocks: false }
                 });
                 triggerTelegramHaptic('success');
                 alert('Account created!');
@@ -511,7 +520,12 @@
                 try { await signInWithEmailAndPassword(auth, email, password); }
                 catch(e) {
                     const cred = await createUserWithEmailAndPassword(auth, email, password);
-                    await setDoc(doc(db, "users", cred.user.uid), { uid: cred.user.uid, customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`, email, name, role: "customer" });
+                    await setDoc(doc(db, "users", cred.user.uid), {
+                        uid: cred.user.uid, customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
+                        email, name, role: "customer",
+                        addresses: [{ label: 'Home', street: 'Telegram St', province: 'Phnom Penh', isDefault: true }],
+                        notifications: { orders: true, promos: true, restocks: false }
+                    });
                 }
                 triggerTelegramHaptic('success');
             } catch (err) { await signInAnonymously(auth); }
@@ -524,7 +538,7 @@
                 window.currentUser = user;
                 document.getElementById('session-user-badge').innerText = user.email || 'Active User';
                 const userSnap = await getDoc(doc(db, "users", user.uid));
-                const userData = userSnap.exists() ? userSnap.data() : { name: "Shopper", role: "customer" };
+                const userData = userSnap.exists() ? userSnap.data() : { name: "Shopper", role: "customer", addresses: [], notifications: { orders: true, promos: true } };
                 window.currentUserData = userData;
 
                 const isAdmin = userData.role === "admin" || (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
@@ -719,6 +733,57 @@
                 let favs = window.products.filter(p => wishlist.includes(p.id));
                 bodyEl.innerHTML = favs.length === 0 ? `<p class="text-xs text-gray-400 text-center py-4">No favorite items saved.</p>` :
                     `<div class="grid grid-cols-2 gap-2">${favs.map(p => `<div onclick="closeProfileSubModal(); openProductDetailModal('${p.id}')" class="bg-gray-50 p-2 rounded-xl border cursor-pointer"><img src="${p.image}" class="w-full aspect-square object-cover rounded mb-1"><b class="text-[11px] truncate block">${sanitizeHTML(p.name)}</b></div>`).join('')}</div>`;
+            } else if (section === 'addresses') {
+                titleEl.innerText = "Delivery Addresses";
+                const addrs = uData.addresses || [{ label: 'Home', street: '123 Main Street', province: 'Phnom Penh', isDefault: true }];
+                bodyEl.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="space-y-2">
+                            ${addrs.map((a, idx) => `
+                                <div class="bg-gray-50 p-3 rounded-xl border flex justify-between items-center">
+                                    <div>
+                                        <span class="font-bold text-gray-900">${sanitizeHTML(a.label)} ${a.isDefault ? '<span class="text-[9px] bg-pink-100 text-[#a4133c] px-1.5 py-0.5 rounded font-bold">Default</span>' : ''}</span>
+                                        <p class="text-gray-500 text-[10px]">${sanitizeHTML(a.street)}, ${sanitizeHTML(a.province)}</p>
+                                    </div>
+                                    <button onclick="removeAddress(${idx})" class="text-red-500 text-xs"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="border-t pt-2 space-y-2">
+                            <p class="font-bold text-gray-800 text-[11px]">Add New Address:</p>
+                            <input type="text" id="new-addr-label" placeholder="Label (e.g. Office, Home)" class="w-full border rounded-xl px-2.5 py-1.5">
+                            <input type="text" id="new-addr-street" placeholder="Street Address" class="w-full border rounded-xl px-2.5 py-1.5">
+                            <input type="text" id="new-addr-province" placeholder="City / Province" class="w-full border rounded-xl px-2.5 py-1.5">
+                            <button onclick="addNewAddress()" class="w-full bg-[#800f2f] text-white font-bold py-2 rounded-xl">Save Address</button>
+                        </div>
+                    </div>`;
+            } else if (section === 'notifications') {
+                titleEl.innerText = "Notification Settings";
+                const notifs = uData.notifications || { orders: true, promos: true, restocks: false };
+                bodyEl.innerHTML = `
+                    <div class="space-y-3 text-xs">
+                        <div class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border">
+                            <div>
+                                <b class="block text-gray-900">Order Updates</b>
+                                <span class="text-[10px] text-gray-400">Receive status changes & tracking</span>
+                            </div>
+                            <input type="checkbox" id="notif-orders" ${notifs.orders ? 'checked' : ''} onchange="updateNotificationSettings()" class="w-4 h-4 accent-[#a4133c]">
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border">
+                            <div>
+                                <b class="block text-gray-900">Promos & Discounts</b>
+                                <span class="text-[10px] text-gray-400">Get special voucher codes</span>
+                            </div>
+                            <input type="checkbox" id="notif-promos" ${notifs.promos ? 'checked' : ''} onchange="updateNotificationSettings()" class="w-4 h-4 accent-[#a4133c]">
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border">
+                            <div>
+                                <b class="block text-gray-900">Restock Alerts</b>
+                                <span class="text-[10px] text-gray-400">Notify when favorited items return</span>
+                            </div>
+                            <input type="checkbox" id="notif-restocks" ${notifs.restocks ? 'checked' : ''} onchange="updateNotificationSettings()" class="w-4 h-4 accent-[#a4133c]">
+                        </div>
+                    </div>`;
             }
         };
         window.closeProfileSubModal = function() { document.getElementById('profile-sub-modal').classList.add('hidden'); };
@@ -734,6 +799,45 @@
                 triggerTelegramHaptic('success');
                 alert('Profile updated successfully!');
                 closeProfileSubModal();
+            }
+        };
+
+        window.addNewAddress = async function() {
+            const label = sanitizeHTML(document.getElementById('new-addr-label').value.trim());
+            const street = sanitizeHTML(document.getElementById('new-addr-street').value.trim());
+            const province = sanitizeHTML(document.getElementById('new-addr-province').value.trim());
+            if (!label || !street || !province) return alert('Please fill in all address fields.');
+
+            let addrs = window.currentUserData.addresses || [];
+            addrs.push({ label, street, province, isDefault: addrs.length === 0 });
+            if (window.currentUser) {
+                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { addresses: addrs });
+                window.currentUserData.addresses = addrs;
+                triggerTelegramHaptic('success');
+                openProfileSection('addresses');
+            }
+        };
+
+        window.removeAddress = async function(index) {
+            let addrs = window.currentUserData.addresses || [];
+            addrs.splice(index, 1);
+            if (window.currentUser) {
+                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { addresses: addrs });
+                window.currentUserData.addresses = addrs;
+                triggerTelegramHaptic('medium');
+                openProfileSection('addresses');
+            }
+        };
+
+        window.updateNotificationSettings = async function() {
+            const orders = document.getElementById('notif-orders').checked;
+            const promos = document.getElementById('notif-promos').checked;
+            const restocks = document.getElementById('notif-restocks').checked;
+            const notifications = { orders, promos, restocks };
+            if (window.currentUser) {
+                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { notifications });
+                window.currentUserData.notifications = notifications;
+                triggerTelegramHaptic('light');
             }
         };
 
