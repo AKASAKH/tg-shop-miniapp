@@ -70,6 +70,16 @@
         <!-- CUSTOMER STOREFRONT VIEW -->
         <div id="customer-view" class="space-y-4">
             <div id="page-shop" class="space-y-3">
+                
+                <!-- PERSONALIZED MEMBER GREETING BANNER -->
+                <div id="user-greeting-banner" class="hidden bg-pink-50/80 p-3 rounded-2xl border border-pink-100 flex items-center justify-between text-xs shadow-xs">
+                    <div>
+                        <span class="font-bold text-[#a4133c]" id="welcome-user-name">Welcome back, Shopper! ✨</span>
+                        <p class="text-[10px] text-gray-500">Exclusive aesthetic drops curated for you.</p>
+                    </div>
+                    <span class="text-[10px] font-mono font-bold bg-white px-2.5 py-1 rounded-xl text-[#a4133c] shadow-xs border border-pink-100" id="welcome-user-id">USR-000</span>
+                </div>
+
                 <div class="relative max-w-md mx-auto">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-[11px]"></i></span>
                     <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search aesthetic pieces..." class="w-full pl-8 pr-3 py-2 bg-white border border-gray-200 rounded-xl text-xs shadow-xs focus:outline-none focus:border-[#a4133c]">
@@ -274,15 +284,16 @@
         </div>
     </div>
 
-    <!-- CHECKOUT MODAL -->
+    <!-- CHECKOUT MODAL WITH PROMO CODE ENGINE -->
     <div id="checkout-modal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs">
             <button onclick="closeCheckoutModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="font-serif italic font-bold text-xs text-gray-900">Delivery Details</h3>
+            <h3 class="font-serif italic font-bold text-xs text-gray-900">Delivery Details & Voucher</h3>
             <div class="space-y-2">
                 <input type="text" id="checkout-name" placeholder="Full Name" class="w-full border rounded-xl px-3 py-1.5">
                 <input type="text" id="checkout-phone" placeholder="Phone Number" class="w-full border rounded-xl px-3 py-1.5">
                 <textarea id="checkout-address" placeholder="Delivery Address" rows="2" class="w-full border rounded-xl px-3 py-1.5"></textarea>
+                <input type="text" id="checkout-promo" placeholder="Promo Code (e.g. MININIZE15)" class="w-full border rounded-xl px-3 py-1.5 uppercase font-mono">
             </div>
             <button onclick="createOrderAndInitBakong()" class="w-full bg-red-600 text-white font-bold py-2.5 rounded-xl flex items-center justify-center space-x-1.5">
                 <i class="fa-solid fa-qrcode"></i><span>Pay via Bakong KHQR</span>
@@ -486,7 +497,6 @@
             triggerTelegramHaptic('light');
         };
 
-        // ROBUST LOGIN WITH DATABASE SYNC & MERGE
         window.handleEmailLogin = async function() {
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
@@ -504,15 +514,13 @@
                 }, { merge: true });
                 triggerTelegramHaptic('success'); 
             } catch (err) { 
-                console.error("Login error:", err);
                 alert("Login failed: " + err.message); 
             }
         };
 
-        // ROBUST SIGN-UP WITH DATABASE SYNC & MERGE
         window.handleEmailSignUp = async function() {
             const name = sanitizeHTML(document.getElementById('signup-name').value.trim());
-            const email = document.getElementById('signup-email').value.trim();
+            const email = sanitizeHTML(document.getElementById('signup-email').value.trim());
             const password = document.getElementById('signup-password').value;
             if (!name || !email || !password) return alert('Fill all fields.');
             try {
@@ -529,12 +537,10 @@
                 triggerTelegramHaptic('success');
                 alert('Account created successfully!');
             } catch (err) { 
-                console.error("Sign up error:", err);
                 alert("Sign up failed: " + err.message); 
             }
         };
 
-        // ROBUST TELEGRAM SIGN-IN
         window.handleTelegramSignIn = async function() {
             try {
                 const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
@@ -557,7 +563,6 @@
                 }
                 triggerTelegramHaptic('success');
             } catch (err) { 
-                console.error("Telegram sign-in error:", err);
                 try {
                     await signInAnonymously(auth);
                 } catch (anonErr) {
@@ -577,7 +582,6 @@
                     const userSnap = await getDoc(doc(db, "users", user.uid));
                     window.currentUserData = userSnap.exists() ? userSnap.data() : { name: "Shopper", role: "customer", addresses: [], notifications: { orders: true, promos: true } };
                 } catch (dbErr) {
-                    console.error("Failed fetching user profile from database:", dbErr);
                     window.currentUserData = { name: "Shopper", role: "customer", addresses: [], notifications: { orders: true, promos: true } };
                 }
 
@@ -625,17 +629,39 @@
             }
         };
 
+        // SCALED CHECKOUT WITH VOUCHER CODE & INVENTORY STOCK LOCK
         window.createOrderAndInitBakong = async function() {
             const customerName = sanitizeHTML(document.getElementById('checkout-name').value.trim());
             const phone = sanitizeHTML(document.getElementById('checkout-phone').value.trim());
             const address = sanitizeHTML(document.getElementById('checkout-address').value.trim());
+            const promoCodeInput = sanitizeHTML(document.getElementById('checkout-promo').value.trim().toUpperCase());
             if (!customerName || !phone || !address) return alert('Complete delivery details.');
 
-            const total = window.cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            let subtotal = window.cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            let discount = 0;
+            if (promoCodeInput === 'MININIZE15') {
+                discount = subtotal * 0.15;
+            }
+            const total = subtotal - discount;
             const orderNum = `#ORD-${Math.floor(1000 + Math.random() * 9000)}`;
 
             try {
-                const docRef = await addDoc(collection(db, "orders"), { orderNum, customerName, phone, address, items: window.cart, total, status: 'Pending', date: new Date().toISOString().split('T')[0] });
+                // Real-time inventory verification & deduction
+                for (let cartItem of window.cart) {
+                    const prodRef = doc(db, "products", cartItem.id);
+                    const prodSnap = await getDoc(prodRef);
+                    if (prodSnap.exists()) {
+                        const currentStock = prodSnap.data().stock ?? 10;
+                        if (currentStock < cartItem.qty) {
+                            return alert(`Sorry, "${cartItem.name}" only has ${currentStock} units left in stock!`);
+                        }
+                        await updateDoc(prodRef, { stock: Math.max(0, currentStock - cartItem.qty) });
+                    }
+                }
+
+                const docRef = await addDoc(collection(db, "orders"), { 
+                    orderNum, customerName, phone, address, items: window.cart, subtotal, discount, total, promoCode: promoCodeInput || 'NONE', status: 'Pending', date: new Date().toISOString().split('T')[0] 
+                });
                 window.currentActiveOrderId = docRef.id;
                 window.cart = []; localStorage.removeItem('mininize_cart');
                 document.getElementById('cart-badge').innerText = '0';
@@ -729,6 +755,7 @@
         window.updateProfileViewUI = function() {
             const authBox = document.getElementById('profile-auth-box');
             const dashboardView = document.getElementById('customer-dashboard-view');
+            const greetingBanner = document.getElementById('user-greeting-banner');
             if (!authBox || !dashboardView) return;
 
             if (window.currentUser) {
@@ -738,9 +765,16 @@
                 document.getElementById('cust-profile-name').innerText = uData.name || 'Shopper';
                 document.getElementById('cust-profile-handle').innerText = window.currentUser.email ? `@${window.currentUser.email.split('@')[0]}` : "@shopper";
                 document.getElementById('cust-profile-id-display').innerText = `ID: ${uData.customId || 'USR-000'}`;
+                
+                if (greetingBanner) {
+                    greetingBanner.classList.remove('hidden');
+                    document.getElementById('welcome-user-name').innerText = `Welcome back, ${uData.name || 'Shopper'}! ✨`;
+                    document.getElementById('welcome-user-id').innerText = uData.customId || 'USR-000';
+                }
             } else {
                 authBox.classList.remove('hidden');
                 dashboardView.classList.add('hidden');
+                if (greetingBanner) greetingBanner.classList.add('hidden');
             }
         };
 
