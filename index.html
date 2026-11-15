@@ -492,7 +492,6 @@
             if (!email || !password) return alert('Enter email and password.');
             try { 
                 const cred = await signInWithEmailAndPassword(auth, email, password); 
-                // Database check: verify or create user document in Firestore
                 const userRef = doc(db, "users", cred.user.uid);
                 const userSnap = await getDoc(userRef);
                 if (!userSnap.exists()) {
@@ -512,7 +511,7 @@
 
         window.handleEmailSignUp = async function() {
             const name = sanitizeHTML(document.getElementById('signup-name').value.trim());
-            const email = document.getElementById('signup-email').value.trim();
+            const email = sanitizeHTML(document.getElementById('signup-email').value.trim());
             const password = document.getElementById('signup-password').value;
             if (!name || !email || !password) return alert('Fill all fields.');
             try {
@@ -556,7 +555,6 @@
                 window.currentUser = user;
                 document.getElementById('session-user-badge').innerText = user.email || 'Active User';
                 
-                // Fetch user data from Firestore database
                 const userSnap = await getDoc(doc(db, "users", user.uid));
                 const userData = userSnap.exists() ? userSnap.data() : { name: "Shopper", role: "customer", addresses: [], notifications: { orders: true, promos: true } };
                 window.currentUserData = userData;
@@ -566,18 +564,13 @@
                     enterAdminMode();
                 } else {
                     exitAdminMode();
-                    document.getElementById('profile-auth-box').classList.add('hidden');
-                    document.getElementById('customer-dashboard-view').classList.remove('hidden');
-                    document.getElementById('cust-profile-name').innerText = userData.name || "Shopper";
-                    document.getElementById('cust-profile-handle').innerText = user.email ? `@${user.email.split('@')[0]}` : "@shopper";
-                    document.getElementById('cust-profile-id-display').innerText = `ID: ${userData.customId || 'USR-000'}`;
+                    if (window.updateProfileViewUI) window.updateProfileViewUI();
                 }
             } else {
                 window.currentUser = null; window.currentUserData = null;
                 document.getElementById('session-user-badge').innerText = 'Guest Mode';
-                document.getElementById('profile-auth-box').classList.remove('hidden');
-                document.getElementById('customer-dashboard-view').classList.add('hidden');
                 exitAdminMode();
+                if (window.updateProfileViewUI) window.updateProfileViewUI();
             }
         });
 
@@ -688,7 +681,6 @@
             if (badge) badge.innerText = window.cart.reduce((s, i) => s + i.qty, 0);
             if (window.Telegram?.WebApp) { window.Telegram.WebApp.ready(); window.Telegram.WebApp.expand(); }
 
-            // Automatic promotion popup close after 4 seconds
             setTimeout(() => {
                 closePromoPopup();
             }, 4000);
@@ -712,6 +704,24 @@
         }
         window.switchAuthTab = switchAuthTab;
 
+        window.updateProfileViewUI = function() {
+            const authBox = document.getElementById('profile-auth-box');
+            const dashboardView = document.getElementById('customer-dashboard-view');
+            if (!authBox || !dashboardView) return;
+
+            if (window.currentUser) {
+                authBox.classList.add('hidden');
+                dashboardView.classList.remove('hidden');
+                const uData = window.currentUserData || {};
+                document.getElementById('cust-profile-name').innerText = uData.name || 'Shopper';
+                document.getElementById('cust-profile-handle').innerText = window.currentUser.email ? `@${window.currentUser.email.split('@')[0]}` : "@shopper";
+                document.getElementById('cust-profile-id-display').innerText = `ID: ${uData.customId || 'USR-000'}`;
+            } else {
+                authBox.classList.remove('hidden');
+                dashboardView.classList.add('hidden');
+            }
+        };
+
         function switchCustomerTab(tab) {
             triggerTelegramHaptic('light');
             ['shop', 'wishlist', 'profile'].forEach(t => {
@@ -726,13 +736,7 @@
             if (tab === 'shop') renderProducts();
             if (tab === 'wishlist') renderWishlist();
             if (tab === 'profile') {
-                if (window.currentUser) {
-                    document.getElementById('profile-auth-box').classList.add('hidden');
-                    document.getElementById('customer-dashboard-view').classList.remove('hidden');
-                } else {
-                    document.getElementById('profile-auth-box').classList.remove('hidden');
-                    document.getElementById('customer-dashboard-view').classList.add('hidden');
-                }
+                updateProfileViewUI();
             }
         }
         window.switchCustomerTab = switchCustomerTab;
