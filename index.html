@@ -379,10 +379,9 @@
         <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative text-center border border-gray-100">
             <button onclick="closeAdminBarcodeScanner()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
             <h3 class="font-serif italic font-bold text-sm text-gray-900">Scan Product Barcode 📷</h3>
-            <p class="text-[10px] text-gray-500">Point your camera at a product barcode to instantly look up or restock items.</p>
-            <div id="reader" class="w-full rounded-2xl overflow-hidden border bg-black h-48"></div>
+            <p class="text-[10px] text-gray-500">Point your camera at a product SKU barcode or QR code.</p>
+            <div id="reader" class="w-full rounded-2xl overflow-hidden border bg-black"></div>
             <div id="scan-result-banner" class="hidden bg-emerald-50 text-emerald-700 p-2.5 rounded-xl text-xs font-bold"></div>
-            <button onclick="closeAdminBarcodeScanner()" class="w-full bg-gray-100 text-gray-700 font-bold text-xs py-2.5 rounded-xl">Cancel</button>
         </div>
     </div>
 
@@ -1269,7 +1268,6 @@
         let orderPaginationStack = [];
         let currentAdminOrderStatusFilter = 'All';
         let adminOrderSearchQuery = '';
-        let lowStockFilterActive = false;
 
         document.addEventListener("DOMContentLoaded", () => {
             const badge = document.getElementById('cart-badge');
