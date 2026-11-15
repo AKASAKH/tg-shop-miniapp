@@ -24,7 +24,7 @@
         }
     </script>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans antialiased pb-24 select-none">
+<body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen flex flex-col justify-between pb-24 select-none">
 
     <!-- PROMOTIONAL POPUP BANNER (AUTO-CLOSING) -->
     <div id="promo-popup" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300">
@@ -65,10 +65,10 @@
     </header>
 
     <!-- MAIN CONTAINER -->
-    <main class="max-w-6xl mx-auto px-4 py-3">
+    <main class="max-w-6xl mx-auto px-4 py-6 flex-1 w-full">
 
         <!-- CUSTOMER STOREFRONT VIEW -->
-        <div id="customer-view" class="space-y-3">
+        <div id="customer-view" class="space-y-4">
             <div id="page-shop" class="space-y-3">
                 <div class="relative max-w-md mx-auto">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fa-solid fa-magnifying-glass text-[11px]"></i></span>
@@ -135,8 +135,8 @@
                     <button onclick="handleSignOut()" class="w-full bg-white border border-gray-200 text-red-600 font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Log out</button>
                 </div>
 
-                <!-- AUTH BOX (LOGIN & SIGN UP TABS RESTORED) -->
-                <div id="profile-auth-box" class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3">
+                <!-- AUTH BOX -->
+                <div id="profile-auth-box" class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3 max-w-sm mx-auto">
                     <div class="text-center space-y-0.5">
                         <h3 class="font-serif italic font-bold text-xs text-gray-900">Welcome to Mininize Studio</h3>
                         <p class="text-[10px] text-gray-400">Sign in to access your personal dashboard</p>
