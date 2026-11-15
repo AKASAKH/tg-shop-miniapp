@@ -6,6 +6,7 @@
     <title>Mininize Studio - Store & Admin Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         html, body, button, a, img, input { touch-action: manipulation; }
@@ -221,7 +222,7 @@
             <!-- ADMIN NAVIGATION TABS -->
             <div class="flex space-x-1 border-b border-gray-200 text-xs font-semibold overflow-x-auto">
                 <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c]">Orders</button>
-                <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Products</button>
+                <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Products & Inventory</button>
                 <button onclick="switchAdminNav('coupons')" id="adtab-coupons" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Coupons & Analytics 🎟️</button>
                 <button onclick="switchAdminNav('reviews')" id="adtab-reviews" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Reviews ⭐</button>
             </div>
@@ -250,19 +251,31 @@
                 </div>
             </div>
 
-            <!-- PRODUCTS SECTION -->
+            <!-- PRODUCTS & INVENTORY SECTION -->
             <div id="admin-sec-products" class="hidden space-y-4">
+                <!-- AUTOMATED LOW-STOCK ALERT BANNER -->
+                <div id="low-stock-alert-banner" class="hidden bg-red-50 border border-red-200 text-red-700 p-3 rounded-2xl flex items-center justify-between text-xs shadow-xs">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-triangle-exclamation text-red-600 text-sm"></i>
+                        <span id="low-stock-alert-text" class="font-bold">Warning: Items are running low on stock (<= 5 units)!</span>
+                    </div>
+                    <button onclick="filterLowStockProducts()" class="bg-red-600 text-white px-3 py-1 rounded-xl text-[10px] font-bold shadow-xs">View Low Stock Only</button>
+                </div>
+
                 <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                        <h3 class="font-bold text-xs text-gray-900">Product Catalog (Click to Edit)</h3>
-                        <div class="relative w-full sm:w-48">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-2.5 text-gray-400"><i class="fa-solid fa-magnifying-glass text-[10px]"></i></span>
-                            <input type="text" id="admin-product-search" oninput="renderAdminProducts()" placeholder="Search Name, SKU..." class="w-full pl-7 pr-2.5 py-1.5 bg-gray-50 border border-gray-200 rounded-xl text-[11px] focus:outline-none focus:border-[#a4133c]">
+                        <h3 class="font-bold text-xs text-gray-900">Product Catalog & Stock Management</h3>
+                        <div class="flex items-center space-x-2 w-full sm:w-auto">
+                            <div class="relative flex-1 sm:w-48">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-2.5 text-gray-400"><i class="fa-solid fa-magnifying-glass text-[10px]"></i></span>
+                                <input type="text" id="admin-product-search" oninput="renderAdminProducts()" placeholder="Search Name, SKU..." class="w-full pl-7 pr-2.5 py-1.5 bg-gray-50 border border-gray-200 rounded-xl text-[11px] focus:outline-none focus:border-[#a4133c]">
+                            </div>
+                            <button onclick="openAdminBarcodeScanner()" class="bg-sky-600 text-white text-[10px] px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-camera"></i><span>Scan Barcode 📷</span></button>
                         </div>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs">
-                            <thead><tr class="text-gray-400 border-b text-[10px]"><th class="p-2">Name</th><th class="p-2">Category</th><th class="p-2">Price</th><th class="p-2">Stock</th><th class="p-2 text-right">Actions</th></tr></thead>
+                            <thead><tr class="text-gray-400 border-b text-[10px]"><th class="p-2">Name</th><th class="p-2">Category</th><th class="p-2">Price</th><th class="p-2">Stock Level</th><th class="p-2 text-right">Quick Restock</th></tr></thead>
                             <tbody id="admin-products-table-body" class="divide-y text-[11px]"></tbody>
                         </table>
                     </div>
@@ -296,6 +309,17 @@
         </div>
 
     </main>
+
+    <!-- BARCODE SCANNER MODAL -->
+    <div id="admin-scanner-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative text-center border border-gray-100">
+            <button onclick="closeAdminBarcodeScanner()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="font-serif italic font-bold text-sm text-gray-900">Scan Product Barcode 📷</h3>
+            <p class="text-[10px] text-gray-500">Point your camera at a product SKU barcode or QR code.</p>
+            <div id="reader" class="w-full rounded-2xl overflow-hidden border bg-black"></div>
+            <div id="scan-result-banner" class="hidden bg-emerald-50 text-emerald-700 p-2.5 rounded-xl text-xs font-bold"></div>
+        </div>
+    </div>
 
     <!-- PROFILE SUB-SECTION MODAL -->
     <div id="profile-sub-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
@@ -528,8 +552,8 @@
 
         async function seedCatalog(db) {
             const initialCatalog = [
-                { name: 'Pearl Butterfly Hairpin', sku: 'HRP-001', category: 'Hairpins', price: 12.50, stock: 15, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80', reviews: [] },
-                { name: 'Gold Pendant Necklace', sku: 'NC-001', category: 'Necklaces', price: 24.50, stock: 8, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=80', reviews: [] },
+                { name: 'Pearl Butterfly Hairpin', sku: 'HRP-001', category: 'Hairpins', price: 12.50, stock: 4, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80', reviews: [] },
+                { name: 'Gold Pendant Necklace', sku: 'NC-001', category: 'Necklaces', price: 24.50, stock: 3, image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=80', reviews: [] },
                 { name: 'Minimalist Dainty Ring', sku: 'RNG-001', category: 'Rings', price: 9.99, stock: 20, image: 'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=600&q=80', reviews: [] }
             ];
             for (let item of initialCatalog) {
@@ -561,15 +585,15 @@
             } catch (err) { console.error('Telegram broadcast error:', err); }
         }
 
-        async function sendTelegramOrderStatusNotification(order, newStatus) {
+        async function sendTelegramLowStockAlert(productName, stockCount) {
             try {
-                const message = `<b>🔔 ORDER STATUS UPDATE 🔔</b>\n\nOrder ID: <b>${order.orderNum}</b>\nCustomer: ${order.customerName}\nStatus Changed To: <b>${newStatus}</b>\nTotal: $${Number(order.total).toFixed(2)}`;
+                const message = `<b>🚨 LOW STOCK ALERT! 🚨</b>\n\nProduct: <b>${productName}</b>\nRemaining Stock: <b>${stockCount} units</b>\nPlease restock inventory immediately!`;
                 await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ chat_id: TELEGRAM_CHANNEL_ID, text: message, parse_mode: 'HTML' })
                 });
-            } catch (err) { console.error('Webhook notification error:', err); }
+            } catch (err) { console.error('Telegram stock alert error:', err); }
         }
 
         window.saveAdminProduct = async function() {
@@ -600,6 +624,14 @@
                 alert('Product saved & broadcasted to @songsashop! 🎉');
             }
             closeAdminProductModal();
+        };
+
+        window.adjustProductStock = async function(prodId, delta) {
+            triggerTelegramHaptic('light');
+            const p = window.products.find(item => item.id === prodId);
+            if (!p) return;
+            const newStock = Math.max(0, (p.stock ?? 10) + delta);
+            await updateDoc(doc(db, "products", prodId), { stock: newStock, updatedAt: new Date().toISOString() });
         };
 
         window.deleteProduct = async function(id) {
@@ -637,8 +669,6 @@
 
         window.updateOrderStatus = async function(docId, newStatus) {
             await updateDoc(doc(db, "orders", docId), { status: newStatus });
-            const updatedOrder = window.orders.find(o => o.docId === docId);
-            if (updatedOrder) await sendTelegramOrderStatusNotification(updatedOrder, newStatus);
             triggerTelegramHaptic('success');
         };
 
@@ -745,10 +775,8 @@
                 window.currentUser = user;
                 document.getElementById('session-user-badge').innerText = user.email || 'Active User';
 
-                // Clean up any existing listener
                 if (userDocUnsubscribe) { userDocUnsubscribe(); userDocUnsubscribe = null; }
 
-                // Establish REAL-TIME Firestore listener for user data
                 userDocUnsubscribe = onSnapshot(doc(db, "users", user.uid), (docSnap) => {
                     if (docSnap.exists()) {
                         window.currentUserData = docSnap.data();
@@ -841,7 +869,13 @@
                     if (prodSnap.exists()) {
                         const currentStock = prodSnap.data().stock ?? 10;
                         if (currentStock < cartItem.qty) return alert(`Sorry, "${cartItem.name}" only has ${currentStock} units left in stock!`);
-                        await updateDoc(prodRef, { stock: Math.max(0, currentStock - cartItem.qty) });
+                        const updatedStock = Math.max(0, currentStock - cartItem.qty);
+                        await updateDoc(prodRef, { stock: updatedStock });
+                        
+                        // Check low stock threshold <= 5
+                        if (updatedStock <= 5) {
+                            sendTelegramLowStockAlert(cartItem.name, updatedStock);
+                        }
                     }
                 }
 
@@ -915,8 +949,10 @@
         window.cart = JSON.parse(localStorage.getItem('mininize_cart') || '[]');
         let activeCategory = 'All';
         let adminOrderFilter = 'All';
+        let lowStockFilterActive = false;
         window.currentSelectedProdId = null;
         window.currentSelectedStarRating = 5;
+        let html5QrCodeScannerInstance = null;
 
         document.addEventListener("DOMContentLoaded", () => {
             const badge = document.getElementById('cart-badge');
@@ -1327,18 +1363,36 @@
         window.updateAdminMetrics = function() {
             const totalRevenue = (window.orders || []).reduce((sum, o) => sum + (Number(o.total) || 0), 0);
             const pendingCount = (window.orders || []).filter(o => o.status === 'Pending').length;
-            const lowStockCount = (window.products || []).filter(p => (p.stock ?? 10) <= 5).length;
+            const lowStockItems = (window.products || []).filter(p => (p.stock ?? 10) <= 5);
+            const lowStockCount = lowStockItems.length;
             const totalDiscounts = (window.coupons || []).reduce((sum, c) => sum + (Number(c.totalDiscountGiven) || 0), 0);
 
             const revEl = document.getElementById('admin-metric-revenue');
             const pendEl = document.getElementById('admin-metric-pending');
             const lowEl = document.getElementById('admin-metric-lowstock');
             const discEl = document.getElementById('admin-metric-discounts');
+            const alertBanner = document.getElementById('low-stock-alert-banner');
+            const alertText = document.getElementById('low-stock-alert-text');
 
             if (revEl) revEl.innerText = `$${totalRevenue.toFixed(2)}`;
             if (pendEl) pendEl.innerText = pendingCount;
             if (lowEl) lowEl.innerText = lowStockCount;
             if (discEl) discEl.innerText = `$${totalDiscounts.toFixed(2)}`;
+
+            if (alertBanner && alertText) {
+                if (lowStockCount > 0) {
+                    alertBanner.classList.remove('hidden');
+                    alertText.innerText = `Warning: ${lowStockCount} product(s) are running low on stock (<= 5 units)!`;
+                } else {
+                    alertBanner.classList.add('hidden');
+                }
+            }
+        };
+
+        window.filterLowStockProducts = function() {
+            triggerTelegramHaptic('light');
+            lowStockFilterActive = !lowStockFilterActive;
+            renderAdminProducts();
         };
 
         window.filterAdminOrders = function(status) {
@@ -1381,25 +1435,36 @@
             const searchInput = document.getElementById('admin-product-search');
             const query = searchInput ? searchInput.value.toLowerCase() : '';
 
-            let filteredProducts = (window.products || []).filter(p => 
-                (p.name && p.name.toLowerCase().includes(query)) || 
-                (p.sku && p.sku.toLowerCase().includes(query)) ||
-                (p.category && p.category.toLowerCase().includes(query))
-            );
+            let filteredProducts = (window.products || []).filter(p => {
+                const matchesQuery = (p.name && p.name.toLowerCase().includes(query)) || 
+                                     (p.sku && p.sku.toLowerCase().includes(query)) ||
+                                     (p.category && p.category.toLowerCase().includes(query));
+                const matchesLowStock = !lowStockFilterActive || ((p.stock ?? 10) <= 5);
+                return matchesQuery && matchesLowStock;
+            });
 
             tbody.innerHTML = filteredProducts.length === 0 ? `<tr><td colspan="5" class="p-4 text-center text-gray-400">No products found.</td></tr>` :
-                filteredProducts.map(p => `
-                    <tr class="border-b">
-                        <td class="p-2 font-medium"><b>${sanitizeHTML(p.name)}</b><span class="block text-[9px] font-mono text-gray-400">${sanitizeHTML(p.sku || 'SKU')}</span></td>
-                        <td class="p-2">${sanitizeHTML(p.category)}</td>
-                        <td class="p-2 font-bold">$${Number(p.price).toFixed(2)}</td>
-                        <td class="p-2"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${(p.stock ?? 10) <= 5 ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}">${p.stock ?? 10} left</span></td>
-                        <td class="p-2 text-right space-x-2">
-                            <button onclick="editProduct('${p.id}')" class="text-sky-600 font-bold">Edit</button>
-                            <button onclick="deleteProduct('${p.id}')" class="text-red-500">Delete</button>
-                        </td>
-                    </tr>
-                `).join('');
+                filteredProducts.map(p => {
+                    const stock = p.stock ?? 10;
+                    const isLow = stock <= 5;
+                    return `
+                        <tr class="border-b ${isLow ? 'bg-red-50/50' : ''}">
+                            <td class="p-2 font-medium"><b>${sanitizeHTML(p.name)}</b><span class="block text-[9px] font-mono text-gray-400">${sanitizeHTML(p.sku || 'SKU')}</span></td>
+                            <td class="p-2">${sanitizeHTML(p.category)}</td>
+                            <td class="p-2 font-bold">$${Number(p.price).toFixed(2)}</td>
+                            <td class="p-2">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isLow ? 'bg-red-100 text-red-700 animate-pulse' : 'bg-emerald-50 text-emerald-600'}">
+                                    ${stock} left ${isLow ? '⚠️' : ''}
+                                </span>
+                            </td>
+                            <td class="p-2 text-right space-x-1">
+                                <button onclick="adjustProductStock('${p.id}', 5)" class="bg-emerald-600 text-white px-2 py-1 rounded text-[10px] font-bold" title="Restock +5">+5</button>
+                                <button onclick="editProduct('${p.id}')" class="text-sky-600 font-bold px-1">Edit</button>
+                                <button onclick="deleteProduct('${p.id}')" class="text-red-500 px-1">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
         };
 
         window.renderAdminCoupons = function() {
@@ -1466,6 +1531,53 @@
             document.getElementById('admin-coupon-modal').classList.remove('hidden');
         };
         function closeAdminCouponModal() { document.getElementById('admin-coupon-modal').classList.add('hidden'); }
+
+        // Live Barcode & QR Scanner Integration
+        window.openAdminBarcodeScanner = function() {
+            triggerTelegramHaptic('medium');
+            document.getElementById('admin-scanner-modal').classList.remove('hidden');
+            document.getElementById('scan-result-banner').classList.add('hidden');
+
+            setTimeout(() => {
+                try {
+                    html5QrCodeScannerInstance = new Html5Qrcode("reader");
+                    html5QrCodeScannerInstance.start(
+                        { facingMode: "environment" },
+                        { fps: 10, qrbox: { width: 250, height: 150 } },
+                        (decodedText) => {
+                            triggerTelegramHaptic('success');
+                            const banner = document.getElementById('scan-result-banner');
+                            banner.innerText = `Scanned Code: ${decodedText}`;
+                            banner.classList.remove('hidden');
+
+                            const searchInput = document.getElementById('admin-product-search');
+                            if (searchInput) {
+                                searchInput.value = decodedText;
+                                renderAdminProducts();
+                            }
+
+                            setTimeout(() => {
+                                closeAdminBarcodeScanner();
+                            }, 1500);
+                        },
+                        (errorMessage) => {}
+                    ).catch(err => {
+                        console.error("Camera start error:", err);
+                        alert("Unable to access camera for scanning.");
+                    });
+                } catch (e) { console.error(e); }
+            }, 300);
+        };
+
+        window.closeAdminBarcodeScanner = function() {
+            if (html5QrCodeScannerInstance) {
+                html5QrCodeScannerInstance.stop().then(() => {
+                    html5QrCodeScannerInstance.clear();
+                }).catch(err => {});
+                html5QrCodeScannerInstance = null;
+            }
+            document.getElementById('admin-scanner-modal').classList.add('hidden');
+        };
     </script>
 </body>
 </html>
