@@ -135,7 +135,7 @@
                     <button onclick="handleSignOut()" class="w-full bg-white border border-gray-200 text-red-600 font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Log out</button>
                 </div>
 
-                <!-- AUTH BOX (STARTS HIDDEN TO PREVENT RACE CONDITIONS) -->
+                <!-- AUTH BOX -->
                 <div id="profile-auth-box" class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3 max-w-sm mx-auto hidden">
                     <div class="text-center space-y-0.5">
                         <h3 class="font-serif italic font-bold text-xs text-gray-900">Welcome to Mininize Studio</h3>
@@ -490,7 +490,24 @@
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
             if (!email || !password) return alert('Enter email and password.');
-            try { await signInWithEmailAndPassword(auth, email, password); triggerTelegramHaptic('success'); } catch (err) { alert("Login failed: " + err.message); }
+            try { 
+                const cred = await signInWithEmailAndPassword(auth, email, password); 
+                // Database check: verify or create user document in Firestore
+                const userRef = doc(db, "users", cred.user.uid);
+                const userSnap = await getDoc(userRef);
+                if (!userSnap.exists()) {
+                    await setDoc(userRef, {
+                        uid: cred.user.uid,
+                        customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
+                        email,
+                        name: email.split('@')[0],
+                        role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer",
+                        addresses: [{ label: 'Home', street: '123 Main Street', province: 'Phnom Penh', isDefault: true }],
+                        notifications: { orders: true, promos: true, restocks: false }
+                    });
+                }
+                triggerTelegramHaptic('success'); 
+            } catch (err) { alert("Login failed: " + err.message); }
         };
 
         window.handleEmailSignUp = async function() {
@@ -517,8 +534,9 @@
                 const email = tgUser ? `${tgUser.id}@telegram.org` : `telegram_${Math.floor(100000 + Math.random() * 900000)}@telegram.org`;
                 const password = tgUser ? `tg_pass_${tgUser.id}` : `tg_pass_default`;
                 const name = tgUser ? sanitizeHTML(`${tgUser.first_name || ''}`.trim()) : 'Telegram Shopper';
-                try { await signInWithEmailAndPassword(auth, email, password); }
-                catch(e) {
+                try { 
+                    await signInWithEmailAndPassword(auth, email, password); 
+                } catch(e) {
                     const cred = await createUserWithEmailAndPassword(auth, email, password);
                     await setDoc(doc(db, "users", cred.user.uid), {
                         uid: cred.user.uid, customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
@@ -537,6 +555,8 @@
             if (user) {
                 window.currentUser = user;
                 document.getElementById('session-user-badge').innerText = user.email || 'Active User';
+                
+                // Fetch user data from Firestore database
                 const userSnap = await getDoc(doc(db, "users", user.uid));
                 const userData = userSnap.exists() ? userSnap.data() : { name: "Shopper", role: "customer", addresses: [], notifications: { orders: true, promos: true } };
                 window.currentUserData = userData;
@@ -548,7 +568,7 @@
                     exitAdminMode();
                     document.getElementById('profile-auth-box').classList.add('hidden');
                     document.getElementById('customer-dashboard-view').classList.remove('hidden');
-                    document.getElementById('cust-profile-name').innerText = userData.name;
+                    document.getElementById('cust-profile-name').innerText = userData.name || "Shopper";
                     document.getElementById('cust-profile-handle').innerText = user.email ? `@${user.email.split('@')[0]}` : "@shopper";
                     document.getElementById('cust-profile-id-display').innerText = `ID: ${userData.customId || 'USR-000'}`;
                 }
