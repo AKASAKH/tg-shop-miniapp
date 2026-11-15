@@ -123,14 +123,24 @@
             <!-- PROFILE SECTION -->
             <div id="page-profile" class="hidden space-y-3 max-w-md mx-auto">
                 <div id="customer-dashboard-view" class="space-y-3 hidden">
-                    <!-- VIP LOYALTY TIER BANNER -->
-                    <div class="bg-gradient-to-r from-[#800f2f] to-[#a4133c] text-white p-4 rounded-2xl shadow-sm flex items-center justify-between">
-                        <div>
-                            <span id="vip-tier-badge" class="bg-white/20 text-white text-[9px] uppercase font-black px-2 py-0.5 rounded-md">VIP Silver Member</span>
-                            <h3 id="vip-points-text" class="text-sm font-bold mt-1">120 Loyalty Points</h3>
-                            <p id="vip-tier-perk" class="text-[10px] text-pink-100">Unlock Gold Tier at 200 pts for 20% off!</p>
+                    <!-- VIP LOYALTY TIER BANNER WITH PROGRESS BAR -->
+                    <div class="bg-gradient-to-r from-[#800f2f] to-[#a4133c] text-white p-4 rounded-2xl shadow-sm space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span id="vip-tier-badge" class="bg-white/20 text-white text-[9px] uppercase font-black px-2 py-0.5 rounded-md">VIP Silver Member</span>
+                                <h3 id="vip-points-text" class="text-sm font-bold mt-1">120 Loyalty Points</h3>
+                            </div>
+                            <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-lg"><i class="fa-solid fa-crown text-amber-300"></i></div>
                         </div>
-                        <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-lg"><i class="fa-solid fa-crown text-amber-300"></i></div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-[9px] text-pink-100 font-medium">
+                                <span id="vip-progress-label">Tier Progress</span>
+                                <span id="vip-progress-target">80 pts to Gold</span>
+                            </div>
+                            <div class="w-full bg-white/20 h-2 rounded-full overflow-hidden">
+                                <div id="vip-progress-bar" class="bg-amber-300 h-full rounded-full transition-all duration-500" style="width: 60%;"></div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- REFERRAL EARNINGS CARD -->
@@ -362,13 +372,14 @@
         </div>
     </div>
 
-    <!-- PROFILE SUB-SECTION MODAL -->
-    <div id="profile-sub-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative text-xs border border-gray-100 max-h-[90vh] overflow-y-auto">
-            <button onclick="closeProfileSubModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
+    <!-- PROFILE SLIDE-OVER PANEL & BACKDROP -->
+    <div id="profile-backdrop" onclick="closeProfileSubModal()" class="fixed inset-0 bg-black/40 z-40 hidden transition-opacity"></div>
+    <div id="profile-slide-panel" class="fixed inset-y-0 right-0 max-w-sm w-full bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col p-5 border-l border-gray-100">
+        <div class="flex justify-between items-center border-b pb-3">
             <h3 id="profile-modal-title" class="font-serif italic font-bold text-sm text-gray-900">Section Title</h3>
-            <div id="profile-modal-body" class="space-y-3"></div>
+            <button onclick="closeProfileSubModal()" class="w-7 h-7 bg-gray-50 text-gray-400 hover:text-gray-600 rounded-full flex items-center justify-center text-xs"><i class="fa-solid fa-xmark"></i></button>
         </div>
+        <div id="profile-modal-body" class="flex-1 overflow-y-auto py-4 space-y-3 text-xs"></div>
     </div>
 
     <!-- PRODUCT DETAIL MODAL -->
@@ -659,11 +670,6 @@
             }).save().then(() => invoiceDiv.remove());
         };
 
-        let productsUnsubscribe = null;
-        let ordersUnsubscribe = null;
-        let couponsUnsubscribe = null;
-        let userDocUnsubscribe = null;
-
         // SCALED PAGINATED PRODUCT FETCHING
         window.products = [];
         let lastVisibleProductDoc = null;
@@ -710,7 +716,7 @@
 
         loadInitialProducts();
 
-        couponsUnsubscribe = onSnapshot(collection(db, "coupons"), (snapshot) => {
+        const couponsUnsubscribe = onSnapshot(collection(db, "coupons"), (snapshot) => {
             window.coupons = [];
             snapshot.forEach(docSnap => window.coupons.push({ id: docSnap.id, ...docSnap.data() }));
             if (window.coupons.length === 0) seedCoupons(db);
@@ -757,12 +763,10 @@
             } catch (err) { console.error('Proxy stock alert error:', err); }
         }
 
-        // COURIER HANDSHAKE WEBHOOK SIMULATION
         async function triggerCourierDispatchHandshake(orderNum, customerName, address) {
             try {
                 const courierPayload = { orderNum, customerName, address, timestamp: new Date().toISOString() };
                 console.log("Dispatching order to local courier partner API:", courierPayload);
-                // Simulated webhook dispatch
             } catch (err) { console.error("Courier dispatch error:", err); }
         }
 
@@ -947,6 +951,7 @@
 
         window.handleSignOut = async function() { await signOut(auth); if (window.exitAdminMode) window.exitAdminMode(); };
 
+        let userDocUnsubscribe = null;
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 window.currentUser = user;
@@ -1122,29 +1127,6 @@
             navigator.clipboard.writeText(refUrl);
             alert('Affiliate referral link copied! Share with friends to earn bonus loyalty points.');
         };
-
-        let hasProcessedInitialLink = false;
-        window.checkInitialDeepLink = function() {
-            if (hasProcessedInitialLink || window.products.length === 0) return;
-            hasProcessedInitialLink = true;
-            let startParam = '';
-            if (window.Telegram?.WebApp?.initDataUnsafe?.start_param) {
-                startParam = window.Telegram.WebApp.initDataUnsafe.start_param;
-            } else {
-                const params = new URLSearchParams(window.location.search);
-                startParam = params.get('startapp') || params.get('tgWebAppStartParam') || '';
-            }
-            if (startParam) {
-                if (startParam.includes('prod_')) {
-                    const parts = startParam.split('_');
-                    const targetProdId = parts[1];
-                    if (window.products.some(p => p.id === targetProdId)) openProductDetailModal(targetProdId);
-                }
-                if (startParam.includes('ref_')) {
-                    console.log("Captured referral deep link parameter:", startParam);
-                }
-            }
-        };
     </script>
 
     <!-- STOREFRONT & UI LOGIC -->
@@ -1200,12 +1182,27 @@
                 const pts = uData.loyaltyPoints || 100;
                 document.getElementById('vip-points-text').innerText = `${pts} Loyalty Points`;
                 
+                // VIP Tier & Progress Calculation
                 let tierName = "Silver Member ✨";
-                let perkText = "Unlock Gold Tier at 200 pts for 20% off!";
-                if (pts >= 500) { tierName = "Platinum VIP 👑"; perkText = "Free Express Delivery + 30% OFF!"; }
-                else if (pts >= 200) { tierName = "Gold Member 🌟"; perkText = "Unlocked 20% OFF VIP Voucher!"; }
+                let progressPercent = 0;
+                let targetText = "";
+                if (pts >= 500) {
+                    tierName = "Platinum VIP 👑";
+                    progressPercent = 100;
+                    targetText = "Max Tier Reached!";
+                } else if (pts >= 200) {
+                    tierName = "Gold Member 🌟";
+                    progressPercent = Math.min(100, ((pts - 200) / 300) * 100);
+                    targetText = `${500 - pts} pts to Platinum`;
+                } else {
+                    tierName = "Silver Member ✨";
+                    progressPercent = Math.min(100, (pts / 200) * 100);
+                    targetText = `${200 - pts} pts to Gold`;
+                }
+
                 document.getElementById('vip-tier-badge').innerText = tierName;
-                document.getElementById('vip-tier-perk').innerText = perkText;
+                document.getElementById('vip-progress-bar').style.width = `${progressPercent}%`;
+                document.getElementById('vip-progress-target').innerText = targetText;
 
                 if (greetingBanner) {
                     greetingBanner.classList.remove('hidden');
@@ -1247,12 +1244,17 @@
             renderProducts();
         }
 
+        // SLIDE-OVER PANEL CONTROLS
         window.openProfileSection = async function(section) {
             triggerTelegramHaptic('light');
-            const modal = document.getElementById('profile-sub-modal');
+            const panel = document.getElementById('profile-slide-panel');
+            const backdrop = document.getElementById('profile-backdrop');
             const titleEl = document.getElementById('profile-modal-title');
             const bodyEl = document.getElementById('profile-modal-body');
-            modal.classList.remove('hidden');
+
+            backdrop.classList.remove('hidden');
+            panel.classList.remove('translate-x-full');
+
             const uData = window.currentUserData || {};
             const isAdmin = uData.role === "admin" || uData.role === "staff" || window.currentUser?.uid === "NoIYk9Uwlc75YLdlpzx1";
 
@@ -1397,7 +1399,12 @@
                     </div>`;
             }
         };
-        window.closeProfileSubModal = function() { document.getElementById('profile-sub-modal').classList.add('hidden'); };
+
+        window.closeProfileSubModal = function() {
+            triggerTelegramHaptic('light');
+            document.getElementById('profile-slide-panel').classList.add('translate-x-full');
+            document.getElementById('profile-backdrop').classList.add('hidden');
+        };
 
         window.savePersonalData = async function() {
             const name = sanitizeHTML(document.getElementById('edit-name').value.trim());
