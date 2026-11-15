@@ -135,8 +135,8 @@
                     <button onclick="handleSignOut()" class="w-full bg-white border border-gray-200 text-red-600 font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Log out</button>
                 </div>
 
-                <!-- AUTH BOX -->
-                <div id="profile-auth-box" class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3 max-w-sm mx-auto">
+                <!-- AUTH BOX (STARTS HIDDEN TO PREVENT RACE CONDITIONS) -->
+                <div id="profile-auth-box" class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3 max-w-sm mx-auto hidden">
                     <div class="text-center space-y-0.5">
                         <h3 class="font-serif italic font-bold text-xs text-gray-900">Welcome to Mininize Studio</h3>
                         <p class="text-[10px] text-gray-400">Sign in to access your personal dashboard</p>
@@ -702,8 +702,18 @@
             document.getElementById(`page-${tab}`).classList.remove('hidden');
             const targetBtn = document.getElementById(`nav-btn-${tab}`);
             if (targetBtn) targetBtn.className = 'flex flex-col items-center text-[#a4133c] font-bold';
+            
             if (tab === 'shop') renderProducts();
             if (tab === 'wishlist') renderWishlist();
+            if (tab === 'profile') {
+                if (window.currentUser) {
+                    document.getElementById('profile-auth-box').classList.add('hidden');
+                    document.getElementById('customer-dashboard-view').classList.remove('hidden');
+                } else {
+                    document.getElementById('profile-auth-box').classList.remove('hidden');
+                    document.getElementById('customer-dashboard-view').classList.add('hidden');
+                }
+            }
         }
         window.switchCustomerTab = switchCustomerTab;
 
