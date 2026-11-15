@@ -529,11 +529,11 @@
         </div>
     </nav>
 
-    <!-- FIREBASE & SCALED ENGINE SCRIPT -->
+    <!-- FIREBASE & ENTERPRISE SCALED ENGINE SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, setDoc, getDoc, getDocs, query, where, limit, startAfter, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, setDoc, getDoc, getDocs, query, where, limit, startAfter, orderBy, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDz6snwoujsmp8IQ5-1c2_IL-JmEOx2tIM",
@@ -563,6 +563,7 @@
         window.limit = limit;
         window.startAfter = startAfter;
         window.orderBy = orderBy;
+        window.runTransaction = runTransaction;
 
         window.sanitizeHTML = function(str) {
             if (!str) return '';
@@ -916,10 +917,14 @@
                     uid: cred.user.uid, customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
                     email, name, loyaltyPoints: 50,
                     role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer",
-                    wishlist: [],
-                    addresses: [{ label: 'Home', street: '123 Main Street', province: 'Phnom Penh', isDefault: true }],
                     notifications: { emailAlerts: true, telegramAlerts: true }
                 }, { merge: true });
+                
+                // Seed initial default address in subcollection
+                await addDoc(collection(db, "users", cred.user.uid, "addresses"), {
+                    label: 'Home', street: '123 Main Street', province: 'Phnom Penh', isDefault: true, createdAt: new Date().toISOString()
+                });
+
                 triggerTelegramHaptic('success');
                 alert('Account created successfully!');
             } catch (err) { alert("Sign up failed: " + err.message); }
@@ -938,10 +943,12 @@
                     await setDoc(doc(db, "users", cred.user.uid), {
                         uid: cred.user.uid, customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
                         email, name, loyaltyPoints: 100,
-                        role: "customer", wishlist: [],
-                        addresses: [{ label: 'Home', street: 'Telegram St', province: 'Phnom Penh', isDefault: true }],
-                        notifications: { emailAlerts: true, telegramAlerts: true }
+                        role: "customer", notifications: { emailAlerts: true, telegramAlerts: true }
                     }, { merge: true });
+                    
+                    await addDoc(collection(db, "users", cred.user.uid, "addresses"), {
+                        label: 'Home', street: 'Telegram St', province: 'Phnom Penh', isDefault: true, createdAt: new Date().toISOString()
+                    });
                 }
                 triggerTelegramHaptic('success');
             } catch (err) { 
@@ -952,18 +959,24 @@
         window.handleSignOut = async function() { await signOut(auth); if (window.exitAdminMode) window.exitAdminMode(); };
 
         let userDocUnsubscribe = null;
+        let addressesUnsubscribe = null;
+        let wishlistUnsubscribe = null;
+
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 window.currentUser = user;
                 document.getElementById('session-user-badge').innerText = user.email || 'Active User';
 
                 if (userDocUnsubscribe) { userDocUnsubscribe(); userDocUnsubscribe = null; }
+                if (addressesUnsubscribe) { addressesUnsubscribe(); addressesUnsubscribe = null; }
+                if (wishlistUnsubscribe) { wishlistUnsubscribe(); wishlistUnsubscribe = null; }
 
+                // Listen to User Profile Document
                 userDocUnsubscribe = onSnapshot(doc(db, "users", user.uid), (docSnap) => {
                     if (docSnap.exists()) {
                         window.currentUserData = docSnap.data();
                     } else {
-                        window.currentUserData = { name: "Shopper", role: "customer", loyaltyPoints: 80, wishlist: [], addresses: [], notifications: { emailAlerts: true, telegramAlerts: true } };
+                        window.currentUserData = { name: "Shopper", role: "customer", loyaltyPoints: 80, notifications: { emailAlerts: true, telegramAlerts: true } };
                     }
 
                     const isAdmin = window.currentUserData.role === "admin" || window.currentUserData.role === "staff" || (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
@@ -986,11 +999,29 @@
                         if (window.renderProducts) window.renderProducts();
                     }
                 });
+
+                // Listen to Addresses Subcollection
+                addressesUnsubscribe = onSnapshot(collection(db, "users", user.uid, "addresses"), (snapshot) => {
+                    window.currentUserAddresses = [];
+                    snapshot.forEach(docSnap => window.currentUserAddresses.push({ id: docSnap.id, ...docSnap.data() }));
+                });
+
+                // Listen to Wishlist Subcollection
+                wishlistUnsubscribe = onSnapshot(collection(db, "users", user.uid, "wishlist"), (snapshot) => {
+                    window.currentUserWishlist = [];
+                    snapshot.forEach(docSnap => window.currentUserWishlist.push(docSnap.data().productId));
+                    if (window.renderProducts) window.renderProducts();
+                    if (!document.getElementById('page-wishlist').classList.contains('hidden')) renderWishlist();
+                });
+
             } else {
                 if (userDocUnsubscribe) { userDocUnsubscribe(); userDocUnsubscribe = null; }
+                if (addressesUnsubscribe) { addressesUnsubscribe(); addressesUnsubscribe = null; }
+                if (wishlistUnsubscribe) { wishlistUnsubscribe(); wishlistUnsubscribe = null; }
                 if (ordersUnsubscribe) { ordersUnsubscribe(); ordersUnsubscribe = null; }
                 window.orders = [];
                 window.currentUser = null; window.currentUserData = null;
+                window.currentUserAddresses = []; window.currentUserWishlist = [];
                 document.getElementById('session-user-badge').innerText = 'Guest Mode';
                 exitAdminMode();
                 if (window.updateProfileViewUI) window.updateProfileViewUI();
@@ -1075,11 +1106,15 @@
                 });
                 window.currentActiveOrderId = docRef.id;
                 
+                // ATOMIC TRANSACTIONAL LOYALTY POINTS UPDATE
                 if (window.currentUser) {
                     const earnedPoints = Math.floor(total * 10);
-                    const newPoints = (window.currentUserData.loyaltyPoints || 0) + earnedPoints;
-                    await updateDoc(doc(db, "users", window.currentUser.uid), { loyaltyPoints: newPoints });
-                    window.currentUserData.loyaltyPoints = newPoints;
+                    await runTransaction(db, async (transaction) => {
+                        const userRef = doc(db, "users", window.currentUser.uid);
+                        const uDoc = await transaction.get(userRef);
+                        const currentPts = uDoc.exists() ? (uDoc.data().loyaltyPoints || 0) : 0;
+                        transaction.update(userRef, { loyaltyPoints: currentPts + earnedPoints });
+                    });
                 }
 
                 window.cart = []; localStorage.removeItem('mininize_cart');
@@ -1134,6 +1169,7 @@
         const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80';
         window.products = []; window.orders = []; window.coupons = [];
         window.cart = JSON.parse(localStorage.getItem('mininize_cart') || '[]');
+        window.currentUserAddresses = []; window.currentUserWishlist = [];
         let activeCategory = 'All';
         let adminOrderFilter = 'All';
         let lowStockFilterActive = false;
@@ -1182,7 +1218,6 @@
                 const pts = uData.loyaltyPoints || 100;
                 document.getElementById('vip-points-text').innerText = `${pts} Loyalty Points`;
                 
-                // VIP Tier & Progress Calculation
                 let tierName = "Silver Member ✨";
                 let progressPercent = 0;
                 let targetText = "";
@@ -1355,23 +1390,23 @@
                     </div>`;
             } else if (section === 'favorites') {
                 titleEl.innerText = "My Cloud Wishlist";
-                let userWishlist = uData.wishlist || [];
+                let userWishlist = window.currentUserWishlist || [];
                 let favs = window.products.filter(p => userWishlist.includes(p.id));
                 bodyEl.innerHTML = favs.length === 0 ? `<p class="text-xs text-gray-400 text-center py-4">No cloud favorite items saved.</p>` :
                     `<div class="grid grid-cols-2 gap-2">${favs.map(p => `<div onclick="closeProfileSubModal(); openProductDetailModal('${p.id}')" class="bg-gray-50 p-2 rounded-xl border cursor-pointer"><img src="${p.image}" class="w-full aspect-square object-cover rounded mb-1"><b class="text-[11px] truncate block">${sanitizeHTML(p.name)}</b></div>`).join('')}</div>`;
             } else if (section === 'addresses') {
                 titleEl.innerText = "Delivery Addresses";
-                const addrs = uData.addresses || [{ label: 'Home', street: '123 Main Street', province: 'Phnom Penh', isDefault: true }];
+                const addrs = window.currentUserAddresses || [];
                 bodyEl.innerHTML = `
                     <div class="space-y-3">
                         <div class="space-y-2">
-                            ${addrs.map((a, idx) => `
+                            ${addrs.length === 0 ? `<p class="text-xs text-gray-400 text-center py-2">No addresses saved.</p>` : addrs.map((a, idx) => `
                                 <div class="bg-gray-50 p-3 rounded-xl border flex justify-between items-center">
                                     <div>
                                         <span class="font-bold text-gray-900">${sanitizeHTML(a.label)} ${a.isDefault ? '<span class="text-[9px] bg-pink-100 text-[#a4133c] px-1.5 py-0.5 rounded font-bold">Default</span>' : ''}</span>
                                         <p class="text-gray-500 text-[10px]">${sanitizeHTML(a.street)}, ${sanitizeHTML(a.province)}</p>
                                     </div>
-                                    <button onclick="removeAddress(${idx})" class="text-red-500 text-xs"><i class="fa-solid fa-trash"></i></button>
+                                    <button onclick="removeAddressSubcoll('${a.id}')" class="text-red-500 text-xs"><i class="fa-solid fa-trash"></i></button>
                                 </div>
                             `).join('')}
                         </div>
@@ -1380,7 +1415,7 @@
                             <input type="text" id="new-addr-label" placeholder="Label (e.g. Office, Home)" class="w-full border rounded-xl px-2.5 py-1.5">
                             <input type="text" id="new-addr-street" placeholder="Street Address" class="w-full border rounded-xl px-2.5 py-1.5">
                             <input type="text" id="new-addr-province" placeholder="City / Province" class="w-full border rounded-xl px-2.5 py-1.5">
-                            <button onclick="addNewAddress()" class="w-full bg-[#800f2f] text-white font-bold py-2 rounded-xl">Save Address</button>
+                            <button onclick="addNewAddressSubcoll()" class="w-full bg-[#800f2f] text-white font-bold py-2 rounded-xl">Save Address</button>
                         </div>
                     </div>`;
             } else if (section === 'notifications') {
@@ -1428,25 +1463,24 @@
             }
         };
 
-        window.addNewAddress = async function() {
+        // SUBCOLLECTION ADDRESS OPERATIONS
+        window.addNewAddressSubcoll = async function() {
             const label = sanitizeHTML(document.getElementById('new-addr-label').value.trim());
             const street = sanitizeHTML(document.getElementById('new-addr-street').value.trim());
             const province = sanitizeHTML(document.getElementById('new-addr-province').value.trim());
             if (!label || !street || !province) return alert('Please fill in all fields.');
-            let addrs = window.currentUserData.addresses || [];
-            addrs.push({ label, street, province, isDefault: addrs.length === 0 });
             if (window.currentUser) {
-                await window.updateDoc(window.doc(window.firebaseDb, "users", window.currentUser.uid), { addresses: addrs });
+                await addDoc(collection(db, "users", window.currentUser.uid, "addresses"), {
+                    label, street, province, isDefault: window.currentUserAddresses.length === 0, createdAt: new Date().toISOString()
+                });
                 triggerTelegramHaptic('success');
                 openProfileSection('addresses');
             }
         };
 
-        window.removeAddress = async function(index) {
-            let addrs = window.currentUserData.addresses || [];
-            addrs.splice(index, 1);
+        window.removeAddressSubcoll = async function(addressId) {
             if (window.currentUser) {
-                await window.updateDoc(window.doc(window.firebaseDb, "users", window.currentUser.uid), { addresses: addrs });
+                await deleteDoc(doc(db, "users", window.currentUser.uid, "addresses", addressId));
                 triggerTelegramHaptic('medium');
                 openProfileSection('addresses');
             }
@@ -1461,18 +1495,25 @@
             }
         };
 
+        // SUBCOLLECTION WISHLIST OPERATIONS
         window.toggleWishlist = async function(id) {
             triggerTelegramHaptic('medium');
             if (window.currentUser) {
-                let wishlist = window.currentUserData.wishlist || [];
-                if (wishlist.includes(id)) wishlist = wishlist.filter(i => i !== id); else wishlist.push(id);
-                await window.updateDoc(window.doc(window.firebaseDb, "users", window.currentUser.uid), { wishlist });
+                const wishRef = collection(db, "users", window.currentUser.uid, "wishlist");
+                const q = query(wishRef, where("productId", "==", id));
+                const snap = await getDocs(q);
+                if (!snap.empty) {
+                    // Remove from wishlist subcollection
+                    await deleteDoc(doc(db, "users", window.currentUser.uid, "wishlist", snap.docs[0].id));
+                } else {
+                    // Add to wishlist subcollection
+                    await addDoc(wishRef, { productId: id, createdAt: new Date().toISOString() });
+                }
             } else {
                 let localWish = JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
                 localWish = localWish.includes(id) ? localWish.filter(i => i !== id) : [...localWish, id];
                 localStorage.setItem('mininize_wishlist', JSON.stringify(localWish));
-                window.currentUserData = window.currentUserData || {};
-                window.currentUserData.wishlist = localWish;
+                window.currentUserWishlist = localWish;
                 renderProducts();
                 if (!document.getElementById('page-wishlist').classList.contains('hidden')) renderWishlist();
             }
@@ -1521,7 +1562,7 @@
             const grid = document.getElementById('product-grid');
             if (!grid) return;
             const searchVal = document.getElementById('search-input').value.toLowerCase();
-            const userWishlist = window.currentUserData?.wishlist || JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
+            const userWishlist = window.currentUserWishlist || JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
             let filtered = window.products.filter(p => (activeCategory === 'All' || p.category === activeCategory) && p.name.toLowerCase().includes(searchVal));
             
             grid.innerHTML = filtered.map(p => `
@@ -1539,7 +1580,7 @@
         window.renderProducts = renderProducts;
 
         function renderWishlist() {
-            const userWishlist = window.currentUserData?.wishlist || JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
+            const userWishlist = window.currentUserWishlist || JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
             let favs = window.products.filter(p => userWishlist.includes(p.id));
             document.getElementById('wishlist-grid').innerHTML = favs.length === 0 ? `<p class="text-xs text-gray-400 col-span-2 text-center py-6">No saved favorite items.</p>` :
                 favs.map(p => `<div onclick="openProductDetailModal('${p.id}')" class="bg-white rounded-2xl p-2.5 border shadow-xs cursor-pointer"><img src="${p.image}" class="w-full aspect-square object-cover rounded-xl mb-2"><h4 class="font-serif italic font-bold text-xs truncate">${sanitizeHTML(p.name)}</h4></div>`).join('');
