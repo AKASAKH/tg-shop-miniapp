@@ -101,7 +101,7 @@
 
             <!-- WISHLIST -->
             <div id="page-wishlist" class="hidden space-y-3 max-w-2xl mx-auto">
-                <h3 class="font-serif italic font-bold text-xs text-gray-900 uppercase tracking-wide">Saved Favorite Items 💖</h3>
+                <h3 class="font-serif italic font-bold text-xs text-gray-900 uppercase tracking-wide">Cloud Saved Favorite Items 💖</h3>
                 <div id="wishlist-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
             </div>
 
@@ -139,7 +139,7 @@
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
                         <button onclick="openProfileSection('favorites')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
-                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-heart text-[#a4133c] w-4"></i><span>My Favorites</span></span>
+                            <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-heart text-[#a4133c] w-4"></i><span>My Cloud Wishlist</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
                         <button onclick="openProfileSection('addresses')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
@@ -210,13 +210,15 @@
                 </div>
             </div>
 
+            <!-- ADMIN NAVIGATION TABS -->
             <div class="flex space-x-1 border-b border-gray-200 text-xs font-semibold overflow-x-auto">
-                <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c]">Orders Management</button>
-                <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Products Inventory</button>
-                <button onclick="switchAdminNav('reviews')" id="adtab-reviews" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Reviews Moderation ⭐</button>
+                <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c]">Orders</button>
+                <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Products</button>
+                <button onclick="switchAdminNav('coupons')" id="adtab-coupons" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Coupons 🎟️</button>
+                <button onclick="switchAdminNav('reviews')" id="adtab-reviews" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Reviews ⭐</button>
             </div>
             
-            <!-- ORDERS SECTION WITH STATUS FILTER PILLS -->
+            <!-- ORDERS SECTION -->
             <div id="admin-sec-orders" class="space-y-4">
                 <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
@@ -237,7 +239,7 @@
                 </div>
             </div>
 
-            <!-- PRODUCTS SECTION WITH SEARCH FILTER BAR -->
+            <!-- PRODUCTS SECTION -->
             <div id="admin-sec-products" class="hidden space-y-4">
                 <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
@@ -256,6 +258,23 @@
                 </div>
             </div>
 
+            <!-- COUPONS SECTION (ADMIN COUPON MANAGER) -->
+            <div id="admin-sec-coupons" class="hidden space-y-4">
+                <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-xs text-gray-900">Active Promo Codes & Vouchers</h3>
+                        <button onclick="openCouponModal()" class="bg-[#800f2f] text-white text-xs px-3 py-1.5 rounded-xl font-bold">+ New Coupon</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead><tr class="text-gray-400 border-b text-[10px]"><th class="p-2">Code</th><th class="p-2">Discount</th><th class="p-2">Status</th><th class="p-2 text-right">Actions</th></tr></thead>
+                            <tbody id="admin-coupons-table-body" class="divide-y text-[11px]"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REVIEWS SECTION -->
             <div id="admin-sec-reviews" class="hidden bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-3">
                 <h3 class="font-bold text-xs text-gray-900">Customer Feedback & Reviews</h3>
                 <div id="admin-reviews-list-container" class="space-y-3 max-h-[60vh] overflow-y-auto text-xs"></div>
@@ -331,7 +350,7 @@
         </div>
     </div>
 
-    <!-- CHECKOUT MODAL WITH PROMO CODE ENGINE -->
+    <!-- CHECKOUT MODAL WITH DYNAMIC COUPON ENGINE -->
     <div id="checkout-modal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs">
             <button onclick="closeCheckoutModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
@@ -394,6 +413,19 @@
                 <input type="text" id="prod-image" placeholder="Image URL" class="w-full border rounded-xl px-3 py-1.5">
             </div>
             <button onclick="saveAdminProduct()" class="w-full bg-[#800f2f] text-white font-bold py-2.5 rounded-xl">Save Product</button>
+        </div>
+    </div>
+
+    <!-- ADMIN COUPON MODAL -->
+    <div id="admin-coupon-modal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs">
+            <button onclick="closeAdminCouponModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="font-serif italic font-bold text-xs text-gray-900">Add Promo Code / Voucher</h3>
+            <div class="space-y-2">
+                <input type="text" id="coupon-code-input" placeholder="Coupon Code (e.g. SUMMER20)" class="w-full border rounded-xl px-3 py-1.5 uppercase font-mono">
+                <input type="number" id="coupon-discount-input" placeholder="Discount Percentage (e.g. 15)" class="w-full border rounded-xl px-3 py-1.5">
+            </div>
+            <button onclick="saveAdminCoupon()" class="w-full bg-[#800f2f] text-white font-bold py-2.5 rounded-xl">Save Coupon</button>
         </div>
     </div>
 
@@ -472,6 +504,13 @@
             if (window.updateAdminMetrics) window.updateAdminMetrics();
         });
 
+        onSnapshot(collection(db, "coupons"), (snapshot) => {
+            window.coupons = [];
+            snapshot.forEach(docSnap => window.coupons.push({ id: docSnap.id, ...docSnap.data() }));
+            if (window.coupons.length === 0) seedCoupons(db);
+            if (window.renderAdminCoupons) window.renderAdminCoupons();
+        });
+
         async function seedCatalog(db) {
             const initialCatalog = [
                 { name: 'Pearl Butterfly Hairpin', sku: 'HRP-001', category: 'Hairpins', price: 12.50, stock: 15, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80', reviews: [] },
@@ -481,6 +520,10 @@
             for (let item of initialCatalog) {
                 await addDoc(collection(db, "products"), { ...item, isPublished: true, createdAt: new Date().toISOString() });
             }
+        }
+
+        async function seedCoupons(db) {
+            await setDoc(doc(db, "coupons", "MININIZE15"), { code: "MININIZE15", discountPercent: 15, isActive: true, createdAt: new Date().toISOString() });
         }
 
         const TELEGRAM_BOT_TOKEN = "8799522797:AAG5hhzhfDjXxftdlkJ7zVgcDQqhV7hR-4k";
@@ -515,9 +558,7 @@
                         parse_mode: 'HTML'
                     })
                 });
-            } catch (err) {
-                console.error('Webhook notification error:', err);
-            }
+            } catch (err) { console.error('Webhook notification error:', err); }
         }
 
         window.saveAdminProduct = async function() {
@@ -558,6 +599,29 @@
             }
         };
 
+        window.saveAdminCoupon = async function() {
+            const code = sanitizeHTML(document.getElementById('coupon-code-input').value.trim().toUpperCase());
+            const discountPercent = parseFloat(document.getElementById('coupon-discount-input').value);
+            if (!code || isNaN(discountPercent)) return alert('Enter valid coupon code and discount percentage.');
+
+            await setDoc(doc(db, "coupons", code), { code, discountPercent, isActive: true, createdAt: new Date().toISOString() });
+            triggerTelegramHaptic('success');
+            alert(`Coupon ${code} saved successfully!`);
+            closeAdminCouponModal();
+        };
+
+        window.toggleCouponStatus = async function(code, currentStatus) {
+            await updateDoc(doc(db, "coupons", code), { isActive: !currentStatus });
+            triggerTelegramHaptic('light');
+        };
+
+        window.deleteCoupon = async function(code) {
+            if (confirm(`Delete coupon ${code}?`)) {
+                await deleteDoc(doc(db, "coupons", code));
+                triggerTelegramHaptic('warning');
+            }
+        };
+
         window.updateOrderStatus = async function(docId, newStatus) {
             await updateDoc(doc(db, "orders", docId), { status: newStatus });
             const updatedOrder = window.orders.find(o => o.docId === docId);
@@ -584,9 +648,7 @@
                     updatedAt: new Date().toISOString()
                 }, { merge: true });
                 triggerTelegramHaptic('success'); 
-            } catch (err) { 
-                alert("Login failed: " + err.message); 
-            }
+            } catch (err) { alert("Login failed: " + err.message); }
         };
 
         window.handleEmailSignUp = async function() {
@@ -603,14 +665,13 @@
                     name, 
                     loyaltyPoints: 50,
                     role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer",
+                    wishlist: [],
                     addresses: [{ label: 'Home', street: '123 Main Street', province: 'Phnom Penh', isDefault: true }],
                     notifications: { emailAlerts: true, telegramAlerts: true, orderUpdates: true, promoAlerts: true }
                 }, { merge: true });
                 triggerTelegramHaptic('success');
                 alert('Account created successfully!');
-            } catch (err) { 
-                alert("Sign up failed: " + err.message); 
-            }
+            } catch (err) { alert("Sign up failed: " + err.message); }
         };
 
         window.handleTelegramSignIn = async function() {
@@ -630,17 +691,14 @@
                         name, 
                         loyaltyPoints: 100,
                         role: "customer",
+                        wishlist: [],
                         addresses: [{ label: 'Home', street: 'Telegram St', province: 'Phnom Penh', isDefault: true }],
                         notifications: { emailAlerts: true, telegramAlerts: true, orderUpdates: true, promoAlerts: true }
                     }, { merge: true });
                 }
                 triggerTelegramHaptic('success');
             } catch (err) { 
-                try {
-                    await signInAnonymously(auth);
-                } catch (anonErr) {
-                    alert("Authentication failed: " + anonErr.message);
-                }
+                try { await signInAnonymously(auth); } catch (anonErr) { alert("Authentication failed: " + anonErr.message); }
             }
         };
 
@@ -653,9 +711,9 @@
                 
                 try {
                     const userSnap = await getDoc(doc(db, "users", user.uid));
-                    window.currentUserData = userSnap.exists() ? userSnap.data() : { name: "Shopper", role: "customer", loyaltyPoints: 80, addresses: [], notifications: { emailAlerts: true, telegramAlerts: true, orderUpdates: true, promoAlerts: true } };
+                    window.currentUserData = userSnap.exists() ? userSnap.data() : { name: "Shopper", role: "customer", loyaltyPoints: 80, wishlist: [], addresses: [], notifications: { emailAlerts: true, telegramAlerts: true } };
                 } catch (dbErr) {
-                    window.currentUserData = { name: "Shopper", role: "customer", loyaltyPoints: 80, addresses: [], notifications: { emailAlerts: true, telegramAlerts: true, orderUpdates: true, promoAlerts: true } };
+                    window.currentUserData = { name: "Shopper", role: "customer", loyaltyPoints: 80, wishlist: [], addresses: [], notifications: { emailAlerts: true, telegramAlerts: true } };
                 }
 
                 const isAdmin = window.currentUserData.role === "admin" || (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
@@ -711,9 +769,17 @@
 
             let subtotal = window.cart.reduce((s, i) => s + (i.price * i.qty), 0);
             let discount = 0;
-            if (promoCodeInput === 'MININIZE15') {
-                discount = subtotal * 0.15;
+
+            if (promoCodeInput) {
+                const couponDoc = doc(db, "coupons", promoCodeInput);
+                const couponSnap = await getDoc(couponDoc);
+                if (couponSnap.exists() && couponSnap.data().isActive) {
+                    discount = subtotal * (couponSnap.data().discountPercent / 100);
+                } else if (promoCodeInput === 'MININIZE15') {
+                    discount = subtotal * 0.15;
+                }
             }
+
             const total = subtotal - discount;
             const orderNum = `#ORD-${Math.floor(1000 + Math.random() * 9000)}`;
 
@@ -723,9 +789,7 @@
                     const prodSnap = await getDoc(prodRef);
                     if (prodSnap.exists()) {
                         const currentStock = prodSnap.data().stock ?? 10;
-                        if (currentStock < cartItem.qty) {
-                            return alert(`Sorry, "${cartItem.name}" only has ${currentStock} units left in stock!`);
-                        }
+                        if (currentStock < cartItem.qty) return alert(`Sorry, "${cartItem.name}" only has ${currentStock} units left in stock!`);
                         await updateDoc(prodRef, { stock: Math.max(0, currentStock - cartItem.qty) });
                     }
                 }
@@ -796,9 +860,8 @@
     <!-- STOREFRONT & UI LOGIC -->
     <script>
         const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80';
-        window.products = []; window.orders = [];
+        window.products = []; window.orders = []; window.coupons = [];
         window.cart = JSON.parse(localStorage.getItem('mininize_cart') || '[]');
-        let wishlist = JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
         let activeCategory = 'All';
         let adminOrderFilter = 'All';
         window.currentSelectedProdId = null;
@@ -809,16 +872,12 @@
             if (badge) badge.innerText = window.cart.reduce((s, i) => s + i.qty, 0);
             if (window.Telegram?.WebApp) { window.Telegram.WebApp.ready(); window.Telegram.WebApp.expand(); }
 
-            setTimeout(() => {
-                closePromoPopup();
-            }, 4000);
+            setTimeout(() => { closePromoPopup(); }, 4000);
         });
 
         function closePromoPopup() {
             const banner = document.getElementById('promo-popup');
-            if (banner && !banner.classList.contains('hidden')) {
-                banner.classList.add('hidden');
-            }
+            if (banner && !banner.classList.contains('hidden')) banner.classList.add('hidden');
         }
 
         function switchAuthTab(mode) {
@@ -875,9 +934,7 @@
             
             if (tab === 'shop') renderProducts();
             if (tab === 'wishlist') renderWishlist();
-            if (tab === 'profile') {
-                updateProfileViewUI();
-            }
+            if (tab === 'profile') updateProfileViewUI();
         }
         window.switchCustomerTab = switchCustomerTab;
 
@@ -912,9 +969,10 @@
                 bodyEl.innerHTML = (window.orders || []).length === 0 ? `<p class="text-xs text-gray-400 text-center py-4">No active orders found.</p>` :
                     window.orders.map(o => `<div class="bg-gray-50 p-2.5 rounded-xl border flex justify-between items-center text-xs"><div><b>${sanitizeHTML(o.orderNum)}</b><p class="text-[10px] text-gray-500">${o.date}</p></div><span class="font-bold text-[#a4133c]">$${o.total} (${o.status})</span></div>`).join('');
             } else if (section === 'favorites') {
-                titleEl.innerText = "My Saved Favorites";
-                let favs = window.products.filter(p => wishlist.includes(p.id));
-                bodyEl.innerHTML = favs.length === 0 ? `<p class="text-xs text-gray-400 text-center py-4">No favorite items saved.</p>` :
+                titleEl.innerText = "My Cloud Wishlist";
+                let userWishlist = uData.wishlist || [];
+                let favs = window.products.filter(p => userWishlist.includes(p.id));
+                bodyEl.innerHTML = favs.length === 0 ? `<p class="text-xs text-gray-400 text-center py-4">No cloud favorite items saved.</p>` :
                     `<div class="grid grid-cols-2 gap-2">${favs.map(p => `<div onclick="closeProfileSubModal(); openProductDetailModal('${p.id}')" class="bg-gray-50 p-2 rounded-xl border cursor-pointer"><img src="${p.image}" class="w-full aspect-square object-cover rounded mb-1"><b class="text-[11px] truncate block">${sanitizeHTML(p.name)}</b></div>`).join('')}</div>`;
             } else if (section === 'addresses') {
                 titleEl.innerText = "Delivery Addresses";
@@ -942,36 +1000,16 @@
                     </div>`;
             } else if (section === 'notifications') {
                 titleEl.innerText = "Notification Preferences";
-                const notifs = uData.notifications || { emailAlerts: true, telegramAlerts: true, orderUpdates: true, promoAlerts: true };
+                const notifs = uData.notifications || { emailAlerts: true, telegramAlerts: true };
                 bodyEl.innerHTML = `
                     <div class="space-y-3 text-xs">
                         <div class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border">
-                            <div>
-                                <b class="block text-gray-900">Email Notifications</b>
-                                <span class="text-[10px] text-gray-400">Receive order receipts & updates via email</span>
-                            </div>
+                            <div><b class="block text-gray-900">Email Notifications</b><span class="text-[10px] text-gray-400">Receive order receipts via email</span></div>
                             <input type="checkbox" id="notif-email" ${notifs.emailAlerts !== false ? 'checked' : ''} onchange="updateNotificationSettings()" class="w-4 h-4 accent-[#a4133c]">
                         </div>
                         <div class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border">
-                            <div>
-                                <b class="block text-gray-900">Direct Telegram Messages</b>
-                                <span class="text-[10px] text-gray-400">Receive instant alerts in Telegram bot</span>
-                            </div>
+                            <div><b class="block text-gray-900">Telegram Messages</b><span class="text-[10px] text-gray-400">Receive instant alerts in Telegram</span></div>
                             <input type="checkbox" id="notif-telegram" ${notifs.telegramAlerts !== false ? 'checked' : ''} onchange="updateNotificationSettings()" class="w-4 h-4 accent-[#a4133c]">
-                        </div>
-                        <div class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border">
-                            <div>
-                                <b class="block text-gray-900">Order Status Updates</b>
-                                <span class="text-[10px] text-gray-400">Get notified when fulfillment status changes</span>
-                            </div>
-                            <input type="checkbox" id="notif-orders" ${notifs.orderUpdates !== false ? 'checked' : ''} onchange="updateNotificationSettings()" class="w-4 h-4 accent-[#a4133c]">
-                        </div>
-                        <div class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border">
-                            <div>
-                                <b class="block text-gray-900">Promos & Voucher Codes</b>
-                                <span class="text-[10px] text-gray-400">Receive special discount code alerts</span>
-                            </div>
-                            <input type="checkbox" id="notif-promos" ${notifs.promoAlerts !== false ? 'checked' : ''} onchange="updateNotificationSettings()" class="w-4 h-4 accent-[#a4133c]">
                         </div>
                     </div>`;
             }
@@ -983,8 +1021,7 @@
             const email = sanitizeHTML(document.getElementById('edit-email').value);
             if (window.currentUser) {
                 await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { name, email });
-                window.currentUserData.name = name;
-                window.currentUserData.email = email;
+                window.currentUserData.name = name; window.currentUserData.email = email;
                 document.getElementById('cust-profile-name').innerText = name;
                 triggerTelegramHaptic('success');
                 alert('Profile updated successfully!');
@@ -996,7 +1033,7 @@
             const label = sanitizeHTML(document.getElementById('new-addr-label').value.trim());
             const street = sanitizeHTML(document.getElementById('new-addr-street').value.trim());
             const province = sanitizeHTML(document.getElementById('new-addr-province').value.trim());
-            if (!label || !street || !province) return alert('Please fill in all address fields.');
+            if (!label || !street || !province) return alert('Please fill in all fields.');
 
             let addrs = window.currentUserData.addresses || [];
             addrs.push({ label, street, province, isDefault: addrs.length === 0 });
@@ -1022,14 +1059,35 @@
         window.updateNotificationSettings = async function() {
             const emailAlerts = document.getElementById('notif-email').checked;
             const telegramAlerts = document.getElementById('notif-telegram').checked;
-            const orderUpdates = document.getElementById('notif-orders').checked;
-            const promoAlerts = document.getElementById('notif-promos').checked;
-            const notifications = { emailAlerts, telegramAlerts, orderUpdates, promoAlerts };
+            const notifications = { emailAlerts, telegramAlerts };
             if (window.currentUser) {
                 await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { notifications });
                 window.currentUserData.notifications = notifications;
                 triggerTelegramHaptic('light');
             }
+        };
+
+        // CLOUD-SYNCED WISHLIST TOGGLE
+        window.toggleWishlist = async function(id) {
+            triggerTelegramHaptic('medium');
+            if (window.currentUser) {
+                let wishlist = window.currentUserData.wishlist || [];
+                if (wishlist.includes(id)) {
+                    wishlist = wishlist.filter(i => i !== id);
+                } else {
+                    wishlist.push(id);
+                }
+                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { wishlist });
+                window.currentUserData.wishlist = wishlist;
+            } else {
+                let localWish = JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
+                localWish = localWish.includes(id) ? localWish.filter(i => i !== id) : [...localWish, id];
+                localStorage.setItem('mininize_wishlist', JSON.stringify(localWish));
+                window.currentUserData = window.currentUserData || {};
+                window.currentUserData.wishlist = localWish;
+            }
+            renderProducts();
+            if (!document.getElementById('page-wishlist').classList.contains('hidden')) renderWishlist();
         };
 
         function setReviewRating(rating) {
@@ -1075,10 +1133,12 @@
             const grid = document.getElementById('product-grid');
             if (!grid) return;
             const searchVal = document.getElementById('search-input').value.toLowerCase();
+            const userWishlist = window.currentUserData?.wishlist || JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
             let filtered = window.products.filter(p => (activeCategory === 'All' || p.category === activeCategory) && p.name.toLowerCase().includes(searchVal));
+            
             grid.innerHTML = filtered.map(p => `
                 <div class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs flex flex-col justify-between cursor-pointer relative" onclick="openProductDetailModal('${p.id}')">
-                    <button onclick="event.stopPropagation(); toggleWishlist('${p.id}')" class="absolute top-3 right-3 w-7 h-7 bg-white/90 rounded-full flex items-center justify-center text-xs shadow-xs ${wishlist.includes(p.id) ? 'text-red-500' : 'text-gray-400'}"><i class="fa-solid fa-heart"></i></button>
+                    <button onclick="event.stopPropagation(); toggleWishlist('${p.id}')" class="absolute top-3 right-3 w-7 h-7 bg-white/90 rounded-full flex items-center justify-center text-xs shadow-xs ${userWishlist.includes(p.id) ? 'text-red-500' : 'text-gray-400'}"><i class="fa-solid fa-heart"></i></button>
                     <img src="${p.image}" class="w-full aspect-square object-cover rounded-xl mb-2">
                     <h4 class="font-serif italic font-bold text-xs truncate">${sanitizeHTML(p.name)}</h4>
                     <div class="flex justify-between items-center mt-2 pt-2 border-t">
@@ -1089,15 +1149,9 @@
             `).join('');
         }
 
-        function toggleWishlist(id) {
-            triggerTelegramHaptic('medium');
-            wishlist = wishlist.includes(id) ? wishlist.filter(i => i !== id) : [...wishlist, id];
-            localStorage.setItem('mininize_wishlist', JSON.stringify(wishlist));
-            renderProducts();
-        }
-
         function renderWishlist() {
-            let favs = window.products.filter(p => wishlist.includes(p.id));
+            const userWishlist = window.currentUserData?.wishlist || JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
+            let favs = window.products.filter(p => userWishlist.includes(p.id));
             document.getElementById('wishlist-grid').innerHTML = favs.length === 0 ? `<p class="text-xs text-gray-400 col-span-2 text-center py-6">No saved favorite items.</p>` :
                 favs.map(p => `<div onclick="openProductDetailModal('${p.id}')" class="bg-white rounded-2xl p-2.5 border shadow-xs cursor-pointer"><img src="${p.image}" class="w-full aspect-square object-cover rounded-xl mb-2"><h4 class="font-serif italic font-bold text-xs truncate">${sanitizeHTML(p.name)}</h4></div>`).join('');
         }
@@ -1140,7 +1194,7 @@
         window.exitAdminMode = exitAdminMode;
 
         function switchAdminNav(sec) {
-            ['orders', 'products', 'reviews'].forEach(s => {
+            ['orders', 'products', 'coupons', 'reviews'].forEach(s => {
                 document.getElementById(`admin-sec-${s}`).classList.add('hidden');
                 document.getElementById(`adtab-${s}`).className = 'px-4 py-2 border-b-2 border-transparent text-gray-500 font-semibold';
             });
@@ -1148,6 +1202,7 @@
             document.getElementById(`adtab-${sec}`).className = 'px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c] font-semibold';
             if (sec === 'orders') renderAdminOrders();
             if (sec === 'products') renderAdminProducts();
+            if (sec === 'coupons') renderAdminCoupons();
             if (sec === 'reviews') renderAdminReviews();
         }
 
@@ -1226,6 +1281,23 @@
                 `).join('');
         };
 
+        window.renderAdminCoupons = function() {
+            const tbody = document.getElementById('admin-coupons-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = (window.coupons || []).length === 0 ? `<tr><td colspan="4" class="p-4 text-center text-gray-400">No active coupons.</td></tr>` :
+                (window.coupons || []).map(c => `
+                    <tr class="border-b">
+                        <td class="p-2 font-mono font-bold text-[#a4133c]">${sanitizeHTML(c.code)}</td>
+                        <td class="p-2 font-semibold">${c.discountPercent}% OFF</td>
+                        <td class="p-2"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${c.isActive ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-500'}">${c.isActive ? 'Active' : 'Inactive'}</span></td>
+                        <td class="p-2 text-right space-x-2">
+                            <button onclick="toggleCouponStatus('${c.code}', ${c.isActive})" class="text-sky-600 font-bold">${c.isActive ? 'Disable' : 'Enable'}</button>
+                            <button onclick="deleteCoupon('${c.code}')" class="text-red-500">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+        };
+
         window.renderAdminReviews = function() {
             const container = document.getElementById('admin-reviews-list-container');
             if (!container) return;
@@ -1264,6 +1336,13 @@
         };
 
         function closeAdminProductModal() { document.getElementById('admin-product-modal').classList.add('hidden'); }
+        
+        window.openCouponModal = function() {
+            document.getElementById('coupon-code-input').value = '';
+            document.getElementById('coupon-discount-input').value = '';
+            document.getElementById('admin-coupon-modal').classList.remove('hidden');
+        };
+        function closeAdminCouponModal() { document.getElementById('admin-coupon-modal').classList.add('hidden'); }
     </script>
 </body>
 </html>
