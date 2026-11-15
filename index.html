@@ -476,7 +476,7 @@
         </div>
     </nav>
 
-    <!-- FIREBASE & CORE ENGINE WITH REAL-TIME LISTENERS -->
+    <!-- FIREBASE & CLOUDFLARE WORKER PROXY ENGINE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -495,7 +495,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Expose all core Firebase & Firestore utilities globally to prevent ReferenceErrors
+        // Expose global variables & Firestore functions to prevent ReferenceErrors
         window.firebaseDb = db;
         window.firebaseAuth = auth;
         window.doc = doc;
@@ -574,35 +574,30 @@
             await setDoc(doc(db, "coupons", "MININIZE15"), { code: "MININIZE15", discountPercent: 15, isActive: true, usageCount: 0, totalDiscountGiven: 0, createdAt: new Date().toISOString() });
         }
 
-        const TELEGRAM_BOT_TOKEN = "8799522797:AAG5hhzhfDjXxftdlkJ7zVgcDQqhV7hR-4k";
-        const TELEGRAM_CHANNEL_ID = "@songsashop";
-        const TELEGRAM_MINIAPP_URL = "https://t.me/songsashop";
+        // ==========================================
+        // CLOUDFLARE WORKER SECURE TELEGRAM PROXY
+        // ==========================================
+        const WORKER_PROXY_URL = "https://mininize-telegram-proxy.your-subdomain.workers.dev"; // Replace with your Worker URL
 
         async function postToTelegramChannel(photoUrl, captionText) {
             try {
-                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
+                await fetch(WORKER_PROXY_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: TELEGRAM_CHANNEL_ID,
-                        photo: photoUrl || "https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80",
-                        caption: captionText,
-                        parse_mode: 'HTML',
-                        reply_markup: { inline_keyboard: [[{ text: "Shop Now 🛍️", url: TELEGRAM_MINIAPP_URL }]] }
-                    })
+                    body: JSON.stringify({ photoUrl, caption: captionText })
                 });
-            } catch (err) { console.error('Telegram broadcast error:', err); }
+            } catch (err) { console.error('Proxy broadcast error:', err); }
         }
 
         async function sendTelegramLowStockAlert(productName, stockCount) {
             try {
                 const message = `<b>🚨 LOW STOCK ALERT! 🚨</b>\n\nProduct: <b>${productName}</b>\nRemaining Stock: <b>${stockCount} units</b>\nPlease restock inventory immediately!`;
-                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                await fetch(WORKER_PROXY_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: TELEGRAM_CHANNEL_ID, text: message, parse_mode: 'HTML' })
+                    body: JSON.stringify({ message })
                 });
-            } catch (err) { console.error('Telegram stock alert error:', err); }
+            } catch (err) { console.error('Proxy stock alert error:', err); }
         }
 
         window.saveAdminProduct = async function() {
