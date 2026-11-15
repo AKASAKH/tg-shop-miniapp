@@ -183,6 +183,23 @@
                     <button onclick="handleSignOut()" class="text-xs bg-red-50 text-red-600 px-3 py-2 rounded-xl font-medium">Sign Out</button>
                 </div>
             </div>
+
+            <!-- EXECUTIVE METRICS SUMMARY CARDS -->
+            <div class="grid grid-cols-3 gap-2.5">
+                <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs">
+                    <p class="text-[10px] text-gray-400 font-medium">Total Revenue</p>
+                    <h3 id="admin-metric-revenue" class="text-sm font-black text-[#a4133c] mt-0.5">$0.00</h3>
+                </div>
+                <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs">
+                    <p class="text-[10px] text-gray-400 font-medium">Pending Orders</p>
+                    <h3 id="admin-metric-pending" class="text-sm font-black text-amber-600 mt-0.5">0</h3>
+                </div>
+                <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs">
+                    <p class="text-[10px] text-gray-400 font-medium">Low Stock Alerts</p>
+                    <h3 id="admin-metric-lowstock" class="text-sm font-black text-red-600 mt-0.5">0</h3>
+                </div>
+            </div>
+
             <div class="flex space-x-1 border-b border-gray-200 text-xs font-semibold overflow-x-auto">
                 <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c]">Orders Management</button>
                 <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Products Inventory</button>
@@ -199,13 +216,22 @@
                 </div>
             </div>
 
+            <!-- PRODUCTS SECTION WITH SEARCH FILTER BAR -->
             <div id="admin-sec-products" class="hidden space-y-4">
-                <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 overflow-x-auto">
-                    <h3 class="font-bold text-xs text-gray-900 mb-3">Product Catalog (Click to Edit)</h3>
-                    <table class="w-full text-left text-xs">
-                        <thead><tr class="text-gray-400 border-b text-[10px]"><th class="p-2">Name</th><th class="p-2">Category</th><th class="p-2">Price</th><th class="p-2 text-right">Actions</th></tr></thead>
-                        <tbody id="admin-products-table-body" class="divide-y text-[11px]"></tbody>
-                    </table>
+                <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                        <h3 class="font-bold text-xs text-gray-900">Product Catalog (Click to Edit)</h3>
+                        <div class="relative w-full sm:w-48">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-2.5 text-gray-400"><i class="fa-solid fa-magnifying-glass text-[10px]"></i></span>
+                            <input type="text" id="admin-product-search" oninput="renderAdminProducts()" placeholder="Search Name, SKU..." class="w-full pl-7 pr-2.5 py-1.5 bg-gray-50 border border-gray-200 rounded-xl text-[11px] focus:outline-none focus:border-[#a4133c]">
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead><tr class="text-gray-400 border-b text-[10px]"><th class="p-2">Name</th><th class="p-2">Category</th><th class="p-2">Price</th><th class="p-2">Stock</th><th class="p-2 text-right">Actions</th></tr></thead>
+                            <tbody id="admin-products-table-body" class="divide-y text-[11px]"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -414,6 +440,7 @@
             if (window.products.length === 0) seedCatalog(db);
             if (window.renderProducts) window.renderProducts();
             if (window.renderAdminProducts) window.renderAdminProducts();
+            if (window.updateAdminMetrics) window.updateAdminMetrics();
             if (window.checkInitialDeepLink) window.checkInitialDeepLink();
         });
 
@@ -421,6 +448,7 @@
             window.orders = [];
             snapshot.forEach(docSnap => window.orders.push({ docId: docSnap.id, ...docSnap.data() }));
             if (window.renderAdminOrders) window.renderAdminOrders();
+            if (window.updateAdminMetrics) window.updateAdminMetrics();
         });
 
         async function seedCatalog(db) {
@@ -629,7 +657,6 @@
             }
         };
 
-        // SCALED CHECKOUT WITH VOUCHER CODE & INVENTORY STOCK LOCK
         window.createOrderAndInitBakong = async function() {
             const customerName = sanitizeHTML(document.getElementById('checkout-name').value.trim());
             const phone = sanitizeHTML(document.getElementById('checkout-phone').value.trim());
@@ -646,7 +673,6 @@
             const orderNum = `#ORD-${Math.floor(1000 + Math.random() * 9000)}`;
 
             try {
-                // Real-time inventory verification & deduction
                 for (let cartItem of window.cart) {
                     const prodRef = doc(db, "products", cartItem.id);
                     const prodSnap = await getDoc(prodRef);
@@ -1037,6 +1063,7 @@
             document.getElementById('admin-view').classList.remove('hidden');
             document.getElementById('customer-nav').classList.add('hidden');
             switchAdminNav('orders');
+            updateAdminMetrics();
         }
         function exitAdminMode() {
             document.getElementById('customer-view').classList.remove('hidden');
@@ -1057,6 +1084,20 @@
             if (sec === 'products') renderAdminProducts();
             if (sec === 'reviews') renderAdminReviews();
         }
+
+        window.updateAdminMetrics = function() {
+            const totalRevenue = (window.orders || []).reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+            const pendingCount = (window.orders || []).filter(o => o.status === 'Pending').length;
+            const lowStockCount = (window.products || []).filter(p => (p.stock ?? 10) <= 5).length;
+
+            const revEl = document.getElementById('admin-metric-revenue');
+            const pendEl = document.getElementById('admin-metric-pending');
+            const lowEl = document.getElementById('admin-metric-lowstock');
+
+            if (revEl) revEl.innerText = `$${totalRevenue.toFixed(2)}`;
+            if (pendEl) pendEl.innerText = pendingCount;
+            if (lowEl) lowEl.innerText = lowStockCount;
+        };
 
         window.renderAdminOrders = function() {
             const tbody = document.getElementById('admin-orders-table-body');
@@ -1084,17 +1125,28 @@
         window.renderAdminProducts = function() {
             const tbody = document.getElementById('admin-products-table-body');
             if (!tbody) return;
-            tbody.innerHTML = window.products.map(p => `
-                <tr class="border-b">
-                    <td class="p-2 font-medium"><b>${sanitizeHTML(p.name)}</b></td>
-                    <td class="p-2">${sanitizeHTML(p.category)}</td>
-                    <td class="p-2 font-bold">$${p.price}</td>
-                    <td class="p-2 text-right space-x-2">
-                        <button onclick="editProduct('${p.id}')" class="text-sky-600 font-bold">Edit</button>
-                        <button onclick="deleteProduct('${p.id}')" class="text-red-500">Delete</button>
-                    </td>
-                </tr>
-            `).join('');
+            const searchInput = document.getElementById('admin-product-search');
+            const query = searchInput ? searchInput.value.toLowerCase() : '';
+
+            let filteredProducts = (window.products || []).filter(p => 
+                (p.name && p.name.toLowerCase().includes(query)) || 
+                (p.sku && p.sku.toLowerCase().includes(query)) ||
+                (p.category && p.category.toLowerCase().includes(query))
+            );
+
+            tbody.innerHTML = filteredProducts.length === 0 ? `<tr><td colspan="5" class="p-4 text-center text-gray-400">No products found.</td></tr>` :
+                filteredProducts.map(p => `
+                    <tr class="border-b">
+                        <td class="p-2 font-medium"><b>${sanitizeHTML(p.name)}</b><span class="block text-[9px] font-mono text-gray-400">${sanitizeHTML(p.sku || 'SKU')}</span></td>
+                        <td class="p-2">${sanitizeHTML(p.category)}</td>
+                        <td class="p-2 font-bold">$${Number(p.price).toFixed(2)}</td>
+                        <td class="p-2"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${(p.stock ?? 10) <= 5 ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}">${p.stock ?? 10} left</span></td>
+                        <td class="p-2 text-right space-x-2">
+                            <button onclick="editProduct('${p.id}')" class="text-sky-600 font-bold">Edit</button>
+                            <button onclick="deleteProduct('${p.id}')" class="text-red-500">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
         };
 
         window.renderAdminReviews = function() {
