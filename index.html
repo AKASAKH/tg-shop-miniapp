@@ -453,7 +453,7 @@
         </div>
     </nav>
 
-    <!-- FIREBASE & CORE ENGINE -->
+    <!-- FIREBASE & CORE ENGINE WITH REAL-TIME LISTENERS -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -738,20 +738,35 @@
 
         window.handleSignOut = async function() { await signOut(auth); if (window.exitAdminMode) window.exitAdminMode(); };
 
+        let userDocUnsubscribe = null;
+
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 window.currentUser = user;
                 document.getElementById('session-user-badge').innerText = user.email || 'Active User';
-                try {
-                    const userSnap = await getDoc(doc(db, "users", user.uid));
-                    window.currentUserData = userSnap.exists() ? userSnap.data() : { name: "Shopper", role: "customer", loyaltyPoints: 80, wishlist: [], addresses: [], notifications: { emailAlerts: true, telegramAlerts: true } };
-                } catch (dbErr) {
-                    window.currentUserData = { name: "Shopper", role: "customer", loyaltyPoints: 80, wishlist: [], addresses: [], notifications: { emailAlerts: true, telegramAlerts: true } };
-                }
 
-                const isAdmin = window.currentUserData.role === "admin" || (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
-                if (isAdmin) enterAdminMode(); else { exitAdminMode(); if (window.updateProfileViewUI) window.updateProfileViewUI(); }
+                // Clean up any existing listener
+                if (userDocUnsubscribe) { userDocUnsubscribe(); userDocUnsubscribe = null; }
+
+                // Establish REAL-TIME Firestore listener for user data
+                userDocUnsubscribe = onSnapshot(doc(db, "users", user.uid), (docSnap) => {
+                    if (docSnap.exists()) {
+                        window.currentUserData = docSnap.data();
+                    } else {
+                        window.currentUserData = { name: "Shopper", role: "customer", loyaltyPoints: 80, wishlist: [], addresses: [], notifications: { emailAlerts: true, telegramAlerts: true } };
+                    }
+
+                    const isAdmin = window.currentUserData.role === "admin" || (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
+                    if (isAdmin) {
+                        enterAdminMode();
+                    } else {
+                        exitAdminMode();
+                        if (window.updateProfileViewUI) window.updateProfileViewUI();
+                        if (window.renderProducts) window.renderProducts();
+                    }
+                });
             } else {
+                if (userDocUnsubscribe) { userDocUnsubscribe(); userDocUnsubscribe = null; }
                 window.currentUser = null; window.currentUserData = null;
                 document.getElementById('session-user-badge').innerText = 'Guest Mode';
                 exitAdminMode();
@@ -994,12 +1009,27 @@
             const uData = window.currentUserData || {};
 
             if (section === 'personal') {
-                titleEl.innerText = "Personal Information";
-                bodyEl.innerHTML = `<div class="space-y-3">
-                    <input type="text" id="edit-name" value="${sanitizeHTML(uData.name || '')}" class="w-full border rounded-xl px-3 py-2">
-                    <input type="email" id="edit-email" value="${sanitizeHTML(uData.email || '')}" class="w-full border rounded-xl px-3 py-2">
-                    <button onclick="savePersonalData()" class="w-full bg-[#800f2f] text-white font-bold py-2 rounded-xl">Save Changes</button>
-                </div>`;
+                titleEl.innerText = "Personal Information 👤";
+                bodyEl.innerHTML = `
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 mb-1">Full Name</label>
+                            <input type="text" id="edit-name" value="${sanitizeHTML(uData.name || '')}" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 mb-1">Email Address</label>
+                            <input type="email" id="edit-email" value="${sanitizeHTML(uData.email || '')}" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 mb-1">Phone Number</label>
+                            <input type="tel" id="edit-phone" value="${sanitizeHTML(uData.phone || '')}" placeholder="+855 XX XXX XXX" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
+                        </div>
+                        <div class="pt-2">
+                            <button id="save-profile-btn" onclick="savePersonalData()" class="w-full bg-[#800f2f] text-white font-bold py-2.5 rounded-xl shadow-xs active:scale-95 transition-transform flex items-center justify-center space-x-2">
+                                <span>Save Changes</span>
+                            </button>
+                        </div>
+                    </div>`;
             } else if (section === 'orders') {
                 titleEl.innerText = "My Orders & Live Timeline 📦";
                 const statuses = ['Pending', 'Paid', 'Processing', 'Shipped', 'Delivered'];
@@ -1013,7 +1043,6 @@
                                     <span class="font-bold text-[#a4133c]">$${o.total}</span>
                                 </div>
                                 <p class="text-[10px] text-gray-400">Ordered: ${o.date} | Promo: ${o.promoCode || 'None'}</p>
-                                <!-- Interactive Tracking Timeline -->
                                 <div class="flex justify-between items-center pt-2 border-t text-[9px] text-gray-500">
                                     ${statuses.map((st, idx) => `
                                         <div class="flex flex-col items-center space-y-1">
@@ -1104,15 +1133,26 @@
         window.closeProfileSubModal = function() { document.getElementById('profile-sub-modal').classList.add('hidden'); };
 
         window.savePersonalData = async function() {
-            const name = sanitizeHTML(document.getElementById('edit-name').value);
-            const email = sanitizeHTML(document.getElementById('edit-email').value);
-            if (window.currentUser) {
-                await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { name, email });
-                window.currentUserData.name = name; window.currentUserData.email = email;
-                document.getElementById('cust-profile-name').innerText = name;
-                triggerTelegramHaptic('success');
-                alert('Profile updated successfully!');
-                closeProfileSubModal();
+            const name = sanitizeHTML(document.getElementById('edit-name').value.trim());
+            const email = sanitizeHTML(document.getElementById('edit-email').value.trim());
+            const phone = sanitizeHTML(document.getElementById('edit-phone').value.trim());
+            if (!name) return alert('Name cannot be empty.');
+
+            const saveBtn = document.getElementById('save-profile-btn');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i><span>Syncing to Database...</span>`;
+
+            try {
+                if (window.currentUser) {
+                    await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { name, email, phone, updatedAt: new Date().toISOString() });
+                    triggerTelegramHaptic('success');
+                    alert('Profile updated and synced across devices! 🎉');
+                    closeProfileSubModal();
+                }
+            } catch (err) {
+                alert('Failed to sync: ' + err.message);
+                saveBtn.disabled = false;
+                saveBtn.innerText = 'Save Changes';
             }
         };
 
@@ -1126,7 +1166,6 @@
             addrs.push({ label, street, province, isDefault: addrs.length === 0 });
             if (window.currentUser) {
                 await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { addresses: addrs });
-                window.currentUserData.addresses = addrs;
                 triggerTelegramHaptic('success');
                 openProfileSection('addresses');
             }
@@ -1137,7 +1176,6 @@
             addrs.splice(index, 1);
             if (window.currentUser) {
                 await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { addresses: addrs });
-                window.currentUserData.addresses = addrs;
                 triggerTelegramHaptic('medium');
                 openProfileSection('addresses');
             }
@@ -1149,7 +1187,6 @@
             const notifications = { emailAlerts, telegramAlerts };
             if (window.currentUser) {
                 await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { notifications });
-                window.currentUserData.notifications = notifications;
                 triggerTelegramHaptic('light');
             }
         };
@@ -1160,16 +1197,15 @@
                 let wishlist = window.currentUserData.wishlist || [];
                 if (wishlist.includes(id)) wishlist = wishlist.filter(i => i !== id); else wishlist.push(id);
                 await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { wishlist });
-                window.currentUserData.wishlist = wishlist;
             } else {
                 let localWish = JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
                 localWish = localWish.includes(id) ? localWish.filter(i => i !== id) : [...localWish, id];
                 localStorage.setItem('mininize_wishlist', JSON.stringify(localWish));
                 window.currentUserData = window.currentUserData || {};
                 window.currentUserData.wishlist = localWish;
+                renderProducts();
+                if (!document.getElementById('page-wishlist').classList.contains('hidden')) renderWishlist();
             }
-            renderProducts();
-            if (!document.getElementById('page-wishlist').classList.contains('hidden')) renderWishlist();
         };
 
         function setReviewRating(rating) {
