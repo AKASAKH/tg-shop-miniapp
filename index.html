@@ -486,6 +486,7 @@
             triggerTelegramHaptic('light');
         };
 
+        // ROBUST LOGIN WITH DATABASE SYNC & MERGE
         window.handleEmailLogin = async function() {
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
@@ -493,40 +494,47 @@
             try { 
                 const cred = await signInWithEmailAndPassword(auth, email, password); 
                 const userRef = doc(db, "users", cred.user.uid);
-                const userSnap = await getDoc(userRef);
-                if (!userSnap.exists()) {
-                    await setDoc(userRef, {
-                        uid: cred.user.uid,
-                        customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
-                        email,
-                        name: email.split('@')[0],
-                        role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer",
-                        addresses: [{ label: 'Home', street: '123 Main Street', province: 'Phnom Penh', isDefault: true }],
-                        notifications: { orders: true, promos: true, restocks: false }
-                    });
-                }
+                await setDoc(userRef, {
+                    uid: cred.user.uid,
+                    customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
+                    email,
+                    name: email.split('@')[0],
+                    role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer",
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
                 triggerTelegramHaptic('success'); 
-            } catch (err) { alert("Login failed: " + err.message); }
+            } catch (err) { 
+                console.error("Login error:", err);
+                alert("Login failed: " + err.message); 
+            }
         };
 
+        // ROBUST SIGN-UP WITH DATABASE SYNC & MERGE
         window.handleEmailSignUp = async function() {
             const name = sanitizeHTML(document.getElementById('signup-name').value.trim());
-            const email = sanitizeHTML(document.getElementById('signup-email').value.trim());
+            const email = document.getElementById('signup-email').value.trim();
             const password = document.getElementById('signup-password').value;
             if (!name || !email || !password) return alert('Fill all fields.');
             try {
                 const cred = await createUserWithEmailAndPassword(auth, email, password);
                 await setDoc(doc(db, "users", cred.user.uid), {
-                    uid: cred.user.uid, customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
-                    email, name, role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer",
+                    uid: cred.user.uid, 
+                    customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
+                    email, 
+                    name, 
+                    role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer",
                     addresses: [{ label: 'Home', street: '123 Main Street', province: 'Phnom Penh', isDefault: true }],
                     notifications: { orders: true, promos: true, restocks: false }
-                });
+                }, { merge: true });
                 triggerTelegramHaptic('success');
-                alert('Account created!');
-            } catch (err) { alert("Sign up failed: " + err.message); }
+                alert('Account created successfully!');
+            } catch (err) { 
+                console.error("Sign up error:", err);
+                alert("Sign up failed: " + err.message); 
+            }
         };
 
+        // ROBUST TELEGRAM SIGN-IN
         window.handleTelegramSignIn = async function() {
             try {
                 const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
@@ -538,14 +546,24 @@
                 } catch(e) {
                     const cred = await createUserWithEmailAndPassword(auth, email, password);
                     await setDoc(doc(db, "users", cred.user.uid), {
-                        uid: cred.user.uid, customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
-                        email, name, role: "customer",
+                        uid: cred.user.uid, 
+                        customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
+                        email, 
+                        name, 
+                        role: "customer",
                         addresses: [{ label: 'Home', street: 'Telegram St', province: 'Phnom Penh', isDefault: true }],
                         notifications: { orders: true, promos: true, restocks: false }
-                    });
+                    }, { merge: true });
                 }
                 triggerTelegramHaptic('success');
-            } catch (err) { await signInAnonymously(auth); }
+            } catch (err) { 
+                console.error("Telegram sign-in error:", err);
+                try {
+                    await signInAnonymously(auth);
+                } catch (anonErr) {
+                    alert("Authentication failed: " + anonErr.message);
+                }
+            }
         };
 
         window.handleSignOut = async function() { await signOut(auth); if (window.exitAdminMode) window.exitAdminMode(); };
@@ -555,11 +573,15 @@
                 window.currentUser = user;
                 document.getElementById('session-user-badge').innerText = user.email || 'Active User';
                 
-                const userSnap = await getDoc(doc(db, "users", user.uid));
-                const userData = userSnap.exists() ? userSnap.data() : { name: "Shopper", role: "customer", addresses: [], notifications: { orders: true, promos: true } };
-                window.currentUserData = userData;
+                try {
+                    const userSnap = await getDoc(doc(db, "users", user.uid));
+                    window.currentUserData = userSnap.exists() ? userSnap.data() : { name: "Shopper", role: "customer", addresses: [], notifications: { orders: true, promos: true } };
+                } catch (dbErr) {
+                    console.error("Failed fetching user profile from database:", dbErr);
+                    window.currentUserData = { name: "Shopper", role: "customer", addresses: [], notifications: { orders: true, promos: true } };
+                }
 
-                const isAdmin = userData.role === "admin" || (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
+                const isAdmin = window.currentUserData.role === "admin" || (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
                 if (isAdmin) {
                     enterAdminMode();
                 } else {
