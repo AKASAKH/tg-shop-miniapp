@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mininize Studio - Enterprise Single-File Edition</title>
+    <title>Mininize Studio - Enterprise Broadcast Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
@@ -221,7 +221,7 @@
             <div class="bg-white p-3 rounded-2xl border border-gray-100 shadow-xs flex justify-between items-center">
                 <span class="font-bold text-xs text-gray-900 flex items-center"><i class="fa-solid fa-shield-halved text-[#a4133c] mr-1.5"></i> Mininize Studio Admin Portal <span id="admin-role-tag" class="ml-2 text-[9px] bg-pink-50 text-[#a4133c] px-2 py-0.5 rounded font-bold">Super Admin</span></span>
                 <div class="flex items-center space-x-2">
-                    <button onclick="openProductModal()" id="add-prod-admin-btn" class="bg-[#800f2f] text-white text-xs px-3 py-2 rounded-xl font-bold">+ Add Product</button>
+                    <button onclick="openProductModal()" id="add-prod-admin-btn" class="bg-[#800f2f] text-white text-xs px-3 py-2 rounded-xl font-bold">+ New Product & Broadcast</button>
                     <button onclick="handleSignOut()" class="text-xs bg-red-50 text-red-600 px-3 py-2 rounded-xl font-medium">Sign Out</button>
                 </div>
             </div>
@@ -249,7 +249,7 @@
             <!-- ADMIN NAVIGATION TABS -->
             <div class="flex space-x-1 border-b border-gray-200 text-xs font-semibold overflow-x-auto">
                 <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c]">Orders & Fulfillment</button>
-                <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Products & Inventory</button>
+                <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Products & Telegram Broadcasts</button>
                 <button onclick="switchAdminNav('coupons')" id="adtab-coupons" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Coupons & Limits 🎟️</button>
                 <button onclick="switchAdminNav('analytics')" id="adtab-analytics" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Analytics & Reports 📈</button>
                 <button onclick="switchAdminNav('reviews')" id="adtab-reviews" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Reviews ⭐</button>
@@ -298,7 +298,7 @@
                 </div>
             </div>
 
-            <!-- PRODUCTS & INVENTORY SECTION -->
+            <!-- PRODUCTS & BROADCAST SECTION -->
             <div id="admin-sec-products" class="hidden space-y-4">
                 <div id="low-stock-alert-banner" class="hidden bg-red-50 border border-red-200 text-red-700 p-3 rounded-2xl flex items-center justify-between text-xs shadow-xs">
                     <div class="flex items-center space-x-2">
@@ -310,7 +310,7 @@
 
                 <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                        <h3 class="font-bold text-xs text-gray-900">Product Catalog & Stock Management</h3>
+                        <h3 class="font-bold text-xs text-gray-900">Product Catalog & Telegram Broadcasts</h3>
                         <div class="flex items-center space-x-2 w-full sm:w-auto">
                             <div class="relative flex-1 sm:w-48">
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-2.5 text-gray-400"><i class="fa-solid fa-magnifying-glass text-[10px]"></i></span>
@@ -321,7 +321,7 @@
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs">
-                            <thead><tr class="text-gray-400 border-b text-[10px]"><th class="p-2">Name</th><th class="p-2">Category</th><th class="p-2">Price</th><th class="p-2">Stock Level</th><th class="p-2 text-right">Quick Restock</th></tr></thead>
+                            <thead><tr class="text-gray-400 border-b text-[10px]"><th class="p-2">Name</th><th class="p-2">Category</th><th class="p-2">Price</th><th class="p-2">Stock Level</th><th class="p-2 text-right">Telegram Actions & Restock</th></tr></thead>
                             <tbody id="admin-products-table-body" class="divide-y text-[11px]"></tbody>
                         </table>
                     </div>
@@ -374,6 +374,85 @@
 
     </main>
 
+    <!-- ADD / EDIT PRODUCT & TELEGRAM BROADCAST MODAL -->
+    <div id="admin-product-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-5 space-y-3 shadow-2xl relative text-xs max-h-[90vh] overflow-y-auto border border-gray-100">
+            <button onclick="closeAdminProductModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
+            <h3 id="product-modal-title" class="font-serif italic font-bold text-sm text-gray-900">Add Product & Customize Telegram Post</h3>
+            <input type="hidden" id="prod-id" value="">
+            
+            <div class="space-y-2.5">
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 mb-1">Product Name</label>
+                    <input type="text" id="prod-name" placeholder="e.g. Pearl Butterfly Hairpin" class="w-full border rounded-xl px-3 py-2">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 mb-1">SKU Code</label>
+                        <input type="text" id="prod-sku" placeholder="HRP-001" class="w-full border rounded-xl px-3 py-2 uppercase">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 mb-1">Category</label>
+                        <select id="prod-category" class="w-full border rounded-xl px-3 py-2 bg-white">
+                            <option value="Hairpins">Hairpins 🎀</option>
+                            <option value="Necklaces">Necklaces 📿</option>
+                            <option value="Rings">Rings 💍</option>
+                            <option value="Earrings">Earrings 💎</option>
+                            <option value="Phone Charms">Phone Charms 📱</option>
+                            <option value="Bags & Pouches">Bags & Pouches 👜</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 mb-1">Price ($)</label>
+                        <input type="number" step="0.01" id="prod-price" placeholder="12.50" class="w-full border rounded-xl px-3 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 mb-1">Stock Level</label>
+                        <input type="number" id="prod-stock" placeholder="10" class="w-full border rounded-xl px-3 py-2">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 mb-1">Image URL</label>
+                    <input type="text" id="prod-image" placeholder="https://..." class="w-full border rounded-xl px-3 py-2">
+                </div>
+
+                <!-- DETAILED SPECS -->
+                <div class="border-t pt-2 space-y-2">
+                    <p class="font-bold text-gray-900 text-[11px]">Detailed Specifications ✨</p>
+                    <input type="text" id="spec-material" placeholder="Material (e.g. 18k Gold-Plated Brass)" class="w-full border rounded-xl px-3 py-1.5">
+                    <input type="text" id="spec-dimensions" placeholder="Dimensions (e.g. 6.5cm x 3.2cm)" class="w-full border rounded-xl px-3 py-1.5">
+                    <input type="text" id="spec-care" placeholder="Care Instructions" class="w-full border rounded-xl px-3 py-1.5">
+                </div>
+
+                <!-- CUSTOMIZE TELEGRAM POST TEMPLATE -->
+                <div class="border-t pt-2 space-y-2 bg-pink-50/50 p-3 rounded-2xl border-pink-100">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-[#a4133c] text-[11px]">Customize Telegram Broadcast Post 📢</span>
+                        <span class="text-[9px] text-gray-400">Variables: {name}, {price}, {sku}, {link}</span>
+                    </div>
+                    <textarea id="telegram-template-text" rows="3" class="w-full border rounded-xl p-2.5 text-[11px] bg-white font-mono">✨ NEW AESTHETIC DROP: {name} ✨
+
+Price: {price}
+SKU: {sku}
+
+Tap below to shop instantly in our Telegram Mini App! 🛍️
+{link}</textarea>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="telegram-bot-token" placeholder="Bot Token (optional override)" class="border rounded-xl px-2.5 py-1.5 text-[10px]">
+                        <input type="text" id="telegram-chat-id" placeholder="@channel_username or group_id" class="border rounded-xl px-2.5 py-1.5 text-[10px]">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex space-x-2 pt-2">
+                <button onclick="saveAdminProductAndBroadcast()" class="flex-1 bg-[#800f2f] text-white font-bold py-2.5 rounded-xl shadow-xs">Save & Broadcast to Telegram 🚀</button>
+                <button onclick="closeAdminProductModal()" class="px-4 bg-gray-100 text-gray-700 font-bold py-2.5 rounded-xl">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <!-- BARCODE SCANNER MODAL -->
     <div id="admin-scanner-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative text-center border border-gray-100">
@@ -417,9 +496,9 @@
             <!-- RICH SPECIFICATIONS CONTAINER -->
             <div id="view-prod-specs" class="bg-gray-50 p-3 rounded-2xl border text-[11px] space-y-1">
                 <p class="font-bold text-gray-900">Specifications & Care ✨</p>
-                <p><span class="text-gray-500">Material:</span> <span id="spec-material">18k Gold-Plated Brass</span></p>
-                <p><span class="text-gray-500">Dimensions:</span> <span id="spec-dimensions">Standard Fit</span></p>
-                <p><span class="text-gray-500">Care:</span> <span id="spec-care">Avoid direct contact with water and perfumes.</span></p>
+                <p><span class="text-gray-500">Material:</span> <span id="spec-material-view">18k Gold-Plated Brass</span></p>
+                <p><span class="text-gray-500">Dimensions:</span> <span id="spec-dimensions-view">Standard Fit</span></p>
+                <p><span class="text-gray-500">Care:</span> <span id="spec-care-view">Avoid direct contact with water and perfumes.</span></p>
             </div>
 
             <div class="border-t border-gray-100 pt-3 space-y-2">
@@ -501,31 +580,6 @@
                 <span>Awaiting Bakong Network Confirmation...</span>
             </div>
             <button onclick="verifyBakongTransactionManual()" class="w-full bg-emerald-600 text-white font-bold text-xs py-2.5 rounded-xl">I Have Sent Payment (Verify)</button>
-        </div>
-    </div>
-
-    <!-- ADD / EDIT PRODUCT MODAL -->
-    <div id="admin-product-modal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs">
-            <button onclick="closeAdminProductModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
-            <h3 id="product-modal-title" class="font-serif italic font-bold text-xs text-gray-900">Add or Edit Product</h3>
-            <input type="hidden" id="prod-id" value="">
-            <div class="space-y-2">
-                <input type="text" id="prod-name" placeholder="Product Name" class="w-full border rounded-xl px-3 py-1.5">
-                <input type="text" id="prod-sku" placeholder="SKU Code" class="w-full border rounded-xl px-3 py-1.5 uppercase">
-                <select id="prod-category" class="w-full border rounded-xl px-3 py-1.5 bg-white">
-                    <option value="Hairpins">Hairpins 🎀</option>
-                    <option value="Necklaces">Necklaces 📿</option>
-                    <option value="Rings">Rings 💍</option>
-                    <option value="Earrings">Earrings 💎</option>
-                    <option value="Phone Charms">Phone Charms 📱</option>
-                    <option value="Bags & Pouches">Bags & Pouches 👜</option>
-                </select>
-                <input type="number" step="0.01" id="prod-price" placeholder="Price ($)" class="w-full border rounded-xl px-3 py-1.5">
-                <input type="number" id="prod-stock" placeholder="Stock Quantity" class="w-full border rounded-xl px-3 py-1.5">
-                <input type="text" id="prod-image" placeholder="Image URL" class="w-full border rounded-xl px-3 py-1.5">
-            </div>
-            <button onclick="saveAdminProduct()" class="w-full bg-[#800f2f] text-white font-bold py-2.5 rounded-xl">Save Product</button>
         </div>
     </div>
 
@@ -763,7 +817,7 @@
             await setDoc(doc(db, "coupons", "MININIZE15"), { code: "MININIZE15", discountPercent: 15, maxUsage: 50, usageCount: 0, totalDiscountGiven: 0, isActive: true, createdAt: new Date().toISOString() });
         }
 
-        window.saveAdminProduct = async function() {
+        window.saveAdminProductAndBroadcast = async function() {
             if (window.currentUserData?.role === 'staff') return alert('Staff role is restricted from creating/editing products.');
             const prodId = document.getElementById('prod-id').value;
             const name = sanitizeHTML(document.getElementById('prod-name').value.trim());
@@ -772,6 +826,10 @@
             const price = parseFloat(document.getElementById('prod-price').value);
             let stock = parseInt(document.getElementById('prod-stock').value);
             const image = document.getElementById('prod-image').value.trim() || 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80';
+            
+            const material = sanitizeHTML(document.getElementById('spec-material').value.trim());
+            const dimensions = sanitizeHTML(document.getElementById('spec-dimensions').value.trim());
+            const care = sanitizeHTML(document.getElementById('spec-care').value.trim());
 
             if (!name) return alert('Enter product name.');
             if (isNaN(price)) return alert('Enter valid price.');
@@ -779,23 +837,76 @@
 
             const productData = { 
                 name, sku, category, price, stock: isNaN(stock) ? 10 : stock, image, 
-                details: { material: "Premium Alloy / Plated Metal", dimensions: "Standard Fit", care: "Keep away from moisture and harsh chemicals." },
+                details: { material: material || "Premium Alloy / Plated Metal", dimensions: dimensions || "Standard Fit", care: care || "Keep away from moisture and harsh chemicals." },
                 isPublished: true, updatedAt: new Date().toISOString() 
             };
             
+            let savedId = prodId;
             if (prodId) {
                 await updateDoc(doc(db, "products", prodId), productData);
-                triggerTelegramHaptic('success');
-                alert('Product updated successfully!');
             } else {
                 productData.createdAt = new Date().toISOString();
                 productData.reviews = [];
-                await addDoc(collection(db, "products"), productData);
-                triggerTelegramHaptic('success');
-                alert('Product saved successfully! 🎉');
+                const docRef = await addDoc(collection(db, "products"), productData);
+                savedId = docRef.id;
             }
+
+            // BROADCAST TO TELEGRAM CHANNEL/GROUP
+            const template = document.getElementById('telegram-template-text').value;
+            const chatId = document.getElementById('telegram-chat-id').value.trim();
+            const tokenOverride = document.getElementById('telegram-bot-token').value.trim();
+            const botToken = tokenOverride || "7523531234:AAH_example_token_placeholder";
+
+            if (chatId) {
+                const miniAppUrl = `https://t.me/songsashop?startapp=prod_${savedId}`;
+                const broadcastMessage = template
+                    .replace('{name}', name)
+                    .replace('{price}', window.formatPrice(price))
+                    .replace('{sku}', sku)
+                    .replace('{link}', miniAppUrl);
+
+                try {
+                    await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            chat_id: chatId,
+                            photo: image,
+                            caption: broadcastMessage,
+                            parse_mode: 'HTML'
+                        })
+                    });
+                    alert('Product saved and successfully broadcasted to Telegram! 🚀');
+                } catch (e) {
+                    console.error("Telegram broadcast error:", e);
+                    alert('Product saved, but Telegram broadcast failed. Check Bot Token & Chat ID.');
+                }
+            } else {
+                alert('Product saved successfully! (No Telegram Chat ID specified for broadcast) 🎉');
+            }
+
             closeAdminProductModal();
             loadInitialProducts();
+        };
+
+        window.broadcastExistingProduct = async function(id) {
+            const p = window.products.find(item => item.id === id);
+            if (!p) return;
+            const chatId = prompt("Enter Telegram Channel or Group Chat ID (e.g. @your_channel or -100123456789):");
+            if (!chatId) return;
+
+            const botToken = "7523531234:AAH_example_token_placeholder";
+            const miniAppUrl = `https://t.me/songsashop?startapp=prod_${p.id}`;
+            const message = `✨ NEW AESTHETIC DROP: ${p.name} ✨\n\nPrice: ${window.formatPrice(p.price)}\nSKU: ${p.sku}\n\nShop now: ${miniAppUrl}`;
+
+            try {
+                await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: chatId, photo: p.image, caption: message })
+                });
+                alert('Broadcast sent successfully to Telegram! 📢');
+            } catch (err) { alert('Broadcast failed.'); }
         };
 
         window.adjustProductStock = async function(prodId, delta) {
@@ -1545,9 +1656,9 @@
             document.getElementById('view-prod-stock').innerText = `${p.stock ?? 10} available`;
 
             const specs = p.details || { material: "Premium Alloy / Plated Metal", dimensions: "Standard Fit", care: "Keep away from moisture and harsh chemicals." };
-            document.getElementById('spec-material').innerText = sanitizeHTML(specs.material);
-            document.getElementById('spec-dimensions').innerText = sanitizeHTML(specs.dimensions);
-            document.getElementById('spec-care').innerText = sanitizeHTML(specs.care);
+            document.getElementById('spec-material-view').innerText = sanitizeHTML(specs.material);
+            document.getElementById('spec-dimensions-view').innerText = sanitizeHTML(specs.dimensions);
+            document.getElementById('spec-care-view').innerText = sanitizeHTML(specs.care);
 
             const reviews = p.reviews || [];
             document.getElementById('prod-avg-rating').innerText = `⭐ ${reviews.length > 0 ? (reviews.reduce((s,r)=>s+r.rating,0)/reviews.length).toFixed(1) : "5.0"} / 5.0`;
@@ -1887,6 +1998,7 @@
                                 </span>
                             </td>
                             <td class="p-2 text-right space-x-1">
+                                <button onclick="broadcastExistingProduct('${p.id}')" class="bg-sky-500 text-white px-2 py-1 rounded text-[10px] font-bold" title="Broadcast"><i class="fa-brands fa-telegram"></i></button>
                                 <button onclick="adjustProductStock('${p.id}', 5)" class="bg-emerald-600 text-white px-2 py-1 rounded text-[10px] font-bold" title="Restock +5">+5</button>
                                 ${!isStaff ? `<button onclick="editProduct('${p.id}')" class="text-sky-600 font-bold px-1">Edit</button><button onclick="deleteProduct('${p.id}')" class="text-red-500 px-1">Delete</button>` : ''}
                             </td>
@@ -1936,6 +2048,9 @@
             document.getElementById('prod-price').value = '';
             document.getElementById('prod-stock').value = '';
             document.getElementById('prod-image').value = '';
+            document.getElementById('spec-material').value = '';
+            document.getElementById('spec-dimensions').value = '';
+            document.getElementById('spec-care').value = '';
             document.getElementById('admin-product-modal').classList.remove('hidden');
         };
 
@@ -1950,6 +2065,9 @@
             document.getElementById('prod-price').value = p.price;
             document.getElementById('prod-stock').value = p.stock ?? 10;
             document.getElementById('prod-image').value = p.image || '';
+            document.getElementById('spec-material').value = p.details?.material || '';
+            document.getElementById('spec-dimensions').value = p.details?.dimensions || '';
+            document.getElementById('spec-care').value = p.details?.care || '';
             document.getElementById('admin-product-modal').classList.remove('hidden');
         };
 
