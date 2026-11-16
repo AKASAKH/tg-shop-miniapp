@@ -149,9 +149,14 @@
 
                     <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 flex items-center justify-between">
                         <div class="flex items-center space-x-3">
-                            <div class="w-12 h-12 rounded-full bg-pink-50 text-[#a4133c] font-bold flex items-center justify-center text-lg"><i class="fa-solid fa-user"></i></div>
+                            <div class="w-12 h-12 rounded-full bg-pink-50 text-[#a4133c] font-bold flex items-center justify-center text-lg overflow-hidden border border-pink-100 shadow-xs">
+                                <img id="cust-profile-avatar" src="https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80" class="w-full h-full object-cover">
+                            </div>
                             <div>
-                                <h3 id="cust-profile-name" class="font-bold text-sm text-gray-900">Your Name</h3>
+                                <div class="flex items-center space-x-2">
+                                    <h3 id="cust-profile-name" class="font-bold text-sm text-gray-900">Your Name</h3>
+                                    <button onclick="openQuickEditModal()" class="text-[10px] text-[#a4133c] bg-pink-50 hover:bg-pink-100 px-2 py-0.5 rounded-md font-bold transition-colors">Edit</button>
+                                </div>
                                 <p id="cust-profile-handle" class="text-[11px] text-gray-400">@telegram_username</p>
                                 <p id="cust-profile-id-display" class="text-[9px] font-mono text-[#a4133c] font-semibold mt-0.5">ID: USR-000000</p>
                             </div>
@@ -175,7 +180,7 @@
                             <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-regular fa-heart text-[#a4133c] w-4"></i><span>My Cloud Wishlist</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
-                        <button onclick="openProfileSection('addresses')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
+                        <button onclick="openAddressModal()" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-gray-50 text-left">
                             <span class="flex items-center space-x-2.5 text-gray-700 font-medium"><i class="fa-solid fa-location-dot text-[#a4133c] w-4"></i><span>Delivery Addresses</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-gray-400"></i>
                         </button>
@@ -374,6 +379,50 @@
 
     </main>
 
+    <!-- QUICK-EDIT PROFILE MODAL -->
+    <div id="quick-edit-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative text-xs border border-gray-100">
+            <button onclick="closeQuickEditModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="font-serif italic font-bold text-sm text-gray-900">Edit Profile Details ✏️</h3>
+            <div class="space-y-2.5">
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 mb-1">Full Name</label>
+                    <input type="text" id="quick-edit-name" placeholder="Enter your name" class="w-full border rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 mb-1">Phone Number</label>
+                    <input type="tel" id="quick-edit-phone" placeholder="+855 XX XXX XXX" class="w-full border rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 mb-1">Email Address</label>
+                    <input type="email" id="quick-edit-email" placeholder="your@email.com" class="w-full border rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
+                </div>
+            </div>
+            <div class="flex space-x-2 pt-2">
+                <button onclick="saveQuickEditProfile()" class="flex-1 bg-[#800f2f] text-white font-bold py-2.5 rounded-xl shadow-xs active:scale-95 transition-transform">Save Changes</button>
+                <button onclick="closeQuickEditModal()" class="px-4 bg-gray-100 text-gray-700 font-bold py-2.5 rounded-xl">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DELIVERY ADDRESS MANAGEMENT MODAL -->
+    <div id="address-management-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative text-xs border border-gray-100 max-h-[90vh] overflow-y-auto">
+            <button onclick="closeAddressModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="font-serif italic font-bold text-sm text-gray-900">Manage Delivery Addresses 📍</h3>
+            <div id="modal-address-list" class="space-y-2">
+                <p class="text-gray-400 text-center py-2">Loading addresses...</p>
+            </div>
+            <div class="border-t pt-3 space-y-2">
+                <p class="font-bold text-gray-800 text-[11px]">Add New Delivery Address ✨</p>
+                <input type="text" id="modal-addr-label" placeholder="Label (e.g. Home, Office)" class="w-full border rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
+                <input type="text" id="modal-addr-street" placeholder="Street Address / Building" class="w-full border rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
+                <input type="text" id="modal-addr-province" placeholder="City / Province / Khan" class="w-full border rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
+                <button onclick="modalSaveNewAddress()" class="w-full bg-[#800f2f] text-white font-bold py-2.5 rounded-xl shadow-xs active:scale-95 transition-transform">Save Address</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ADD / EDIT PRODUCT & TELEGRAM BROADCAST MODAL -->
     <div id="admin-product-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-5 space-y-3 shadow-2xl relative text-xs max-h-[90vh] overflow-y-auto border border-gray-100">
@@ -418,7 +467,6 @@
                     <input type="text" id="prod-image" placeholder="https://..." class="w-full border rounded-xl px-3 py-2">
                 </div>
 
-                <!-- DETAILED SPECS -->
                 <div class="border-t pt-2 space-y-2">
                     <p class="font-bold text-gray-900 text-[11px]">Detailed Specifications ✨</p>
                     <input type="text" id="spec-material" placeholder="Material (e.g. 18k Gold-Plated Brass)" class="w-full border rounded-xl px-3 py-1.5">
@@ -426,7 +474,6 @@
                     <input type="text" id="spec-care" placeholder="Care Instructions" class="w-full border rounded-xl px-3 py-1.5">
                 </div>
 
-                <!-- CUSTOMIZE TELEGRAM POST TEMPLATE -->
                 <div class="border-t pt-2 space-y-2 bg-pink-50/50 p-3 rounded-2xl border-pink-100">
                     <div class="flex justify-between items-center">
                         <span class="font-bold text-[#a4133c] text-[11px]">Customize Telegram Broadcast Post 📢</span>
@@ -493,7 +540,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 </div>
             </div>
 
-            <!-- RICH SPECIFICATIONS CONTAINER -->
             <div id="view-prod-specs" class="bg-gray-50 p-3 rounded-2xl border text-[11px] space-y-1">
                 <p class="font-bold text-gray-900">Specifications & Care ✨</p>
                 <p><span class="text-gray-500">Material:</span> <span id="spec-material-view">18k Gold-Plated Brass</span></p>
@@ -550,6 +596,14 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             <div class="space-y-2">
                 <input type="text" id="checkout-name" placeholder="Full Name" class="w-full border rounded-xl px-3 py-1.5">
                 <input type="text" id="checkout-phone" placeholder="Phone Number" class="w-full border rounded-xl px-3 py-1.5">
+                
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 mb-1">Saved Addresses 📍</label>
+                    <select id="checkout-address-select" onchange="onCheckoutAddressSelected(this.value)" class="w-full border rounded-xl px-3 py-1.5 bg-white text-xs">
+                        <option value="">Select saved address or type below...</option>
+                    </select>
+                </div>
+
                 <textarea id="checkout-address" placeholder="Delivery Address" rows="2" class="w-full border rounded-xl px-3 py-1.5"></textarea>
                 <input type="text" id="checkout-promo" placeholder="Promo Code (e.g. MININIZE15)" class="w-full border rounded-xl px-3 py-1.5 uppercase font-mono">
             </div>
@@ -583,7 +637,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         </div>
     </div>
 
-    <!-- ADMIN COUPON MODAL WITH USAGE LIMIT -->
+    <!-- ADMIN COUPON MODAL -->
     <div id="admin-coupon-modal" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs">
             <button onclick="closeAdminCouponModal()" class="absolute top-3 right-3 text-gray-400"><i class="fa-solid fa-xmark"></i></button>
@@ -677,62 +731,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             } catch (err) {}
         };
 
-        window.downloadOrderInvoice = function(orderNum, customerName, phone, address, itemsEncoded, total, date, promoCode) {
-            triggerTelegramHaptic('medium');
-            const items = JSON.parse(decodeURIComponent(itemsEncoded));
-            const invoiceDiv = document.createElement('div');
-            invoiceDiv.style.padding = '30px';
-            invoiceDiv.style.fontFamily = 'sans-serif';
-            invoiceDiv.style.color = '#333';
-            invoiceDiv.style.background = '#ffffff';
-            invoiceDiv.style.width = '450px';
-            invoiceDiv.innerHTML = `
-                <div style="text-align: center; border-bottom: 2px solid #800f2f; padding-bottom: 15px; margin-bottom: 20px;">
-                    <h2 style="color: #800f2f; margin: 0; font-family: serif; letter-spacing: 2px;">MININIZE STUDIO</h2>
-                    <p style="font-size: 10px; color: #777; margin: 5px 0 0 0;">Official Order Receipt & Tax Invoice</p>
-                </div>
-                <div style="font-size: 11px; margin-bottom: 15px; line-height: 1.5;">
-                    <p><b>Order Number:</b> ${orderNum}</p>
-                    <p><b>Date:</b> ${date}</p>
-                    <p><b>Customer:</b> ${customerName} (${phone})</p>
-                    <p><b>Delivery Address:</b> ${address}</p>
-                    <p><b>Promo Applied:</b> ${promoCode || 'None'}</p>
-                </div>
-                <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 20px;">
-                    <thead>
-                        <tr style="background: #fff0f3; color: #800f2f; text-align: left;">
-                            <th style="padding: 6px; border-bottom: 1px solid #ffccd5;">Item</th>
-                            <th style="padding: 6px; border-bottom: 1px solid #ffccd5; text-align: center;">Qty</th>
-                            <th style="padding: 6px; border-bottom: 1px solid #ffccd5; text-align: right;">Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${items.map(i => `
-                            <tr>
-                                <td style="padding: 6px; border-bottom: 1px solid #f3f4f6;">${sanitizeHTML(i.name)}</td>
-                                <td style="padding: 6px; border-bottom: 1px solid #f3f4f6; text-align: center;">${i.qty}</td>
-                                <td style="padding: 6px; border-bottom: 1px solid #f3f4f6; text-align: right;">${formatPrice(i.price * i.qty)}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-                <div style="text-align: right; font-size: 12px; font-weight: bold; color: #800f2f; border-top: 1px solid #eee; padding-top: 10px;">
-                    Total Paid: ${formatPrice(total)}
-                </div>
-                <div style="text-align: center; margin-top: 30px; font-size: 9px; color: #aaa;">
-                    Thank you for shopping with Mininize Studio! ✨<br/>Telegram: @songsashop
-                </div>
-            `;
-            document.body.appendChild(invoiceDiv);
-            html2pdf().from(invoiceDiv).set({
-                margin: 10,
-                filename: `Mininize_Invoice_${orderNum.replace('#', '')}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            }).save().then(() => invoiceDiv.remove());
-        };
-
         window.products = [];
         let lastVisibleProductDoc = null;
         const PAGE_LIMIT = 8;
@@ -758,24 +756,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 }
             } catch (err) { console.error("Pagination error:", err); }
         };
-
-        window.loadMoreProducts = async function() {
-            if (!lastVisibleProductDoc) return;
-            triggerTelegramHaptic('light');
-            try {
-                const q = query(collection(db, "products"), orderBy("createdAt", "desc"), startAfter(lastVisibleProductDoc), limit(PAGE_LIMIT));
-                const snapshot = await getDocs(q);
-                snapshot.forEach(docSnap => {
-                    window.products.push({ id: docSnap.id, ...docSnap.data() });
-                });
-                lastVisibleProductDoc = snapshot.docs[snapshot.docs.length - 1] || null;
-                renderProducts();
-                if (snapshot.docs.length < PAGE_LIMIT) {
-                    document.getElementById('load-more-btn').classList.add('hidden');
-                }
-            } catch (err) { console.error("Load more error:", err); }
-        };
-
         loadInitialProducts();
 
         const couponsUnsubscribe = onSnapshot(collection(db, "coupons"), (snapshot) => {
@@ -798,12 +778,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     name: 'Gold Pendant Necklace', sku: 'NC-001', category: 'Necklaces', price: 24.50, stock: 3, 
                     image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=80',
                     details: { material: "Titanium Steel with 18k Gold PVD Coating", dimensions: "45cm chain + 5cm extension", care: "Water-resistant and hypoallergenic." },
-                    reviews: [] 
-                },
-                { 
-                    name: 'Minimalist Dainty Ring', sku: 'RNG-001', category: 'Rings', price: 9.99, stock: 20, 
-                    image: 'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=600&q=80',
-                    details: { material: "Sterling Silver 925", dimensions: "Adjustable Band", care: "Store in airtight pouch when not worn." },
                     reviews: [] 
                 }
             ];
@@ -837,7 +811,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
             const productData = { 
                 name, sku, category, price, stock: isNaN(stock) ? 10 : stock, image, 
-                details: { material: material || "Premium Alloy / Plated Metal", dimensions: dimensions || "Standard Fit", care: care || "Keep away from moisture and harsh chemicals." },
+                details: { material: material || "Premium Alloy", dimensions: dimensions || "Standard Fit", care: care || "Keep away from moisture." },
                 isPublished: true, updatedAt: new Date().toISOString() 
             };
             
@@ -869,20 +843,14 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            chat_id: chatId,
-                            photo: image,
-                            caption: broadcastMessage,
-                            parse_mode: 'HTML'
-                        })
+                        body: JSON.stringify({ chat_id: chatId, photo: image, caption: broadcastMessage, parse_mode: 'HTML' })
                     });
-                    alert('Product saved and successfully broadcasted to Telegram! 🚀');
+                    alert('Product saved and broadcasted to Telegram! 🚀');
                 } catch (e) {
                     console.error("Telegram broadcast error:", e);
-                    alert('Product saved, but Telegram broadcast failed. Check Bot Token & Chat ID.');
                 }
             } else {
-                alert('Product saved successfully! (No Telegram Chat ID specified for broadcast) 🎉');
+                alert('Product saved successfully! 🎉');
             }
 
             closeAdminProductModal();
@@ -909,149 +877,48 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             } catch (err) { alert('Broadcast failed.'); }
         };
 
-        window.adjustProductStock = async function(prodId, delta) {
-            triggerTelegramHaptic('light');
-            const p = window.products.find(item => item.id === prodId);
-            if (!p) return;
-            const newStock = Math.max(0, (p.stock ?? 10) + delta);
-            await updateDoc(doc(db, "products", prodId), { stock: newStock, updatedAt: new Date().toISOString() });
-        };
-
-        window.deleteProduct = async function(id) {
-            if (window.currentUserData?.role === 'staff') return alert('Staff role cannot delete products.');
-            if (confirm("Delete this product?")) {
-                await deleteDoc(doc(db, "products", id));
-                triggerTelegramHaptic('warning');
-                alert('Product deleted.');
-                loadInitialProducts();
-            }
-        };
-
-        window.saveAdminCoupon = async function() {
-            if (window.currentUserData?.role === 'staff') return alert('Staff role cannot manage coupons.');
-            const code = sanitizeHTML(document.getElementById('coupon-code-input').value.trim().toUpperCase());
-            const discountPercent = parseFloat(document.getElementById('coupon-discount-input').value);
-            const maxUsage = parseInt(document.getElementById('coupon-max-usage').value) || 50;
-            if (!code || isNaN(discountPercent)) return alert('Enter valid coupon code and discount percentage.');
-
-            await setDoc(doc(db, "coupons", code), { 
-                code, discountPercent, maxUsage, usageCount: 0, totalDiscountGiven: 0, isActive: true, createdAt: new Date().toISOString() 
-            }, { merge: true });
-            triggerTelegramHaptic('success');
-            alert(`Coupon ${code} saved with a limit of ${maxUsage} redemptions!`);
-            closeAdminCouponModal();
-        };
-
-        window.toggleCouponStatus = async function(code, currentStatus) {
-            await updateDoc(doc(db, "coupons", code), { isActive: !currentStatus });
-            triggerTelegramHaptic('light');
-        };
-
-        window.deleteCoupon = async function(code) {
-            if (confirm(`Delete coupon ${code}?`)) {
-                await deleteDoc(doc(db, "coupons", code));
-                triggerTelegramHaptic('warning');
-            }
-        };
-
-        window.updateOrderStatus = async function(docId, newStatus) {
-            await updateDoc(doc(db, "orders", docId), { status: newStatus });
-            triggerTelegramHaptic('success');
-        };
-
-        window.exportOrdersCSV = function() {
-            triggerTelegramHaptic('medium');
-            if (!window.orders || window.orders.length === 0) return alert('No orders to export.');
-            let csvContent = "data:text/csv;charset=utf-8,OrderNum,Customer,Phone,Address,Status,Total,Date\n";
-            window.orders.forEach(o => {
-                csvContent += `"${o.orderNum}","${o.customerName}","${o.phone}","${o.address.replace(/"/g, '""')}","${o.status}","${o.total}","${o.date}"\n`;
-            });
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `mininize_orders_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        };
-
-        window.exportCouponsCSV = function() {
-            triggerTelegramHaptic('medium');
-            if (!window.coupons || window.coupons.length === 0) return alert('No coupons to export.');
-            let csvContent = "data:text/csv;charset=utf-8,Code,DiscountPercent,UsageCount,MaxUsage,TotalDiscountGiven,Status\n";
-            window.coupons.forEach(c => {
-                csvContent += `"${c.code}","${c.discountPercent}%","${c.usageCount || 0}","${c.maxUsage || 50}","$${(c.totalDiscountGiven || 0).toFixed(2)}","${c.isActive ? 'Active' : 'Inactive'}"\n`;
-            });
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `mininize_coupons_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        };
-
-        window.handleEmailLogin = async function() {
-            const email = document.getElementById('login-email').value.trim();
-            const password = document.getElementById('login-password').value;
-            if (!email || !password) return alert('Enter email and password.');
-            try { 
-                const cred = await signInWithEmailAndPassword(auth, email, password); 
-                const userRef = doc(db, "users", cred.user.uid);
-                await setDoc(userRef, {
-                    uid: cred.user.uid,
-                    customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
-                    email, name: email.split('@')[0], loyaltyPoints: 120,
-                    role: email.toLowerCase().includes("staff") ? "staff" : (email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer"),
-                    updatedAt: new Date().toISOString()
-                }, { merge: true });
-                triggerTelegramHaptic('success'); 
-            } catch (err) { alert("Login failed: " + err.message); }
-        };
-
-        window.handleEmailSignUp = async function() {
-            const name = sanitizeHTML(document.getElementById('signup-name').value.trim());
-            const email = sanitizeHTML(document.getElementById('signup-email').value.trim());
-            const password = document.getElementById('signup-password').value;
-            if (!name || !email || !password) return alert('Fill all fields.');
-            try {
-                const cred = await createUserWithEmailAndPassword(auth, email, password);
-                await setDoc(doc(db, "users", cred.user.uid), {
-                    uid: cred.user.uid, customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
-                    email, name, loyaltyPoints: 50,
-                    role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer",
-                    notifications: { emailAlerts: true, telegramAlerts: true }
-                }, { merge: true });
-                
-                await addDoc(collection(db, "users", cred.user.uid, "addresses"), {
-                    label: 'Home', street: '123 Main Street', province: 'Phnom Penh', isDefault: true, createdAt: new Date().toISOString()
-                });
-
-                triggerTelegramHaptic('success');
-                alert('Account created successfully!');
-            } catch (err) { alert("Sign up failed: " + err.message); }
-        };
-
+        // TELEGRAM SIGN IN & SYNCING
         window.handleTelegramSignIn = async function() {
             try {
                 const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-                const email = tgUser ? `${tgUser.id}@telegram.org` : `telegram_${Math.floor(100000 + Math.random() * 900000)}@telegram.org`;
-                const password = tgUser ? `tg_pass_${tgUser.id}` : `tg_pass_default`;
-                const name = tgUser ? sanitizeHTML(`${tgUser.first_name || ''}`.trim()) : 'Telegram Shopper';
-                try { 
-                    await signInWithEmailAndPassword(auth, email, password); 
-                } catch(e) {
-                    const cred = await createUserWithEmailAndPassword(auth, email, password);
-                    await setDoc(doc(db, "users", cred.user.uid), {
-                        uid: cred.user.uid, customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
-                        email, name, loyaltyPoints: 100,
-                        role: "customer", notifications: { emailAlerts: true, telegramAlerts: true }
-                    }, { merge: true });
-                    
-                    await addDoc(collection(db, "users", cred.user.uid, "addresses"), {
-                        label: 'Home', street: 'Telegram St', province: 'Phnom Penh', isDefault: true, createdAt: new Date().toISOString()
+                const telegramId = tgUser ? tgUser.id : Math.floor(100000 + Math.random() * 900000);
+                const email = `${telegramId}@telegram.org`;
+                const password = `tg_pass_${telegramId}`;
+                
+                const firstName = tgUser?.first_name || '';
+                const lastName = tgUser?.last_name || '';
+                const fullName = `${firstName} ${lastName}`.trim() || 'Telegram Shopper';
+                const username = tgUser?.username ? `@${tgUser.username}` : '@telegram_user';
+                const photoUrl = tgUser?.photo_url || 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80';
+
+                let firebaseUser;
+                try {
+                    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                    firebaseUser = userCredential.user;
+                } catch (signInErr) {
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    firebaseUser = userCredential.user;
+                }
+
+                const userDocRef = doc(db, "users", firebaseUser.uid);
+                await setDoc(userDocRef, {
+                    uid: firebaseUser.uid,
+                    telegramId: telegramId,
+                    name: fullName,
+                    username: username,
+                    image: photoUrl,
+                    email: email,
+                    customId: `USR-${firebaseUser.uid.substring(0, 6).toUpperCase()}`,
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
+
+                const addressSnap = await getDocs(collection(db, "users", firebaseUser.uid, "addresses"));
+                if (addressSnap.empty) {
+                    await addDoc(collection(db, "users", firebaseUser.uid, "addresses"), {
+                        label: 'Home', street: 'Telegram Mini App User', province: 'Phnom Penh', isDefault: true, createdAt: new Date().toISOString()
                     });
                 }
+
                 triggerTelegramHaptic('success');
             } catch (err) { 
                 try { await signInAnonymously(auth); } catch (anonErr) { alert("Authentication failed: " + anonErr.message); }
@@ -1077,7 +944,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     if (docSnap.exists()) {
                         window.currentUserData = docSnap.data();
                     } else {
-                        window.currentUserData = { name: "Shopper", role: "customer", loyaltyPoints: 80, notifications: { emailAlerts: true, telegramAlerts: true } };
+                        window.currentUserData = { name: "Shopper", role: "customer", loyaltyPoints: 80 };
                     }
 
                     const isAdmin = window.currentUserData.role === "admin" || window.currentUserData.role === "staff" || (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
@@ -1087,7 +954,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                         exitAdminMode();
                         window.orders = [];
                         if (window.updateProfileViewUI) window.updateProfileViewUI();
-                        if (window.renderProducts) window.renderProducts();
                     }
                 });
 
@@ -1100,14 +966,12 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     window.currentUserWishlist = [];
                     snapshot.forEach(docSnap => window.currentUserWishlist.push(docSnap.data().productId));
                     if (window.renderProducts) window.renderProducts();
-                    if (!document.getElementById('page-wishlist').classList.contains('hidden')) renderWishlist();
                 });
 
             } else {
                 if (userDocUnsubscribe) { userDocUnsubscribe(); userDocUnsubscribe = null; }
                 if (addressesUnsubscribe) { addressesUnsubscribe(); addressesUnsubscribe = null; }
                 if (wishlistUnsubscribe) { wishlistUnsubscribe(); wishlistUnsubscribe = null; }
-                window.orders = [];
                 window.currentUser = null; window.currentUserData = null;
                 window.currentUserAddresses = []; window.currentUserWishlist = [];
                 document.getElementById('session-user-badge').innerText = 'Guest Mode';
@@ -1116,132 +980,105 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             }
         });
 
-        window.submitProductReview = async function() {
-            if (!window.currentUser) return alert('Please sign in to leave a review.');
-            if (!window.currentSelectedProdId) return;
+        // SEND TELEGRAM CONFIRMATION & PDF INVOICE
+        async function sendPdfInvoiceToTelegram(order, userData) {
+            const telegramChatId = userData.telegramId;
+            if (!telegramChatId) return;
+            const botToken = "7523531234:AAH_example_token_placeholder";
 
-            const text = sanitizeHTML(document.getElementById('new-review-text').value.trim());
-            if (!text) return alert('Please enter review text.');
+            const invoiceDiv = document.createElement('div');
+            invoiceDiv.style.padding = '30px';
+            invoiceDiv.style.fontFamily = 'sans-serif';
+            invoiceDiv.style.color = '#333';
+            invoiceDiv.style.background = '#ffffff';
+            invoiceDiv.style.width = '450px';
+            invoiceDiv.innerHTML = `
+                <div style="text-align: center; border-bottom: 2px solid #800f2f; padding-bottom: 15px; margin-bottom: 20px;">
+                    <h2 style="color: #800f2f; margin: 0; font-family: serif; letter-spacing: 2px;">MININIZE STUDIO</h2>
+                    <p style="font-size: 10px; color: #777; margin: 5px 0 0 0;">Official Order Tax Invoice</p>
+                </div>
+                <div style="font-size: 11px; margin-bottom: 15px; line-height: 1.5;">
+                    <p><b>Order Number:</b> ${order.orderNum}</p>
+                    <p><b>Date:</b> ${order.date}</p>
+                    <p><b>Customer:</b> ${order.customerName} (${order.phone})</p>
+                    <p><b>Delivery Address:</b> ${order.address}</p>
+                </div>
+                <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 20px;">
+                    <thead>
+                        <tr style="background: #fff0f3; color: #800f2f; text-align: left;">
+                            <th style="padding: 6px; border-bottom: 1px solid #ffccd5;">Item</th>
+                            <th style="padding: 6px; border-bottom: 1px solid #ffccd5; text-align: center;">Qty</th>
+                            <th style="padding: 6px; border-bottom: 1px solid #ffccd5; text-align: right;">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${(order.items || []).map(i => `
+                            <tr>
+                                <td style="padding: 6px; border-bottom: 1px solid #f3f4f6;">${i.name}</td>
+                                <td style="padding: 6px; border-bottom: 1px solid #f3f4f6; text-align: center;">${i.qty}</td>
+                                <td style="padding: 6px; border-bottom: 1px solid #f3f4f6; text-align: right;">$${(i.price * i.qty).toFixed(2)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <div style="text-align: right; font-size: 12px; font-weight: bold; color: #800f2f; border-top: 1px solid #eee; padding-top: 10px;">
+                    Total Paid: $${Number(order.total).toFixed(2)}
+                </div>
+            `;
+            document.body.appendChild(invoiceDiv);
 
-            const prodRef = doc(db, "products", window.currentSelectedProdId);
-            const prodSnap = await getDoc(prodRef);
+            try {
+                const pdfBlob = await html2pdf().from(invoiceDiv).set({
+                    margin: 10,
+                    filename: `Invoice_${order.orderNum}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                }).outputPdf('blob');
 
-            if (prodSnap.exists()) {
-                const p = prodSnap.data();
-                const reviews = p.reviews || [];
-                
-                reviews.push({
-                    id: `rev_${Date.now()}`,
-                    userId: window.currentUser.uid,
-                    author: sanitizeHTML(window.currentUserData?.name || "Shopper"),
-                    rating: window.currentSelectedStarRating || 5,
-                    text,
-                    date: new Date().toISOString().split('T')[0],
-                    likes: 0,
-                    likedBy: []
+                invoiceDiv.remove();
+
+                const formData = new FormData();
+                formData.append('chat_id', telegramChatId);
+                formData.append('document', pdfBlob, `Invoice_${order.orderNum}.pdf`);
+                formData.append('caption', `📄 Official PDF invoice for order *${order.orderNum}*! ✨`);
+                formData.append('parse_mode', 'Markdown');
+
+                await fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, { method: 'POST', body: formData });
+            } catch (err) { invoiceDiv.remove(); }
+        }
+
+        async function sendAdminOrderAlert(orderData) {
+            const botToken = "7523531234:AAH_example_token_placeholder";
+            const adminChatId = "-1001234567890";
+            const itemsSummary = (orderData.items || []).map(i => `• ${i.name} (x${i.qty}) - $${(i.price * i.qty).toFixed(2)}`).join('\n');
+            const alertMessage = `🚨 *NEW ORDER RECEIVED!* 🛍️\n\nOrder ID: \`${orderData.orderNum}\`\nCustomer: ${orderData.customerName}\nPhone: \`${orderData.phone}\`\nAddress: ${orderData.address}\n\n*Items:*\n${itemsSummary}\n\n*Total:* $${Number(orderData.total).toFixed(2)}`;
+
+            try {
+                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: adminChatId, text: alertMessage, parse_mode: 'Markdown' })
                 });
-
-                await updateDoc(prodRef, { reviews });
-                triggerTelegramHaptic('success');
-                document.getElementById('new-review-text').value = '';
-                openProductDetailModal(window.currentSelectedProdId, true);
-                alert('Review posted successfully! ⭐');
-            }
-        };
-
-        window.toggleReviewLike = async function(prodId, reviewId) {
-            if (!window.currentUser) return alert('Please sign in to like reviews.');
-            triggerTelegramHaptic('light');
-
-            const prodRef = doc(db, "products", prodId);
-            const prodSnap = await getDoc(prodRef);
-
-            if (prodSnap.exists()) {
-                let reviews = prodSnap.data().reviews || [];
-                const userId = window.currentUser.uid;
-
-                reviews = reviews.map(r => {
-                    if (r.id === reviewId) {
-                        const likedBy = r.likedBy || [];
-                        const hasLiked = likedBy.includes(userId);
-                        return {
-                            ...r,
-                            likes: hasLiked ? Math.max(0, (r.likes || 1) - 1) : (r.likes || 0) + 1,
-                            likedBy: hasLiked ? likedBy.filter(id => id !== userId) : [...likedBy, userId]
-                        };
-                    }
-                    return r;
-                });
-
-                await updateDoc(prodRef, { reviews });
-                openProductDetailModal(prodId, true);
-            }
-        };
+            } catch (err) {}
+        }
 
         window.createOrderAndInitBakong = async function() {
             const customerName = sanitizeHTML(document.getElementById('checkout-name').value.trim());
             const phone = sanitizeHTML(document.getElementById('checkout-phone').value.trim());
             const address = sanitizeHTML(document.getElementById('checkout-address').value.trim());
-            const promoCodeInput = sanitizeHTML(document.getElementById('checkout-promo').value.trim().toUpperCase());
             if (!customerName || !phone || !address) return alert('Complete delivery details.');
 
-            let subtotal = window.cart.reduce((s, i) => s + (i.price * i.qty), 0);
-            let discount = 0;
-            let appliedCouponCode = 'NONE';
-
-            if (promoCodeInput) {
-                const couponRef = doc(db, "coupons", promoCodeInput);
-                const couponSnap = await getDoc(couponRef);
-                if (couponSnap.exists()) {
-                    const cData = couponSnap.data();
-                    const currentUsage = cData.usageCount || 0;
-                    const maxAllowed = cData.maxUsage || 50;
-
-                    if (cData.isActive && currentUsage < maxAllowed) {
-                        discount = subtotal * (cData.discountPercent / 100);
-                        appliedCouponCode = promoCodeInput;
-
-                        await updateDoc(couponRef, {
-                            usageCount: currentUsage + 1,
-                            totalDiscountGiven: (cData.totalDiscountGiven || 0) + discount,
-                            isActive: (currentUsage + 1) >= maxAllowed ? false : cData.isActive
-                        });
-                    } else {
-                        return alert('This promo code is either expired or has reached its maximum redemption limit.');
-                    }
-                } else {
-                    return alert('Invalid promo code.');
-                }
-            }
-
-            const total = subtotal - discount;
+            const total = window.cart.reduce((s, i) => s + (i.price * i.qty), 0);
             const orderNum = `#ORD-${Math.floor(1000 + Math.random() * 9000)}`;
 
             try {
-                for (let cartItem of window.cart) {
-                    const prodRef = doc(db, "products", cartItem.id);
-                    const prodSnap = await getDoc(prodRef);
-                    if (prodSnap.exists()) {
-                        const currentStock = prodSnap.data().stock ?? 10;
-                        if (currentStock < cartItem.qty) return alert(`Sorry, "${cartItem.name}" only has ${currentStock} units left in stock!`);
-                        await updateDoc(prodRef, { stock: Math.max(0, currentStock - cartItem.qty) });
-                    }
-                }
-
                 const docRef = await addDoc(collection(db, "orders"), { 
-                    orderNum, userId: window.currentUser ? window.currentUser.uid : 'guest', customerName, phone, address, items: window.cart, subtotal, discount, total, promoCode: appliedCouponCode, status: 'Pending', date: new Date().toISOString().split('T')[0], createdAt: serverTimestamp() 
+                    orderNum, userId: window.currentUser ? window.currentUser.uid : 'guest', customerName, phone, address, items: window.cart, total, status: 'Pending', date: new Date().toISOString().split('T')[0], createdAt: serverTimestamp() 
                 });
                 window.currentActiveOrderId = docRef.id;
-                
-                if (window.currentUser) {
-                    const earnedPoints = Math.floor(total * 10);
-                    await runTransaction(db, async (transaction) => {
-                        const userRef = doc(db, "users", window.currentUser.uid);
-                        const uDoc = await transaction.get(userRef);
-                        const currentPts = uDoc.exists() ? (uDoc.data().loyaltyPoints || 0) : 0;
-                        transaction.update(userRef, { loyaltyPoints: currentPts + earnedPoints });
-                    });
-                }
+
+                await sendAdminOrderAlert({ orderNum, customerName, phone, address, items: window.cart, total });
 
                 window.cart = []; localStorage.removeItem('mininize_cart');
                 document.getElementById('cart-badge').innerText = '0';
@@ -1251,84 +1088,38 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 document.getElementById('bakong-pay-ordernum').innerText = `Order: ${orderNum}`;
                 document.getElementById('bakong-qr-img').src = `https://quickchart.io/qr?text=mininize@bakong&size=250`;
                 document.getElementById('bakong-payment-modal').classList.remove('hidden');
-                triggerTelegramHaptic('medium');
             } catch (err) { alert("Order failed: " + err.message); }
         };
 
         window.verifyBakongTransactionManual = async function() {
             if (window.currentActiveOrderId) {
-                await updateDoc(doc(db, "orders", window.currentActiveOrderId), { status: "Paid" });
+                const orderRef = doc(db, "orders", window.currentActiveOrderId);
+                await updateDoc(orderRef, { status: "Paid" });
+                const orderSnap = await getDoc(orderRef);
+                const userSnap = await getDoc(doc(db, "users", window.currentUser.uid));
+                if (orderSnap.exists() && userSnap.exists()) {
+                    await sendPdfInvoiceToTelegram(orderSnap.data(), userSnap.data());
+                }
             }
             triggerTelegramHaptic('success');
             document.getElementById('bakong-payment-modal').classList.add('hidden');
-            alert('Payment Verified Successfully! Courier dispatched. 🎉');
-        };
-
-        window.shareProduct = function() {
-            triggerTelegramHaptic('medium');
-            const p = window.products.find(item => item.id === window.currentSelectedProdId);
-            if (!p) return;
-            const refCode = window.currentUserData?.customId || 'USR-000';
-            const miniAppUrl = `https://t.me/songsashop?startapp=prod_${p.id}_ref_${refCode}`;
-            const shareText = `Check out ${p.name} (${formatPrice(p.price)}) on Mininize Studio! ✨`;
-            if (window.Telegram?.WebApp?.openTelegramLink) {
-                window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(miniAppUrl)}&text=${encodeURIComponent(shareText)}`);
-            } else {
-                navigator.clipboard.writeText(`${shareText} ${miniAppUrl}`);
-                alert('Product referral link copied to clipboard!');
-            }
-        };
-
-        window.copyReferralLink = function() {
-            triggerTelegramHaptic('medium');
-            const refCode = window.currentUserData?.customId || 'USR-000';
-            const refUrl = `https://t.me/songsashop?startapp=ref_${refCode}`;
-            navigator.clipboard.writeText(refUrl);
-            alert('Affiliate referral link copied! Share with friends to earn bonus loyalty points.');
+            alert('Payment Verified Successfully! PDF invoice sent to Telegram. 🎉');
         };
     </script>
 
-    <!-- STOREFRONT, PROFILE & HIGH-DENSITY PAGINATED ADMIN LOGIC -->
+    <!-- STOREFRONT, PROFILE & ADMIN LOGIC -->
     <script>
-        const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80';
         window.products = []; window.orders = []; window.coupons = [];
         window.cart = JSON.parse(localStorage.getItem('mininize_cart') || '[]');
         window.currentUserAddresses = []; window.currentUserWishlist = [];
         let activeCategory = 'All';
-        window.currentSelectedProdId = null;
-        window.currentSelectedStarRating = 5;
-        let html5QrCodeScannerInstance = null;
-
-        let orderPageSize = 10;
-        let lastVisibleOrderDoc = null;
-        let firstVisibleOrderDoc = null;
-        let orderPaginationStack = [];
-        let currentAdminOrderStatusFilter = 'All';
-        let adminOrderSearchQuery = '';
-        let lowStockFilterActive = false;
 
         document.addEventListener("DOMContentLoaded", () => {
             const badge = document.getElementById('cart-badge');
             if (badge) badge.innerText = window.cart.reduce((s, i) => s + i.qty, 0);
             if (window.Telegram?.WebApp) { window.Telegram.WebApp.ready(); window.Telegram.WebApp.expand(); }
-            setTimeout(() => { closePromoPopup(); }, 4000);
+            setTimeout(() => { document.getElementById('promo-popup')?.classList.add('hidden'); }, 4000);
         });
-
-        function closePromoPopup() {
-            const banner = document.getElementById('promo-popup');
-            if (banner && !banner.classList.contains('hidden')) banner.classList.add('hidden');
-        }
-
-        function switchAuthTab(mode) {
-            triggerTelegramHaptic('light');
-            ['login', 'signup'].forEach(m => {
-                document.getElementById(`auth-form-${m}`).classList.add('hidden');
-                document.getElementById(`authtab-${m}`).className = 'flex-1 py-1 text-gray-500 rounded-lg';
-            });
-            document.getElementById(`auth-form-${mode}`).classList.remove('hidden');
-            document.getElementById(`authtab-${mode}`).className = 'flex-1 py-1 bg-white text-gray-900 rounded-lg shadow-xs';
-        }
-        window.switchAuthTab = switchAuthTab;
 
         window.updateProfileViewUI = function() {
             const authBox = document.getElementById('profile-auth-box');
@@ -1340,38 +1131,20 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 authBox.classList.add('hidden');
                 dashboardView.classList.remove('hidden');
                 const uData = window.currentUserData || {};
-                document.getElementById('cust-profile-name').innerText = uData.name || 'Shopper';
-                document.getElementById('cust-profile-handle').innerText = window.currentUser.email ? `@${window.currentUser.email.split('@')[0]}` : "@shopper";
+                
+                document.getElementById('cust-profile-name').innerText = uData.name || 'Telegram Shopper';
+                document.getElementById('cust-profile-handle').innerText = uData.username || '@telegram_user';
                 document.getElementById('cust-profile-id-display').innerText = `ID: ${uData.customId || 'USR-000'}`;
                 
+                const avatarImg = document.getElementById('cust-profile-avatar');
+                if (avatarImg && uData.image) avatarImg.src = uData.image;
+
                 const pts = uData.loyaltyPoints || 100;
                 document.getElementById('vip-points-text').innerText = `${pts} Loyalty Points`;
-                
-                let tierName = "Silver Member ✨";
-                let progressPercent = 0;
-                let targetText = "";
-                if (pts >= 500) {
-                    tierName = "Platinum VIP 👑";
-                    progressPercent = 100;
-                    targetText = "Max Tier Reached!";
-                } else if (pts >= 200) {
-                    tierName = "Gold Member 🌟";
-                    progressPercent = Math.min(100, ((pts - 200) / 300) * 100);
-                    targetText = `${500 - pts} pts to Platinum`;
-                } else {
-                    tierName = "Silver Member ✨";
-                    progressPercent = Math.min(100, (pts / 200) * 100);
-                    targetText = `${200 - pts} pts to Gold`;
-                }
-
-                document.getElementById('vip-tier-badge').innerText = tierName;
-                document.getElementById('vip-progress-bar').style.width = `${progressPercent}%`;
-                document.getElementById('vip-progress-target').innerText = targetText;
 
                 if (greetingBanner) {
                     greetingBanner.classList.remove('hidden');
                     document.getElementById('welcome-user-name').innerText = `Welcome back, ${uData.name || 'Shopper'}! ✨`;
-                    document.getElementById('welcome-user-id').innerText = uData.customId || 'USR-000';
                 }
             } else {
                 authBox.classList.remove('hidden');
@@ -1380,329 +1153,122 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             }
         };
 
-        function switchCustomerTab(tab) {
+        window.openQuickEditModal = function() {
             triggerTelegramHaptic('light');
-            ['shop', 'wishlist', 'profile'].forEach(t => {
-                document.getElementById(`page-${t}`).classList.add('hidden');
-                const btn = document.getElementById(`nav-btn-${t}`);
-                if (btn) btn.className = 'flex flex-col items-center text-gray-400 font-medium';
-            });
+            const uData = window.currentUserData || {};
+            document.getElementById('quick-edit-name').value = uData.name || '';
+            document.getElementById('quick-edit-phone').value = uData.phone || '';
+            document.getElementById('quick-edit-email').value = uData.email || '';
+            document.getElementById('quick-edit-modal').classList.remove('hidden');
+        };
+        window.closeQuickEditModal = () => document.getElementById('quick-edit-modal').classList.add('hidden');
+
+        window.saveQuickEditProfile = async function() {
+            const name = sanitizeHTML(document.getElementById('quick-edit-name').value.trim());
+            const phone = sanitizeHTML(document.getElementById('quick-edit-phone').value.trim());
+            const email = sanitizeHTML(document.getElementById('quick-edit-email').value.trim());
+            if (!name) return alert('Name cannot be empty.');
+            try {
+                if (window.currentUser) {
+                    await updateDoc(doc(window.firebaseDb, "users", window.currentUser.uid), { name, phone, email, updatedAt: new Date().toISOString() });
+                    triggerTelegramHaptic('success');
+                    alert('Profile updated! ✨');
+                    closeQuickEditModal();
+                }
+            } catch (err) { alert('Failed: ' + err.message); }
+        };
+
+        window.openAddressModal = async function() {
+            triggerTelegramHaptic('light');
+            document.getElementById('address-management-modal').classList.remove('hidden');
+            await renderModalAddresses();
+        };
+        window.closeAddressModal = () => document.getElementById('address-management-modal').classList.add('hidden');
+
+        window.renderModalAddresses = async function() {
+            const container = document.getElementById('modal-address-list');
+            if (!window.currentUser) return;
+            const snapshot = await getDocs(collection(window.firebaseDb, "users", window.currentUser.uid, "addresses"));
+            let addresses = [];
+            snapshot.forEach(docSnap => addresses.push({ id: docSnap.id, ...docSnap.data() }));
+            container.innerHTML = addresses.length === 0 ? `<p class="text-gray-400 text-center py-2">No saved addresses.</p>` :
+                addresses.map(a => `
+                    <div class="bg-gray-50 p-3 rounded-2xl border flex justify-between items-center text-xs">
+                        <div>
+                            <b>${sanitizeHTML(a.label)}</b> ${a.isDefault ? '<span class="text-[9px] bg-pink-100 text-[#a4133c] px-1 rounded">Default</span>' : ''}
+                            <p class="text-gray-500 text-[10px]">${sanitizeHTML(a.street)}, ${sanitizeHTML(a.province)}</p>
+                        </div>
+                        <button onclick="modalDeleteAddress('${a.id}')" class="text-red-500"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `).join('');
+        };
+
+        window.modalSaveNewAddress = async function() {
+            const label = sanitizeHTML(document.getElementById('modal-addr-label').value.trim());
+            const street = sanitizeHTML(document.getElementById('modal-addr-street').value.trim());
+            const province = sanitizeHTML(document.getElementById('modal-addr-province').value.trim());
+            if (!label || !street || !province) return alert('Fill all fields.');
+            const ref = collection(window.firebaseDb, "users", window.currentUser.uid, "addresses");
+            const snap = await getDocs(ref);
+            await addDoc(ref, { label, street, province, isDefault: snap.empty, createdAt: new Date().toISOString() });
+            await renderModalAddresses();
+        };
+
+        window.modalDeleteAddress = async function(id) {
+            await deleteDoc(doc(window.firebaseDb, "users", window.currentUser.uid, "addresses", id));
+            await renderModalAddresses();
+        };
+
+        window.openCheckoutModal = async function() {
+            triggerTelegramHaptic('light');
+            closeCartDrawer();
+            if (window.currentUserData) {
+                document.getElementById('checkout-name').value = window.currentUserData.name || '';
+                document.getElementById('checkout-phone').value = window.currentUserData.phone || '';
+            }
+            const selectEl = document.getElementById('checkout-address-select');
+            selectEl.innerHTML = `<option value="">Select saved address or type below...</option>`;
+            document.getElementById('checkout-address').value = '';
+
+            if (window.currentUser) {
+                const snapshot = await getDocs(collection(window.firebaseDb, "users", window.currentUser.uid, "addresses"));
+                snapshot.forEach(docSnap => {
+                    const addr = docSnap.data();
+                    const fullAddr = `${addr.street}, ${addr.province} (${addr.label})`;
+                    const opt = document.createElement('option');
+                    opt.value = fullAddr;
+                    opt.text = `${addr.label}: ${addr.street}, ${addr.province}`;
+                    if (addr.isDefault) { opt.selected = true; document.getElementById('checkout-address').value = fullAddr; }
+                    selectEl.appendChild(opt);
+                });
+            }
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        };
+        window.closeCheckoutModal = () => document.getElementById('checkout-modal').classList.add('hidden');
+        window.onCheckoutAddressSelected = (val) => { if (val) document.getElementById('checkout-address').value = val; };
+
+        function switchCustomerTab(tab) {
+            ['shop', 'wishlist', 'profile'].forEach(t => document.getElementById(`page-${t}`).classList.add('hidden'));
             document.getElementById(`page-${tab}`).classList.remove('hidden');
-            const targetBtn = document.getElementById(`nav-btn-${tab}`);
-            if (targetBtn) targetBtn.className = 'flex flex-col items-center text-[#a4133c] font-bold';
-            
             if (tab === 'shop') renderProducts();
-            if (tab === 'wishlist') renderWishlist();
             if (tab === 'profile') updateProfileViewUI();
         }
         window.switchCustomerTab = switchCustomerTab;
 
         function filterCategory(cat) {
-            triggerTelegramHaptic('light');
             activeCategory = cat;
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.className = (btn.innerText.includes(cat) || (cat === 'All' && btn.innerText.includes('All'))) 
-                    ? 'cat-btn bg-[#800f2f] text-white px-3 py-1.5 rounded-full font-medium whitespace-nowrap shadow-xs min-h-[36px]' 
-                    : 'cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]';
-            });
             renderProducts();
         }
-
-        window.openProfileSection = async function(section) {
-            triggerTelegramHaptic('light');
-            const panel = document.getElementById('profile-slide-panel');
-            const backdrop = document.getElementById('profile-backdrop');
-            const titleEl = document.getElementById('profile-modal-title');
-            const bodyEl = document.getElementById('profile-modal-body');
-
-            backdrop.classList.remove('hidden');
-            panel.classList.remove('translate-x-full');
-
-            const uData = window.currentUserData || {};
-            const isAdmin = uData.role === "admin" || uData.role === "staff" || window.currentUser?.uid === "NoIYk9Uwlc75YLdlpzx1";
-
-            if (section === 'personal') {
-                titleEl.innerText = "Personal Information 👤";
-                bodyEl.innerHTML = `
-                    <div class="space-y-3 text-xs">
-                        <div>
-                            <label class="block text-[10px] font-bold text-gray-500 mb-1">Full Name</label>
-                            <input type="text" id="edit-name" value="${sanitizeHTML(uData.name || '')}" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-gray-500 mb-1">Email Address</label>
-                            <input type="email" id="edit-email" value="${sanitizeHTML(uData.email || '')}" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-gray-500 mb-1">Phone Number</label>
-                            <input type="tel" id="edit-phone" value="${sanitizeHTML(uData.phone || '')}" placeholder="+855 XX XXX XXX" class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-[#a4133c]">
-                        </div>
-                        <div class="pt-2">
-                            <button id="save-profile-btn" onclick="savePersonalData()" class="w-full bg-[#800f2f] text-white font-bold py-2.5 rounded-xl shadow-xs active:scale-95 transition-transform flex items-center justify-center space-x-2">
-                                <span>Save Changes</span>
-                            </button>
-                        </div>
-                    </div>`;
-            } else if (section === 'orders') {
-                titleEl.innerText = "My Orders & PDF Invoices 📦";
-                bodyEl.innerHTML = `<p class="text-xs text-gray-400 text-center py-4">Loading your orders...</p>`;
-                try {
-                    let ordersList = [];
-                    if (isAdmin) {
-                        const snap = await getDocs(query(collection(window.firebaseDb, "orders"), orderBy("createdAt", "desc"), limit(20)));
-                        snap.forEach(d => ordersList.push({ docId: d.id, ...d.data() }));
-                    } else if (window.currentUser) {
-                        const q = query(collection(window.firebaseDb, "orders"), where("userId", "==", window.currentUser.uid));
-                        const querySnapshot = await getDocs(q);
-                        querySnapshot.forEach(docSnap => ordersList.push({ docId: docSnap.id, ...docSnap.data() }));
-                    }
-                    const statuses = ['Pending', 'Paid', 'Processing', 'Shipped', 'Delivered'];
-                    bodyEl.innerHTML = ordersList.length === 0 ? `<p class="text-xs text-gray-400 text-center py-4">You have no active orders yet.</p>` :
-                        ordersList.map(o => {
-                            const currentStatusIdx = statuses.indexOf(o.status || 'Pending');
-                            const encodedItems = encodeURIComponent(JSON.stringify(o.items || []));
-                            return `
-                                <div class="bg-gray-50 p-3 rounded-2xl border space-y-2.5 text-xs">
-                                    <div class="flex justify-between items-center">
-                                        <b>${sanitizeHTML(o.orderNum)}</b>
-                                        <span class="font-bold text-[#a4133c]">${formatPrice(o.total || 0)}</span>
-                                    </div>
-                                    <p class="text-[10px] text-gray-400">Ordered: ${o.date} | Status: <span class="font-bold text-emerald-600">${o.status}</span></p>
-                                    <div class="flex justify-between items-center pt-2 border-t text-[9px] text-gray-500">
-                                        ${statuses.map((st, idx) => `
-                                            <div class="flex flex-col items-center space-y-1">
-                                                <div class="w-5 h-5 rounded-full flex items-center justify-center font-bold text-[8px] ${idx <= currentStatusIdx ? 'bg-[#a4133c] text-white' : 'bg-gray-200 text-gray-600'}">
-                                                    ${idx <= currentStatusIdx ? '<i class="fa-solid fa-check text-[7px]"></i>' : idx + 1}
-                                                </div>
-                                                <span class="${idx <= currentStatusIdx ? 'text-[#a4133c] font-bold' : 'text-gray-400'}">${st}</span>
-                                            </div>
-                                        `).join('')}
-                                    </div>
-                                    <div class="pt-2">
-                                        <button onclick="downloadOrderInvoice('${o.orderNum}', '${sanitizeHTML(o.customerName)}', '${sanitizeHTML(o.phone)}', '${sanitizeHTML(o.address)}', '${encodedItems}', ${o.total}, '${o.date}', '${o.promoCode || ''}')" class="w-full bg-gray-900 text-white font-bold py-2 rounded-xl text-[10px] flex items-center justify-center space-x-1.5 shadow-xs">
-                                            <i class="fa-solid fa-file-pdf text-red-400"></i><span>Download PDF Invoice 📄</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            `;
-                        }).join('');
-                } catch (err) {
-                    bodyEl.innerHTML = `<p class="text-xs text-red-500 text-center py-4">Failed to load orders.</p>`;
-                }
-            } else if (section === 'wallet') {
-                titleEl.innerText = "Loyalty Voucher Wallet 🎟️";
-                const pts = uData.loyaltyPoints || 100;
-                bodyEl.innerHTML = `
-                    <div class="space-y-3">
-                        <div class="bg-gradient-to-r from-pink-50 to-pink-100 p-3 rounded-2xl border border-pink-200 text-center space-y-1">
-                            <span class="text-[10px] text-[#a4133c] font-bold uppercase">Available Balance</span>
-                            <h3 class="text-lg font-black text-[#a4133c]">${pts} Points</h3>
-                            <p class="text-[10px] text-gray-500">Redeem points for exclusive discount vouchers below!</p>
-                        </div>
-                        <div class="space-y-2">
-                            <div class="bg-white p-3 rounded-2xl border shadow-xs flex justify-between items-center">
-                                <div>
-                                    <span class="font-mono font-bold text-xs text-[#a4133c]">MININIZE15</span>
-                                    <p class="text-[10px] text-gray-500">15% OFF Grand Opening Special</p>
-                                </div>
-                                <button onclick="navigator.clipboard.writeText('MININIZE15'); alert('Coupon code MININIZE15 copied!');" class="bg-gray-900 text-white text-[10px] px-3 py-1.5 rounded-xl font-bold">Copy</button>
-                            </div>
-                        </div>
-                    </div>`;
-            } else if (section === 'favorites') {
-                titleEl.innerText = "My Cloud Wishlist";
-                let userWishlist = window.currentUserWishlist || [];
-                let favs = window.products.filter(p => userWishlist.includes(p.id));
-                bodyEl.innerHTML = favs.length === 0 ? `<p class="text-xs text-gray-400 text-center py-4">No cloud favorite items saved.</p>` :
-                    `<div class="grid grid-cols-2 gap-2">${favs.map(p => `<div onclick="closeProfileSubModal(); openProductDetailModal('${p.id}')" class="bg-gray-50 p-2 rounded-xl border cursor-pointer"><img src="${p.image}" class="w-full aspect-square object-cover rounded mb-1"><b class="text-[11px] truncate block">${sanitizeHTML(p.name)}</b></div>`).join('')}</div>`;
-            } else if (section === 'addresses') {
-                titleEl.innerText = "Delivery Addresses";
-                const addrs = window.currentUserAddresses || [];
-                bodyEl.innerHTML = `
-                    <div class="space-y-3">
-                        <div class="space-y-2">
-                            ${addrs.length === 0 ? `<p class="text-xs text-gray-400 text-center py-2">No addresses saved.</p>` : addrs.map((a, idx) => `
-                                <div class="bg-gray-50 p-3 rounded-xl border flex justify-between items-center">
-                                    <div>
-                                        <span class="font-bold text-gray-900">${sanitizeHTML(a.label)} ${a.isDefault ? '<span class="text-[9px] bg-pink-100 text-[#a4133c] px-1.5 py-0.5 rounded font-bold">Default</span>' : ''}</span>
-                                        <p class="text-gray-500 text-[10px]">${sanitizeHTML(a.street)}, ${sanitizeHTML(a.province)}</p>
-                                    </div>
-                                    <button onclick="removeAddressSubcoll('${a.id}')" class="text-red-500 text-xs"><i class="fa-solid fa-trash"></i></button>
-                                </div>
-                            `).join('')}
-                        </div>
-                        <div class="border-t pt-2 space-y-2">
-                            <p class="font-bold text-gray-800 text-[11px]">Add New Address:</p>
-                            <input type="text" id="new-addr-label" placeholder="Label (e.g. Office, Home)" class="w-full border rounded-xl px-2.5 py-1.5">
-                            <input type="text" id="new-addr-street" placeholder="Street Address" class="w-full border rounded-xl px-2.5 py-1.5">
-                            <input type="text" id="new-addr-province" placeholder="City / Province" class="w-full border rounded-xl px-2.5 py-1.5">
-                            <button onclick="addNewAddressSubcoll()" class="w-full bg-[#800f2f] text-white font-bold py-2 rounded-xl">Save Address</button>
-                        </div>
-                    </div>`;
-            } else if (section === 'notifications') {
-                titleEl.innerText = "Notification Preferences";
-                const notifs = uData.notifications || { emailAlerts: true, telegramAlerts: true };
-                bodyEl.innerHTML = `
-                    <div class="space-y-3 text-xs">
-                        <div class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border">
-                            <div><b class="block text-gray-900">Email Notifications</b><span class="text-[10px] text-gray-400">Receive order receipts via email</span></div>
-                            <input type="checkbox" id="notif-email" ${notifs.emailAlerts !== false ? 'checked' : ''} onchange="updateNotificationSettings()" class="w-4 h-4 accent-[#a4133c]">
-                        </div>
-                        <div class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border">
-                            <div><b class="block text-gray-900">Telegram Messages</b><span class="text-[10px] text-gray-400">Receive instant alerts in Telegram</span></div>
-                            <input type="checkbox" id="notif-telegram" ${notifs.telegramAlerts !== false ? 'checked' : ''} onchange="updateNotificationSettings()" class="w-4 h-4 accent-[#a4133c]">
-                        </div>
-                    </div>`;
-            }
-        };
-
-        window.closeProfileSubModal = function() {
-            triggerTelegramHaptic('light');
-            document.getElementById('profile-slide-panel').classList.add('translate-x-full');
-            document.getElementById('profile-backdrop').classList.add('hidden');
-        };
-
-        window.savePersonalData = async function() {
-            const name = sanitizeHTML(document.getElementById('edit-name').value.trim());
-            const email = sanitizeHTML(document.getElementById('edit-email').value.trim());
-            const phone = sanitizeHTML(document.getElementById('edit-phone').value.trim());
-            if (!name) return alert('Name cannot be empty.');
-            const saveBtn = document.getElementById('save-profile-btn');
-            saveBtn.disabled = true;
-            saveBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i><span>Syncing...</span>`;
-            try {
-                if (window.currentUser) {
-                    await updateDoc(doc(db, "users", window.currentUser.uid), { name, email, phone, updatedAt: new Date().toISOString() });
-                    triggerTelegramHaptic('success');
-                    alert('Profile updated successfully!');
-                    closeProfileSubModal();
-                }
-            } catch (err) {
-                alert('Failed to sync: ' + err.message);
-                saveBtn.disabled = false;
-                saveBtn.innerText = 'Save Changes';
-            }
-        };
-
-        window.addNewAddressSubcoll = async function() {
-            const label = sanitizeHTML(document.getElementById('new-addr-label').value.trim());
-            const street = sanitizeHTML(document.getElementById('new-addr-street').value.trim());
-            const province = sanitizeHTML(document.getElementById('new-addr-province').value.trim());
-            if (!label || !street || !province) return alert('Please fill in all fields.');
-            if (window.currentUser) {
-                await addDoc(collection(db, "users", window.currentUser.uid, "addresses"), {
-                    label, street, province, isDefault: window.currentUserAddresses.length === 0, createdAt: new Date().toISOString()
-                });
-                triggerTelegramHaptic('success');
-                openProfileSection('addresses');
-            }
-        };
-
-        window.removeAddressSubcoll = async function(addressId) {
-            if (window.currentUser) {
-                await deleteDoc(doc(db, "users", window.currentUser.uid, "addresses", addressId));
-                triggerTelegramHaptic('medium');
-                openProfileSection('addresses');
-            }
-        };
-
-        window.updateNotificationSettings = async function() {
-            const emailAlerts = document.getElementById('notif-email').checked;
-            const telegramAlerts = document.getElementById('notif-telegram').checked;
-            if (window.currentUser) {
-                await updateDoc(doc(db, "users", window.currentUser.uid), { notifications: { emailAlerts, telegramAlerts } });
-                triggerTelegramHaptic('light');
-            }
-        };
-
-        window.toggleWishlist = async function(id) {
-            triggerTelegramHaptic('medium');
-            if (window.currentUser) {
-                const wishRef = collection(db, "users", window.currentUser.uid, "wishlist");
-                const q = query(wishRef, where("productId", "==", id));
-                const snap = await getDocs(q);
-                if (!snap.empty) {
-                    await deleteDoc(doc(db, "users", window.currentUser.uid, "wishlist", snap.docs[0].id));
-                } else {
-                    await addDoc(wishRef, { productId: id, createdAt: new Date().toISOString() });
-                }
-            } else {
-                let localWish = JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
-                localWish = localWish.includes(id) ? localWish.filter(i => i !== id) : [...localWish, id];
-                localStorage.setItem('mininize_wishlist', JSON.stringify(localWish));
-                window.currentUserWishlist = localWish;
-                renderProducts();
-                if (!document.getElementById('page-wishlist').classList.contains('hidden')) renderWishlist();
-            }
-        };
-
-        function setReviewRating(rating) {
-            triggerTelegramHaptic('light');
-            window.currentSelectedStarRating = rating;
-            const stars = document.getElementById('star-rating-select').children;
-            for (let i = 0; i < 5; i++) stars[i].className = i < rating ? "fa-solid fa-star cursor-pointer text-amber-400" : "fa-regular fa-star cursor-pointer text-gray-300";
-        }
-
-        window.openProductDetailModal = async function(id, silent = false) {
-            const p = window.products.find(item => item.id === id);
-            if (!p) return;
-            window.currentSelectedProdId = id;
-            if (!silent) triggerTelegramHaptic('light');
-
-            document.getElementById('view-prod-image').src = p.image || FALLBACK_IMAGE;
-            document.getElementById('view-prod-category').innerText = p.category || 'Accessories';
-            document.getElementById('view-prod-name').innerText = sanitizeHTML(p.name);
-            document.getElementById('view-prod-price').innerText = formatPrice(p.price);
-            document.getElementById('view-prod-stock').innerText = `${p.stock ?? 10} available`;
-
-            const specs = p.details || { material: "Premium Alloy / Plated Metal", dimensions: "Standard Fit", care: "Keep away from moisture and harsh chemicals." };
-            document.getElementById('spec-material-view').innerText = sanitizeHTML(specs.material);
-            document.getElementById('spec-dimensions-view').innerText = sanitizeHTML(specs.dimensions);
-            document.getElementById('spec-care-view').innerText = sanitizeHTML(specs.care);
-
-            const reviews = p.reviews || [];
-            document.getElementById('prod-avg-rating').innerText = `⭐ ${reviews.length > 0 ? (reviews.reduce((s,r)=>s+r.rating,0)/reviews.length).toFixed(1) : "5.0"} / 5.0`;
-            
-            const currentUserId = window.currentUser?.uid;
-            document.getElementById('prod-reviews-list').innerHTML = reviews.length === 0 ? `<p class="text-gray-400 text-[10px]">No comments yet.</p>` :
-                reviews.map(r => {
-                    const hasLiked = (r.likedBy || []).includes(currentUserId);
-                    return `
-                        <div class="bg-gray-50 p-2.5 rounded-xl border space-y-1">
-                            <div class="flex justify-between text-[9px]">
-                                <b>${sanitizeHTML(r.author)}</b>
-                                <span class="text-amber-400">★ ${r.rating}.0</span>
-                            </div>
-                            <p class="text-gray-700 text-[10px]">${sanitizeHTML(r.text)}</p>
-                            <div class="flex justify-between items-center pt-1">
-                                <span class="text-[8px] text-gray-400">${r.date}</span>
-                                <button onclick="toggleReviewLike('${p.id}', '${r.id}')" class="${hasLiked ? 'text-red-600 font-bold' : 'text-gray-500'} text-[10px] flex items-center space-x-1">
-                                    <i class="fa-solid fa-heart"></i> <span>${r.likes || 0}</span>
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-
-            if (!silent) {
-                setReviewRating(5);
-                document.getElementById('view-prod-add-btn').onclick = () => { addToCart(p.id); closeProductDetailModal(); };
-                document.getElementById('product-detail-modal').classList.remove('hidden');
-            }
-        };
-
-        window.closeProductDetailModal = function() { window.currentSelectedProdId = null; document.getElementById('product-detail-modal').classList.add('hidden'); };
+        window.filterCategory = filterCategory;
 
         function renderProducts() {
             const grid = document.getElementById('product-grid');
             if (!grid) return;
             const searchVal = document.getElementById('search-input').value.toLowerCase();
-            const userWishlist = window.currentUserWishlist || JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
             let filtered = window.products.filter(p => (activeCategory === 'All' || p.category === activeCategory) && p.name.toLowerCase().includes(searchVal));
             
             grid.innerHTML = filtered.map(p => `
-                <div class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs flex flex-col justify-between cursor-pointer relative" onclick="openProductDetailModal('${p.id}')">
-                    <button onclick="event.stopPropagation(); toggleWishlist('${p.id}')" class="absolute top-3 right-3 w-7 h-7 bg-white/90 rounded-full flex items-center justify-center text-xs shadow-xs ${userWishlist.includes(p.id) ? 'text-red-500' : 'text-gray-400'}"><i class="fa-solid fa-heart"></i></button>
+                <div class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs flex flex-col justify-between cursor-pointer" onclick="openProductDetailModal('${p.id}')">
                     <img src="${p.image}" class="w-full aspect-square object-cover rounded-xl mb-2">
                     <h4 class="font-serif italic font-bold text-xs truncate">${sanitizeHTML(p.name)}</h4>
                     <div class="flex justify-between items-center mt-2 pt-2 border-t">
@@ -1714,16 +1280,18 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         }
         window.renderProducts = renderProducts;
 
-        function renderWishlist() {
-            const userWishlist = window.currentUserWishlist || JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
-            let favs = window.products.filter(p => userWishlist.includes(p.id));
-            document.getElementById('wishlist-grid').innerHTML = favs.length === 0 ? `<p class="text-xs text-gray-400 col-span-2 text-center py-6">No saved favorite items.</p>` :
-                favs.map(p => `<div onclick="openProductDetailModal('${p.id}')" class="bg-white rounded-2xl p-2.5 border shadow-xs cursor-pointer"><img src="${p.image}" class="w-full aspect-square object-cover rounded-xl mb-2"><h4 class="font-serif italic font-bold text-xs truncate">${sanitizeHTML(p.name)}</h4></div>`).join('');
-        }
-        window.renderWishlist = renderWishlist;
+        window.openProductDetailModal = function(id) {
+            const p = window.products.find(item => item.id === id);
+            if (!p) return;
+            document.getElementById('view-prod-image').src = p.image;
+            document.getElementById('view-prod-name').innerText = sanitizeHTML(p.name);
+            document.getElementById('view-prod-price').innerText = formatPrice(p.price);
+            document.getElementById('view-prod-add-btn').onclick = () => { addToCart(p.id); closeProductDetailModal(); };
+            document.getElementById('product-detail-modal').classList.remove('hidden');
+        };
+        window.closeProductDetailModal = () => document.getElementById('product-detail-modal').classList.add('hidden');
 
         function addToCart(id) {
-            triggerTelegramHaptic('success');
             const prod = window.products.find(p => p.id === id);
             const existing = window.cart.find(i => i.id === id);
             if (existing) existing.qty += 1; else window.cart.push({ ...prod, qty: 1 });
@@ -1733,7 +1301,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         }
 
         function openCartDrawer() {
-            triggerTelegramHaptic('light');
             document.getElementById('cart-items-container').innerHTML = window.cart.length === 0 ? `<p class="text-xs text-gray-400 text-center py-8">Cart is empty</p>` :
                 window.cart.map(item => `<div class="flex justify-between items-center text-xs border-b pb-2"><span><b>${sanitizeHTML(item.name)}</b> (x${item.qty})</span><span class="font-bold text-[#a4133c]">${formatPrice(item.price * item.qty)}</span></div>`).join('');
             document.getElementById('cart-total').innerText = formatPrice(window.cart.reduce((s, i) => s + (i.price * i.qty), 0));
@@ -1741,24 +1308,12 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         }
         window.openCartDrawer = openCartDrawer;
         function closeCartDrawer() { document.getElementById('cart-drawer').classList.add('hidden'); }
-        function openCheckoutModal() { closeCartDrawer(); document.getElementById('checkout-modal').classList.remove('hidden'); }
-        function closeCheckoutModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
-        function cancelBakongPayment() { document.getElementById('bakong-payment-modal').classList.add('hidden'); }
 
         function enterAdminMode() {
             document.getElementById('customer-view').classList.add('hidden');
             document.getElementById('admin-view').classList.remove('hidden');
             document.getElementById('customer-nav').classList.add('hidden');
-            
-            const role = window.currentUserData?.role || 'admin';
-            document.getElementById('admin-role-tag').innerText = role === 'staff' ? 'Fulfillment Staff' : 'Super Admin';
-            if (role === 'staff') {
-                const addBtn = document.getElementById('add-prod-admin-btn');
-                if (addBtn) addBtn.style.display = 'none';
-            }
-
-            switchAdminNav('orders');
-            updateAdminMetrics();
+            switchAdminNav('products');
         }
 
         function exitAdminMode() {
@@ -1770,292 +1325,44 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         window.exitAdminMode = exitAdminMode;
 
         function switchAdminNav(sec) {
-            ['orders', 'products', 'coupons', 'analytics', 'reviews'].forEach(s => {
-                const el = document.getElementById(`admin-sec-${s}`);
-                const tab = document.getElementById(`adtab-${s}`);
-                if (el) el.classList.add('hidden');
-                if (tab) tab.className = 'px-4 py-2 border-b-2 border-transparent text-gray-500 font-semibold';
+            ['orders', 'products', 'coupons', 'analytics'].forEach(s => {
+                document.getElementById(`admin-sec-${s}`).classList.add('hidden');
+                document.getElementById(`adtab-${s}`).className = 'px-4 py-2 border-b-2 border-transparent text-gray-500 font-semibold';
             });
-            const activeSec = document.getElementById(`admin-sec-${sec}`);
-            const activeTab = document.getElementById(`adtab-${sec}`);
-            if (activeSec) activeSec.classList.remove('hidden');
-            if (activeTab) activeTab.className = 'px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c] font-semibold';
-
-            if (sec === 'orders') loadAdminOrdersPage('initial');
+            document.getElementById(`admin-sec-${sec}`).classList.remove('hidden');
+            document.getElementById(`adtab-${sec}`).className = 'px-4 py-2 border-b-2 border-[#a4133c] text-[#a4133c] font-semibold';
             if (sec === 'products') renderAdminProducts();
-            if (sec === 'coupons') renderAdminCoupons();
-            if (sec === 'analytics') renderAdminAnalyticsCharts();
-            if (sec === 'reviews') renderAdminReviews();
         }
-
-        window.updateAdminMetrics = async function() {
-            try {
-                const snap = await getDocs(collection(db, "orders"));
-                window.orders = [];
-                snap.forEach(d => window.orders.push({ docId: d.id, ...d.data() }));
-
-                const totalRevenue = (window.orders || []).reduce((sum, o) => sum + (Number(o.total) || 0), 0);
-                const pendingCount = (window.orders || []).filter(o => o.status === 'Pending').length;
-                const lowStockItems = (window.products || []).filter(p => (p.stock ?? 10) <= 5);
-                const lowStockCount = lowStockItems.length;
-                const totalDiscounts = (window.coupons || []).reduce((sum, c) => sum + (Number(c.totalDiscountGiven) || 0), 0);
-
-                if (document.getElementById('admin-metric-revenue')) document.getElementById('admin-metric-revenue').innerText = `$${totalRevenue.toFixed(2)}`;
-                if (document.getElementById('admin-metric-pending')) document.getElementById('admin-metric-pending').innerText = pendingCount;
-                if (document.getElementById('admin-metric-lowstock')) document.getElementById('admin-metric-lowstock').innerText = lowStockCount;
-                if (document.getElementById('admin-metric-discounts')) document.getElementById('admin-metric-discounts').innerText = `$${totalDiscounts.toFixed(2)}`;
-            } catch (err) { console.error(err); }
-        };
-
-        window.loadAdminOrdersPage = async function(direction = 'initial') {
-            try {
-                let q = query(collection(db, "orders"), orderBy("createdAt", "desc"), limit(orderPageSize));
-                if (currentAdminOrderStatusFilter !== 'All') {
-                    q = query(collection(db, "orders"), where("status", "==", currentAdminOrderStatusFilter), orderBy("createdAt", "desc"), limit(orderPageSize));
-                }
-
-                if (direction === 'next' && lastVisibleOrderDoc) {
-                    q = query(collection(db, "orders"), orderBy("createdAt", "desc"), startAfter(lastVisibleOrderDoc), limit(orderPageSize));
-                } else if (direction === 'prev' && orderPaginationStack.length > 0) {
-                    orderPaginationStack.pop();
-                    const prevCursor = orderPaginationStack[orderPaginationStack.length - 1];
-                    if (prevCursor) {
-                        q = query(collection(db, "orders"), orderBy("createdAt", "desc"), startAfter(prevCursor), limit(orderPageSize));
-                    }
-                } else if (direction === 'initial') {
-                    orderPaginationStack = [];
-                    lastVisibleOrderDoc = null;
-                }
-
-                const snapshot = await getDocs(q);
-                if (snapshot.empty && direction !== 'initial') {
-                    if (direction === 'next') document.getElementById('next-page-btn').disabled = true;
-                    return;
-                }
-
-                if (!snapshot.empty) {
-                    firstVisibleOrderDoc = snapshot.docs[0];
-                    lastVisibleOrderDoc = snapshot.docs[snapshot.docs.length - 1];
-                    if (direction === 'next' || direction === 'initial') {
-                        if (orderPaginationStack.length === 0 || orderPaginationStack[orderPaginationStack.length - 1] !== firstVisibleOrderDoc) {
-                            orderPaginationStack.push(firstVisibleOrderDoc);
-                        }
-                    }
-                }
-
-                const tbody = document.getElementById('high-density-orders-tbody');
-                if (!tbody) return;
-
-                tbody.innerHTML = snapshot.empty ? `<tr><td colspan="6" class="p-4 text-center text-gray-400">No orders found.</td></tr>` :
-                    snapshot.docs.map(docSnap => {
-                        const o = docSnap.data();
-                        const docId = docSnap.id;
-                        if (adminOrderSearchQuery && !o.orderNum.toLowerCase().includes(adminOrderSearchQuery) && !o.customerName.toLowerCase().includes(adminOrderSearchQuery)) {
-                            return '';
-                        }
-                        return `
-                            <tr class="hover:bg-gray-50/80 transition-colors">
-                                <td class="py-2.5 px-3 font-mono font-bold text-[#a4133c]">${sanitizeHTML(o.orderNum)}</td>
-                                <td class="py-2.5 px-3">
-                                    <span class="font-bold block text-gray-900">${sanitizeHTML(o.customerName)}</span>
-                                    <span class="text-[10px] text-gray-400">${sanitizeHTML(o.phone)}</span>
-                                </td>
-                                <td class="py-2.5 px-3">
-                                    <select onchange="updateOrderStatus('${docId}', this.value)" class="border border-gray-200 rounded-lg px-2 py-0.5 text-[10px] bg-white font-medium ${o.status === 'Paid' ? 'text-emerald-600' : 'text-amber-500'}">
-                                        <option ${o.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                                        <option ${o.status === 'Paid' ? 'selected' : ''}>Paid</option>
-                                        <option ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
-                                        <option ${o.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
-                                        <option ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
-                                    </select>
-                                </td>
-                                <td class="py-2.5 px-3 text-gray-600">${(o.items || []).reduce((s,i)=>s+i.qty,0)} items</td>
-                                <td class="py-2.5 px-3 text-right font-bold text-gray-900">${formatPrice(o.total)}</td>
-                                <td class="py-2.5 px-3 text-right text-gray-400 text-[10px]">${o.date}</td>
-                            </tr>
-                        `;
-                    }).join('');
-
-                document.getElementById('prev-page-btn').disabled = orderPaginationStack.length <= 1;
-                document.getElementById('next-page-btn').disabled = snapshot.docs.length < orderPageSize;
-                document.getElementById('pagination-info').innerText = `Page stack depth: ${orderPaginationStack.length}`;
-            } catch (err) { console.error("Pagination error:", err); }
-        };
-
-        window.fetchNextOrdersPage = () => loadAdminOrdersPage('next');
-        window.fetchPreviousOrdersPage = () => loadAdminOrdersPage('prev');
-
-        let searchDebounceTimer = null;
-        window.debounceOrderSearch = function(val) {
-            clearTimeout(searchDebounceTimer);
-            searchDebounceTimer = setTimeout(() => {
-                adminOrderSearchQuery = val.trim().toLowerCase();
-                loadAdminOrdersPage('initial');
-            }, 300);
-        };
-
-        window.setAdminOrderStatusFilter = function(status) {
-            triggerTelegramHaptic('light');
-            currentAdminOrderStatusFilter = status;
-            ['all', 'pending', 'paid', 'shipped'].forEach(s => {
-                const btn = document.getElementById(`ord-pill-${s}`);
-                if (btn) {
-                    btn.className = s === status.toLowerCase() 
-                        ? 'px-3 py-1.5 bg-[#a4133c] text-white rounded-xl shadow-xs' 
-                        : 'px-3 py-1.5 bg-gray-50 text-gray-600 hover:bg-gray-100 rounded-xl border border-gray-200';
-                }
-            });
-            loadAdminOrdersPage('initial');
-        };
-
-        let categoryChartInstance = null;
-        let orderStatusChartInstance = null;
-
-        window.renderAdminAnalyticsCharts = function() {
-            const categoryData = {};
-            ['Hairpins', 'Necklaces', 'Rings', 'Earrings', 'Phone Charms', 'Bags & Pouches'].forEach(c => categoryData[c] = 0);
-            
-            (window.orders || []).forEach(o => {
-                (o.items || []).forEach(item => {
-                    const cat = item.category || 'Hairpins';
-                    categoryData[cat] = (categoryData[cat] || 0) + (item.price * item.qty);
-                });
-            });
-
-            const ctxCat = document.getElementById('categoryChart')?.getContext('2d');
-            if (ctxCat) {
-                if (categoryChartInstance) categoryChartInstance.destroy();
-                categoryChartInstance = new Chart(ctxCat, {
-                    type: 'doughnut',
-                    data: {
-                        labels: Object.keys(categoryData),
-                        datasets: [{
-                            data: Object.values(categoryData),
-                            backgroundColor: ['#a4133c', '#ffccd5', '#ff4d6d', '#590d22', '#ff8fa3', '#c9184a']
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false }
-                });
-            }
-
-            const statusCount = { Pending: 0, Paid: 0, Processing: 0, Shipped: 0, Delivered: 0 };
-            (window.orders || []).forEach(o => {
-                const st = o.status || 'Pending';
-                if (statusCount[st] !== undefined) statusCount[st]++;
-            });
-
-            const ctxStatus = document.getElementById('orderStatusChart')?.getContext('2d');
-            if (ctxStatus) {
-                if (orderStatusChartInstance) orderStatusChartInstance.destroy();
-                orderStatusChartInstance = new Chart(ctxStatus, {
-                    type: 'bar',
-                    data: {
-                        labels: Object.keys(statusCount),
-                        datasets: [{
-                            label: 'Orders',
-                            data: Object.values(statusCount),
-                            backgroundColor: '#800f2f'
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
-                });
-            }
-        };
-
-        window.filterLowStockProducts = function() {
-            triggerTelegramHaptic('light');
-            lowStockFilterActive = !lowStockFilterActive;
-            renderAdminProducts();
-        };
+        window.switchAdminNav = switchAdminNav;
 
         window.renderAdminProducts = function() {
             const tbody = document.getElementById('admin-products-table-body');
             if (!tbody) return;
-            const searchInput = document.getElementById('admin-product-search');
-            const query = searchInput ? searchInput.value.toLowerCase() : '';
-
-            let filteredProducts = (window.products || []).filter(p => {
-                const matchesQuery = (p.name && p.name.toLowerCase().includes(query)) || 
-                                     (p.sku && p.sku.toLowerCase().includes(query)) ||
-                                     (p.category && p.category.toLowerCase().includes(query));
-                const matchesLowStock = !lowStockFilterActive || ((p.stock ?? 10) <= 5);
-                return matchesQuery && matchesLowStock;
-            });
-
-            tbody.innerHTML = filteredProducts.length === 0 ? `<tr><td colspan="5" class="p-4 text-center text-gray-400">No products found.</td></tr>` :
-                filteredProducts.map(p => {
-                    const stock = p.stock ?? 10;
-                    const isLow = stock <= 5;
-                    const isStaff = window.currentUserData?.role === 'staff';
-                    return `
-                        <tr class="border-b ${isLow ? 'bg-red-50/50' : ''}">
-                            <td class="p-2 font-medium"><b>${sanitizeHTML(p.name)}</b><span class="block text-[9px] font-mono text-gray-400">${sanitizeHTML(p.sku || 'SKU')}</span></td>
-                            <td class="p-2">${sanitizeHTML(p.category)}</td>
-                            <td class="p-2 font-bold">$${Number(p.price).toFixed(2)}</td>
-                            <td class="p-2">
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isLow ? 'bg-red-100 text-red-700 animate-pulse' : 'bg-emerald-50 text-emerald-600'}">
-                                    ${stock} left ${isLow ? '⚠️' : ''}
-                                </span>
-                            </td>
-                            <td class="p-2 text-right space-x-1">
-                                <button onclick="broadcastExistingProduct('${p.id}')" class="bg-sky-500 text-white px-2 py-1 rounded text-[10px] font-bold" title="Broadcast"><i class="fa-brands fa-telegram"></i></button>
-                                <button onclick="adjustProductStock('${p.id}', 5)" class="bg-emerald-600 text-white px-2 py-1 rounded text-[10px] font-bold" title="Restock +5">+5</button>
-                                ${!isStaff ? `<button onclick="editProduct('${p.id}')" class="text-sky-600 font-bold px-1">Edit</button><button onclick="deleteProduct('${p.id}')" class="text-red-500 px-1">Delete</button>` : ''}
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
-        };
-
-        window.renderAdminCoupons = function() {
-            const tbody = document.getElementById('admin-coupons-table-body');
-            if (!tbody) return;
-            const isStaff = window.currentUserData?.role === 'staff';
-            tbody.innerHTML = (window.coupons || []).length === 0 ? `<tr><td colspan="6" class="p-4 text-center text-gray-400">No active coupons.</td></tr>` :
-                (window.coupons || []).map(c => `
-                    <tr class="border-b">
-                        <td class="p-2 font-mono font-bold text-[#a4133c]">${sanitizeHTML(c.code)}</td>
-                        <td class="p-2 font-semibold">${c.discountPercent}% OFF</td>
-                        <td class="p-2 font-bold text-gray-700">${c.usageCount || 0} / ${c.maxUsage || 50}</td>
-                        <td class="p-2 font-bold text-emerald-600">$${(c.totalDiscountGiven || 0).toFixed(2)}</td>
-                        <td class="p-2"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${c.isActive ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-500'}">${c.isActive ? 'Active' : 'Inactive'}</span></td>
-                        <td class="p-2 text-right space-x-2">
-                            ${!isStaff ? `<button onclick="toggleCouponStatus('${c.code}', ${c.isActive})" class="text-sky-600 font-bold">${c.isActive ? 'Disable' : 'Enable'}</button><button onclick="deleteCoupon('${c.code}')" class="text-red-500">Delete</button>` : '<span class="text-gray-400 text-[10px]">Restricted</span>'}
-                        </td>
-                    </tr>
-                `).join('');
-        };
-
-        window.renderAdminReviews = function() {
-            const container = document.getElementById('admin-reviews-list-container');
-            if (!container) return;
-            let allReviews = [];
-            window.products.forEach(p => (p.reviews || []).forEach(r => allReviews.push({ ...r, productName: p.name, productId: p.id })));
-            container.innerHTML = allReviews.length === 0 ? `<p class="text-gray-400 text-center py-4">No reviews.</p>` :
-                allReviews.map(r => `
-                    <div class="bg-gray-50 p-2 rounded-xl border space-y-1">
-                        <b>${sanitizeHTML(r.productName)}</b> - <span>${sanitizeHTML(r.author)}</span> (★ ${r.rating}.0)
-                        <p>${sanitizeHTML(r.text)}</p>
-                    </div>
-                `).join('');
+            tbody.innerHTML = window.products.map(p => `
+                <tr class="border-b">
+                    <td class="p-2 font-medium"><b>${sanitizeHTML(p.name)}</b><span class="block text-[9px] font-mono text-gray-400">${p.sku}</span></td>
+                    <td class="p-2">${p.category}</td>
+                    <td class="p-2 font-bold">$${Number(p.price).toFixed(2)}</td>
+                    <td class="p-2">${p.stock ?? 10}</td>
+                    <td class="p-2 text-right space-x-1">
+                        <button onclick="broadcastExistingProduct('${p.id}')" class="bg-sky-500 text-white px-2 py-1 rounded text-[10px] font-bold"><i class="fa-brands fa-telegram"></i></button>
+                        <button onclick="editProduct('${p.id}')" class="text-sky-600 font-bold">Edit</button>
+                    </td>
+                </tr>
+            `).join('');
         };
 
         window.openProductModal = function() {
-            if (window.currentUserData?.role === 'staff') return alert('Staff role cannot add products.');
             document.getElementById('prod-id').value = '';
             document.getElementById('prod-name').value = '';
             document.getElementById('prod-sku').value = '';
             document.getElementById('prod-price').value = '';
             document.getElementById('prod-stock').value = '';
             document.getElementById('prod-image').value = '';
-            document.getElementById('spec-material').value = '';
-            document.getElementById('spec-dimensions').value = '';
-            document.getElementById('spec-care').value = '';
             document.getElementById('admin-product-modal').classList.remove('hidden');
         };
 
         window.editProduct = function(id) {
-            if (window.currentUserData?.role === 'staff') return alert('Staff role cannot edit products.');
             const p = window.products.find(item => item.id === id);
             if (!p) return;
             document.getElementById('prod-id').value = p.id;
@@ -2065,65 +1372,10 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             document.getElementById('prod-price').value = p.price;
             document.getElementById('prod-stock').value = p.stock ?? 10;
             document.getElementById('prod-image').value = p.image || '';
-            document.getElementById('spec-material').value = p.details?.material || '';
-            document.getElementById('spec-dimensions').value = p.details?.dimensions || '';
-            document.getElementById('spec-care').value = p.details?.care || '';
             document.getElementById('admin-product-modal').classList.remove('hidden');
         };
 
         function closeAdminProductModal() { document.getElementById('admin-product-modal').classList.add('hidden'); }
-        
-        window.openCouponModal = function() {
-            if (window.currentUserData?.role === 'staff') return alert('Staff role cannot create coupons.');
-            document.getElementById('coupon-code-input').value = '';
-            document.getElementById('coupon-discount-input').value = '';
-            document.getElementById('coupon-max-usage').value = '50';
-            document.getElementById('admin-coupon-modal').classList.remove('hidden');
-        };
-        function closeAdminCouponModal() { document.getElementById('admin-coupon-modal').classList.add('hidden'); }
-
-        window.openAdminBarcodeScanner = function() {
-            triggerTelegramHaptic('medium');
-            document.getElementById('admin-scanner-modal').classList.remove('hidden');
-            document.getElementById('scan-result-banner').classList.add('hidden');
-
-            setTimeout(() => {
-                try {
-                    html5QrCodeScannerInstance = new Html5Qrcode("reader");
-                    html5QrCodeScannerInstance.start(
-                        { facingMode: "environment" },
-                        { fps: 10, qrbox: { width: 250, height: 150 } },
-                        (decodedText) => {
-                            triggerTelegramHaptic('success');
-                            const banner = document.getElementById('scan-result-banner');
-                            banner.innerText = `Scanned Code: ${decodedText}`;
-                            banner.classList.remove('hidden');
-
-                            const searchInput = document.getElementById('admin-product-search');
-                            if (searchInput) {
-                                searchInput.value = decodedText;
-                                renderAdminProducts();
-                            }
-                            setTimeout(() => { closeAdminBarcodeScanner(); }, 1500);
-                        },
-                        (errorMessage) => {}
-                    ).catch(err => {
-                        console.error("Camera start error:", err);
-                        alert("Unable to access camera for scanning.");
-                    });
-                } catch (e) { console.error(e); }
-            }, 300);
-        };
-
-        window.closeAdminBarcodeScanner = function() {
-            if (html5QrCodeScannerInstance) {
-                html5QrCodeScannerInstance.stop().then(() => {
-                    html5QrCodeScannerInstance.clear();
-                }).catch(err => {});
-                html5QrCodeScannerInstance = null;
-            }
-            document.getElementById('admin-scanner-modal').classList.add('hidden');
-        };
     </script>
 </body>
 </html>
