@@ -103,19 +103,8 @@
                     <button onclick="filterCategory('Bags & Pouches')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Bags & Pouches 👜</button>
                 </div>
 
-                <!-- PRODUCT GRID WITH SKELETON LOADERS -->
-                <div id="product-grid" class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <div class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs space-y-2 animate-pulse-soft">
-                        <div class="w-full aspect-square bg-gray-200 rounded-xl"></div>
-                        <div class="h-3 bg-gray-200 rounded w-3/4"></div>
-                        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
-                    </div>
-                    <div class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs space-y-2 animate-pulse-soft">
-                        <div class="w-full aspect-square bg-gray-200 rounded-xl"></div>
-                        <div class="h-3 bg-gray-200 rounded w-3/4"></div>
-                        <div class="h-4 bg-gray-200 rounded w-1/2"></div>
-                    </div>
-                </div>
+                <!-- PRODUCT GRID WITH AUTHENTICATION CHECK -->
+                <div id="product-grid" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
                 
                 <div id="load-more-container" class="text-center pt-2">
                     <button onclick="loadMoreProducts()" id="load-more-btn" class="hidden bg-white border border-gray-200 text-gray-700 text-xs font-bold px-5 py-2.5 rounded-xl shadow-xs">Load More Products 🌀</button>
@@ -623,7 +612,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
     <!-- FIREBASE & ENTERPRISE ENGINE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, setDoc, getDoc, getDocs, query, where, limit, startAfter, orderBy, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -1060,15 +1049,19 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             } catch (err) { alert("Sign up failed: " + err.message); }
         };
 
-        // CONTINUED WITH TELEGRAM: CAPTURE TELEGRAM INFO, USERNAME & AVATAR PHOTO AND SAVE TO DATABASE
+        // STRICT TELEGRAM SIGN-IN (NO GUEST FALLBACK)
         window.handleTelegramSignIn = async function() {
             try {
                 const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-                const tgId = tgUser ? tgUser.id : Math.floor(100000 + Math.random() * 900000);
+                if (!tgUser) {
+                    throw new Error("Telegram WebApp context not found. Please log in using your account credentials.");
+                }
+                
+                const tgId = tgUser.id;
                 const email = `${tgId}@telegram.org`;
                 const password = `tg_pass_${tgId}`;
                 
-                const fullName = tgUser ? sanitizeHTML(`${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim()) : 'Telegram Shopper';
+                const fullName = sanitizeHTML(`${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim());
                 const username = tgUser?.username ? `@${tgUser.username}` : '@telegram_user';
                 const photoUrl = tgUser?.photo_url || 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80';
 
@@ -1104,19 +1097,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 }
                 triggerTelegramHaptic('success');
             } catch (err) { 
-                try { 
-                    const anonRes = await signInAnonymously(auth); 
-                    await setDoc(doc(db, "users", anonRes.user.uid), {
-                        uid: anonRes.user.uid,
-                        customId: `USR-${anonRes.user.uid.substring(0, 6).toUpperCase()}`,
-                        name: 'Guest Shopper',
-                        username: '@guest',
-                        image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80',
-                        loyaltyPoints: 50,
-                        role: "customer",
-                        updatedAt: new Date().toISOString()
-                    }, { merge: true });
-                } catch (anonErr) { alert("Authentication failed: " + anonErr.message); }
+                alert("Authentication required: " + err.message); 
             }
         };
 
@@ -1184,6 +1165,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
                 exitAdminMode();
                 if (window.updateProfileViewUI) window.updateProfileViewUI();
+                if (window.renderProducts) window.renderProducts();
             }
         });
 
@@ -1780,6 +1762,24 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         function renderProducts() {
             const grid = document.getElementById('product-grid');
             if (!grid) return;
+
+            // Restrict catalog view to authenticated users only
+            if (!window.currentUser) {
+                grid.innerHTML = `
+                    <div class="col-span-full bg-white rounded-2xl p-6 text-center space-y-3 border border-gray-100 shadow-xs max-w-sm mx-auto">
+                        <div class="w-12 h-12 bg-pink-50 text-[#a4133c] rounded-full flex items-center justify-center mx-auto text-base">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        <h3 class="font-serif italic font-bold text-sm text-gray-900">Sign In to View Catalog & Prices</h3>
+                        <p class="text-[11px] text-gray-500">Exclusive aesthetic collections and pricing are reserved for registered members.</p>
+                        <button onclick="switchCustomerTab('profile')" class="w-full bg-[#800f2f] text-white font-bold text-xs py-2.5 rounded-xl shadow-xs">
+                            Go to Login / Sign Up ✨
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
             const searchVal = document.getElementById('search-input').value.toLowerCase();
             const userWishlist = window.currentUserWishlist || JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
             let filtered = window.products.filter(p => (activeCategory === 'All' || p.category === activeCategory) && p.name.toLowerCase().includes(searchVal));
