@@ -1640,6 +1640,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             document.getElementById('profile-backdrop').classList.add('hidden');
         };
 
+        // Anti-Duplication Integrated Profile Save Function
         window.savePersonalData = async function() {
             const name = sanitizeHTML(document.getElementById('edit-name').value.trim());
             const email = sanitizeHTML(document.getElementById('edit-email').value.trim());
@@ -1650,9 +1651,10 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             saveBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i><span>Syncing...</span>`;
             try {
                 if (window.currentUser) {
-                    await updateDoc(doc(db, "users", window.currentUser.uid), { name, email, phone, updatedAt: new Date().toISOString() });
+                    const userRef = doc(db, "users", window.currentUser.uid);
+                    await setDoc(userRef, { name, email, phone, updatedAt: new Date().toISOString() }, { merge: true });
                     triggerTelegramHaptic('success');
-                    alert('Profile updated successfully!');
+                    alert('Profile updated and saved to database successfully!');
                     closeProfileSubModal();
                 }
             } catch (err) {
@@ -1662,16 +1664,20 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             }
         };
 
-        window.addNewAddressSubcoll = async function() {
+        // Anti-Duplication Integrated Address Save Function
+        window.addNewAddressSubcoll = async function(addressId = null) {
             const label = sanitizeHTML(document.getElementById('new-addr-label').value.trim());
             const street = sanitizeHTML(document.getElementById('new-addr-street').value.trim());
             const province = sanitizeHTML(document.getElementById('new-addr-province').value.trim());
             if (!label || !street || !province) return alert('Please fill in all fields.');
             if (window.currentUser) {
-                await addDoc(collection(db, "users", window.currentUser.uid, "addresses"), {
-                    label, street, province, isDefault: window.currentUserAddresses.length === 0, createdAt: new Date().toISOString()
-                });
+                const cleanDocId = addressId || `addr_${label.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+                const addressRef = doc(db, "users", window.currentUser.uid, "addresses", cleanDocId);
+                await setDoc(addressRef, {
+                    label, street, province, isDefault: window.currentUserAddresses.length === 0, updatedAt: new Date().toISOString()
+                }, { merge: true });
                 triggerTelegramHaptic('success');
+                alert('Address saved to database successfully!');
                 openProfileSection('addresses');
             }
         };
