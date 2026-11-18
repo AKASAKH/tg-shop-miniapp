@@ -124,17 +124,17 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <span id="vip-tier-badge" class="bg-white/20 text-white text-[9px] uppercase font-black px-2 py-0.5 rounded-md">VIP Silver Member</span>
-                                <h3 id="vip-points-text" class="text-sm font-bold mt-1">120 Loyalty Points</h3>
+                                <h3 id="vip-points-text" class="text-sm font-bold mt-1">50 Loyalty Points</h3>
                             </div>
                             <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-lg"><i class="fa-solid fa-crown text-amber-300"></i></div>
                         </div>
                         <div class="space-y-1">
                             <div class="flex justify-between text-[9px] text-pink-100 font-medium">
                                 <span id="vip-progress-label">Tier Progress</span>
-                                <span id="vip-progress-target">80 pts to Gold</span>
+                                <span id="vip-progress-target">150 pts to Gold</span>
                             </div>
                             <div class="w-full bg-white/20 h-2 rounded-full overflow-hidden">
-                                <div id="vip-progress-bar" class="bg-amber-300 h-full rounded-full transition-all duration-500" style="width: 60%;"></div>
+                                <div id="vip-progress-bar" class="bg-amber-300 h-full rounded-full transition-all duration-500" style="width: 25%;"></div>
                             </div>
                         </div>
                     </div>
@@ -255,6 +255,7 @@
                 <button onclick="switchAdminNav('coupons')" id="adtab-coupons" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Coupons & Limits 🎟️</button>
                 <button onclick="switchAdminNav('analytics')" id="adtab-analytics" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Analytics & Reports 📈</button>
                 <button onclick="switchAdminNav('reviews')" id="adtab-reviews" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Reviews ⭐</button>
+                <button onclick="switchAdminNav('staff')" id="adtab-staff" class="px-4 py-2 border-b-2 border-transparent text-gray-500">Staff Management 👥</button>
             </div>
             
             <!-- HIGH-DENSITY PAGINATED ORDERS SECTION -->
@@ -371,6 +372,29 @@
             <div id="admin-sec-reviews" class="hidden bg-white p-4 rounded-2xl border border-gray-100 shadow-xs space-y-3">
                 <h3 class="font-bold text-xs text-gray-900">Customer Feedback & Verified Reviews</h3>
                 <div id="admin-reviews-list-container" class="space-y-3 max-h-[60vh] overflow-y-auto text-xs"></div>
+            </div>
+
+            <!-- STAFF MANAGEMENT SECTION -->
+            <div id="admin-sec-staff" class="hidden space-y-4">
+                <div class="bg-white rounded-2xl p-4 shadow-xs border border-gray-100 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-xs text-gray-900">User & Staff Role Management</h3>
+                        <span class="text-[10px] text-gray-400">Promote or demote user roles instantly</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead>
+                                <tr class="text-gray-400 border-b text-[10px]">
+                                    <th class="p-2">User Name & ID</th>
+                                    <th class="p-2">Email</th>
+                                    <th class="p-2">Current Role</th>
+                                    <th class="p-2 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-staff-table-body" class="divide-y text-[11px]"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1936,7 +1960,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         window.exitAdminMode = exitAdminMode;
 
         function switchAdminNav(sec) {
-            ['orders', 'products', 'coupons', 'analytics', 'reviews'].forEach(s => {
+            ['orders', 'products', 'coupons', 'analytics', 'reviews', 'staff'].forEach(s => {
                 const el = document.getElementById(`admin-sec-${s}`);
                 const tab = document.getElementById(`adtab-${s}`);
                 if (el) el.classList.add('hidden');
@@ -1952,7 +1976,55 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             if (sec === 'coupons') renderAdminCoupons();
             if (sec === 'analytics') renderAdminAnalyticsCharts();
             if (sec === 'reviews') renderAdminReviews();
+            if (sec === 'staff') loadAdminStaffUsers();
         }
+
+        window.loadAdminStaffUsers = async function() {
+            const tbody = document.getElementById('admin-staff-table-body');
+            if (!tbody) return;
+            try {
+                const snap = await getDocs(collection(window.firebaseDb, "users"));
+                let usersList = [];
+                snap.forEach(d => usersList.push({ id: d.id, ...d.data() }));
+
+                tbody.innerHTML = usersList.length === 0 ? `<tr><td colspan="4" class="p-4 text-center text-gray-400">No users found.</td></tr>` :
+                    usersList.map(u => `
+                        <tr class="border-b">
+                            <td class="p-2 font-medium"><b>${sanitizeHTML(u.name || 'User')}</b><span class="block text-[9px] font-mono text-gray-400">${u.customId || u.id.substring(0,8)}</span></td>
+                            <td class="p-2 text-gray-600">${sanitizeHTML(u.email || 'N/A')}</td>
+                            <td class="p-2">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold ${u.role === 'admin' ? 'bg-pink-100 text-[#a4133c]' : (u.role === 'staff' ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-600')}">
+                                    ${u.role || 'customer'}
+                                </span>
+                            </td>
+                            <td class="p-2 text-right">
+                                <select onchange="updateUserRole('${u.id}', this.value)" class="border border-gray-200 rounded px-2 py-1 text-[10px] bg-white font-medium">
+                                    <option value="customer" ${u.role === 'customer' || !u.role ? 'selected' : ''}>Customer</option>
+                                    <option value="staff" ${u.role === 'staff' ? 'selected' : ''}>Staff</option>
+                                    <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
+                                </select>
+                            </td>
+                        </tr>
+                    `).join('');
+            } catch (err) {
+                console.error("Error loading users:", err);
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-red-500">Failed to load users. Check Firestore permissions.</td></tr>`;
+            }
+        };
+
+        window.updateUserRole = async function(uid, newRole) {
+            if (window.currentUserData?.role !== 'admin' && window.currentUser?.uid !== 'NoIYk9Uwlc75YLdlpzx1') {
+                return alert('Only Super Admins can change user roles.');
+            }
+            try {
+                await updateDoc(doc(window.firebaseDb, "users", uid), { role: newRole, updatedAt: new Date().toISOString() });
+                triggerTelegramHaptic('success');
+                alert(`User role successfully updated to "${newRole}"!`);
+                loadAdminStaffUsers();
+            } catch (err) {
+                alert('Failed to update role: ' + err.message);
+            }
+        };
 
         window.updateAdminMetrics = async function() {
             try {
