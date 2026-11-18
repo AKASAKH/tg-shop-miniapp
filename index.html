@@ -64,7 +64,6 @@
                     <option value="USD">USD ($)</option>
                     <option value="KHR">KHR (៛)</option>
                 </select>
-                <!-- Top-Right Header Profile Avatar Button -->
                 <button onclick="switchCustomerTab('profile')" class="w-8 h-8 rounded-full overflow-hidden bg-pink-100 flex items-center justify-center border border-pink-200 shadow-xs hover:scale-105 transition-transform" title="My Profile">
                     <img id="header-user-avatar" src="https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80" class="w-full h-full object-cover" alt="Profile">
                 </button>
@@ -655,6 +654,12 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         window.firebaseDb = db;
         window.firebaseAuth = auth;
 
+        window.isAdminOrStaffDomain = function(email) {
+            if (!email) return false;
+            const clean = email.toLowerCase().trim();
+            return clean.endsWith("@mininize.com") || clean.endsWith("@minimize.com");
+        };
+
         window.sanitizeHTML = function(str) {
             if (!str) return '';
             return String(str)
@@ -703,7 +708,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             } catch (err) {}
         };
 
-        // Telegram Theme Parameter Integration
         function applyTelegramTheme() {
             if (window.Telegram?.WebApp) {
                 const tg = window.Telegram.WebApp;
@@ -1044,10 +1048,10 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
             const email = (extraData.email || user.email || existingData.email || "").toLowerCase();
             
-            // Determine role: preserve existing Firestore role, or assign based on @mininize.com / UID
-            let role = existingData.role;
+            // Determine role: preserve existing Firestore role, or assign based on @mininize.com / @minimize.com / UID
+            let role = existingData.role ? existingData.role.toLowerCase() : "";
             if (!role) {
-                if (user.uid === "NoIYk9Uwlc75YLdlpzx1" || email.endsWith("@mininize.com")) {
+                if (user.uid === "NoIYk9Uwlc75YLdlpzx1" || window.isAdminOrStaffDomain(email)) {
                     role = email.includes("staff") ? "staff" : "admin";
                 } else {
                     role = "customer";
@@ -1189,7 +1193,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 if (addressesUnsubscribe) { addressesUnsubscribe(); addressesUnsubscribe = null; }
                 if (wishlistUnsubscribe) { wishlistUnsubscribe(); wishlistUnsubscribe = null; }
 
-                // Ensure document exists and is synced in Firestore even if session was restored from cache
+                // Automatically recreates users/{uid} in Firestore even if users collection was deleted
                 await syncUserToDatabase(user);
                 loadInitialProducts();
 
@@ -1203,9 +1207,10 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                         headerAvatar.src = window.currentUserData.image;
                     }
 
-                    const isAdmin = window.currentUserData?.role === "admin" || 
-                                    window.currentUserData?.role === "staff" || 
-                                    (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || 
+                    const role = (window.currentUserData?.role || "").toLowerCase();
+                    const isAdmin = role === "admin" || 
+                                    role === "staff" || 
+                                    window.isAdminOrStaffDomain(user.email) || 
                                     user.uid === "NoIYk9Uwlc75YLdlpzx1";
 
                     if (isAdmin) {
@@ -1701,7 +1706,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             document.getElementById('profile-backdrop').classList.add('hidden');
         };
 
-        // Anti-Duplication Integrated Profile Save Function
         window.savePersonalData = async function() {
             const name = sanitizeHTML(document.getElementById('edit-name').value.trim());
             const email = sanitizeHTML(document.getElementById('edit-email').value.trim());
@@ -1725,7 +1729,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             }
         };
 
-        // Anti-Duplication Integrated Address Save Function
         window.addNewAddressSubcoll = async function(addressId = null) {
             const label = sanitizeHTML(document.getElementById('new-addr-label').value.trim());
             const street = sanitizeHTML(document.getElementById('new-addr-street').value.trim());
@@ -1838,7 +1841,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             const grid = document.getElementById('product-grid');
             if (!grid) return;
 
-            // Restrict catalog view to authenticated users only
             if (!window.currentUser) {
                 grid.innerHTML = `
                     <div class="col-span-full bg-white rounded-2xl p-6 text-center space-y-3 border border-gray-100 shadow-xs max-w-sm mx-auto">
@@ -1939,7 +1941,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 window.Telegram.WebApp.MainButton.hide();
             }
 
-            const role = window.currentUserData?.role || 'admin';
+            const role = (window.currentUserData?.role || 'admin').toLowerCase();
             document.getElementById('admin-role-tag').innerText = role === 'staff' ? 'Fulfillment Staff' : 'Super Admin';
             if (role === 'staff') {
                 const addBtn = document.getElementById('add-prod-admin-btn');
@@ -1988,24 +1990,27 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 snap.forEach(d => usersList.push({ id: d.id, ...d.data() }));
 
                 tbody.innerHTML = usersList.length === 0 ? `<tr><td colspan="4" class="p-4 text-center text-gray-400">No users found.</td></tr>` :
-                    usersList.map(u => `
-                        <tr class="border-b">
-                            <td class="p-2 font-medium"><b>${sanitizeHTML(u.name || 'User')}</b><span class="block text-[9px] font-mono text-gray-400">${u.customId || u.id.substring(0,8)}</span></td>
-                            <td class="p-2 text-gray-600">${sanitizeHTML(u.email || 'N/A')}</td>
-                            <td class="p-2">
-                                <span class="px-2 py-0.5 rounded text-[10px] font-bold ${u.role === 'admin' ? 'bg-pink-100 text-[#a4133c]' : (u.role === 'staff' ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-600')}">
-                                    ${u.role || 'customer'}
-                                </span>
-                            </td>
-                            <td class="p-2 text-right">
-                                <select onchange="updateUserRole('${u.id}', this.value)" class="border border-gray-200 rounded px-2 py-1 text-[10px] bg-white font-medium">
-                                    <option value="customer" ${u.role === 'customer' || !u.role ? 'selected' : ''}>Customer</option>
-                                    <option value="staff" ${u.role === 'staff' ? 'selected' : ''}>Staff</option>
-                                    <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
-                                </select>
-                            </td>
-                        </tr>
-                    `).join('');
+                    usersList.map(u => {
+                        const r = (u.role || 'customer').toLowerCase();
+                        return `
+                            <tr class="border-b">
+                                <td class="p-2 font-medium"><b>${sanitizeHTML(u.name || 'User')}</b><span class="block text-[9px] font-mono text-gray-400">${u.customId || u.id.substring(0,8)}</span></td>
+                                <td class="p-2 text-gray-600">${sanitizeHTML(u.email || 'N/A')}</td>
+                                <td class="p-2">
+                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold ${r === 'admin' ? 'bg-pink-100 text-[#a4133c]' : (r === 'staff' ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-600')}">
+                                        ${r}
+                                    </span>
+                                </td>
+                                <td class="p-2 text-right">
+                                    <select onchange="updateUserRole('${u.id}', this.value)" class="border border-gray-200 rounded px-2 py-1 text-[10px] bg-white font-medium">
+                                        <option value="customer" ${r === 'customer' ? 'selected' : ''}>Customer</option>
+                                        <option value="staff" ${r === 'staff' ? 'selected' : ''}>Staff</option>
+                                        <option value="admin" ${r === 'admin' ? 'selected' : ''}>Admin</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
             } catch (err) {
                 console.error("Error loading users:", err);
                 tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-red-500">Failed to load users. Check Firestore permissions.</td></tr>`;
@@ -2013,11 +2018,12 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
 
         window.updateUserRole = async function(uid, newRole) {
-            if (window.currentUserData?.role !== 'admin' && window.currentUser?.uid !== 'NoIYk9Uwlc75YLdlpzx1') {
+            const currentRole = (window.currentUserData?.role || "").toLowerCase();
+            if (currentRole !== 'admin' && !window.isAdminOrStaffDomain(window.currentUser?.email) && window.currentUser?.uid !== 'NoIYk9Uwlc75YLdlpzx1') {
                 return alert('Only Super Admins can change user roles.');
             }
             try {
-                await updateDoc(doc(window.firebaseDb, "users", uid), { role: newRole, updatedAt: new Date().toISOString() });
+                await updateDoc(doc(window.firebaseDb, "users", uid), { role: newRole.toLowerCase(), updatedAt: new Date().toISOString() });
                 triggerTelegramHaptic('success');
                 alert(`User role successfully updated to "${newRole}"!`);
                 loadAdminStaffUsers();
@@ -2224,7 +2230,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 filteredProducts.map(p => {
                     const stock = p.stock ?? 10;
                     const isLow = stock <= 5;
-                    const isStaff = window.currentUserData?.role === 'staff';
+                    const isStaff = (window.currentUserData?.role || "").toLowerCase() === 'staff';
                     return `
                         <tr class="border-b ${isLow ? 'bg-red-50/50' : ''}">
                             <td class="p-2 font-medium"><b>${sanitizeHTML(p.name)}</b><span class="block text-[9px] font-mono text-gray-400">${sanitizeHTML(p.sku || 'SKU')}</span></td>
@@ -2248,7 +2254,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         window.renderAdminCoupons = function() {
             const tbody = document.getElementById('admin-coupons-table-body');
             if (!tbody) return;
-            const isStaff = window.currentUserData?.role === 'staff';
+            const isStaff = (window.currentUserData?.role || "").toLowerCase() === 'staff';
             tbody.innerHTML = (window.coupons || []).length === 0 ? `<tr><td colspan="6" class="p-4 text-center text-gray-400">No active coupons.</td></tr>` :
                 (window.coupons || []).map(c => `
                     <tr class="border-b">
@@ -2279,7 +2285,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
 
         window.openProductModal = function() {
-            if (window.currentUserData?.role === 'staff') return alert('Staff role cannot add products.');
+            if ((window.currentUserData?.role || "").toLowerCase() === 'staff') return alert('Staff role cannot add products.');
             document.getElementById('prod-id').value = '';
             document.getElementById('prod-name').value = '';
             document.getElementById('prod-sku').value = '';
@@ -2293,7 +2299,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
 
         window.editProduct = function(id) {
-            if (window.currentUserData?.role === 'staff') return alert('Staff role cannot edit products.');
+            if ((window.currentUserData?.role || "").toLowerCase() === 'staff') return alert('Staff role cannot edit products.');
             const p = window.products.find(item => item.id === id);
             if (!p) return;
             document.getElementById('prod-id').value = p.id;
@@ -2312,7 +2318,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         function closeAdminProductModal() { document.getElementById('admin-product-modal').classList.add('hidden'); }
         
         window.openCouponModal = function() {
-            if (window.currentUserData?.role === 'staff') return alert('Staff role cannot create coupons.');
+            if ((window.currentUserData?.role || "").toLowerCase() === 'staff') return alert('Staff role cannot create coupons.');
             document.getElementById('coupon-code-input').value = '';
             document.getElementById('coupon-discount-input').value = '';
             document.getElementById('coupon-max-usage').value = '50';
