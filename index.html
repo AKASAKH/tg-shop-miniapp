@@ -756,6 +756,11 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         const PAGE_LIMIT = 8;
 
         window.loadInitialProducts = async function() {
+            if (!window.currentUser) {
+                window.products = [];
+                if (window.renderProducts) window.renderProducts();
+                return;
+            }
             try {
                 const q = query(collection(db, "products"), orderBy("createdAt", "desc"), limit(PAGE_LIMIT));
                 const snapshot = await getDocs(q);
@@ -778,7 +783,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
 
         window.loadMoreProducts = async function() {
-            if (!lastVisibleProductDoc) return;
+            if (!lastVisibleProductDoc || !window.currentUser) return;
             triggerTelegramHaptic('light');
             try {
                 const q = query(collection(db, "products"), orderBy("createdAt", "desc"), startAfter(lastVisibleProductDoc), limit(PAGE_LIMIT));
@@ -794,12 +799,10 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             } catch (err) { console.error("Load more error:", err); }
         };
 
-        loadInitialProducts();
-
         const couponsUnsubscribe = onSnapshot(collection(db, "coupons"), (snapshot) => {
             window.coupons = [];
             snapshot.forEach(docSnap => window.coupons.push({ id: docSnap.id, ...docSnap.data() }));
-            if (window.coupons.length === 0) seedCoupons(db);
+            if (window.coupons.length === 0 && window.currentUser) seedCoupons(db);
             if (window.renderAdminCoupons) window.renderAdminCoupons();
             if (window.updateAdminMetrics) window.updateAdminMetrics();
         });
@@ -1008,96 +1011,142 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             document.body.removeChild(link);
         };
 
+        // UNIFIED DATABASE SYNC HELPER FOR BOTH USERS & ADMINS
+        async function syncUserToDatabase(user, extraData = {}) {
+            if (!user) return null;
+            const userRef = doc(db, "users", user.uid);
+            const existingSnap = await getDoc(userRef);
+            const existingData = existingSnap.exists() ? existingSnap.data() : {};
+
+            const email = (extraData.email || user.email || existingData.email || "").toLowerCase();
+            
+            // Determine role: preserve existing Firestore role, or assign based on @mininize.com / UID
+            let role = existingData.role;
+            if (!role) {
+                if (user.uid === "NoIYk9Uwlc75YLdlpzx1" || email.endsWith("@mininize.com")) {
+                    role = email.includes("staff") ? "staff" : "admin";
+                } else {
+                    role = "customer";
+                }
+            }
+
+            const payload = {
+                uid: user.uid,
+                customId: existingData.customId || `USR-${user.uid.substring(0, 6).toUpperCase()}`,
+                email: email,
+                name: extraData.name || existingData.name || (email ? email.split('@')[0] : "Shopper"),
+                username: extraData.username || existingData.username || "",
+                image: extraData.image || existingData.image || "https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80",
+                role: role,
+                loyaltyPoints: existingData.loyaltyPoints ?? (role === "customer" ? 50 : 0),
+                notifications: existingData.notifications || { emailAlerts: true, telegramAlerts: true },
+                lastLoginAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+
+            if (!existingSnap.exists()) {
+                payload.createdAt = new Date().toISOString();
+            }
+            if (extraData.telegramId) {
+                payload.telegramId = extraData.telegramId;
+            }
+
+            await setDoc(userRef, payload, { merge: true });
+            return payload;
+        }
+
+        // 1. EMAIL LOGIN (Syncs both Admin & Customer)
         window.handleEmailLogin = async function() {
-            const email = document.getElementById('login-email').value.trim();
+            const email = document.getElementById('login-email').value.trim().toLowerCase();
             const password = document.getElementById('login-password').value;
             if (!email || !password) return alert('Enter email and password.');
-            try { 
-                const cred = await signInWithEmailAndPassword(auth, email, password); 
-                const userRef = doc(db, "users", cred.user.uid);
-                await setDoc(userRef, {
-                    uid: cred.user.uid,
-                    customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
-                    email, name: email.split('@')[0], loyaltyPoints: 120,
-                    role: email.toLowerCase().includes("staff") ? "staff" : (email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer"),
-                    updatedAt: new Date().toISOString()
-                }, { merge: true });
-                triggerTelegramHaptic('success'); 
-            } catch (err) { alert("Login failed: " + err.message); }
+
+            try {
+                const cred = await signInWithEmailAndPassword(auth, email, password);
+                const syncedData = await syncUserToDatabase(cred.user, { email });
+                window.currentUserData = syncedData;
+
+                if (syncedData.role === "admin" || syncedData.role === "staff") {
+                    enterAdminMode();
+                }
+                triggerTelegramHaptic('success');
+            } catch (err) {
+                alert("Login failed: " + err.message);
+            }
         };
 
+        // 2. EMAIL SIGN UP (Syncs New Account & Default Address)
         window.handleEmailSignUp = async function() {
             const name = sanitizeHTML(document.getElementById('signup-name').value.trim());
-            const email = sanitizeHTML(document.getElementById('signup-email').value.trim());
+            const email = sanitizeHTML(document.getElementById('signup-email').value.trim().toLowerCase());
             const password = document.getElementById('signup-password').value;
             if (!name || !email || !password) return alert('Fill all fields.');
+
             try {
                 const cred = await createUserWithEmailAndPassword(auth, email, password);
-                await setDoc(doc(db, "users", cred.user.uid), {
-                    uid: cred.user.uid, customId: `USR-${cred.user.uid.substring(0, 6).toUpperCase()}`,
-                    email, name, loyaltyPoints: 50,
-                    role: email.toLowerCase().endsWith("@mininize.com") ? "admin" : "customer",
-                    notifications: { emailAlerts: true, telegramAlerts: true }
+                const syncedData = await syncUserToDatabase(cred.user, { name, email });
+                window.currentUserData = syncedData;
+
+                await setDoc(doc(db, "users", cred.user.uid, "addresses", "addr_home"), {
+                    label: 'Home',
+                    street: '123 Main Street',
+                    province: 'Phnom Penh',
+                    isDefault: true,
+                    updatedAt: new Date().toISOString()
                 }, { merge: true });
-                
-                await addDoc(collection(db, "users", cred.user.uid, "addresses"), {
-                    label: 'Home', street: '123 Main Street', province: 'Phnom Penh', isDefault: true, createdAt: new Date().toISOString()
-                });
 
                 triggerTelegramHaptic('success');
-                alert('Account created successfully!');
-            } catch (err) { alert("Sign up failed: " + err.message); }
+                alert('Account created and synced to database!');
+            } catch (err) {
+                alert("Sign up failed: " + err.message);
+            }
         };
 
-        // STRICT TELEGRAM SIGN-IN (NO GUEST FALLBACK)
+        // 3. TELEGRAM SIGN IN / SIGN UP (Strict Telegram Context + DB Sync)
         window.handleTelegramSignIn = async function() {
             try {
                 const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
                 if (!tgUser) {
-                    throw new Error("Telegram WebApp context not found. Please log in using your account credentials.");
+                    throw new Error("Telegram WebApp context not found. Please log in using your email and password.");
                 }
-                
+
                 const tgId = tgUser.id;
                 const email = `${tgId}@telegram.org`;
                 const password = `tg_pass_${tgId}`;
-                
-                const fullName = sanitizeHTML(`${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim());
-                const username = tgUser?.username ? `@${tgUser.username}` : '@telegram_user';
-                const photoUrl = tgUser?.photo_url || 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80';
+                const fullName = sanitizeHTML(`${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim()) || 'Telegram Shopper';
+                const username = tgUser.username ? `@${tgUser.username}` : '';
+                const photoUrl = tgUser.photo_url || 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80';
 
                 let user = null;
                 try {
                     user = (await signInWithEmailAndPassword(auth, email, password)).user;
-                } catch(e) {
-                    const cred = await createUserWithEmailAndPassword(auth, email, password);
-                    user = cred.user;
+                } catch (e) {
+                    user = (await createUserWithEmailAndPassword(auth, email, password)).user;
                 }
 
-                if (user) {
-                    await setDoc(doc(db, "users", user.uid), {
-                        uid: user.uid,
-                        telegramId: tgId,
-                        customId: `USR-${user.uid.substring(0, 6).toUpperCase()}`,
-                        email,
-                        name: fullName,
-                        username: username,
-                        image: photoUrl,
-                        loyaltyPoints: 100,
-                        role: "customer",
-                        notifications: { emailAlerts: true, telegramAlerts: true },
+                const syncedData = await syncUserToDatabase(user, {
+                    telegramId: tgId,
+                    email,
+                    name: fullName,
+                    username,
+                    image: photoUrl
+                });
+                window.currentUserData = syncedData;
+
+                const addrRef = collection(db, "users", user.uid, "addresses");
+                if ((await getDocs(addrRef)).empty) {
+                    await setDoc(doc(db, "users", user.uid, "addresses", "addr_home"), {
+                        label: 'Home',
+                        street: 'Telegram St',
+                        province: 'Phnom Penh',
+                        isDefault: true,
                         updatedAt: new Date().toISOString()
                     }, { merge: true });
-                    
-                    const addrRef = collection(db, "users", user.uid, "addresses");
-                    if ((await getDocs(addrRef)).empty) {
-                        await addDoc(addrRef, {
-                            label: 'Home', street: 'Telegram St', province: 'Phnom Penh', isDefault: true, createdAt: new Date().toISOString()
-                        });
-                    }
                 }
+
                 triggerTelegramHaptic('success');
-            } catch (err) { 
-                alert("Authentication required: " + err.message); 
+            } catch (err) {
+                alert("Authentication required: " + err.message);
             }
         };
 
@@ -1107,6 +1156,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         let addressesUnsubscribe = null;
         let wishlistUnsubscribe = null;
 
+        // 4. AUTH STATE LISTENER (Guarantees DB sync on page reload / session restore)
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 window.currentUser = user;
@@ -1115,20 +1165,25 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 if (addressesUnsubscribe) { addressesUnsubscribe(); addressesUnsubscribe = null; }
                 if (wishlistUnsubscribe) { wishlistUnsubscribe(); wishlistUnsubscribe = null; }
 
+                // Ensure document exists and is synced in Firestore even if session was restored from cache
+                await syncUserToDatabase(user);
+                loadInitialProducts();
+
                 userDocUnsubscribe = onSnapshot(doc(db, "users", user.uid), (docSnap) => {
                     if (docSnap.exists()) {
                         window.currentUserData = docSnap.data();
-                    } else {
-                        window.currentUserData = { name: "Shopper", role: "customer", loyaltyPoints: 80, image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80', notifications: { emailAlerts: true, telegramAlerts: true } };
                     }
 
-                    // Update Top-Right Header Avatar directly from database profile
                     const headerAvatar = document.getElementById('header-user-avatar');
-                    if (headerAvatar && window.currentUserData.image) {
+                    if (headerAvatar && window.currentUserData?.image) {
                         headerAvatar.src = window.currentUserData.image;
                     }
 
-                    const isAdmin = window.currentUserData.role === "admin" || window.currentUserData.role === "staff" || (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || user.uid === "NoIYk9Uwlc75YLdlpzx1";
+                    const isAdmin = window.currentUserData?.role === "admin" || 
+                                    window.currentUserData?.role === "staff" || 
+                                    (user.email && user.email.toLowerCase().endsWith("@mininize.com")) || 
+                                    user.uid === "NoIYk9Uwlc75YLdlpzx1";
+
                     if (isAdmin) {
                         enterAdminMode();
                     } else {
@@ -1150,16 +1205,17 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     if (window.renderProducts) window.renderProducts();
                     if (!document.getElementById('page-wishlist').classList.contains('hidden')) renderWishlist();
                 });
-
             } else {
                 if (userDocUnsubscribe) { userDocUnsubscribe(); userDocUnsubscribe = null; }
                 if (addressesUnsubscribe) { addressesUnsubscribe(); addressesUnsubscribe = null; }
                 if (wishlistUnsubscribe) { wishlistUnsubscribe(); wishlistUnsubscribe = null; }
                 window.orders = [];
-                window.currentUser = null; window.currentUserData = null;
-                window.currentUserAddresses = []; window.currentUserWishlist = [];
-                
-                // Reset Top-Right Header Avatar to default guest image
+                window.products = [];
+                window.currentUser = null;
+                window.currentUserData = null;
+                window.currentUserAddresses = [];
+                window.currentUserWishlist = [];
+
                 const headerAvatar = document.getElementById('header-user-avatar');
                 if (headerAvatar) headerAvatar.src = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80';
 
@@ -1232,6 +1288,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
 
         window.createOrderAndInitBakong = async function() {
+            if (!window.currentUser) return alert('Please sign in to complete your order.');
             const customerName = sanitizeHTML(document.getElementById('checkout-name').value.trim());
             const phone = sanitizeHTML(document.getElementById('checkout-phone').value.trim());
             const address = sanitizeHTML(document.getElementById('checkout-address').value.trim());
@@ -1282,19 +1339,17 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 }
 
                 const docRef = await addDoc(collection(db, "orders"), { 
-                    orderNum, userId: window.currentUser ? window.currentUser.uid : 'guest', customerName, phone, address, items: window.cart, subtotal, discount, total, promoCode: appliedCouponCode, status: 'Pending', date: new Date().toISOString().split('T')[0], createdAt: serverTimestamp() 
+                    orderNum, userId: window.currentUser.uid, customerName, phone, address, items: window.cart, subtotal, discount, total, promoCode: appliedCouponCode, status: 'Pending', date: new Date().toISOString().split('T')[0], createdAt: serverTimestamp() 
                 });
                 window.currentActiveOrderId = docRef.id;
                 
-                if (window.currentUser) {
-                    const earnedPoints = Math.floor(total * 10);
-                    await runTransaction(db, async (transaction) => {
-                        const userRef = doc(db, "users", window.currentUser.uid);
-                        const uDoc = await transaction.get(userRef);
-                        const currentPts = uDoc.exists() ? (uDoc.data().loyaltyPoints || 0) : 0;
-                        transaction.update(userRef, { loyaltyPoints: currentPts + earnedPoints });
-                    });
-                }
+                const earnedPoints = Math.floor(total * 10);
+                await runTransaction(db, async (transaction) => {
+                    const userRef = doc(db, "users", window.currentUser.uid);
+                    const uDoc = await transaction.get(userRef);
+                    const currentPts = uDoc.exists() ? (uDoc.data().loyaltyPoints || 0) : 0;
+                    transaction.update(userRef, { loyaltyPoints: currentPts + earnedPoints });
+                });
 
                 window.cart = []; localStorage.removeItem('mininize_cart');
                 document.getElementById('cart-badge').innerText = '0';
@@ -1404,7 +1459,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     document.getElementById('cust-profile-avatar').src = uData.image;
                 }
 
-                const pts = uData.loyaltyPoints || 100;
+                const pts = uData.loyaltyPoints || 50;
                 document.getElementById('vip-points-text').innerText = `${pts} Loyalty Points`;
                 
                 let tierName = "Silver Member ✨";
@@ -1551,7 +1606,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 }
             } else if (section === 'wallet') {
                 titleEl.innerText = "Loyalty Voucher Wallet 🎟️";
-                const pts = uData.loyaltyPoints || 100;
+                const pts = uData.loyaltyPoints || 50;
                 bodyEl.innerHTML = `
                     <div class="space-y-3">
                         <div class="bg-gradient-to-r from-pink-50 to-pink-100 p-3 rounded-2xl border border-pink-200 text-center space-y-1">
@@ -1690,15 +1745,10 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 if (!snap.empty) {
                     await deleteDoc(doc(db, "users", window.currentUser.uid, "wishlist", snap.docs[0].id));
                 } else {
-                    await addDoc(wishRef, { productId: id, createdAt: new Date().toISOString() });
+                    await setDoc(doc(db, "users", window.currentUser.uid, "wishlist", id), { productId: id, createdAt: new Date().toISOString() }, { merge: true });
                 }
             } else {
-                let localWish = JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
-                localWish = localWish.includes(id) ? localWish.filter(i => i !== id) : [...localWish, id];
-                localStorage.setItem('mininize_wishlist', JSON.stringify(localWish));
-                window.currentUserWishlist = localWish;
-                renderProducts();
-                if (!document.getElementById('page-wishlist').classList.contains('hidden')) renderWishlist();
+                alert('Please sign in to save items to your wishlist.');
             }
         };
 
@@ -1710,6 +1760,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         }
 
         window.openProductDetailModal = async function(id, silent = false) {
+            if (!window.currentUser) return alert('Please sign in to view product details.');
             const p = window.products.find(item => item.id === id);
             if (!p) return;
             window.currentSelectedProdId = id;
@@ -1781,7 +1832,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             }
 
             const searchVal = document.getElementById('search-input').value.toLowerCase();
-            const userWishlist = window.currentUserWishlist || JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
+            const userWishlist = window.currentUserWishlist || [];
             let filtered = window.products.filter(p => (activeCategory === 'All' || p.category === activeCategory) && p.name.toLowerCase().includes(searchVal));
             
             grid.innerHTML = filtered.map(p => `
@@ -1799,7 +1850,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         window.renderProducts = renderProducts;
 
         function renderWishlist() {
-            const userWishlist = window.currentUserWishlist || JSON.parse(localStorage.getItem('mininize_wishlist') || '[]');
+            const userWishlist = window.currentUserWishlist || [];
             let favs = window.products.filter(p => userWishlist.includes(p.id));
             document.getElementById('wishlist-grid').innerHTML = favs.length === 0 ? `<p class="text-xs text-gray-400 col-span-2 text-center py-6">No saved favorite items.</p>` :
                 favs.map(p => `<div onclick="openProductDetailModal('${p.id}')" class="bg-white rounded-2xl p-2.5 border shadow-xs cursor-pointer"><img src="${p.image}" class="w-full aspect-square object-cover rounded-xl mb-2"><h4 class="font-serif italic font-bold text-xs truncate">${sanitizeHTML(p.name)}</h4></div>`).join('');
@@ -1807,6 +1858,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         window.renderWishlist = renderWishlist;
 
         function addToCart(id) {
+            if (!window.currentUser) return alert('Please sign in to add items to your bag.');
             triggerTelegramHaptic('success');
             const prod = window.products.find(p => p.id === id);
             const existing = window.cart.find(i => i.id === id);
