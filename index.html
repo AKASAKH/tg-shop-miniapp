@@ -1034,15 +1034,31 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             closeAdminCouponModal();
         };
 
-        window.toggleCouponStatus = async function(code, currentStatus) {
-            await updateDoc(doc(db, "coupons", code), { isActive: !currentStatus });
-            triggerTelegramHaptic('light');
+        window.toggleCouponStatus = async function(docId, currentStatus) {
+            if ((window.currentUserData?.role || "").toLowerCase() === 'staff') {
+                return alert('Staff role cannot manage coupons.');
+            }
+            try {
+                await updateDoc(doc(db, "coupons", docId), { isActive: !currentStatus });
+                triggerTelegramHaptic('light');
+            } catch (err) {
+                console.error("Toggle coupon failed:", err);
+                alert("Failed to update coupon: " + err.message);
+            }
         };
 
-        window.deleteCoupon = async function(code) {
-            if (confirm(`Delete coupon ${code}?`)) {
-                await deleteDoc(doc(db, "coupons", code));
-                triggerTelegramHaptic('warning');
+        window.deleteCoupon = async function(docId, codeLabel) {
+            if ((window.currentUserData?.role || "").toLowerCase() === 'staff') {
+                return alert('Staff role cannot manage coupons.');
+            }
+            if (confirm(`Delete coupon ${codeLabel || docId}?`)) {
+                try {
+                    await deleteDoc(doc(db, "coupons", docId));
+                    triggerTelegramHaptic('warning');
+                } catch (err) {
+                    console.error("Delete coupon failed:", err);
+                    alert("Failed to delete coupon: " + err.message);
+                }
             }
         };
 
@@ -1396,6 +1412,114 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
                 await updateDoc(prodRef, { reviews });
                 openProductDetailModal(prodId, true);
+            }
+        };
+
+        // ADMIN REVIEWS MANAGEMENT (LOAD ALL PRODUCTS, EDIT & DELETE)
+        window.loadAllAdminReviews = async function() {
+            const container = document.getElementById('admin-reviews-list-container');
+            if (!container) return;
+            container.innerHTML = `<p class="text-gray-400 text-center py-4">Loading all customer reviews...</p>`;
+
+            try {
+                const snap = await getDocs(collection(db, "products"));
+                let allReviews = [];
+
+                snap.forEach(docSnap => {
+                    const p = docSnap.data();
+                    (p.reviews || []).forEach((r, idx) => {
+                        allReviews.push({
+                            ...r,
+                            reviewIndex: idx,
+                            productName: p.name || 'Unnamed Product',
+                            productId: docSnap.id
+                        });
+                    });
+                });
+
+                allReviews.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+                if (allReviews.length === 0) {
+                    container.innerHTML = `<p class="text-gray-400 text-center py-4">No reviews found across any products.</p>`;
+                    return;
+                }
+
+                container.innerHTML = allReviews.map(r => `
+                    <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 space-y-1.5">
+                        <div class="flex justify-between items-start gap-2">
+                            <div>
+                                <b class="text-gray-900">${sanitizeHTML(r.productName)}</b>
+                                <span class="block text-[10px] text-gray-500">By <b>${sanitizeHTML(r.author || 'Shopper')}</b> • ${sanitizeHTML(r.date || '')} • <span class="text-amber-500 font-bold">★ ${r.rating || 5}.0</span></span>
+                            </div>
+                            <div class="flex items-center space-x-2 shrink-0">
+                                <button onclick="editAdminReview('${r.productId}', '${r.id || ''}', ${r.reviewIndex})" class="text-sky-600 font-bold text-[11px] hover:underline">Edit</button>
+                                <button onclick="deleteAdminReview('${r.productId}', '${r.id || ''}', ${r.reviewIndex})" class="text-red-500 font-bold text-[11px] hover:underline">Delete</button>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 text-xs">${sanitizeHTML(r.text)}</p>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error("Failed to load reviews:", err);
+                container.innerHTML = `<p class="text-red-500 text-center py-4">Failed to load reviews: ${err.message}</p>`;
+            }
+        };
+
+        window.editAdminReview = async function(productId, reviewId, reviewIndex) {
+            try {
+                const prodRef = doc(db, "products", productId);
+                const prodSnap = await getDoc(prodRef);
+                if (!prodSnap.exists()) return alert("Product not found.");
+
+                const reviews = [...(prodSnap.data().reviews || [])];
+                const targetIdx = reviewId ? reviews.findIndex(r => r.id === reviewId) : reviewIndex;
+                if (targetIdx < 0 || !reviews[targetIdx]) return alert("Review not found.");
+
+                const current = reviews[targetIdx];
+                const newText = prompt("Edit review text:", current.text || "");
+                if (newText === null) return;
+
+                const newRatingRaw = prompt("Edit star rating (1 to 5):", String(current.rating || 5));
+                if (newRatingRaw === null) return;
+                const parsedRating = Math.min(5, Math.max(1, parseInt(newRatingRaw) || current.rating || 5));
+
+                reviews[targetIdx] = {
+                    ...current,
+                    text: sanitizeHTML(newText.trim()),
+                    rating: parsedRating,
+                    editedAt: new Date().toISOString().split('T')[0]
+                };
+
+                await updateDoc(prodRef, { reviews });
+                triggerTelegramHaptic('success');
+                await loadAllAdminReviews();
+                await loadInitialProducts();
+            } catch (err) {
+                console.error("Edit review failed:", err);
+                alert("Failed to edit review: " + err.message);
+            }
+        };
+
+        window.deleteAdminReview = async function(productId, reviewId, reviewIndex) {
+            if (!confirm("Permanently delete this review?")) return;
+            try {
+                const prodRef = doc(db, "products", productId);
+                const prodSnap = await getDoc(prodRef);
+                if (!prodSnap.exists()) return alert("Product not found.");
+
+                const reviews = [...(prodSnap.data().reviews || [])];
+                const targetIdx = reviewId ? reviews.findIndex(r => r.id === reviewId) : reviewIndex;
+                if (targetIdx < 0 || !reviews[targetIdx]) return alert("Review not found.");
+
+                reviews.splice(targetIdx, 1);
+
+                await updateDoc(prodRef, { reviews });
+                triggerTelegramHaptic('warning');
+                await loadAllAdminReviews();
+                await loadInitialProducts();
+            } catch (err) {
+                console.error("Delete review failed:", err);
+                alert("Failed to delete review: " + err.message);
             }
         };
 
@@ -2075,7 +2199,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             if (sec === 'products') renderAdminProducts();
             if (sec === 'coupons') renderAdminCoupons();
             if (sec === 'analytics') renderAdminAnalyticsCharts();
-            if (sec === 'reviews') renderAdminReviews();
+            if (sec === 'reviews') loadAllAdminReviews();
             if (sec === 'staff') loadAdminStaffUsers();
         }
 
@@ -2362,23 +2486,9 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                         <td class="p-2 font-bold text-emerald-600">$${(c.totalDiscountGiven || 0).toFixed(2)}</td>
                         <td class="p-2"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${c.isActive ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-500'}">${c.isActive ? 'Active' : 'Inactive'}</span></td>
                         <td class="p-2 text-right space-x-2">
-                            ${!isStaff ? `<button onclick="toggleCouponStatus('${c.code}', ${c.isActive})" class="text-sky-600 font-bold">${c.isActive ? 'Disable' : 'Enable'}</button><button onclick="deleteCoupon('${c.code}')" class="text-red-500">Delete</button>` : '<span class="text-gray-400 text-[10px]">Restricted</span>'}
+                            ${!isStaff ? `<button onclick="toggleCouponStatus('${c.id}', ${Boolean(c.isActive)})" class="text-sky-600 font-bold">${c.isActive ? 'Disable' : 'Enable'}</button><button onclick="deleteCoupon('${c.id}', '${sanitizeHTML(c.code)}')" class="text-red-500">Delete</button>` : '<span class="text-gray-400 text-[10px]">Restricted</span>'}
                         </td>
                     </tr>
-                `).join('');
-        };
-
-        window.renderAdminReviews = function() {
-            const container = document.getElementById('admin-reviews-list-container');
-            if (!container) return;
-            let allReviews = [];
-            window.products.forEach(p => (p.reviews || []).forEach(r => allReviews.push({ ...r, productName: p.name, productId: p.id })));
-            container.innerHTML = allReviews.length === 0 ? `<p class="text-gray-400 text-center py-4">No reviews.</p>` :
-                allReviews.map(r => `
-                    <div class="bg-gray-50 p-2 rounded-xl border space-y-1">
-                        <b>${sanitizeHTML(r.productName)}</b> - <span>${sanitizeHTML(r.author)}</span> (★ ${r.rating}.0)
-                        <p>${sanitizeHTML(r.text)}</p>
-                    </div>
                 `).join('');
         };
 
