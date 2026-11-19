@@ -87,6 +87,7 @@
                 </div>
             </div>
             <div class="flex items-center space-x-2">
+                <span id="cloud-sync-pill" class="hidden text-[9px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">Synced ✓</span>
                 <select id="currency-select" onchange="changeCurrency(this.value)" class="text-[11px] bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg px-2 py-1 font-medium text-[#111827] focus:outline-none focus:border-[#64748B]">
                     <option value="USD">USD ($)</option>
                     <option value="KHR">KHR (៛)</option>
@@ -208,7 +209,11 @@
                             <i class="fa-solid fa-chevron-right text-[10px] text-[#94A3B8]"></i>
                         </button>
                         <button onclick="openProfileSection('notifications')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#F8FAFC] text-left">
-                            <span class="flex items-center space-x-2.5 text-[#111827] font-medium"><i class="fa-regular fa-bell text-[#64748B] w-4"></i><span>Notifications Preferences</span></span>
+                            <span class="flex items-center space-x-2.5 text-[#111827] font-medium"><i class="fa-regular fa-bell text-[#64748B] w-4"></i><span>Notifications & Preferences</span></span>
+                            <i class="fa-solid fa-chevron-right text-[10px] text-[#94A3B8]"></i>
+                        </button>
+                        <button onclick="openProfileSection('history')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#F8FAFC] text-left">
+                            <span class="flex items-center space-x-2.5 text-[#111827] font-medium"><i class="fa-solid fa-clock-rotate-left text-[#64748B] w-4"></i><span>Saved Edit & Activity History</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-[#94A3B8]"></i>
                         </button>
                     </div>
@@ -216,7 +221,7 @@
                     <button onclick="handleSignOut()" class="w-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#64748B] hover:text-[#111827] font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Log out</button>
                 </div>
 
-                <!-- AUTHENTICATION CARD WITH FORGOT PASSWORD, EYE TOGGLES, ENTER SUBMIT & LOADING SPINNERS -->
+                <!-- AUTHENTICATION CARD -->
                 <div id="profile-auth-box" class="bg-[#FFFFFF] rounded-2xl p-4 shadow-xs border border-[#E2E8F0] space-y-3 max-w-sm mx-auto hidden">
                     <div class="text-center space-y-0.5">
                         <h3 class="font-serif italic font-bold text-xs text-[#111827]">Welcome to Mininize Studio</h3>
@@ -447,7 +452,7 @@
 
     </main>
 
-    <!-- ADD / EDIT PRODUCT & TELEGRAM BROADCAST MODAL (3-SLOT DEVICE PHOTO PICKER + AUTO-COMPRESSION) -->
+    <!-- ADD / EDIT PRODUCT & TELEGRAM BROADCAST MODAL -->
     <div id="admin-product-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-[#FFFFFF] rounded-3xl max-w-md w-full p-5 space-y-3 shadow-2xl relative text-xs max-h-[90vh] overflow-y-auto border border-[#E2E8F0]">
             <button onclick="closeAdminProductModal()" class="absolute top-3 right-3 text-[#94A3B8] hover:text-[#64748B] w-7 h-7 bg-[#F1F5F9] rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
@@ -547,7 +552,7 @@
                     <input type="text" id="spec-care" placeholder="Care Instructions" class="w-full border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-[#111827] placeholder-[#94A3B8]">
                 </div>
 
-                <!-- CUSTOMIZE TELEGRAM POST TEMPLATE (BOT TOKEN SECURED IN CLOUDFLARE) -->
+                <!-- CUSTOMIZE TELEGRAM POST TEMPLATE -->
                 <div class="border-t border-[#E2E8F0] pt-2 space-y-2 bg-[#F8FAFC] p-3 rounded-2xl border">
                     <div class="flex justify-between items-center">
                         <span class="font-bold text-[#111827] text-[11px]">Customize Telegram Broadcast Post 📢</span>
@@ -747,7 +752,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
     <!-- FIREBASE & ENTERPRISE ENGINE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, updateEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, setDoc, getDoc, getDocs, query, where, limit, startAfter, orderBy, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -765,6 +770,59 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
         window.firebaseDb = db;
         window.firebaseAuth = auth;
+
+        function flashCloudSyncPill() {
+            const pill = document.getElementById('cloud-sync-pill');
+            if (!pill) return;
+            pill.classList.remove('hidden');
+            clearTimeout(window._syncPillTimer);
+            window._syncPillTimer = setTimeout(() => pill.classList.add('hidden'), 2200);
+        }
+
+        // AUDIT & CHANGE HISTORY LOGGER (STORES EVERY USER EDIT/CHANGE IN FIRESTORE)
+        window.logUserDatabaseChange = async function(actionType, details = {}) {
+            if (!window.currentUser) return;
+            try {
+                await addDoc(collection(db, "users", window.currentUser.uid, "activity_logs"), {
+                    action: actionType,
+                    details,
+                    timestamp: new Date().toISOString(),
+                    createdAt: serverTimestamp()
+                });
+                flashCloudSyncPill();
+            } catch (err) {
+                console.warn("Activity log write skipped:", err.message);
+            }
+        };
+
+        // CLOUD CART SYNCHRONIZATION (PERSISTS EVERY CART EDIT TO FIRESTORE)
+        window.syncCartToDatabase = async function(actionNote = "cart_updated") {
+            localStorage.setItem('mininize_cart', JSON.stringify(window.cart));
+            const badge = document.getElementById('cart-badge');
+            if (badge) badge.innerText = window.cart.reduce((s, i) => s + i.qty, 0);
+
+            if (!window.currentUser) return;
+            try {
+                const cleanItems = window.cart.map(item => ({
+                    id: item.id,
+                    name: item.name,
+                    price: Number(item.price) || 0,
+                    qty: Number(item.qty) || 1,
+                    category: item.category || 'Accessories',
+                    image: item.image || ''
+                }));
+                await setDoc(doc(db, "users", window.currentUser.uid, "cart", "active"), {
+                    items: cleanItems,
+                    itemCount: cleanItems.reduce((s, i) => s + i.qty, 0),
+                    subtotal: cleanItems.reduce((s, i) => s + (i.price * i.qty), 0),
+                    lastAction: actionNote,
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
+                flashCloudSyncPill();
+            } catch (err) {
+                console.error("Cart cloud sync error:", err);
+            }
+        };
 
         window.isAdminOrStaffDomain = function(email) {
             if (!email) return false;
@@ -807,13 +865,24 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             }
         };
 
-        window.changeCurrency = function(curr) {
+        window.changeCurrency = async function(curr) {
             window.currentCurrency = curr;
+            const selectEl = document.getElementById('currency-select');
+            if (selectEl && selectEl.value !== curr) selectEl.value = curr;
             triggerTelegramHaptic('light');
+
             if (window.renderProducts) window.renderProducts();
             if (window.renderWishlist) window.renderWishlist();
             const cartDrawer = document.getElementById('cart-drawer');
             if (cartDrawer && !cartDrawer.classList.contains('hidden')) openCartDrawer();
+
+            if (window.currentUser) {
+                await setDoc(doc(db, "users", window.currentUser.uid), {
+                    currency: curr,
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
+                await window.logUserDatabaseChange("currency_changed", { currency: curr });
+            }
         };
 
         window.triggerTelegramHaptic = function(type = 'light') {
@@ -1059,11 +1128,13 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             try {
                 if (prodId) {
                     await updateDoc(doc(db, "products", prodId), productData);
+                    await window.logUserDatabaseChange("product_updated", { productId: prodId, name: rawName, price, stock: productData.stock });
                 } else {
                     productData.createdAt = new Date().toISOString();
                     productData.reviews = [];
                     const docRef = await addDoc(collection(db, "products"), productData);
                     savedId = docRef.id;
+                    await window.logUserDatabaseChange("product_created", { productId: savedId, name: rawName, price });
                 }
             } catch (dbErr) {
                 console.error("Firestore save error:", dbErr);
@@ -1136,12 +1207,14 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             if (!p) return;
             const newStock = Math.max(0, (p.stock ?? 10) + delta);
             await updateDoc(doc(db, "products", prodId), { stock: newStock, updatedAt: new Date().toISOString() });
+            await window.logUserDatabaseChange("stock_adjusted", { productId: prodId, name: p.name, newStock });
         };
 
         window.deleteProduct = async function(id) {
             if (window.currentUserData?.role === 'staff') return alert('Staff role cannot delete products.');
             if (confirm("Delete this product?")) {
                 await deleteDoc(doc(db, "products", id));
+                await window.logUserDatabaseChange("product_deleted", { productId: id });
                 triggerTelegramHaptic('warning');
                 alert('Product deleted.');
                 loadInitialProducts();
@@ -1158,6 +1231,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             await setDoc(doc(db, "coupons", code), { 
                 code, discountPercent, maxUsage, usageCount: 0, totalDiscountGiven: 0, isActive: true, createdAt: new Date().toISOString() 
             }, { merge: true });
+            await window.logUserDatabaseChange("coupon_saved", { code, discountPercent, maxUsage });
             triggerTelegramHaptic('success');
             alert(`Coupon ${code} saved with a limit of ${maxUsage} redemptions!`);
             closeAdminCouponModal();
@@ -1169,6 +1243,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             }
             try {
                 await updateDoc(doc(db, "coupons", docId), { isActive: !currentStatus });
+                await window.logUserDatabaseChange("coupon_toggled", { code: docId, isActive: !currentStatus });
                 triggerTelegramHaptic('light');
             } catch (err) {
                 console.error("Toggle coupon failed:", err);
@@ -1183,6 +1258,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             if (confirm(`Delete coupon ${codeLabel || docId}?`)) {
                 try {
                     await deleteDoc(doc(db, "coupons", docId));
+                    await window.logUserDatabaseChange("coupon_deleted", { code: docId });
                     triggerTelegramHaptic('warning');
                 } catch (err) {
                     console.error("Delete coupon failed:", err);
@@ -1192,7 +1268,8 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
 
         window.updateOrderStatus = async function(docId, newStatus) {
-            await updateDoc(doc(db, "orders", docId), { status: newStatus });
+            await updateDoc(doc(db, "orders", docId), { status: newStatus, updatedAt: new Date().toISOString() });
+            await window.logUserDatabaseChange("order_status_updated", { orderDocId: docId, status: newStatus });
             triggerTelegramHaptic('success');
         };
 
@@ -1259,9 +1336,11 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 customId: existingData.customId || `USR-${user.uid.substring(0, 6).toUpperCase()}`,
                 email: email,
                 name: extraData.name || existingData.name || (email ? email.split('@')[0] : "Shopper"),
+                phone: extraData.phone || existingData.phone || "",
                 username: extraData.username || existingData.username || "",
                 image: extraData.image || existingData.image || "https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80",
                 role: role,
+                currency: existingData.currency || window.currentCurrency || "USD",
                 loyaltyPoints: existingData.loyaltyPoints ?? (role === "customer" ? 50 : 0),
                 notifications: existingData.notifications || { emailAlerts: true, telegramAlerts: true },
                 lastLoginAt: new Date().toISOString(),
@@ -1340,6 +1419,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     updatedAt: new Date().toISOString()
                 }, { merge: true });
 
+                await window.logUserDatabaseChange("account_created", { name, email });
                 triggerTelegramHaptic('success');
                 alert('Account created and synced to database!');
             } catch (err) {
@@ -1402,6 +1482,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         let userDocUnsubscribe = null;
         let addressesUnsubscribe = null;
         let wishlistUnsubscribe = null;
+        let cartUnsubscribe = null;
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -1410,8 +1491,39 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 if (userDocUnsubscribe) { userDocUnsubscribe(); userDocUnsubscribe = null; }
                 if (addressesUnsubscribe) { addressesUnsubscribe(); addressesUnsubscribe = null; }
                 if (wishlistUnsubscribe) { wishlistUnsubscribe(); wishlistUnsubscribe = null; }
+                if (cartUnsubscribe) { cartUnsubscribe(); cartUnsubscribe = null; }
 
-                await syncUserToDatabase(user);
+                const initialUserData = await syncUserToDatabase(user);
+                if (initialUserData?.currency) {
+                    window.currentCurrency = initialUserData.currency;
+                    const currSelect = document.getElementById('currency-select');
+                    if (currSelect) currSelect.value = initialUserData.currency;
+                }
+
+                // Merge any guest localStorage cart items into Firestore cart
+                const localGuestCart = JSON.parse(localStorage.getItem('mininize_cart') || '[]');
+                const cloudCartSnap = await getDoc(doc(db, "users", user.uid, "cart", "active"));
+                const cloudCartItems = cloudCartSnap.exists() ? (cloudCartSnap.data().items || []) : [];
+
+                if (localGuestCart.length > 0 && cloudCartItems.length === 0) {
+                    window.cart = localGuestCart;
+                    await window.syncCartToDatabase("merged_guest_cart");
+                } else if (cloudCartItems.length > 0) {
+                    window.cart = cloudCartItems;
+                    localStorage.setItem('mininize_cart', JSON.stringify(window.cart));
+                }
+
+                cartUnsubscribe = onSnapshot(doc(db, "users", user.uid, "cart", "active"), (snap) => {
+                    if (snap.exists()) {
+                        window.cart = snap.data().items || [];
+                        localStorage.setItem('mininize_cart', JSON.stringify(window.cart));
+                        const badge = document.getElementById('cart-badge');
+                        if (badge) badge.innerText = window.cart.reduce((s, i) => s + i.qty, 0);
+                        const cartDrawer = document.getElementById('cart-drawer');
+                        if (cartDrawer && !cartDrawer.classList.contains('hidden')) openCartDrawer();
+                    }
+                });
+
                 await loadInitialProducts();
 
                 const startParam = window.Telegram?.WebApp?.initDataUnsafe?.start_param || "";
@@ -1427,6 +1539,11 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 userDocUnsubscribe = onSnapshot(doc(db, "users", user.uid), (docSnap) => {
                     if (docSnap.exists()) {
                         window.currentUserData = docSnap.data();
+                        if (window.currentUserData.currency && window.currentUserData.currency !== window.currentCurrency) {
+                            window.currentCurrency = window.currentUserData.currency;
+                            const currSelect = document.getElementById('currency-select');
+                            if (currSelect) currSelect.value = window.currentCurrency;
+                        }
                     }
 
                     const headerAvatar = document.getElementById('header-user-avatar');
@@ -1465,6 +1582,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 if (userDocUnsubscribe) { userDocUnsubscribe(); userDocUnsubscribe = null; }
                 if (addressesUnsubscribe) { addressesUnsubscribe(); addressesUnsubscribe = null; }
                 if (wishlistUnsubscribe) { wishlistUnsubscribe(); wishlistUnsubscribe = null; }
+                if (cartUnsubscribe) { cartUnsubscribe(); cartUnsubscribe = null; }
                 window.orders = [];
                 window.products = [];
                 window.currentUser = null;
@@ -1494,9 +1612,10 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             if (prodSnap.exists()) {
                 const p = prodSnap.data();
                 const reviews = p.reviews || [];
+                const reviewId = `rev_${Date.now()}`;
                 
                 reviews.push({
-                    id: `rev_${Date.now()}`,
+                    id: reviewId,
                     userId: window.currentUser.uid,
                     author: sanitizeHTML(window.currentUserData?.name || "Shopper"),
                     rating: window.currentSelectedStarRating || 5,
@@ -1507,11 +1626,58 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 });
 
                 await updateDoc(prodRef, { reviews });
+                await window.logUserDatabaseChange("review_posted", { productId: window.currentSelectedProdId, reviewId, rating: window.currentSelectedStarRating || 5 });
                 triggerTelegramHaptic('success');
                 document.getElementById('new-review-text').value = '';
                 openProductDetailModal(window.currentSelectedProdId, true);
-                alert('Review posted successfully! ⭐');
+                alert('Review posted and saved to database! ⭐');
             }
+        };
+
+        window.editOwnProductReview = async function(prodId, reviewId) {
+            if (!window.currentUser) return;
+            const prodRef = doc(db, "products", prodId);
+            const prodSnap = await getDoc(prodRef);
+            if (!prodSnap.exists()) return;
+
+            const reviews = [...(prodSnap.data().reviews || [])];
+            const idx = reviews.findIndex(r => r.id === reviewId && r.userId === window.currentUser.uid);
+            if (idx < 0) return;
+
+            const updatedText = prompt("Edit your review:", reviews[idx].text || "");
+            if (updatedText === null || !updatedText.trim()) return;
+
+            const updatedRatingRaw = prompt("Edit star rating (1 to 5):", String(reviews[idx].rating || 5));
+            const updatedRating = updatedRatingRaw !== null
+                ? Math.min(5, Math.max(1, parseInt(updatedRatingRaw) || reviews[idx].rating || 5))
+                : (reviews[idx].rating || 5);
+
+            reviews[idx] = {
+                ...reviews[idx],
+                text: sanitizeHTML(updatedText.trim()),
+                rating: updatedRating,
+                editedAt: new Date().toISOString().split('T')[0]
+            };
+
+            await updateDoc(prodRef, { reviews });
+            await window.logUserDatabaseChange("review_edited", { productId: prodId, reviewId, rating: updatedRating });
+            triggerTelegramHaptic('success');
+            openProductDetailModal(prodId, true);
+        };
+
+        window.deleteOwnProductReview = async function(prodId, reviewId) {
+            if (!window.currentUser || !confirm("Delete your review?")) return;
+            const prodRef = doc(db, "products", prodId);
+            const prodSnap = await getDoc(prodRef);
+            if (!prodSnap.exists()) return;
+
+            const reviews = (prodSnap.data().reviews || []).filter(
+                r => !(r.id === reviewId && r.userId === window.currentUser.uid)
+            );
+            await updateDoc(prodRef, { reviews });
+            await window.logUserDatabaseChange("review_deleted", { productId: prodId, reviewId });
+            triggerTelegramHaptic('warning');
+            openProductDetailModal(prodId, true);
         };
 
         window.toggleReviewLike = async function(prodId, reviewId) {
@@ -1543,7 +1709,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             }
         };
 
-        // ADMIN REVIEWS MANAGEMENT (LOAD ALL PRODUCTS, EDIT & DELETE)
+        // ADMIN REVIEWS MANAGEMENT
         window.loadAllAdminReviews = async function() {
             const container = document.getElementById('admin-reviews-list-container');
             if (!container) return;
@@ -1619,6 +1785,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 };
 
                 await updateDoc(prodRef, { reviews });
+                await window.logUserDatabaseChange("admin_review_edited", { productId, reviewId });
                 triggerTelegramHaptic('success');
                 await loadAllAdminReviews();
                 await loadInitialProducts();
@@ -1642,6 +1809,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 reviews.splice(targetIdx, 1);
 
                 await updateDoc(prodRef, { reviews });
+                await window.logUserDatabaseChange("admin_review_deleted", { productId, reviewId });
                 triggerTelegramHaptic('warning');
                 await loadAllAdminReviews();
                 await loadInitialProducts();
@@ -1702,6 +1870,22 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     }
                 }
 
+                // Persist user's updated contact info & checkout delivery address into Firestore
+                await setDoc(doc(db, "users", window.currentUser.uid), {
+                    name: customerName,
+                    phone: phone,
+                    lastDeliveryAddress: address,
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
+
+                await setDoc(doc(db, "users", window.currentUser.uid, "addresses", "addr_checkout_latest"), {
+                    label: "Latest Checkout",
+                    street: address,
+                    province: "Cambodia",
+                    isDefault: window.currentUserAddresses.length === 0,
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
+
                 const docRef = await addDoc(collection(db, "orders"), { 
                     orderNum, userId: window.currentUser.uid, customerName, phone, address, items: window.cart, subtotal, discount, total, promoCode: appliedCouponCode, status: 'Pending', date: new Date().toISOString().split('T')[0], createdAt: serverTimestamp() 
                 });
@@ -1715,8 +1899,10 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     transaction.update(userRef, { loyaltyPoints: currentPts + earnedPoints });
                 });
 
-                window.cart = []; localStorage.removeItem('mininize_cart');
-                document.getElementById('cart-badge').innerText = '0';
+                await window.logUserDatabaseChange("order_placed", { orderNum, total, itemsCount: window.cart.length });
+
+                window.cart = [];
+                await window.syncCartToDatabase("checkout_completed");
                 closeCheckoutModal();
 
                 document.getElementById('bakong-pay-amount').innerText = formatPrice(total);
@@ -1729,7 +1915,8 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
         window.verifyBakongTransactionManual = async function() {
             if (window.currentActiveOrderId) {
-                await updateDoc(doc(db, "orders", window.currentActiveOrderId), { status: "Paid" });
+                await updateDoc(doc(db, "orders", window.currentActiveOrderId), { status: "Paid", paidAt: new Date().toISOString() });
+                await window.logUserDatabaseChange("order_paid", { orderDocId: window.currentActiveOrderId });
             }
             triggerTelegramHaptic('success');
             document.getElementById('bakong-payment-modal').classList.add('hidden');
@@ -2127,7 +2314,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold text-[#64748B] mb-1">Email Address</label>
-                            <input type="email" id="edit-email" value="${sanitizeHTML(uData.email || '')}" class="w-full border border-[#E2E8F0] rounded-xl px-3 py-2 text-[#111827] focus:outline-none focus:border-[#64748B]">
+                            <input type="email" id="edit-email" value="${sanitizeHTML(uData.email || window.currentUser?.email || '')}" class="w-full border border-[#E2E8F0] rounded-xl px-3 py-2 text-[#111827] focus:outline-none focus:border-[#64748B]">
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold text-[#64748B] mb-1">Phone Number</label>
@@ -2135,7 +2322,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                         </div>
                         <div class="pt-2">
                             <button id="save-profile-btn" onclick="savePersonalData()" class="w-full bg-[#111827] hover:bg-[#1E293B] text-white font-bold py-2.5 rounded-xl shadow-xs active:scale-95 transition-transform flex items-center justify-center space-x-2">
-                                <span>Save Changes</span>
+                                <span>Save Changes to Database</span>
                             </button>
                         </div>
                     </div>`;
@@ -2217,27 +2404,36 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 bodyEl.innerHTML = `
                     <div class="space-y-3">
                         <div class="space-y-2">
-                            ${addrs.length === 0 ? `<p class="text-xs text-[#94A3B8] text-center py-2">No addresses saved.</p>` : addrs.map((a, idx) => `
-                                <div class="bg-[#F8FAFC] p-3 rounded-xl border border-[#E2E8F0] flex justify-between items-center">
+                            ${addrs.length === 0 ? `<p class="text-xs text-[#94A3B8] text-center py-2">No addresses saved.</p>` : addrs.map((a) => `
+                                <div class="bg-[#F8FAFC] p-3 rounded-xl border border-[#E2E8F0] flex justify-between items-start gap-2">
                                     <div>
-                                        <span class="font-bold text-[#111827]">${sanitizeHTML(a.label)} ${a.isDefault ? '<span class="text-[9px] bg-[#F1F5F9] text-[#64748B] border border-[#E2E8F0] px-1.5 py-0.5 rounded font-bold">Default</span>' : ''}</span>
-                                        <p class="text-[#64748B] text-[10px]">${sanitizeHTML(a.street)}, ${sanitizeHTML(a.province)}</p>
+                                        <span class="font-bold text-[#111827]">${sanitizeHTML(a.label)} ${a.isDefault ? '<span class="text-[9px] bg-[#111827] text-white px-1.5 py-0.5 rounded font-bold">Default</span>' : ''}</span>
+                                        <p class="text-[#64748B] text-[10px] mt-0.5">${sanitizeHTML(a.street)}, ${sanitizeHTML(a.province)}</p>
                                     </div>
-                                    <button onclick="removeAddressSubcoll('${a.id}')" class="text-[#94A3B8] hover:text-rose-600 text-xs"><i class="fa-solid fa-trash"></i></button>
+                                    <div class="flex items-center space-x-2 shrink-0">
+                                        ${!a.isDefault ? `<button onclick="setDefaultAddressSubcoll('${a.id}')" title="Set Default" class="text-[10px] font-bold text-[#111827] hover:underline">Default</button>` : ''}
+                                        <button onclick="startEditAddressSubcoll('${a.id}')" title="Edit" class="text-[#64748B] hover:text-[#111827] text-xs"><i class="fa-solid fa-pen"></i></button>
+                                        <button onclick="removeAddressSubcoll('${a.id}')" title="Delete" class="text-[#94A3B8] hover:text-rose-600 text-xs"><i class="fa-solid fa-trash"></i></button>
+                                    </div>
                                 </div>
                             `).join('')}
                         </div>
                         <div class="border-t border-[#E2E8F0] pt-2 space-y-2">
-                            <p class="font-bold text-[#111827] text-[11px]">Add New Address:</p>
+                            <div class="flex justify-between items-center">
+                                <p id="addr-form-heading" class="font-bold text-[#111827] text-[11px]">Add New Address:</p>
+                                <button type="button" id="cancel-edit-addr-btn" onclick="resetAddressForm()" class="hidden text-[10px] text-[#64748B] hover:text-[#111827] underline">Cancel Edit</button>
+                            </div>
+                            <input type="hidden" id="edit-addr-id" value="">
                             <input type="text" id="new-addr-label" placeholder="Label (e.g. Office, Home)" class="w-full border border-[#E2E8F0] rounded-xl px-2.5 py-1.5 text-[#111827] placeholder-[#94A3B8]">
                             <input type="text" id="new-addr-street" placeholder="Street Address" class="w-full border border-[#E2E8F0] rounded-xl px-2.5 py-1.5 text-[#111827] placeholder-[#94A3B8]">
                             <input type="text" id="new-addr-province" placeholder="City / Province" class="w-full border border-[#E2E8F0] rounded-xl px-2.5 py-1.5 text-[#111827] placeholder-[#94A3B8]">
-                            <button onclick="addNewAddressSubcoll()" class="w-full bg-[#111827] hover:bg-[#1E293B] text-white font-bold py-2 rounded-xl">Save Address</button>
+                            <button id="save-addr-btn" onclick="saveAddressSubcoll()" class="w-full bg-[#111827] hover:bg-[#1E293B] text-white font-bold py-2 rounded-xl">Save Address to Database</button>
                         </div>
                     </div>`;
             } else if (section === 'notifications') {
-                titleEl.innerText = "Notification Preferences";
+                titleEl.innerText = "Notifications & Preferences";
                 const notifs = uData.notifications || { emailAlerts: true, telegramAlerts: true };
+                const savedCurrency = uData.currency || window.currentCurrency || 'USD';
                 bodyEl.innerHTML = `
                     <div class="space-y-3 text-xs">
                         <div class="flex items-center justify-between bg-[#F8FAFC] p-3 rounded-xl border border-[#E2E8F0]">
@@ -2248,7 +2444,37 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                             <div><b class="block text-[#111827]">Telegram Messages</b><span class="text-[10px] text-[#64748B]">Receive instant alerts in Telegram</span></div>
                             <input type="checkbox" id="notif-telegram" ${notifs.telegramAlerts !== false ? 'checked' : ''} onchange="updateNotificationSettings()" class="w-4 h-4 accent-[#111827]">
                         </div>
+                        <div class="flex items-center justify-between bg-[#F8FAFC] p-3 rounded-xl border border-[#E2E8F0]">
+                            <div><b class="block text-[#111827]">Preferred Display Currency</b><span class="text-[10px] text-[#64748B]">Saved across all sessions</span></div>
+                            <select onchange="changeCurrency(this.value)" class="border border-[#E2E8F0] rounded-lg px-2 py-1 bg-[#FFFFFF] text-[#111827] font-bold">
+                                <option value="USD" ${savedCurrency === 'USD' ? 'selected' : ''}>USD ($)</option>
+                                <option value="KHR" ${savedCurrency === 'KHR' ? 'selected' : ''}>KHR (៛)</option>
+                            </select>
+                        </div>
                     </div>`;
+            } else if (section === 'history') {
+                titleEl.innerText = "Saved Edit & Activity History 🕒";
+                bodyEl.innerHTML = `<p class="text-xs text-[#94A3B8] text-center py-4">Loading database change history...</p>`;
+                try {
+                    const logsSnap = await getDocs(query(collection(window.firebaseDb, "users", window.currentUser.uid, "activity_logs"), orderBy("timestamp", "desc"), limit(25)));
+                    if (logsSnap.empty) {
+                        bodyEl.innerHTML = `<p class="text-xs text-[#94A3B8] text-center py-4">No database edits recorded yet.</p>`;
+                    } else {
+                        const rows = [];
+                        logsSnap.forEach(d => rows.push(d.data()));
+                        bodyEl.innerHTML = rows.map(item => `
+                            <div class="bg-[#F8FAFC] p-2.5 rounded-xl border border-[#E2E8F0] space-y-1">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-bold text-[#111827] uppercase text-[10px]">${sanitizeHTML((item.action || 'change').replace(/_/g, ' '))}</span>
+                                    <span class="text-[9px] text-[#94A3B8] font-mono">${sanitizeHTML((item.timestamp || '').replace('T', ' ').substring(0, 19))}</span>
+                                </div>
+                                <p class="text-[10px] text-[#64748B] font-mono break-all">${sanitizeHTML(JSON.stringify(item.details || {}))}</p>
+                            </div>
+                        `).join('');
+                    }
+                } catch (err) {
+                    bodyEl.innerHTML = `<p class="text-xs text-rose-600 text-center py-4">Could not load activity logs.</p>`;
+                }
             }
         };
 
@@ -2260,7 +2486,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
         window.savePersonalData = async function() {
             const name = sanitizeHTML(document.getElementById('edit-name').value.trim());
-            const email = sanitizeHTML(document.getElementById('edit-email').value.trim());
+            const email = sanitizeHTML(document.getElementById('edit-email').value.trim().toLowerCase());
             const phone = sanitizeHTML(document.getElementById('edit-phone').value.trim());
             if (!name) return alert('Name cannot be empty.');
             const saveBtn = document.getElementById('save-profile-btn');
@@ -2268,8 +2494,16 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             saveBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i><span>Syncing...</span>`;
             try {
                 if (window.currentUser) {
-                    const userRef = doc(db, "users", window.currentUser.uid);
+                    if (email && window.currentUser.email && email !== window.currentUser.email.toLowerCase() && !email.endsWith('@telegram.org')) {
+                        try {
+                            await updateEmail(window.currentUser, email);
+                        } catch (authEmailErr) {
+                            console.warn("Firebase Auth email update notice:", authEmailErr.message);
+                        }
+                    }
+                    const userRef = doc(window.firebaseDb, "users", window.currentUser.uid);
                     await setDoc(userRef, { name, email, phone, updatedAt: new Date().toISOString() }, { merge: true });
+                    await window.logUserDatabaseChange("profile_updated", { name, email, phone });
                     triggerTelegramHaptic('success');
                     alert('Profile updated and saved to database successfully!');
                     closeProfileSubModal();
@@ -2277,30 +2511,74 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             } catch (err) {
                 alert('Failed to sync: ' + err.message);
                 saveBtn.disabled = false;
-                saveBtn.innerText = 'Save Changes';
+                saveBtn.innerText = 'Save Changes to Database';
             }
         };
 
-        window.addNewAddressSubcoll = async function(addressId = null) {
+        window.startEditAddressSubcoll = function(addressId) {
+            const addr = (window.currentUserAddresses || []).find(a => a.id === addressId);
+            if (!addr) return;
+            document.getElementById('edit-addr-id').value = addr.id;
+            document.getElementById('new-addr-label').value = addr.label || '';
+            document.getElementById('new-addr-street').value = addr.street || '';
+            document.getElementById('new-addr-province').value = addr.province || '';
+            document.getElementById('addr-form-heading').innerText = `Editing "${addr.label}":`;
+            document.getElementById('save-addr-btn').innerText = 'Update Address in Database';
+            document.getElementById('cancel-edit-addr-btn').classList.remove('hidden');
+            triggerTelegramHaptic('light');
+        };
+
+        window.resetAddressForm = function() {
+            document.getElementById('edit-addr-id').value = '';
+            document.getElementById('new-addr-label').value = '';
+            document.getElementById('new-addr-street').value = '';
+            document.getElementById('new-addr-province').value = '';
+            document.getElementById('addr-form-heading').innerText = 'Add New Address:';
+            document.getElementById('save-addr-btn').innerText = 'Save Address to Database';
+            document.getElementById('cancel-edit-addr-btn').classList.add('hidden');
+        };
+
+        window.saveAddressSubcoll = async function() {
+            const existingId = document.getElementById('edit-addr-id')?.value.trim();
             const label = sanitizeHTML(document.getElementById('new-addr-label').value.trim());
             const street = sanitizeHTML(document.getElementById('new-addr-street').value.trim());
             const province = sanitizeHTML(document.getElementById('new-addr-province').value.trim());
             if (!label || !street || !province) return alert('Please fill in all fields.');
             if (window.currentUser) {
-                const cleanDocId = addressId || `addr_${label.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
-                const addressRef = doc(db, "users", window.currentUser.uid, "addresses", cleanDocId);
+                const cleanDocId = existingId || `addr_${label.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+                const existingObj = (window.currentUserAddresses || []).find(a => a.id === cleanDocId);
+                const addressRef = doc(window.firebaseDb, "users", window.currentUser.uid, "addresses", cleanDocId);
                 await setDoc(addressRef, {
-                    label, street, province, isDefault: window.currentUserAddresses.length === 0, updatedAt: new Date().toISOString()
+                    label,
+                    street,
+                    province,
+                    isDefault: existingObj ? Boolean(existingObj.isDefault) : window.currentUserAddresses.length === 0,
+                    updatedAt: new Date().toISOString()
                 }, { merge: true });
+                await window.logUserDatabaseChange(existingId ? "address_updated" : "address_added", { addressId: cleanDocId, label, street, province });
                 triggerTelegramHaptic('success');
-                alert('Address saved to database successfully!');
                 openProfileSection('addresses');
             }
         };
 
+        window.setDefaultAddressSubcoll = async function(addressId) {
+            if (!window.currentUser) return;
+            const addrs = window.currentUserAddresses || [];
+            for (const a of addrs) {
+                await setDoc(doc(window.firebaseDb, "users", window.currentUser.uid, "addresses", a.id), {
+                    isDefault: a.id === addressId,
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
+            }
+            await window.logUserDatabaseChange("default_address_changed", { addressId });
+            triggerTelegramHaptic('success');
+            openProfileSection('addresses');
+        };
+
         window.removeAddressSubcoll = async function(addressId) {
             if (window.currentUser) {
-                await deleteDoc(doc(db, "users", window.currentUser.uid, "addresses", addressId));
+                await deleteDoc(doc(window.firebaseDb, "users", window.currentUser.uid, "addresses", addressId));
+                await window.logUserDatabaseChange("address_deleted", { addressId });
                 triggerTelegramHaptic('medium');
                 openProfileSection('addresses');
             }
@@ -2310,7 +2588,11 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             const emailAlerts = document.getElementById('notif-email').checked;
             const telegramAlerts = document.getElementById('notif-telegram').checked;
             if (window.currentUser) {
-                await updateDoc(doc(db, "users", window.currentUser.uid), { notifications: { emailAlerts, telegramAlerts } });
+                await setDoc(doc(window.firebaseDb, "users", window.currentUser.uid), {
+                    notifications: { emailAlerts, telegramAlerts },
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
+                await window.logUserDatabaseChange("notifications_updated", { emailAlerts, telegramAlerts });
                 triggerTelegramHaptic('light');
             }
         };
@@ -2318,13 +2600,15 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         window.toggleWishlist = async function(id) {
             triggerTelegramHaptic('medium');
             if (window.currentUser) {
-                const wishRef = collection(db, "users", window.currentUser.uid, "wishlist");
+                const wishRef = collection(window.firebaseDb, "users", window.currentUser.uid, "wishlist");
                 const q = query(wishRef, where("productId", "==", id));
                 const snap = await getDocs(q);
                 if (!snap.empty) {
-                    await deleteDoc(doc(db, "users", window.currentUser.uid, "wishlist", snap.docs[0].id));
+                    await deleteDoc(doc(window.firebaseDb, "users", window.currentUser.uid, "wishlist", snap.docs[0].id));
+                    await window.logUserDatabaseChange("wishlist_removed", { productId: id });
                 } else {
-                    await setDoc(doc(db, "users", window.currentUser.uid, "wishlist", id), { productId: id, createdAt: new Date().toISOString() }, { merge: true });
+                    await setDoc(doc(window.firebaseDb, "users", window.currentUser.uid, "wishlist", id), { productId: id, createdAt: new Date().toISOString() }, { merge: true });
+                    await window.logUserDatabaseChange("wishlist_added", { productId: id });
                 }
             } else {
                 alert('Please sign in to save items to your wishlist.');
@@ -2379,6 +2663,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             document.getElementById('prod-reviews-list').innerHTML = reviews.length === 0 ? `<p class="text-[#94A3B8] text-[10px]">No comments yet.</p>` :
                 reviews.map(r => {
                     const hasLiked = (r.likedBy || []).includes(currentUserId);
+                    const isOwner = r.userId && r.userId === currentUserId;
                     return `
                         <div class="bg-[#F8FAFC] p-2.5 rounded-xl border border-[#E2E8F0] space-y-1">
                             <div class="flex justify-between text-[9px]">
@@ -2387,10 +2672,13 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                             </div>
                             <p class="text-[#111827] text-[10px]">${sanitizeHTML(r.text)}</p>
                             <div class="flex justify-between items-center pt-1">
-                                <span class="text-[8px] text-[#94A3B8]">${r.date}</span>
-                                <button onclick="toggleReviewLike('${p.id}', '${r.id}')" class="${hasLiked ? 'text-rose-600 font-bold' : 'text-[#64748B]'} text-[10px] flex items-center space-x-1">
-                                    <i class="fa-solid fa-heart"></i> <span>${r.likes || 0}</span>
-                                </button>
+                                <span class="text-[8px] text-[#94A3B8]">${r.date}${r.editedAt ? ' (edited)' : ''}</span>
+                                <div class="flex items-center space-x-2">
+                                    ${isOwner ? `<button onclick="editOwnProductReview('${p.id}', '${r.id}')" class="text-[9px] font-bold text-[#111827] hover:underline">Edit</button><button onclick="deleteOwnProductReview('${p.id}', '${r.id}')" class="text-[9px] font-bold text-rose-600 hover:underline">Delete</button>` : ''}
+                                    <button onclick="toggleReviewLike('${p.id}', '${r.id}')" class="${hasLiked ? 'text-rose-600 font-bold' : 'text-[#64748B]'} text-[10px] flex items-center space-x-1">
+                                        <i class="fa-solid fa-heart"></i> <span>${r.likes || 0}</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     `;
@@ -2458,22 +2746,37 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         }
         window.renderWishlist = renderWishlist;
 
-        function addToCart(id) {
+        async function addToCart(id) {
             if (!window.currentUser) return alert('Please sign in to add items to your bag.');
             triggerTelegramHaptic('success');
             const prod = window.products.find(p => p.id === id);
+            if (!prod) return;
             const existing = window.cart.find(i => i.id === id);
-            if (existing) existing.qty += 1; else window.cart.push({ ...prod, image: window.getProductImages(prod)[0], qty: 1 });
-            localStorage.setItem('mininize_cart', JSON.stringify(window.cart));
-            document.getElementById('cart-badge').innerText = window.cart.reduce((s, i) => s + i.qty, 0);
+            if (existing) existing.qty += 1;
+            else window.cart.push({ ...prod, image: window.getProductImages(prod)[0], qty: 1 });
+            
+            await window.syncCartToDatabase(`added_${id}`);
             
             if (window.Telegram?.WebApp?.enableClosingConfirmation) {
                 window.Telegram.WebApp.enableClosingConfirmation();
             }
 
             updateTelegramMainButton();
-            alert('Added to bag! 🛍️');
+            alert('Added to bag & synced to cloud! 🛍️');
         }
+
+        window.updateCartItemQty = async function(id, delta) {
+            triggerTelegramHaptic('light');
+            const idx = window.cart.findIndex(i => i.id === id);
+            if (idx < 0) return;
+            window.cart[idx].qty += delta;
+            if (window.cart[idx].qty <= 0) {
+                window.cart.splice(idx, 1);
+            }
+            await window.syncCartToDatabase(`qty_changed_${id}`);
+            updateTelegramMainButton();
+            openCartDrawer();
+        };
 
         function updateTelegramMainButton() {
             if (window.Telegram?.WebApp?.MainButton) {
@@ -2497,13 +2800,40 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         function openCartDrawer() {
             triggerTelegramHaptic('light');
             document.getElementById('cart-items-container').innerHTML = window.cart.length === 0 ? `<p class="text-xs text-[#94A3B8] text-center py-8">Cart is empty</p>` :
-                window.cart.map(item => `<div class="flex justify-between items-center text-xs border-b border-[#E2E8F0] pb-2 text-[#111827]"><span><b>${sanitizeHTML(item.name)}</b> (x${item.qty})</span><span class="font-bold text-[#111827]">${formatPrice(item.price * item.qty)}</span></div>`).join('');
+                window.cart.map(item => `
+                    <div class="flex justify-between items-center text-xs border-b border-[#E2E8F0] pb-2 text-[#111827] gap-2">
+                        <div class="min-w-0 flex-1">
+                            <b class="truncate block">${sanitizeHTML(item.name)}</b>
+                            <span class="text-[10px] text-[#64748B]">${formatPrice(item.price)} each</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5 shrink-0">
+                            <button onclick="updateCartItemQty('${item.id}', -1)" class="w-6 h-6 rounded-lg bg-[#F1F5F9] border border-[#E2E8F0] font-bold text-[#111827]">-</button>
+                            <span class="font-bold w-4 text-center">${item.qty}</span>
+                            <button onclick="updateCartItemQty('${item.id}', 1)" class="w-6 h-6 rounded-lg bg-[#111827] text-white font-bold">+</button>
+                        </div>
+                        <span class="font-bold text-[#111827] shrink-0">${formatPrice(item.price * item.qty)}</span>
+                    </div>
+                `).join('');
             document.getElementById('cart-total').innerText = formatPrice(window.cart.reduce((s, i) => s + (i.price * i.qty), 0));
             document.getElementById('cart-drawer').classList.remove('hidden');
         }
         window.openCartDrawer = openCartDrawer;
         function closeCartDrawer() { document.getElementById('cart-drawer').classList.add('hidden'); }
-        function openCheckoutModal() { closeCartDrawer(); document.getElementById('checkout-modal').classList.remove('hidden'); }
+        function openCheckoutModal() {
+            closeCartDrawer();
+            const uData = window.currentUserData || {};
+            const defaultAddr = (window.currentUserAddresses || []).find(a => a.isDefault) || (window.currentUserAddresses || [])[0];
+            const nameInput = document.getElementById('checkout-name');
+            const phoneInput = document.getElementById('checkout-phone');
+            const addrInput = document.getElementById('checkout-address');
+
+            if (nameInput && !nameInput.value) nameInput.value = uData.name || '';
+            if (phoneInput && !phoneInput.value) phoneInput.value = uData.phone || '';
+            if (addrInput && !addrInput.value) {
+                addrInput.value = defaultAddr ? `${defaultAddr.street}, ${defaultAddr.province}` : (uData.lastDeliveryAddress || '');
+            }
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        }
         function closeCheckoutModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
         function cancelBakongPayment() { document.getElementById('bakong-payment-modal').classList.add('hidden'); }
 
@@ -2599,6 +2929,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             }
             try {
                 await updateDoc(doc(window.firebaseDb, "users", uid), { role: newRole.toLowerCase(), updatedAt: new Date().toISOString() });
+                await window.logUserDatabaseChange("user_role_updated", { targetUid: uid, newRole });
                 triggerTelegramHaptic('success');
                 alert(`User role successfully updated to "${newRole}"!`);
                 loadAdminStaffUsers();
@@ -2609,7 +2940,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
         window.updateAdminMetrics = async function() {
             try {
-                const snap = await getDocs(collection(db, "orders"));
+                const snap = await getDocs(collection(window.firebaseDb, "orders"));
                 window.orders = [];
                 snap.forEach(d => window.orders.push({ docId: d.id, ...d.data() }));
 
@@ -2628,18 +2959,18 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
         window.loadAdminOrdersPage = async function(direction = 'initial') {
             try {
-                let q = query(collection(db, "orders"), orderBy("createdAt", "desc"), limit(orderPageSize));
+                let q = query(collection(window.firebaseDb, "orders"), orderBy("createdAt", "desc"), limit(orderPageSize));
                 if (currentAdminOrderStatusFilter !== 'All') {
-                    q = query(collection(db, "orders"), where("status", "==", currentAdminOrderStatusFilter), orderBy("createdAt", "desc"), limit(orderPageSize));
+                    q = query(collection(window.firebaseDb, "orders"), where("status", "==", currentAdminOrderStatusFilter), orderBy("createdAt", "desc"), limit(orderPageSize));
                 }
 
                 if (direction === 'next' && lastVisibleOrderDoc) {
-                    q = query(collection(db, "orders"), orderBy("createdAt", "desc"), startAfter(lastVisibleOrderDoc), limit(orderPageSize));
+                    q = query(collection(window.firebaseDb, "orders"), orderBy("createdAt", "desc"), startAfter(lastVisibleOrderDoc), limit(orderPageSize));
                 } else if (direction === 'prev' && orderPaginationStack.length > 0) {
                     orderPaginationStack.pop();
                     const prevCursor = orderPaginationStack[orderPaginationStack.length - 1];
                     if (prevCursor) {
-                        q = query(collection(db, "orders"), orderBy("createdAt", "desc"), startAfter(prevCursor), limit(orderPageSize));
+                        q = query(collection(window.firebaseDb, "orders"), orderBy("createdAt", "desc"), startAfter(prevCursor), limit(orderPageSize));
                     }
                 } else if (direction === 'initial') {
                     orderPaginationStack = [];
