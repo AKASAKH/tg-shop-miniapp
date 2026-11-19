@@ -16,6 +16,25 @@
         .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
         @keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         .animate-pulse-soft { animation: pulse-soft 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+        /* Interactive 3D Stage */
+        .stage-3d-viewport {
+            perspective: 950px;
+            touch-action: none;
+            user-select: none;
+        }
+        .stage-3d-card {
+            transform-style: preserve-3d;
+            transition: transform 0.08s ease-out;
+            will-change: transform;
+        }
+        .stage-3d-card.snapping {
+            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .stage-3d-shine {
+            background: radial-gradient(circle at var(--shine-x, 50%) var(--shine-y, 50%), rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 60%);
+            pointer-events: none;
+        }
     </style>
     <script>
         tailwind.config = {
@@ -420,7 +439,7 @@
 
     </main>
 
-    <!-- ADD / EDIT PRODUCT & TELEGRAM BROADCAST MODAL -->
+    <!-- ADD / EDIT PRODUCT & TELEGRAM BROADCAST MODAL (UP TO 3 PHOTOS) -->
     <div id="admin-product-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-5 space-y-3 shadow-2xl relative text-xs max-h-[90vh] overflow-y-auto border border-gray-100">
             <button onclick="closeAdminProductModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
@@ -459,9 +478,16 @@
                         <input type="number" id="prod-stock" placeholder="10" class="w-full border rounded-xl px-3 py-2">
                     </div>
                 </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-gray-500 mb-1">Image URL</label>
-                    <input type="text" id="prod-image" placeholder="https://..." class="w-full border rounded-xl px-3 py-2">
+
+                <!-- UP TO 3 PRODUCT PHOTOS -->
+                <div class="border-t pt-2 space-y-1.5">
+                    <div class="flex justify-between items-center">
+                        <label class="block text-[10px] font-bold text-gray-700">Product Photos (Up to 3) 🖼️</label>
+                        <span class="text-[9px] text-gray-400">Photo 1 = Main & Telegram Cover</span>
+                    </div>
+                    <input type="text" id="prod-image" placeholder="Photo 1 URL (Required / Main)" class="w-full border rounded-xl px-3 py-1.5 text-[11px]">
+                    <input type="text" id="prod-image-2" placeholder="Photo 2 URL (Optional angle / detail)" class="w-full border rounded-xl px-3 py-1.5 text-[11px]">
+                    <input type="text" id="prod-image-3" placeholder="Photo 3 URL (Optional back / worn view)" class="w-full border rounded-xl px-3 py-1.5 text-[11px]">
                 </div>
 
                 <!-- DETAILED SPECS -->
@@ -520,17 +546,34 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         <div id="profile-modal-body" class="flex-1 overflow-y-auto py-4 space-y-3 text-xs"></div>
     </div>
 
-    <!-- ENHANCED PRODUCT DETAIL MODAL -->
+    <!-- ENHANCED PRODUCT DETAIL MODAL WITH 3D ROTATION & UP TO 3 PHOTOS -->
     <div id="product-detail-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-sm w-full p-4 space-y-3 shadow-2xl relative text-xs max-h-[90vh] overflow-y-auto border border-gray-100">
-            <button onclick="closeProductDetailModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
-            <div class="relative w-full aspect-square bg-gray-50 rounded-2xl overflow-hidden">
-                <img id="view-prod-image" src="" class="w-full h-full object-cover">
-                <span id="view-prod-category" class="absolute bottom-2 left-2 bg-white/90 text-gray-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full">Category</span>
-                <button onclick="shareProduct()" class="absolute top-3 left-3 bg-white/90 text-[#a4133c] w-8 h-8 rounded-full flex items-center justify-center shadow-xs">
+            <button onclick="closeProductDetailModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 w-7 h-7 bg-gray-50 rounded-full flex items-center justify-center text-xs z-20"><i class="fa-solid fa-xmark"></i></button>
+            
+            <!-- 3D ROTATABLE STAGE -->
+            <div id="stage-3d-viewport" class="stage-3d-viewport relative w-full aspect-square bg-gradient-to-br from-pink-50 via-white to-gray-100 rounded-2xl overflow-hidden border border-pink-100/70 flex items-center justify-center">
+                <div id="stage-3d-card" class="stage-3d-card relative w-full h-full rounded-2xl overflow-hidden shadow-md">
+                    <img id="view-prod-image" src="" class="w-full h-full object-cover pointer-events-none">
+                    <div id="stage-3d-shine" class="stage-3d-shine absolute inset-0"></div>
+                </div>
+                <span id="view-prod-category" class="absolute bottom-2 left-2 bg-white/90 text-gray-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full z-10 shadow-xs">Category</span>
+                <span id="stage-3d-angle-badge" class="absolute bottom-2 right-2 bg-black/65 text-white text-[9px] font-mono px-2 py-0.5 rounded-full z-10">Drag 3D: 0°</span>
+                <button onclick="shareProduct()" class="absolute top-3 left-3 bg-white/90 text-[#a4133c] w-8 h-8 rounded-full flex items-center justify-center shadow-xs z-10">
                     <i class="fa-solid fa-share-nodes text-xs"></i>
                 </button>
             </div>
+
+            <!-- 3D CONTROLS + UP TO 3 PHOTO THUMBNAILS -->
+            <div class="flex items-center justify-between gap-2">
+                <div id="prod-photo-thumbs" class="flex items-center space-x-1.5"></div>
+                <div class="flex items-center space-x-1">
+                    <button type="button" onclick="nudge3DRotation(-25, 0)" title="Rotate Left" class="px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg text-[10px] font-bold text-gray-700"><i class="fa-solid fa-rotate-left"></i></button>
+                    <button type="button" onclick="nudge3DRotation(25, 0)" title="Rotate Right" class="px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg text-[10px] font-bold text-gray-700"><i class="fa-solid fa-rotate-right"></i></button>
+                    <button type="button" onclick="reset3DRotation()" title="Reset 3D Angle" class="px-2 py-1 bg-pink-50 hover:bg-pink-100 rounded-lg text-[10px] font-bold text-[#a4133c]">3D Reset</button>
+                </div>
+            </div>
+
             <div class="space-y-1">
                 <div class="flex justify-between items-start">
                     <h3 id="view-prod-name" class="font-serif italic font-bold text-sm text-gray-900">Product Title</h3>
@@ -687,6 +730,19 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#039;');
+        };
+
+        window.getProductImages = function(prod) {
+            const fallback = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80';
+            if (!prod) return [fallback];
+            const rawList = Array.isArray(prod.images) && prod.images.length > 0
+                ? prod.images
+                : [prod.image, prod.image2, prod.image3];
+            const cleaned = rawList
+                .map(u => (typeof u === 'string' ? u.trim() : ''))
+                .filter(Boolean)
+                .slice(0, 3);
+            return cleaned.length > 0 ? cleaned : [fallback];
         };
 
         window.currentCurrency = 'USD';
@@ -859,18 +915,24 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 { 
                     name: 'Pearl Butterfly Hairpin', sku: 'HRP-001', category: 'Hairpins', price: 12.50, stock: 4, 
                     image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80',
+                    images: [
+                        'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80',
+                        'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=80'
+                    ],
                     details: { material: "18k Gold-Plated Brass, Simulated Pearl", dimensions: "6.5cm x 3.2cm", care: "Avoid direct contact with water and perfumes." },
                     reviews: [] 
                 },
                 { 
                     name: 'Gold Pendant Necklace', sku: 'NC-001', category: 'Necklaces', price: 24.50, stock: 3, 
                     image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=80',
+                    images: ['https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=80'],
                     details: { material: "Titanium Steel with 18k Gold PVD Coating", dimensions: "45cm chain + 5cm extension", care: "Water-resistant and hypoallergenic." },
                     reviews: [] 
                 },
                 { 
                     name: 'Minimalist Dainty Ring', sku: 'RNG-001', category: 'Rings', price: 9.99, stock: 20, 
                     image: 'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=600&q=80',
+                    images: ['https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=600&q=80'],
                     details: { material: "Sterling Silver 925", dimensions: "Adjustable Band", care: "Store in airtight pouch when not worn." },
                     reviews: [] 
                 }
@@ -916,7 +978,14 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             const category = document.getElementById('prod-category').value;
             const price = parseFloat(document.getElementById('prod-price').value);
             let stock = parseInt(document.getElementById('prod-stock').value);
-            const image = document.getElementById('prod-image').value.trim() || 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80';
+
+            const defaultImg = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80';
+            const rawPhoto1 = document.getElementById('prod-image').value.trim();
+            const rawPhoto2 = document.getElementById('prod-image-2').value.trim();
+            const rawPhoto3 = document.getElementById('prod-image-3').value.trim();
+            const photoList = [rawPhoto1, rawPhoto2, rawPhoto3].filter(Boolean).slice(0, 3);
+            const image = photoList[0] || defaultImg;
+            const images = photoList.length > 0 ? photoList : [defaultImg];
             
             const material = sanitizeHTML(document.getElementById('spec-material').value.trim());
             const dimensions = sanitizeHTML(document.getElementById('spec-dimensions').value.trim());
@@ -927,7 +996,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             if (!sku) sku = `SKU-${Math.floor(1000 + Math.random() * 9000)}`;
 
             const productData = { 
-                name, sku, category, price, stock: isNaN(stock) ? 10 : stock, image, 
+                name, sku, category, price, stock: isNaN(stock) ? 10 : stock, image, images,
                 details: { material: material || "Premium Alloy / Plated Metal", dimensions: dimensions || "Standard Fit", care: care || "Keep away from moisture and harsh chemicals." },
                 isPublished: true, updatedAt: new Date().toISOString() 
             };
@@ -985,11 +1054,12 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
             const miniAppUrl = `https://t.me/songsashop?startapp=prod_${p.id}`;
             const message = `✨ NEW AESTHETIC DROP: ${p.name} ✨\n\nPrice: ${window.formatPrice(p.price)}\nSKU: ${p.sku}\n\nTap the button below to order instantly!`;
+            const coverPhoto = window.getProductImages(p)[0];
 
             try {
                 await sendTelegramPhotoBroadcast({
                     chatId: chatId.trim(),
-                    photoUrl: p.image,
+                    photoUrl: coverPhoto,
                     caption: message,
                     buttonUrl: miniAppUrl
                 });
@@ -1108,7 +1178,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 : `<span>${defaultText}</span>`;
         }
 
-        // UNIFIED DATABASE SYNC HELPER FOR BOTH USERS & ADMINS (@minimize.com ONLY)
         async function syncUserToDatabase(user, extraData = {}) {
             if (!user) return null;
             const userRef = doc(db, "users", user.uid);
@@ -1632,7 +1701,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
     </script>
 
-    <!-- STOREFRONT, PROFILE & HIGH-DENSITY PAGINATED ADMIN LOGIC -->
+    <!-- STOREFRONT, PROFILE, 3D VIEWER & HIGH-DENSITY PAGINATED ADMIN LOGIC -->
     <script>
         const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80';
         window.products = []; window.orders = []; window.coupons = [];
@@ -1643,6 +1712,15 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         window.currentSelectedStarRating = 5;
         let html5QrCodeScannerInstance = null;
 
+        // 3D Rotation State
+        let rotX = 0;
+        let rotY = 0;
+        let isDragging3D = false;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let startRotX = 0;
+        let startRotY = 0;
+
         let orderPageSize = 10;
         let lastVisibleOrderDoc = null;
         let firstVisibleOrderDoc = null;
@@ -1651,7 +1729,107 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         let adminOrderSearchQuery = '';
         let lowStockFilterActive = false;
 
+        function apply3DTransform(smoothSnap = false) {
+            const card = document.getElementById('stage-3d-card');
+            const shine = document.getElementById('stage-3d-shine');
+            const badge = document.getElementById('stage-3d-angle-badge');
+            if (!card) return;
+
+            if (smoothSnap) card.classList.add('snapping');
+            else card.classList.remove('snapping');
+
+            const clampedX = Math.max(-45, Math.min(45, rotX));
+            const wrappedY = ((rotY % 360) + 360) % 360;
+            const displayY = wrappedY > 180 ? wrappedY - 360 : wrappedY;
+
+            card.style.transform = `rotateX(${clampedX.toFixed(1)}deg) rotateY(${displayY.toFixed(1)}deg) scale3d(1.03, 1.03, 1.03)`;
+
+            if (shine) {
+                const shineX = 50 + (displayY / 45) * 35;
+                const shineY = 50 - (clampedX / 45) * 35;
+                shine.style.setProperty('--shine-x', `${Math.max(5, Math.min(95, shineX))}%`);
+                shine.style.setProperty('--shine-y', `${Math.max(5, Math.min(95, shineY))}%`);
+            }
+
+            if (badge) {
+                badge.innerText = `3D: ${Math.round(displayY)}° / ${Math.round(clampedX)}°`;
+            }
+        }
+
+        window.reset3DRotation = function() {
+            rotX = 0;
+            rotY = 0;
+            apply3DTransform(true);
+            triggerTelegramHaptic('light');
+        };
+
+        window.nudge3DRotation = function(deltaY, deltaX) {
+            rotY += deltaY;
+            rotX += deltaX;
+            apply3DTransform(true);
+            triggerTelegramHaptic('light');
+        };
+
+        window.selectProductPhoto = function(url, index) {
+            const imgEl = document.getElementById('view-prod-image');
+            if (imgEl && url) {
+                imgEl.src = url;
+            }
+            const thumbs = document.querySelectorAll('#prod-photo-thumbs button');
+            thumbs.forEach((btn, idx) => {
+                if (idx === index) {
+                    btn.className = 'w-11 h-11 rounded-xl overflow-hidden border-2 border-[#a4133c] shadow-xs ring-1 ring-[#a4133c]/30';
+                } else {
+                    btn.className = 'w-11 h-11 rounded-xl overflow-hidden border border-gray-200 opacity-75 hover:opacity-100';
+                }
+            });
+            triggerTelegramHaptic('light');
+        };
+
+        function init3DDragListeners() {
+            const viewport = document.getElementById('stage-3d-viewport');
+            if (!viewport || viewport.dataset.bound3d === 'true') return;
+            viewport.dataset.bound3d = 'true';
+
+            const onStart = (clientX, clientY) => {
+                isDragging3D = true;
+                dragStartX = clientX;
+                dragStartY = clientY;
+                startRotX = rotX;
+                startRotY = rotY;
+                document.getElementById('stage-3d-card')?.classList.remove('snapping');
+            };
+
+            const onMove = (clientX, clientY) => {
+                if (!isDragging3D) return;
+                const dx = clientX - dragStartX;
+                const dy = clientY - dragStartY;
+                rotY = startRotY + dx * 0.75;
+                rotX = startRotX - dy * 0.65;
+                apply3DTransform(false);
+            };
+
+            const onEnd = () => {
+                isDragging3D = false;
+            };
+
+            viewport.addEventListener('pointerdown', (e) => {
+                if (e.target.closest('button')) return;
+                viewport.setPointerCapture(e.pointerId);
+                onStart(e.clientX, e.clientY);
+            });
+
+            viewport.addEventListener('pointermove', (e) => {
+                if (!isDragging3D) return;
+                onMove(e.clientX, e.clientY);
+            });
+
+            viewport.addEventListener('pointerup', onEnd);
+            viewport.addEventListener('pointercancel', onEnd);
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
+            init3DDragListeners();
             const badge = document.getElementById('cart-badge');
             if (badge) badge.innerText = window.cart.reduce((s, i) => s + i.qty, 0);
             if (window.Telegram?.WebApp) { 
@@ -1880,7 +2058,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 let userWishlist = window.currentUserWishlist || [];
                 let favs = window.products.filter(p => userWishlist.includes(p.id));
                 bodyEl.innerHTML = favs.length === 0 ? `<p class="text-xs text-gray-400 text-center py-4">No cloud favorite items saved.</p>` :
-                    `<div class="grid grid-cols-2 gap-2">${favs.map(p => `<div onclick="closeProfileSubModal(); openProductDetailModal('${p.id}')" class="bg-gray-50 p-2 rounded-xl border cursor-pointer"><img src="${p.image}" class="w-full aspect-square object-cover rounded mb-1"><b class="text-[11px] truncate block">${sanitizeHTML(p.name)}</b></div>`).join('')}</div>`;
+                    `<div class="grid grid-cols-2 gap-2">${favs.map(p => `<div onclick="closeProfileSubModal(); openProductDetailModal('${p.id}')" class="bg-gray-50 p-2 rounded-xl border cursor-pointer"><img src="${window.getProductImages(p)[0]}" class="w-full aspect-square object-cover rounded mb-1"><b class="text-[11px] truncate block">${sanitizeHTML(p.name)}</b></div>`).join('')}</div>`;
             } else if (section === 'addresses') {
                 titleEl.innerText = "Delivery Addresses";
                 const addrs = window.currentUserAddresses || [];
@@ -2015,7 +2193,23 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             window.currentSelectedProdId = id;
             if (!silent) triggerTelegramHaptic('light');
 
-            document.getElementById('view-prod-image').src = p.image || FALLBACK_IMAGE;
+            init3DDragListeners();
+            rotX = 0;
+            rotY = 0;
+            apply3DTransform(true);
+
+            const photoList = window.getProductImages(p);
+            document.getElementById('view-prod-image').src = photoList[0];
+
+            const thumbsContainer = document.getElementById('prod-photo-thumbs');
+            if (thumbsContainer) {
+                thumbsContainer.innerHTML = photoList.map((url, idx) => `
+                    <button type="button" onclick="selectProductPhoto('${url.replace(/'/g, "\\'")}', ${idx})" class="${idx === 0 ? 'w-11 h-11 rounded-xl overflow-hidden border-2 border-[#a4133c] shadow-xs ring-1 ring-[#a4133c]/30' : 'w-11 h-11 rounded-xl overflow-hidden border border-gray-200 opacity-75 hover:opacity-100'}" title="Photo ${idx + 1}">
+                        <img src="${url}" class="w-full h-full object-cover">
+                    </button>
+                `).join('');
+            }
+
             document.getElementById('view-prod-category').innerText = p.category || 'Accessories';
             document.getElementById('view-prod-name').innerText = sanitizeHTML(p.name);
             document.getElementById('view-prod-price').innerText = formatPrice(p.price);
@@ -2057,7 +2251,11 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             }
         };
 
-        window.closeProductDetailModal = function() { window.currentSelectedProdId = null; document.getElementById('product-detail-modal').classList.add('hidden'); };
+        window.closeProductDetailModal = function() {
+            window.currentSelectedProdId = null;
+            isDragging3D = false;
+            document.getElementById('product-detail-modal').classList.add('hidden');
+        };
 
         function renderProducts() {
             const grid = document.getElementById('product-grid');
@@ -2083,17 +2281,20 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             const userWishlist = window.currentUserWishlist || [];
             let filtered = window.products.filter(p => (activeCategory === 'All' || p.category === activeCategory) && p.name.toLowerCase().includes(searchVal));
             
-            grid.innerHTML = filtered.map(p => `
-                <div class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs flex flex-col justify-between cursor-pointer relative" onclick="openProductDetailModal('${p.id}')">
-                    <button onclick="event.stopPropagation(); toggleWishlist('${p.id}')" class="absolute top-3 right-3 w-7 h-7 bg-white/90 rounded-full flex items-center justify-center text-xs shadow-xs ${userWishlist.includes(p.id) ? 'text-red-500' : 'text-gray-400'}"><i class="fa-solid fa-heart"></i></button>
-                    <img src="${p.image}" class="w-full aspect-square object-cover rounded-xl mb-2">
-                    <h4 class="font-serif italic font-bold text-xs truncate">${sanitizeHTML(p.name)}</h4>
-                    <div class="flex justify-between items-center mt-2 pt-2 border-t">
-                        <span class="font-bold text-xs text-[#a4133c]">${formatPrice(p.price)}</span>
-                        <button onclick="event.stopPropagation(); addToCart('${p.id}')" class="bg-[#800f2f] text-white px-3 py-1.5 rounded-xl text-xs font-bold">+</button>
+            grid.innerHTML = filtered.map(p => {
+                const imgs = window.getProductImages(p);
+                return `
+                    <div class="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-xs flex flex-col justify-between cursor-pointer relative" onclick="openProductDetailModal('${p.id}')">
+                        <button onclick="event.stopPropagation(); toggleWishlist('${p.id}')" class="absolute top-3 right-3 w-7 h-7 bg-white/90 rounded-full flex items-center justify-center text-xs shadow-xs ${userWishlist.includes(p.id) ? 'text-red-500' : 'text-gray-400'}"><i class="fa-solid fa-heart"></i></button>
+                        <img src="${imgs[0]}" class="w-full aspect-square object-cover rounded-xl mb-2">
+                        <h4 class="font-serif italic font-bold text-xs truncate">${sanitizeHTML(p.name)}</h4>
+                        <div class="flex justify-between items-center mt-2 pt-2 border-t">
+                            <span class="font-bold text-xs text-[#a4133c]">${formatPrice(p.price)}</span>
+                            <button onclick="event.stopPropagation(); addToCart('${p.id}')" class="bg-[#800f2f] text-white px-3 py-1.5 rounded-xl text-xs font-bold">+</button>
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
         window.renderProducts = renderProducts;
 
@@ -2101,7 +2302,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             const userWishlist = window.currentUserWishlist || [];
             let favs = window.products.filter(p => userWishlist.includes(p.id));
             document.getElementById('wishlist-grid').innerHTML = favs.length === 0 ? `<p class="text-xs text-gray-400 col-span-2 text-center py-6">No saved favorite items.</p>` :
-                favs.map(p => `<div onclick="openProductDetailModal('${p.id}')" class="bg-white rounded-2xl p-2.5 border shadow-xs cursor-pointer"><img src="${p.image}" class="w-full aspect-square object-cover rounded-xl mb-2"><h4 class="font-serif italic font-bold text-xs truncate">${sanitizeHTML(p.name)}</h4></div>`).join('');
+                favs.map(p => `<div onclick="openProductDetailModal('${p.id}')" class="bg-white rounded-2xl p-2.5 border shadow-xs cursor-pointer"><img src="${window.getProductImages(p)[0]}" class="w-full aspect-square object-cover rounded-xl mb-2"><h4 class="font-serif italic font-bold text-xs truncate">${sanitizeHTML(p.name)}</h4></div>`).join('');
         }
         window.renderWishlist = renderWishlist;
 
@@ -2110,7 +2311,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             triggerTelegramHaptic('success');
             const prod = window.products.find(p => p.id === id);
             const existing = window.cart.find(i => i.id === id);
-            if (existing) existing.qty += 1; else window.cart.push({ ...prod, qty: 1 });
+            if (existing) existing.qty += 1; else window.cart.push({ ...prod, image: window.getProductImages(prod)[0], qty: 1 });
             localStorage.setItem('mininize_cart', JSON.stringify(window.cart));
             document.getElementById('cart-badge').innerText = window.cart.reduce((s, i) => s + i.qty, 0);
             
@@ -2453,9 +2654,10 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     const stock = p.stock ?? 10;
                     const isLow = stock <= 5;
                     const isStaff = (window.currentUserData?.role || "").toLowerCase() === 'staff';
+                    const photoCount = window.getProductImages(p).length;
                     return `
                         <tr class="border-b ${isLow ? 'bg-red-50/50' : ''}">
-                            <td class="p-2 font-medium"><b>${sanitizeHTML(p.name)}</b><span class="block text-[9px] font-mono text-gray-400">${sanitizeHTML(p.sku || 'SKU')}</span></td>
+                            <td class="p-2 font-medium"><b>${sanitizeHTML(p.name)}</b><span class="block text-[9px] font-mono text-gray-400">${sanitizeHTML(p.sku || 'SKU')} • ${photoCount} photo${photoCount > 1 ? 's' : ''}</span></td>
                             <td class="p-2">${sanitizeHTML(p.category)}</td>
                             <td class="p-2 font-bold">$${Number(p.price).toFixed(2)}</td>
                             <td class="p-2">
@@ -2500,6 +2702,8 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             document.getElementById('prod-price').value = '';
             document.getElementById('prod-stock').value = '';
             document.getElementById('prod-image').value = '';
+            document.getElementById('prod-image-2').value = '';
+            document.getElementById('prod-image-3').value = '';
             document.getElementById('spec-material').value = '';
             document.getElementById('spec-dimensions').value = '';
             document.getElementById('spec-care').value = '';
@@ -2511,13 +2715,16 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             if ((window.currentUserData?.role || "").toLowerCase() === 'staff') return alert('Staff role cannot edit products.');
             const p = window.products.find(item => item.id === id);
             if (!p) return;
+            const imgs = window.getProductImages(p);
             document.getElementById('prod-id').value = p.id;
             document.getElementById('prod-name').value = p.name;
             document.getElementById('prod-sku').value = p.sku || '';
             document.getElementById('prod-category').value = p.category || 'Hairpins';
             document.getElementById('prod-price').value = p.price;
             document.getElementById('prod-stock').value = p.stock ?? 10;
-            document.getElementById('prod-image').value = p.image || '';
+            document.getElementById('prod-image').value = imgs[0] || '';
+            document.getElementById('prod-image-2').value = imgs[1] || '';
+            document.getElementById('prod-image-3').value = imgs[2] || '';
             document.getElementById('spec-material').value = p.details?.material || '';
             document.getElementById('spec-dimensions').value = p.details?.dimensions || '';
             document.getElementById('spec-care').value = p.details?.care || '';
