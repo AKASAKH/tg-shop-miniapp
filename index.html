@@ -472,11 +472,11 @@
                     <input type="text" id="spec-care" placeholder="Care Instructions" class="w-full border rounded-xl px-3 py-1.5">
                 </div>
 
-                <!-- CUSTOMIZE TELEGRAM POST TEMPLATE -->
+                <!-- CUSTOMIZE TELEGRAM POST TEMPLATE (BOT TOKEN SECURED IN CLOUDFLARE) -->
                 <div class="border-t pt-2 space-y-2 bg-pink-50/50 p-3 rounded-2xl border-pink-100">
                     <div class="flex justify-between items-center">
                         <span class="font-bold text-[#a4133c] text-[11px]">Customize Telegram Broadcast Post 📢</span>
-                        <span class="text-[9px] text-gray-400">Variables: {name}, {price}, {sku}, {link}</span>
+                        <span class="text-[9px] text-emerald-700 font-semibold"><i class="fa-solid fa-lock"></i> Cloudflare Proxy</span>
                     </div>
                     <textarea id="telegram-template-text" rows="3" class="w-full border rounded-xl p-2.5 text-[11px] bg-white font-mono">✨ NEW AESTHETIC DROP: {name} ✨
 
@@ -485,9 +485,8 @@ SKU: {sku}
 
 Tap below to shop instantly in our Telegram Mini App! 🛍️
 {link}</textarea>
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="telegram-bot-token" placeholder="Bot Token (from @BotFather)" class="border rounded-xl px-2.5 py-1.5 text-[10px]">
-                        <input type="text" id="telegram-chat-id" placeholder="@channel_username or -100..." class="border rounded-xl px-2.5 py-1.5 text-[10px]">
+                    <div>
+                        <input type="text" id="telegram-chat-id" placeholder="Channel/Group ID (leave blank for Cloudflare DEFAULT_CHAT_ID)" class="w-full border rounded-xl px-2.5 py-1.5 text-[10px] bg-white">
                     </div>
                 </div>
             </div>
@@ -886,34 +885,19 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             await setDoc(doc(db, "coupons", "MININIZE15"), { code: "MININIZE15", discountPercent: 15, maxUsage: 50, usageCount: 0, totalDiscountGiven: 0, isActive: true, createdAt: new Date().toISOString() });
         }
 
-        // TELEGRAM BROADCAST HELPER WITH REAL RESPONSE VALIDATION & INLINE SHOP BUTTON
-        const DEFAULT_BOT_TOKEN = "PASTE_YOUR_REAL_BOTFATHER_TOKEN_HERE";
-        const DEFAULT_CHAT_ID = "PASTE_YOUR_CHANNEL_OR_GROUP_ID_HERE";
+        // CLOUDFLARE WORKER TELEGRAM BROADCAST ENGINE
+        const CLOUDFLARE_BROADCAST_WORKER_URL = "https://usingalightweightnodejsbackendproxy.sovathrothphal.workers.dev/";
 
-        async function sendTelegramPhotoBroadcast({ botToken, chatId, photoUrl, caption, buttonUrl }) {
-            const payload = {
-                chat_id: chatId,
-                photo: photoUrl,
-                caption: caption
-            };
-
-            if (buttonUrl) {
-                payload.reply_markup = {
-                    inline_keyboard: [
-                        [
-                            {
-                                text: "🛍️ Shop Now",
-                                url: buttonUrl
-                            }
-                        ]
-                    ]
-                };
-            }
-
-            const response = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+        async function sendTelegramPhotoBroadcast({ chatId, photoUrl, caption, buttonUrl }) {
+            const response = await fetch(CLOUDFLARE_BROADCAST_WORKER_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify({
+                    chatId: chatId || "",
+                    photoUrl,
+                    caption,
+                    buttonUrl
+                })
             });
 
             const data = await response.json();
@@ -960,43 +944,29 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
             const template = document.getElementById('telegram-template-text').value;
             const chatIdInput = document.getElementById('telegram-chat-id').value.trim();
-            const tokenInput = document.getElementById('telegram-bot-token').value.trim();
-
-            if (tokenInput) localStorage.setItem('mininize_tg_token', tokenInput);
             if (chatIdInput) localStorage.setItem('mininize_tg_chat', chatIdInput);
+            const chatId = chatIdInput || localStorage.getItem('mininize_tg_chat') || "";
 
-            const botToken = tokenInput || localStorage.getItem('mininize_tg_token') || DEFAULT_BOT_TOKEN;
-            const chatId = chatIdInput || localStorage.getItem('mininize_tg_chat') || DEFAULT_CHAT_ID;
+            const miniAppUrl = `https://t.me/songsashop?startapp=prod_${savedId}`;
+            const broadcastMessage = template
+                .replace('{name}', rawName)
+                .replace('{price}', window.formatPrice(price))
+                .replace('{sku}', sku)
+                .replace('{link}', miniAppUrl);
 
-            if (chatId && !chatId.startsWith("PASTE_")) {
-                if (!botToken || botToken.startsWith("PASTE_")) {
-                    alert('Product saved, but please enter a valid Telegram Bot Token from @BotFather.');
-                } else {
-                    const miniAppUrl = `https://t.me/songsashop?startapp=prod_${savedId}`;
-                    const broadcastMessage = template
-                        .replace('{name}', rawName)
-                        .replace('{price}', window.formatPrice(price))
-                        .replace('{sku}', sku)
-                        .replace('{link}', miniAppUrl);
-
-                    try {
-                        await sendTelegramPhotoBroadcast({
-                            botToken,
-                            chatId,
-                            photoUrl: image,
-                            caption: broadcastMessage,
-                            buttonUrl: miniAppUrl
-                        });
-                        triggerTelegramHaptic('success');
-                        alert('Product saved and successfully broadcasted to Telegram! 🚀');
-                    } catch (e) {
-                        console.error("Telegram broadcast error:", e);
-                        triggerTelegramHaptic('error');
-                        alert(`Product saved, but Telegram rejected the post:\n\n${e.message}`);
-                    }
-                }
-            } else {
-                alert('Product saved successfully! (Enter a Telegram Chat ID to broadcast) 🎉');
+            try {
+                await sendTelegramPhotoBroadcast({
+                    chatId,
+                    photoUrl: image,
+                    caption: broadcastMessage,
+                    buttonUrl: miniAppUrl
+                });
+                triggerTelegramHaptic('success');
+                alert('Product saved and broadcasted via Cloudflare! 🚀');
+            } catch (e) {
+                console.error("Telegram broadcast error:", e);
+                triggerTelegramHaptic('error');
+                alert(`Product saved, but Telegram rejected the post:\n\n${e.message}`);
             }
 
             closeAdminProductModal();
@@ -1007,34 +977,24 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             const p = window.products.find(item => item.id === id);
             if (!p) return;
 
-            const savedToken = localStorage.getItem('mininize_tg_token') || DEFAULT_BOT_TOKEN;
             const savedChat = localStorage.getItem('mininize_tg_chat') || '';
+            const chatId = prompt("Enter Channel/Group ID (leave blank to use Cloudflare DEFAULT_CHAT_ID):", savedChat);
+            if (chatId === null) return;
 
-            const chatId = prompt("Enter Telegram Channel or Group Chat ID (e.g. @your_channel or -1001234567890):", savedChat);
-            if (!chatId) return;
-
-            let botToken = savedToken;
-            if (!botToken || botToken.startsWith("PASTE_")) {
-                botToken = prompt("Enter your Telegram Bot Token from @BotFather:");
-                if (!botToken) return;
-            }
-
-            localStorage.setItem('mininize_tg_chat', chatId.trim());
-            localStorage.setItem('mininize_tg_token', botToken.trim());
+            if (chatId.trim()) localStorage.setItem('mininize_tg_chat', chatId.trim());
 
             const miniAppUrl = `https://t.me/songsashop?startapp=prod_${p.id}`;
             const message = `✨ NEW AESTHETIC DROP: ${p.name} ✨\n\nPrice: ${window.formatPrice(p.price)}\nSKU: ${p.sku}\n\nTap the button below to order instantly!`;
 
             try {
                 await sendTelegramPhotoBroadcast({
-                    botToken: botToken.trim(),
                     chatId: chatId.trim(),
                     photoUrl: p.image,
                     caption: message,
                     buttonUrl: miniAppUrl
                 });
                 triggerTelegramHaptic('success');
-                alert('Broadcast sent successfully to Telegram! 📢');
+                alert('Broadcast sent successfully via Cloudflare! 📢');
             } catch (err) {
                 triggerTelegramHaptic('error');
                 alert(`Broadcast failed:\n\n${err.message}`);
@@ -1141,7 +1101,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
             const email = (extraData.email || user.email || existingData.email || "").toLowerCase();
             
-            // Determine role: preserve existing Firestore role, or assign based on @minimize.com / UID
             let role = existingData.role ? existingData.role.toLowerCase() : "";
             if (!role) {
                 if (user.uid === "NoIYk9Uwlc75YLdlpzx1" || window.isAdminOrStaffDomain(email)) {
@@ -1176,7 +1135,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             return payload;
         }
 
-        // 1. EMAIL LOGIN (Syncs both Admin & Customer with Loading State)
         window.handleEmailLogin = async function() {
             const email = document.getElementById('login-email').value.trim().toLowerCase();
             const password = document.getElementById('login-password').value;
@@ -1200,7 +1158,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             }
         };
 
-        // 2. FORGOT PASSWORD RESET
         window.handlePasswordReset = async function() {
             const email = document.getElementById('login-email').value.trim().toLowerCase();
             if (!email) {
@@ -1219,7 +1176,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             }
         };
 
-        // 3. EMAIL SIGN UP (Syncs New Account & Default Address with Loading State)
         window.handleEmailSignUp = async function() {
             const name = sanitizeHTML(document.getElementById('signup-name').value.trim());
             const email = sanitizeHTML(document.getElementById('signup-email').value.trim().toLowerCase());
@@ -1250,7 +1206,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             }
         };
 
-        // 4. TELEGRAM SIGN IN / SIGN UP (Strict Telegram Context + DB Sync)
         window.handleTelegramSignIn = async function() {
             try {
                 const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
@@ -1304,7 +1259,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         let addressesUnsubscribe = null;
         let wishlistUnsubscribe = null;
 
-        // 5. AUTH STATE LISTENER (Guarantees DB sync + Deep Link handling on page reload)
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 window.currentUser = user;
@@ -2439,7 +2393,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             document.getElementById('spec-material').value = '';
             document.getElementById('spec-dimensions').value = '';
             document.getElementById('spec-care').value = '';
-            document.getElementById('telegram-bot-token').value = localStorage.getItem('mininize_tg_token') || '';
             document.getElementById('telegram-chat-id').value = localStorage.getItem('mininize_tg_chat') || '';
             document.getElementById('admin-product-modal').classList.remove('hidden');
         };
@@ -2458,7 +2411,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             document.getElementById('spec-material').value = p.details?.material || '';
             document.getElementById('spec-dimensions').value = p.details?.dimensions || '';
             document.getElementById('spec-care').value = p.details?.care || '';
-            document.getElementById('telegram-bot-token').value = localStorage.getItem('mininize_tg_token') || '';
             document.getElementById('telegram-chat-id').value = localStorage.getItem('mininize_tg_chat') || '';
             document.getElementById('admin-product-modal').classList.remove('hidden');
         };
