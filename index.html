@@ -65,7 +65,7 @@
     <!-- PROMOTIONAL POPUP BANNER -->
     <div id="promo-popup" class="fixed inset-0 bg-[#2A2124]/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300">
         <div class="bg-[#FFFFFF] text-[#2A2124] rounded-2xl max-w-xs w-full p-5 space-y-3 shadow-xl relative text-center border border-[#EFE4E6]">
-            <button onclick="closePromoPopup()" class="absolute top-2.5 right-2.5 text-[#9C8A90] hover:text-[#6E5D62] w-7 h-7 bg-[#F8EFF1] rounded-full flex items-center justify-center text-xs">
+            <button type="button" onclick="closePromoPopup()" class="absolute top-2.5 right-2.5 text-[#9C8A90] hover:text-[#6E5D62] w-7 h-7 bg-[#F8EFF1] rounded-full flex items-center justify-center text-xs">
                 <i class="fa-solid fa-xmark"></i>
             </button>
             <div class="w-10 h-10 bg-[#F9F3EA] text-[#C9A46B] rounded-full flex items-center justify-center mx-auto text-base border border-[#EFE4E6]"><i class="fa-solid fa-tag"></i></div>
@@ -74,7 +74,7 @@
                 <h3 class="text-sm font-bold mt-1 text-[#2A2124]">Get 15% OFF Your First Order!</h3>
                 <p class="text-[11px] text-[#6E5D62] mt-0.5">Use code <span class="font-bold text-[#9E5E6F] underline">MININIZE15</span> at checkout.</p>
             </div>
-            <button onclick="closePromoPopup()" class="w-full bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs active:scale-95 transition-transform">Shop Collection ✨</button>
+            <button type="button" onclick="closePromoPopup()" class="w-full bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs active:scale-95 transition-transform">Shop Collection ✨</button>
         </div>
     </div>
 
@@ -96,7 +96,7 @@
                     <option value="USD">USD ($)</option>
                     <option value="KHR">KHR (៛)</option>
                 </select>
-                <button onclick="switchCustomerTab('profile')" class="w-8 h-8 rounded-full overflow-hidden bg-[#F8EFF1] flex items-center justify-center border border-[#C9A46B]/50 shadow-xs hover:scale-105 transition-transform" title="My Profile">
+                <button type="button" onclick="switchCustomerTab('profile')" class="w-8 h-8 rounded-full overflow-hidden bg-[#F8EFF1] flex items-center justify-center border border-[#C9A46B]/50 shadow-xs hover:scale-105 transition-transform" title="My Profile">
                     <img id="header-user-avatar" src="https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80" class="w-full h-full object-cover" alt="Profile">
                 </button>
             </div>
@@ -109,7 +109,7 @@
         <!-- CUSTOMER STOREFRONT VIEW -->
         <div id="customer-view" class="space-y-4">
             <div id="page-shop" class="space-y-3">
-                
+
                 <div id="user-greeting-banner" class="hidden bg-[#FFFFFF] p-3 rounded-2xl border border-[#EFE4E6] flex items-center justify-between text-xs shadow-xs">
                     <div>
                         <span class="font-bold text-[#2A2124]" id="welcome-user-name">Welcome back, Shopper! ✨</span>
@@ -122,23 +122,23 @@
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-[#9C8A90]"><i class="fa-solid fa-magnifying-glass text-[11px]"></i></span>
                     <input type="text" id="search-input" oninput="filterProducts()" placeholder="Search aesthetic pieces..." class="w-full pl-8 pr-3 py-2 bg-[#FFFFFF] border border-[#EFE4E6] rounded-xl text-xs text-[#2A2124] placeholder-[#9C8A90] shadow-xs focus:outline-none focus:border-[#9E5E6F]">
                 </div>
-                
+
                 <!-- CATEGORY FILTER BAR -->
                 <div class="flex space-x-1.5 overflow-x-auto pb-1 text-[11px] scrollbar-none justify-start md:justify-center">
-                    <button onclick="filterCategory('All')" class="cat-btn bg-[#9E5E6F] text-white px-3 py-1.5 rounded-full font-medium whitespace-nowrap shadow-xs min-h-[36px]">All ✨</button>
-                    <button onclick="filterCategory('Hairpins')" class="cat-btn bg-[#FFFFFF] text-[#6E5D62] border border-[#EFE4E6] px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Hairpins 🎀</button>
-                    <button onclick="filterCategory('Necklaces')" class="cat-btn bg-[#FFFFFF] text-[#6E5D62] border border-[#EFE4E6] px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Necklaces 📿</button>
-                    <button onclick="filterCategory('Rings')" class="cat-btn bg-[#FFFFFF] text-[#6E5D62] border border-[#EFE4E6] px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Rings 💍</button>
-                    <button onclick="filterCategory('Earrings')" class="cat-btn bg-[#FFFFFF] text-[#6E5D62] border border-[#EFE4E6] px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Earrings 💎</button>
-                    <button onclick="filterCategory('Phone Charms')" class="cat-btn bg-[#FFFFFF] text-[#6E5D62] border border-[#EFE4E6] px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Phone Charms 📱</button>
-                    <button onclick="filterCategory('Bags & Pouches')" class="cat-btn bg-[#FFFFFF] text-[#6E5D62] border border-[#EFE4E6] px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Bags & Pouches 👜</button>
+                    <button type="button" onclick="filterCategory('All')" class="cat-btn bg-[#9E5E6F] text-white px-3 py-1.5 rounded-full font-medium whitespace-nowrap shadow-xs min-h-[36px]">All ✨</button>
+                    <button type="button" onclick="filterCategory('Hairpins')" class="cat-btn bg-[#FFFFFF] text-[#6E5D62] border border-[#EFE4E6] px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Hairpins 🎀</button>
+                    <button type="button" onclick="filterCategory('Necklaces')" class="cat-btn bg-[#FFFFFF] text-[#6E5D62] border border-[#EFE4E6] px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Necklaces 📿</button>
+                    <button type="button" onclick="filterCategory('Rings')" class="cat-btn bg-[#FFFFFF] text-[#6E5D62] border border-[#EFE4E6] px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Rings 💍</button>
+                    <button type="button" onclick="filterCategory('Earrings')" class="cat-btn bg-[#FFFFFF] text-[#6E5D62] border border-[#EFE4E6] px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Earrings 💎</button>
+                    <button type="button" onclick="filterCategory('Phone Charms')" class="cat-btn bg-[#FFFFFF] text-[#6E5D62] border border-[#EFE4E6] px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Phone Charms 📱</button>
+                    <button type="button" onclick="filterCategory('Bags & Pouches')" class="cat-btn bg-[#FFFFFF] text-[#6E5D62] border border-[#EFE4E6] px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Bags & Pouches 👜</button>
                 </div>
 
                 <!-- PRODUCT GRID WITH AUTHENTICATION CHECK -->
                 <div id="product-grid" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
-                
+
                 <div id="load-more-container" class="text-center pt-2">
-                    <button onclick="loadMoreProducts()" id="load-more-btn" class="hidden bg-[#FFFFFF] border border-[#EFE4E6] text-[#9E5E6F] hover:bg-[#F8EFF1] text-xs font-bold px-5 py-2.5 rounded-xl shadow-xs">Load More Products 🌀</button>
+                    <button type="button" onclick="loadMoreProducts()" id="load-more-btn" class="hidden bg-[#FFFFFF] border border-[#EFE4E6] text-[#9E5E6F] hover:bg-[#F8EFF1] text-xs font-bold px-5 py-2.5 rounded-xl shadow-xs">Load More Products 🌀</button>
                 </div>
             </div>
 
@@ -175,13 +175,13 @@
                             <b class="text-[#2A2124] block font-bold">Affiliate Referral Link 🚀</b>
                             <p class="text-[10px] text-[#6E5D62]">Earn 50 bonus points per friend referred.</p>
                         </div>
-                        <button onclick="copyReferralLink()" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white px-3 py-2 rounded-xl font-bold text-[10px] shadow-xs">Copy Link</button>
+                        <button type="button" onclick="copyReferralLink()" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white px-3 py-2 rounded-xl font-bold text-[10px] shadow-xs">Copy Link</button>
                     </div>
 
                     <div class="bg-[#FFFFFF] rounded-2xl p-4 shadow-xs border border-[#EFE4E6] flex items-center justify-between">
                         <div class="flex items-center space-x-3">
                             <div class="w-12 h-12 rounded-full overflow-hidden bg-[#F8EFF1] text-[#9E5E6F] font-bold flex items-center justify-center text-lg border border-[#C9A46B]/50 shadow-xs">
-                                <img id="cust-profile-avatar" src="https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80" class="w-full h-full object-cover">
+                                <img id="cust-profile-avatar" src="https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80" class="w-full h-full object-cover" alt="User avatar">
                             </div>
                             <div>
                                 <h3 id="cust-profile-name" class="font-bold text-sm text-[#2A2124]">Your Name</h3>
@@ -192,37 +192,37 @@
                     </div>
 
                     <div class="bg-[#FFFFFF] rounded-2xl shadow-xs border border-[#EFE4E6] overflow-hidden text-xs divide-y divide-[#EFE4E6]">
-                        <button onclick="openProfileSection('personal')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
+                        <button type="button" onclick="openProfileSection('personal')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
                             <span class="flex items-center space-x-2.5 text-[#2A2124] font-medium"><i class="fa-regular fa-user text-[#9E5E6F] w-4"></i><span>Personal Information</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-[#9C8A90]"></i>
                         </button>
-                        <button onclick="openProfileSection('orders')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
+                        <button type="button" onclick="openProfileSection('orders')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
                             <span class="flex items-center space-x-2.5 text-[#2A2124] font-medium"><i class="fa-solid fa-box-archive text-[#9E5E6F] w-4"></i><span>My Orders & PDF Invoices</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-[#9C8A90]"></i>
                         </button>
-                        <button onclick="openProfileSection('wallet')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
+                        <button type="button" onclick="openProfileSection('wallet')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
                             <span class="flex items-center space-x-2.5 text-[#2A2124] font-medium"><i class="fa-solid fa-wallet text-[#C9A46B] w-4"></i><span>Loyalty Voucher Wallet</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-[#9C8A90]"></i>
                         </button>
-                        <button onclick="openProfileSection('favorites')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
+                        <button type="button" onclick="openProfileSection('favorites')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
                             <span class="flex items-center space-x-2.5 text-[#2A2124] font-medium"><i class="fa-regular fa-heart text-[#9E5E6F] w-4"></i><span>My Cloud Wishlist</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-[#9C8A90]"></i>
                         </button>
-                        <button onclick="openProfileSection('addresses')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
+                        <button type="button" onclick="openProfileSection('addresses')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
                             <span class="flex items-center space-x-2.5 text-[#2A2124] font-medium"><i class="fa-solid fa-location-dot text-[#9E5E6F] w-4"></i><span>Delivery Addresses</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-[#9C8A90]"></i>
                         </button>
-                        <button onclick="openProfileSection('notifications')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
+                        <button type="button" onclick="openProfileSection('notifications')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
                             <span class="flex items-center space-x-2.5 text-[#2A2124] font-medium"><i class="fa-regular fa-bell text-[#9E5E6F] w-4"></i><span>Notifications & Preferences</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-[#9C8A90]"></i>
                         </button>
-                        <button onclick="openProfileSection('history')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
+                        <button type="button" onclick="openProfileSection('history')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
                             <span class="flex items-center space-x-2.5 text-[#2A2124] font-medium"><i class="fa-solid fa-clock-rotate-left text-[#9E5E6F] w-4"></i><span>Saved Edit & Activity History</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-[#9C8A90]"></i>
                         </button>
                     </div>
 
-                    <button onclick="handleSignOut()" class="w-full bg-[#FFFFFF] border border-[#EFE4E6] text-[#6E5D62] hover:text-[#9E5E6F] font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Log out</button>
+                    <button type="button" onclick="handleSignOut()" class="w-full bg-[#FFFFFF] border border-[#EFE4E6] text-[#6E5D62] hover:text-[#9E5E6F] font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Log out</button>
                 </div>
 
                 <!-- AUTHENTICATION CARD -->
@@ -235,7 +235,7 @@
                         <button type="button" onclick="switchAuthTab('login')" id="authtab-login" class="flex-1 py-1 bg-[#FFFFFF] text-[#9E5E6F] font-bold rounded-lg shadow-xs">Log In</button>
                         <button type="button" onclick="switchAuthTab('signup')" id="authtab-signup" class="flex-1 py-1 text-[#6E5D62] rounded-lg">Sign Up</button>
                     </div>
-                    
+
                     <form id="auth-form-login" onsubmit="event.preventDefault(); handleEmailLogin();" class="space-y-2 text-xs">
                         <input type="email" id="login-email" placeholder="Email address" required class="w-full border border-[#EFE4E6] rounded-xl px-3 py-2 text-[#2A2124] placeholder-[#9C8A90] focus:outline-none focus:border-[#9E5E6F]">
                         <div class="relative">
@@ -279,13 +279,13 @@
             <div class="bg-[#FFFFFF] p-3 rounded-2xl border border-[#EFE4E6] shadow-xs flex justify-between items-center">
                 <span class="font-bold text-xs text-[#2A2124] flex items-center"><i class="fa-solid fa-shield-halved text-[#9E5E6F] mr-1.5"></i> Mininize Studio Admin Portal <span id="admin-role-tag" class="ml-2 text-[9px] bg-[#F8EFF1] text-[#9E5E6F] border border-[#EFE4E6] px-2 py-0.5 rounded font-bold">Super Admin</span></span>
                 <div class="flex items-center space-x-2">
-                    <button onclick="openProductModal()" id="add-prod-admin-btn" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white text-xs px-3 py-2 rounded-xl font-bold">+ New Product & Broadcast</button>
-                    <button onclick="handleSignOut()" class="text-xs bg-[#F8EFF1] text-[#6E5D62] hover:text-[#2A2124] border border-[#EFE4E6] px-3 py-2 rounded-xl font-medium">Sign Out</button>
+                    <button type="button" onclick="openProductModal()" id="add-prod-admin-btn" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white text-xs px-3 py-2 rounded-xl font-bold">+ New Product & Broadcast</button>
+                    <button type="button" onclick="handleSignOut()" class="text-xs bg-[#F8EFF1] text-[#6E5D62] hover:text-[#2A2124] border border-[#EFE4E6] px-3 py-2 rounded-xl font-medium">Sign Out</button>
                 </div>
             </div>
 
             <!-- EXECUTIVE METRICS SUMMARY CARDS -->
-            <div class="grid grid-cols-4 gap-2.5">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5">
                 <div class="bg-[#FFFFFF] p-3 rounded-2xl border border-[#EFE4E6] shadow-xs">
                     <p class="text-[10px] text-[#6E5D62] font-medium">Total Revenue</p>
                     <h3 id="admin-metric-revenue" class="text-sm font-black text-[#2A2124] mt-0.5">$0.00</h3>
@@ -306,31 +306,31 @@
 
             <!-- ADMIN NAVIGATION TABS -->
             <div class="flex space-x-1 border-b border-[#EFE4E6] text-xs font-semibold overflow-x-auto scrollbar-none">
-                <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-[#9E5E6F] text-[#9E5E6F] whitespace-nowrap">Orders & Fulfillment</button>
-                <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-[#6E5D62] whitespace-nowrap">Products & Telegram Broadcasts</button>
-                <button onclick="switchAdminNav('coupons')" id="adtab-coupons" class="px-4 py-2 border-b-2 border-transparent text-[#6E5D62] whitespace-nowrap">Coupons & Limits 🎟️</button>
-                <button onclick="switchAdminNav('analytics')" id="adtab-analytics" class="px-4 py-2 border-b-2 border-transparent text-[#6E5D62] whitespace-nowrap">Analytics & Reports 📈</button>
-                <button onclick="switchAdminNav('reviews')" id="adtab-reviews" class="px-4 py-2 border-b-2 border-transparent text-[#6E5D62] whitespace-nowrap">Reviews ⭐</button>
-                <button onclick="switchAdminNav('staff')" id="adtab-staff" class="px-4 py-2 border-b-2 border-transparent text-[#6E5D62] whitespace-nowrap">Staff Management 👥</button>
-                <button onclick="switchAdminNav('logs')" id="adtab-logs" class="px-4 py-2 border-b-2 border-transparent text-[#6E5D62] whitespace-nowrap">Activity Logs 🕒</button>
+                <button type="button" onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-[#9E5E6F] text-[#9E5E6F] whitespace-nowrap">Orders & Fulfillment</button>
+                <button type="button" onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-[#6E5D62] whitespace-nowrap">Products & Telegram Broadcasts</button>
+                <button type="button" onclick="switchAdminNav('coupons')" id="adtab-coupons" class="px-4 py-2 border-b-2 border-transparent text-[#6E5D62] whitespace-nowrap">Coupons & Limits 🎟️</button>
+                <button type="button" onclick="switchAdminNav('analytics')" id="adtab-analytics" class="px-4 py-2 border-b-2 border-transparent text-[#6E5D62] whitespace-nowrap">Analytics & Reports 📈</button>
+                <button type="button" onclick="switchAdminNav('reviews')" id="adtab-reviews" class="px-4 py-2 border-b-2 border-transparent text-[#6E5D62] whitespace-nowrap">Reviews ⭐</button>
+                <button type="button" onclick="switchAdminNav('staff')" id="adtab-staff" class="px-4 py-2 border-b-2 border-transparent text-[#6E5D62] whitespace-nowrap">Staff Management 👥</button>
+                <button type="button" onclick="switchAdminNav('logs')" id="adtab-logs" class="px-4 py-2 border-b-2 border-transparent text-[#6E5D62] whitespace-nowrap">Activity Logs 🕒</button>
             </div>
-            
+
             <!-- HIGH-DENSITY PAGINATED ORDERS SECTION -->
             <div id="admin-sec-orders" class="space-y-4">
                 <div class="bg-[#FFFFFF] rounded-2xl p-4 shadow-xs border border-[#EFE4E6] space-y-3 text-xs">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                         <div class="flex space-x-1 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 scrollbar-none text-[11px] font-medium">
-                            <button onclick="setAdminOrderStatusFilter('All')" id="ord-pill-all" class="px-3 py-1.5 bg-[#9E5E6F] text-white rounded-xl shadow-xs">All Orders</button>
-                            <button onclick="setAdminOrderStatusFilter('Pending')" id="ord-pill-pending" class="px-3 py-1.5 bg-[#FDF9F8] text-[#6E5D62] hover:bg-[#F8EFF1] rounded-xl border border-[#EFE4E6]">Pending</button>
-                            <button onclick="setAdminOrderStatusFilter('Paid')" id="ord-pill-paid" class="px-3 py-1.5 bg-[#FDF9F8] text-[#6E5D62] hover:bg-[#F8EFF1] rounded-xl border border-[#EFE4E6]">Paid</button>
-                            <button onclick="setAdminOrderStatusFilter('Shipped')" id="ord-pill-shipped" class="px-3 py-1.5 bg-[#FDF9F8] text-[#6E5D62] hover:bg-[#F8EFF1] rounded-xl border border-[#EFE4E6]">Shipped</button>
+                            <button type="button" onclick="setAdminOrderStatusFilter('All')" id="ord-pill-all" class="px-3 py-1.5 bg-[#9E5E6F] text-white rounded-xl shadow-xs">All Orders</button>
+                            <button type="button" onclick="setAdminOrderStatusFilter('Pending')" id="ord-pill-pending" class="px-3 py-1.5 bg-[#FDF9F8] text-[#6E5D62] hover:bg-[#F8EFF1] rounded-xl border border-[#EFE4E6]">Pending</button>
+                            <button type="button" onclick="setAdminOrderStatusFilter('Paid')" id="ord-pill-paid" class="px-3 py-1.5 bg-[#FDF9F8] text-[#6E5D62] hover:bg-[#F8EFF1] rounded-xl border border-[#EFE4E6]">Paid</button>
+                            <button type="button" onclick="setAdminOrderStatusFilter('Shipped')" id="ord-pill-shipped" class="px-3 py-1.5 bg-[#FDF9F8] text-[#6E5D62] hover:bg-[#F8EFF1] rounded-xl border border-[#EFE4E6]">Shipped</button>
                         </div>
                         <div class="flex items-center space-x-2 w-full md:w-auto">
                             <div class="relative flex-1 md:w-64">
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-[#9C8A90]"><i class="fa-solid fa-magnifying-glass text-[10px]"></i></span>
                                 <input type="text" id="admin-order-search" oninput="debounceOrderSearch(this.value)" placeholder="Search order #, customer..." class="w-full pl-8 pr-3 py-1.5 bg-[#FDF9F8] border border-[#EFE4E6] rounded-xl text-[11px] text-[#2A2124] placeholder-[#9C8A90] focus:outline-none focus:border-[#9E5E6F]">
                             </div>
-                            <button onclick="exportOrdersCSV()" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white text-[10px] px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-download"></i><span>Export CSV</span></button>
+                            <button type="button" onclick="exportOrdersCSV()" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white text-[10px] px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-download"></i><span>Export CSV</span></button>
                         </div>
                     </div>
                     <div class="overflow-x-auto rounded-xl border border-[#EFE4E6]">
@@ -351,8 +351,8 @@
                     <div class="flex justify-between items-center pt-2 text-[11px] text-[#6E5D62]">
                         <span id="pagination-info">Showing page 1</span>
                         <div class="flex space-x-2">
-                            <button onclick="fetchPreviousOrdersPage()" id="prev-page-btn" class="px-3 py-1.5 bg-[#FFFFFF] border border-[#EFE4E6] hover:bg-[#FDF9F8] text-[#2A2124] font-bold rounded-xl disabled:bg-[#F8EFF1] disabled:text-[#9C8A90]" disabled>Previous</button>
-                            <button onclick="fetchNextOrdersPage()" id="next-page-btn" class="px-3 py-1.5 bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold rounded-xl disabled:bg-[#F8EFF1] disabled:text-[#9C8A90]" disabled>Next Page ➔</button>
+                            <button type="button" onclick="fetchPreviousOrdersPage()" id="prev-page-btn" class="px-3 py-1.5 bg-[#FFFFFF] border border-[#EFE4E6] hover:bg-[#FDF9F8] text-[#2A2124] font-bold rounded-xl disabled:bg-[#F8EFF1] disabled:text-[#9C8A90]" disabled>Previous</button>
+                            <button type="button" onclick="fetchNextOrdersPage()" id="next-page-btn" class="px-3 py-1.5 bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold rounded-xl disabled:bg-[#F8EFF1] disabled:text-[#9C8A90]" disabled>Next Page ➔</button>
                         </div>
                     </div>
                 </div>
@@ -365,7 +365,7 @@
                         <i class="fa-solid fa-triangle-exclamation text-rose-600 text-sm"></i>
                         <span id="low-stock-alert-text" class="font-bold">Warning: Items are running low on stock (<= 5 units)!</span>
                     </div>
-                    <button onclick="filterLowStockProducts()" class="bg-[#9E5E6F] text-white px-3 py-1 rounded-xl text-[10px] font-bold shadow-xs">View Low Stock Only</button>
+                    <button type="button" onclick="filterLowStockProducts()" id="low-stock-filter-btn" class="bg-[#9E5E6F] text-white px-3 py-1 rounded-xl text-[10px] font-bold shadow-xs">View Low Stock Only</button>
                 </div>
 
                 <div class="bg-[#FFFFFF] rounded-2xl p-4 shadow-xs border border-[#EFE4E6] space-y-3">
@@ -376,7 +376,7 @@
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-2.5 text-[#9C8A90]"><i class="fa-solid fa-magnifying-glass text-[10px]"></i></span>
                                 <input type="text" id="admin-product-search" oninput="renderAdminProducts()" placeholder="Search Name, SKU..." class="w-full pl-7 pr-2.5 py-1.5 bg-[#FDF9F8] border border-[#EFE4E6] rounded-xl text-[11px] text-[#2A2124] placeholder-[#9C8A90] focus:outline-none focus:border-[#9E5E6F]">
                             </div>
-                            <button onclick="openAdminBarcodeScanner()" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white text-[10px] px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-camera"></i><span>Scan Barcode 📷</span></button>
+                            <button type="button" onclick="openAdminBarcodeScanner()" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white text-[10px] px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-camera"></i><span>Scan Barcode 📷</span></button>
                         </div>
                     </div>
                     <div class="overflow-x-auto">
@@ -394,8 +394,8 @@
                     <div class="flex justify-between items-center">
                         <h3 class="font-bold text-xs text-[#2A2124]">Promo Codes & Usage Limits</h3>
                         <div class="flex items-center space-x-2">
-                            <button onclick="exportCouponsCSV()" class="bg-[#FDF9F8] text-[#2A2124] border border-[#EFE4E6] text-[10px] px-3 py-1.5 rounded-lg font-bold flex items-center space-x-1"><i class="fa-solid fa-download"></i><span>Export CSV</span></button>
-                            <button onclick="openCouponModal()" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white text-xs px-3 py-1.5 rounded-xl font-bold">+ New Coupon</button>
+                            <button type="button" onclick="exportCouponsCSV()" class="bg-[#FDF9F8] text-[#2A2124] border border-[#EFE4E6] text-[10px] px-3 py-1.5 rounded-lg font-bold flex items-center space-x-1"><i class="fa-solid fa-download"></i><span>Export CSV</span></button>
+                            <button type="button" onclick="openCouponModal()" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white text-xs px-3 py-1.5 rounded-xl font-bold">+ New Coupon</button>
                         </div>
                     </div>
                     <div class="overflow-x-auto">
@@ -474,16 +474,16 @@
                                 <option value="reviews">Reviews</option>
                                 <option value="admin">Admin & Stock</option>
                             </select>
-                            <button onclick="loadAdminUserActivityLogs(document.getElementById('admin-logs-user-select').value)" class="bg-[#FDF9F8] hover:bg-[#F8EFF1] text-[#2A2124] border border-[#EFE4E6] text-[10px] px-3 py-1.5 rounded-xl font-bold whitespace-nowrap">
+                            <button type="button" onclick="loadAdminUserActivityLogs(document.getElementById('admin-logs-user-select').value)" class="bg-[#FDF9F8] hover:bg-[#F8EFF1] text-[#2A2124] border border-[#EFE4E6] text-[10px] px-3 py-1.5 rounded-xl font-bold whitespace-nowrap">
                                 Refresh
                             </button>
-                            <button onclick="exportAdminUserActivityLogsCSV()" id="admin-logs-export-btn" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white text-[10px] px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1 whitespace-nowrap disabled:bg-[#F8EFF1] disabled:text-[#9C8A90]" disabled>
+                            <button type="button" onclick="exportAdminUserActivityLogsCSV()" id="admin-logs-export-btn" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white text-[10px] px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1 whitespace-nowrap disabled:bg-[#F8EFF1] disabled:text-[#9C8A90]" disabled>
                                 <i class="fa-solid fa-download"></i><span>Export CSV</span>
                             </button>
-                            <button onclick="exportAndClearAdminUserActivityLogs()" id="admin-logs-export-clear-btn" class="bg-[#C9A46B] hover:bg-[#b38f57] text-white text-[10px] px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1 whitespace-nowrap disabled:bg-[#F8EFF1] disabled:text-[#9C8A90]" disabled>
+                            <button type="button" onclick="exportAndClearAdminUserActivityLogs()" id="admin-logs-export-clear-btn" class="bg-[#C9A46B] hover:bg-[#b38f57] text-white text-[10px] px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1 whitespace-nowrap disabled:bg-[#F8EFF1] disabled:text-[#9C8A90]" disabled>
                                 <i class="fa-solid fa-file-export"></i><span>Export & Clear</span>
                             </button>
-                            <button onclick="clearAdminUserActivityLogs()" id="admin-logs-clear-btn" class="bg-rose-600 hover:bg-rose-700 text-white text-[10px] px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1 whitespace-nowrap disabled:bg-[#F8EFF1] disabled:text-[#9C8A90]" disabled>
+                            <button type="button" onclick="clearAdminUserActivityLogs()" id="admin-logs-clear-btn" class="bg-rose-600 hover:bg-rose-700 text-white text-[10px] px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1 whitespace-nowrap disabled:bg-[#F8EFF1] disabled:text-[#9C8A90]" disabled>
                                 <i class="fa-solid fa-trash-can"></i><span>Clear Logs</span>
                             </button>
                         </div>
@@ -518,10 +518,10 @@
     <!-- ADD / EDIT PRODUCT & TELEGRAM BROADCAST MODAL -->
     <div id="admin-product-modal" class="fixed inset-0 bg-[#2A2124]/60 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-[#FFFFFF] rounded-3xl max-w-md w-full p-5 space-y-3 shadow-2xl relative text-xs max-h-[90vh] overflow-y-auto border border-[#EFE4E6]">
-            <button onclick="closeAdminProductModal()" class="absolute top-3 right-3 text-[#9C8A90] hover:text-[#6E5D62] w-7 h-7 bg-[#F8EFF1] rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
+            <button type="button" onclick="closeAdminProductModal()" class="absolute top-3 right-3 text-[#9C8A90] hover:text-[#6E5D62] w-7 h-7 bg-[#F8EFF1] rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
             <h3 id="product-modal-title" class="font-serif italic font-bold text-sm text-[#2A2124]">Add Product & Customize Telegram Post</h3>
             <input type="hidden" id="prod-id" value="">
-            
+
             <div class="space-y-2.5">
                 <div>
                     <label class="block text-[10px] font-bold text-[#6E5D62] mb-1">Product Name</label>
@@ -566,7 +566,7 @@
                         <!-- Slot 1 -->
                         <div class="border border-dashed border-[#EFE4E6] bg-[#FDF9F8] rounded-xl p-1.5 text-center space-y-1">
                             <div id="preview-wrap-1" class="w-full aspect-square bg-[#FFFFFF] rounded-lg overflow-hidden flex items-center justify-center border border-[#EFE4E6] relative">
-                                <img id="prod-preview-1" src="" class="w-full h-full object-cover hidden">
+                                <img id="prod-preview-1" src="" class="w-full h-full object-cover hidden" alt="Preview 1">
                                 <span id="prod-placeholder-1" class="text-[10px] text-[#9C8A90]">Cover #1</span>
                                 <button type="button" onclick="clearPhotoSlot(1)" id="clear-photo-1" class="hidden absolute top-1 right-1 w-5 h-5 bg-[#2A2124]/75 text-white rounded-full text-[9px] items-center justify-center">✕</button>
                             </div>
@@ -580,7 +580,7 @@
                         <!-- Slot 2 -->
                         <div class="border border-dashed border-[#EFE4E6] bg-[#FDF9F8] rounded-xl p-1.5 text-center space-y-1">
                             <div id="preview-wrap-2" class="w-full aspect-square bg-[#FFFFFF] rounded-lg overflow-hidden flex items-center justify-center border border-[#EFE4E6] relative">
-                                <img id="prod-preview-2" src="" class="w-full h-full object-cover hidden">
+                                <img id="prod-preview-2" src="" class="w-full h-full object-cover hidden" alt="Preview 2">
                                 <span id="prod-placeholder-2" class="text-[10px] text-[#9C8A90]">Photo #2</span>
                                 <button type="button" onclick="clearPhotoSlot(2)" id="clear-photo-2" class="hidden absolute top-1 right-1 w-5 h-5 bg-[#2A2124]/75 text-white rounded-full text-[9px] items-center justify-center">✕</button>
                             </div>
@@ -594,7 +594,7 @@
                         <!-- Slot 3 -->
                         <div class="border border-dashed border-[#EFE4E6] bg-[#FDF9F8] rounded-xl p-1.5 text-center space-y-1">
                             <div id="preview-wrap-3" class="w-full aspect-square bg-[#FFFFFF] rounded-lg overflow-hidden flex items-center justify-center border border-[#EFE4E6] relative">
-                                <img id="prod-preview-3" src="" class="w-full h-full object-cover hidden">
+                                <img id="prod-preview-3" src="" class="w-full h-full object-cover hidden" alt="Preview 3">
                                 <span id="prod-placeholder-3" class="text-[10px] text-[#9C8A90]">Photo #3</span>
                                 <button type="button" onclick="clearPhotoSlot(3)" id="clear-photo-3" class="hidden absolute top-1 right-1 w-5 h-5 bg-[#2A2124]/75 text-white rounded-full text-[9px] items-center justify-center">✕</button>
                             </div>
@@ -635,8 +635,8 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             </div>
 
             <div class="flex space-x-2 pt-2">
-                <button onclick="saveAdminProductAndBroadcast()" class="flex-1 bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold py-2.5 rounded-xl shadow-xs">Save & Broadcast to Telegram 🚀</button>
-                <button onclick="closeAdminProductModal()" class="px-4 bg-[#F8EFF1] text-[#6E5D62] hover:text-[#2A2124] border border-[#EFE4E6] font-bold py-2.5 rounded-xl">Cancel</button>
+                <button type="button" onclick="saveAdminProductAndBroadcast()" class="flex-1 bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold py-2.5 rounded-xl shadow-xs">Save & Broadcast to Telegram 🚀</button>
+                <button type="button" onclick="closeAdminProductModal()" class="px-4 bg-[#F8EFF1] text-[#6E5D62] hover:text-[#2A2124] border border-[#EFE4E6] font-bold py-2.5 rounded-xl">Cancel</button>
             </div>
         </div>
     </div>
@@ -644,12 +644,12 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
     <!-- BARCODE SCANNER MODAL -->
     <div id="admin-scanner-modal" class="fixed inset-0 bg-[#2A2124]/80 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-[#FFFFFF] rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative text-center border border-[#EFE4E6]">
-            <button onclick="closeAdminBarcodeScanner()" class="absolute top-3 right-3 text-[#9C8A90] hover:text-[#6E5D62] w-7 h-7 bg-[#F8EFF1] rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
+            <button type="button" onclick="closeAdminBarcodeScanner()" class="absolute top-3 right-3 text-[#9C8A90] hover:text-[#6E5D62] w-7 h-7 bg-[#F8EFF1] rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
             <h3 class="font-serif italic font-bold text-sm text-[#2A2124]">Scan Product Barcode 📷</h3>
             <p class="text-[10px] text-[#6E5D62]">Point your camera at a product barcode to instantly look up or restock items.</p>
             <div id="reader" class="w-full rounded-2xl overflow-hidden border border-[#EFE4E6] bg-black h-48"></div>
             <div id="scan-result-banner" class="hidden bg-[#FDF9F8] border border-[#EFE4E6] text-[#2A2124] p-2.5 rounded-xl text-xs font-bold"></div>
-            <button onclick="closeAdminBarcodeScanner()" class="w-full bg-[#F8EFF1] text-[#6E5D62] hover:text-[#2A2124] border border-[#EFE4E6] font-bold text-xs py-2.5 rounded-xl">Cancel</button>
+            <button type="button" onclick="closeAdminBarcodeScanner()" class="w-full bg-[#F8EFF1] text-[#6E5D62] hover:text-[#2A2124] border border-[#EFE4E6] font-bold text-xs py-2.5 rounded-xl">Cancel</button>
         </div>
     </div>
 
@@ -658,7 +658,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
     <div id="profile-slide-panel" class="fixed inset-y-0 right-0 max-w-sm w-full bg-[#FFFFFF] shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col p-5 border-l border-[#EFE4E6]">
         <div class="flex justify-between items-center border-b border-[#EFE4E6] pb-3">
             <h3 id="profile-modal-title" class="font-serif italic font-bold text-sm text-[#2A2124]">Section Title</h3>
-            <button onclick="closeProfileSubModal()" class="w-7 h-7 bg-[#F8EFF1] text-[#9C8A90] hover:text-[#6E5D62] rounded-full flex items-center justify-center text-xs"><i class="fa-solid fa-xmark"></i></button>
+            <button type="button" onclick="closeProfileSubModal()" class="w-7 h-7 bg-[#F8EFF1] text-[#9C8A90] hover:text-[#6E5D62] rounded-full flex items-center justify-center text-xs"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div id="profile-modal-body" class="flex-1 overflow-y-auto py-4 space-y-3 text-xs"></div>
     </div>
@@ -666,17 +666,17 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
     <!-- ENHANCED PRODUCT DETAIL MODAL WITH 3D ROTATION & UP TO 3 PHOTOS -->
     <div id="product-detail-modal" class="fixed inset-0 bg-[#2A2124]/60 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-[#FFFFFF] rounded-3xl max-w-sm w-full p-4 space-y-3 shadow-2xl relative text-xs max-h-[90vh] overflow-y-auto border border-[#EFE4E6]">
-            <button onclick="closeProductDetailModal()" class="absolute top-3 right-3 text-[#9C8A90] hover:text-[#6E5D62] w-7 h-7 bg-[#F8EFF1] rounded-full flex items-center justify-center text-xs z-20"><i class="fa-solid fa-xmark"></i></button>
-            
+            <button type="button" onclick="closeProductDetailModal()" class="absolute top-3 right-3 text-[#9C8A90] hover:text-[#6E5D62] w-7 h-7 bg-[#F8EFF1] rounded-full flex items-center justify-center text-xs z-20"><i class="fa-solid fa-xmark"></i></button>
+
             <!-- 3D ROTATABLE STAGE -->
             <div id="stage-3d-viewport" class="stage-3d-viewport relative w-full aspect-square bg-[#FDF9F8] rounded-2xl overflow-hidden border border-[#EFE4E6] flex items-center justify-center">
                 <div id="stage-3d-card" class="stage-3d-card relative w-full h-full rounded-2xl overflow-hidden shadow-md">
-                    <img id="view-prod-image" src="" class="w-full h-full object-cover pointer-events-none">
+                    <img id="view-prod-image" src="" class="w-full h-full object-cover pointer-events-none" alt="Product preview">
                     <div id="stage-3d-shine" class="stage-3d-shine absolute inset-0"></div>
                 </div>
                 <span id="view-prod-category" class="absolute bottom-2 left-2 bg-[#FFFFFF]/95 text-[#9E5E6F] border border-[#EFE4E6] text-[10px] font-bold px-2.5 py-0.5 rounded-full z-10 shadow-xs">Category</span>
                 <span id="stage-3d-angle-badge" class="absolute bottom-2 right-2 bg-[#2A2124]/85 text-white text-[9px] font-mono px-2 py-0.5 rounded-full z-10">Drag 3D: 0°</span>
-                <button onclick="shareProduct()" class="absolute top-3 left-3 bg-[#FFFFFF]/95 text-[#9E5E6F] border border-[#EFE4E6] w-8 h-8 rounded-full flex items-center justify-center shadow-xs z-10">
+                <button type="button" onclick="shareProduct()" class="absolute top-3 left-3 bg-[#FFFFFF]/95 text-[#9E5E6F] border border-[#EFE4E6] w-8 h-8 rounded-full flex items-center justify-center shadow-xs z-10">
                     <i class="fa-solid fa-share-nodes text-xs"></i>
                 </button>
             </div>
@@ -722,12 +722,12 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                         <i class="fa-solid fa-star cursor-pointer" onclick="setReviewRating(5)"></i>
                     </div>
                     <input type="text" id="new-review-text" placeholder="Share your experience..." class="w-full border border-[#EFE4E6] rounded-xl px-2.5 py-1 text-[11px] bg-[#FFFFFF] text-[#2A2124] placeholder-[#9C8A90]">
-                    <button onclick="submitProductReview()" class="w-full bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold py-1.5 rounded-xl text-[10px]">Submit Review</button>
+                    <button type="button" onclick="submitProductReview()" class="w-full bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold py-1.5 rounded-xl text-[10px]">Submit Review</button>
                 </div>
             </div>
             <div class="flex items-center justify-between border-t border-[#EFE4E6] pt-3">
                 <span id="view-prod-stock" class="text-[#6E5D62] font-bold text-[10px]">10 available</span>
-                <button id="view-prod-add-btn" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold text-xs px-4 py-2.5 rounded-xl"><i class="fa-solid fa-cart-shopping"></i> Add to Bag</button>
+                <button type="button" id="view-prod-add-btn" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold text-xs px-4 py-2.5 rounded-xl"><i class="fa-solid fa-cart-shopping"></i> Add to Bag</button>
             </div>
         </div>
     </div>
@@ -737,12 +737,12 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         <div class="absolute inset-y-0 right-0 max-w-xs w-full bg-[#FFFFFF] border-l border-[#EFE4E6] shadow-xl flex flex-col p-4">
             <div class="flex justify-between items-center border-b border-[#EFE4E6] pb-2.5">
                 <h3 class="font-serif italic font-bold text-xs text-[#2A2124]"><i class="fa-solid fa-bag-shopping text-[#9E5E6F] mr-1"></i> Shopping Bag</h3>
-                <button onclick="closeCartDrawer()" class="text-[#9C8A90] hover:text-[#6E5D62] text-xs"><i class="fa-solid fa-xmark"></i></button>
+                <button type="button" onclick="closeCartDrawer()" class="text-[#9C8A90] hover:text-[#6E5D62] text-xs"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div id="cart-items-container" class="flex-1 overflow-y-auto py-2 space-y-2 text-xs"></div>
             <div class="border-t border-[#EFE4E6] pt-2.5 space-y-2 text-xs">
                 <div class="flex justify-between font-bold text-[#2A2124]"><span>Total</span><span id="cart-total" class="text-[#9E5E6F]">$0.00</span></div>
-                <button onclick="openCheckoutModal()" class="w-full bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold py-2.5 rounded-xl">Proceed to Payment</button>
+                <button type="button" onclick="openCheckoutModal()" class="w-full bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold py-2.5 rounded-xl">Proceed to Payment</button>
             </div>
         </div>
     </div>
@@ -750,7 +750,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
     <!-- CHECKOUT MODAL -->
     <div id="checkout-modal" class="fixed inset-0 bg-[#2A2124]/40 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-[#FFFFFF] rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs border border-[#EFE4E6]">
-            <button onclick="closeCheckoutModal()" class="absolute top-3 right-3 text-[#9C8A90] hover:text-[#6E5D62]"><i class="fa-solid fa-xmark"></i></button>
+            <button type="button" onclick="closeCheckoutModal()" class="absolute top-3 right-3 text-[#9C8A90] hover:text-[#6E5D62]"><i class="fa-solid fa-xmark"></i></button>
             <h3 class="font-serif italic font-bold text-xs text-[#2A2124]">Delivery Details & Voucher</h3>
             <div class="space-y-2">
                 <input type="text" id="checkout-name" placeholder="Full Name" class="w-full border border-[#EFE4E6] rounded-xl px-3 py-1.5 text-[#2A2124] placeholder-[#9C8A90]">
@@ -758,7 +758,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 <textarea id="checkout-address" placeholder="Delivery Address" rows="2" class="w-full border border-[#EFE4E6] rounded-xl px-3 py-1.5 text-[#2A2124] placeholder-[#9C8A90]"></textarea>
                 <input type="text" id="checkout-promo" placeholder="Promo Code (e.g. MININIZE15)" class="w-full border border-[#EFE4E6] rounded-xl px-3 py-1.5 uppercase font-mono text-[#2A2124] placeholder-[#9C8A90]">
             </div>
-            <button onclick="createOrderAndInitBakong()" class="w-full bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold py-2.5 rounded-xl flex items-center justify-center space-x-1.5">
+            <button type="button" onclick="createOrderAndInitBakong()" class="w-full bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold py-2.5 rounded-xl flex items-center justify-center space-x-1.5">
                 <i class="fa-solid fa-qrcode"></i><span>Pay via Bakong KHQR</span>
             </button>
         </div>
@@ -767,7 +767,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
     <!-- BAKONG KHQR PAYMENT MODAL -->
     <div id="bakong-payment-modal" class="fixed inset-0 bg-[#2A2124]/60 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-[#FFFFFF] rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl relative text-center border border-[#EFE4E6]">
-            <button onclick="cancelBakongPayment()" class="absolute top-3 right-3 text-[#9C8A90] hover:text-[#6E5D62] text-xs"><i class="fa-solid fa-xmark"></i></button>
+            <button type="button" onclick="cancelBakongPayment()" class="absolute top-3 right-3 text-[#9C8A90] hover:text-[#6E5D62] text-xs"><i class="fa-solid fa-xmark"></i></button>
             <div class="flex items-center justify-center space-x-1.5">
                 <span class="bg-[#9E5E6F] text-white text-[10px] font-black px-2 py-0.5 rounded">KHQR</span>
                 <span class="font-bold text-xs text-[#2A2124]">Bakong Auto Verification</span>
@@ -778,37 +778,37 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 <p id="bakong-pay-ordernum" class="text-[9px] font-mono text-[#9C8A90]">Order: #ORD-000</p>
             </div>
             <div class="bg-[#FFFFFF] p-2 border border-[#EFE4E6] rounded-2xl shadow-inner inline-block">
-                <img id="bakong-qr-img" src="" class="w-44 h-44 mx-auto rounded-lg object-contain">
+                <img id="bakong-qr-img" src="" class="w-44 h-44 mx-auto rounded-lg object-contain" alt="Bakong QR Code">
             </div>
             <div id="payment-status-indicator" class="text-[11px] font-bold text-[#6E5D62] flex items-center justify-center space-x-1.5">
                 <i class="fa-solid fa-circle-notch animate-spin text-xs text-[#C9A46B]"></i>
                 <span>Awaiting Bakong Network Confirmation...</span>
             </div>
-            <button onclick="verifyBakongTransactionManual()" class="w-full bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold text-xs py-2.5 rounded-xl">I Have Sent Payment (Verify)</button>
+            <button type="button" onclick="verifyBakongTransactionManual()" class="w-full bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold text-xs py-2.5 rounded-xl">I Have Sent Payment (Verify)</button>
         </div>
     </div>
 
     <!-- ADMIN COUPON MODAL WITH USAGE LIMIT -->
     <div id="admin-coupon-modal" class="fixed inset-0 bg-[#2A2124]/40 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-[#FFFFFF] rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs border border-[#EFE4E6]">
-            <button onclick="closeAdminCouponModal()" class="absolute top-3 right-3 text-[#9C8A90] hover:text-[#6E5D62]"><i class="fa-solid fa-xmark"></i></button>
+            <button type="button" onclick="closeAdminCouponModal()" class="absolute top-3 right-3 text-[#9C8A90] hover:text-[#6E5D62]"><i class="fa-solid fa-xmark"></i></button>
             <h3 class="font-serif italic font-bold text-xs text-[#2A2124]">Add Promo Code & Redemption Limit</h3>
             <div class="space-y-2">
                 <input type="text" id="coupon-code-input" placeholder="Coupon Code (e.g. SUMMER20)" class="w-full border border-[#EFE4E6] rounded-xl px-3 py-1.5 uppercase font-mono text-[#2A2124] placeholder-[#9C8A90]">
                 <input type="number" id="coupon-discount-input" placeholder="Discount Percentage (e.g. 15)" class="w-full border border-[#EFE4E6] rounded-xl px-3 py-1.5 text-[#2A2124] placeholder-[#9C8A90]">
                 <input type="number" id="coupon-max-usage" placeholder="Max Usage Limit (e.g. 50)" class="w-full border border-[#EFE4E6] rounded-xl px-3 py-1.5 text-[#2A2124] placeholder-[#9C8A90]">
             </div>
-            <button onclick="saveAdminCoupon()" class="w-full bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold py-2.5 rounded-xl">Save Coupon</button>
+            <button type="button" onclick="saveAdminCoupon()" class="w-full bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold py-2.5 rounded-xl">Save Coupon</button>
         </div>
     </div>
 
     <!-- BOTTOM NAV -->
     <nav id="customer-nav" class="fixed bottom-0 inset-x-0 bg-[#FFFFFF] border-t border-[#EFE4E6] py-2 px-6 z-40 shadow-sm transition-colors duration-300">
         <div class="max-w-md mx-auto flex justify-around items-center text-xs">
-            <button onclick="switchCustomerTab('shop')" id="nav-btn-shop" class="flex flex-col items-center text-[#9E5E6F] font-bold"><i class="fa-solid fa-store text-sm"></i> Shop</button>
-            <button onclick="switchCustomerTab('wishlist')" id="nav-btn-wishlist" class="flex flex-col items-center text-[#9C8A90] font-medium"><i class="fa-solid fa-heart text-sm"></i> Wishlist</button>
-            <button onclick="openCartDrawer()" class="relative flex flex-col items-center text-[#9C8A90] font-medium"><i class="fa-solid fa-cart-shopping text-sm"></i> Cart<span id="cart-badge" class="absolute -top-1 -right-2 bg-[#9E5E6F] text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold">0</span></button>
-            <button onclick="switchCustomerTab('profile')" id="nav-btn-profile" class="flex flex-col items-center text-[#9C8A90] font-medium"><i class="fa-solid fa-user text-sm"></i> Profile</button>
+            <button type="button" onclick="switchCustomerTab('shop')" id="nav-btn-shop" class="flex flex-col items-center text-[#9E5E6F] font-bold"><i class="fa-solid fa-store text-sm"></i> Shop</button>
+            <button type="button" onclick="switchCustomerTab('wishlist')" id="nav-btn-wishlist" class="flex flex-col items-center text-[#9C8A90] font-medium"><i class="fa-solid fa-heart text-sm"></i> Wishlist</button>
+            <button type="button" onclick="openCartDrawer()" class="relative flex flex-col items-center text-[#9C8A90] font-medium"><i class="fa-solid fa-cart-shopping text-sm"></i> Cart<span id="cart-badge" class="absolute -top-1 -right-2 bg-[#9E5E6F] text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold">0</span></button>
+            <button type="button" onclick="switchCustomerTab('profile')" id="nav-btn-profile" class="flex flex-col items-center text-[#9C8A90] font-medium"><i class="fa-solid fa-user text-sm"></i> Profile</button>
         </div>
     </nav>
 
@@ -925,9 +925,8 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             if (window.currentCurrency === 'KHR') {
                 const khrAmount = Math.round(amount * window.exchangeRate);
                 return '៛' + khrAmount.toLocaleString();
-            } else {
-                return '$' + amount.toFixed(2);
             }
+            return '$' + amount.toFixed(2);
         };
 
         window.changeCurrency = async function(curr) {
@@ -940,6 +939,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             if (window.renderWishlist) window.renderWishlist();
             const cartDrawer = document.getElementById('cart-drawer');
             if (cartDrawer && !cartDrawer.classList.contains('hidden')) openCartDrawer();
+            if (window.updateTelegramMainButton) window.updateTelegramMainButton();
 
             if (window.currentUser) {
                 await setDoc(doc(db, "users", window.currentUser.uid), {
@@ -973,7 +973,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 try {
                     if (tg.setHeaderColor) tg.setHeaderColor('#FFFFFF');
                     if (tg.setBackgroundColor) tg.setBackgroundColor('#FDF9F8');
-                } catch(e) {}
+                } catch (e) {}
             }
         }
         applyTelegramTheme();
@@ -1052,11 +1052,11 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     window.products.push({ id: docSnap.id, ...docSnap.data() });
                 });
                 lastVisibleProductDoc = snapshot.docs[snapshot.docs.length - 1] || null;
-                if (window.products.length === 0) seedCatalog(db);
+                if (window.products.length === 0) await seedCatalog(db);
                 if (window.renderProducts) window.renderProducts();
                 if (window.renderAdminProducts) window.renderAdminProducts();
                 if (window.updateAdminMetrics) window.updateAdminMetrics();
-                
+
                 const loadBtn = document.getElementById('load-more-btn');
                 if (loadBtn) {
                     if (snapshot.docs.length < PAGE_LIMIT) loadBtn.classList.add('hidden');
@@ -1082,7 +1082,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             } catch (err) { console.error("Load more error:", err); }
         };
 
-        const couponsUnsubscribe = onSnapshot(collection(db, "coupons"), (snapshot) => {
+        onSnapshot(collection(db, "coupons"), (snapshot) => {
             window.coupons = [];
             snapshot.forEach(docSnap => window.coupons.push({ id: docSnap.id, ...docSnap.data() }));
             if (window.coupons.length === 0 && window.currentUser) seedCoupons(db);
@@ -1092,35 +1092,35 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
         async function seedCatalog(db) {
             const initialCatalog = [
-                { 
-                    name: 'Pearl Butterfly Hairpin', sku: 'HRP-001', category: 'Hairpins', price: 12.50, stock: 4, 
+                {
+                    name: 'Pearl Butterfly Hairpin', sku: 'HRP-001', category: 'Hairpins', price: 12.50, stock: 4,
                     image: 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80',
                     images: [
                         'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80',
                         'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=80'
                     ],
                     details: { material: "18k Gold-Plated Brass, Simulated Pearl", dimensions: "6.5cm x 3.2cm", care: "Avoid direct contact with water and perfumes." },
-                    reviews: [] 
+                    reviews: []
                 },
-                { 
-                    name: 'Gold Pendant Necklace', sku: 'NC-001', category: 'Necklaces', price: 24.50, stock: 3, 
+                {
+                    name: 'Gold Pendant Necklace', sku: 'NC-001', category: 'Necklaces', price: 24.50, stock: 3,
                     image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=80',
                     images: ['https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&q=80'],
                     details: { material: "Titanium Steel with 18k Gold PVD Coating", dimensions: "45cm chain + 5cm extension", care: "Water-resistant and hypoallergenic." },
-                    reviews: [] 
+                    reviews: []
                 },
-                { 
-                    name: 'Minimalist Dainty Ring', sku: 'RNG-001', category: 'Rings', price: 9.99, stock: 20, 
+                {
+                    name: 'Minimalist Dainty Ring', sku: 'RNG-001', category: 'Rings', price: 9.99, stock: 20,
                     image: 'https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=600&q=80',
                     images: ['https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=600&q=80'],
                     details: { material: "Sterling Silver 925", dimensions: "Adjustable Band", care: "Store in airtight pouch when not worn." },
-                    reviews: [] 
+                    reviews: []
                 }
             ];
-            for (let item of initialCatalog) {
+            for (const item of initialCatalog) {
                 await addDoc(collection(db, "products"), { ...item, isPublished: true, createdAt: new Date().toISOString() });
             }
-            loadInitialProducts();
+            await loadInitialProducts();
         }
 
         async function seedCoupons(db) {
@@ -1150,14 +1150,14 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         }
 
         window.saveAdminProductAndBroadcast = async function() {
-            if (window.currentUserData?.role === 'staff') return alert('Staff role is restricted from creating/editing products.');
+            if ((window.currentUserData?.role || "").toLowerCase() === 'staff') return alert('Staff role is restricted from creating/editing products.');
             const prodId = document.getElementById('prod-id').value;
             const rawName = document.getElementById('prod-name').value.trim();
             const name = sanitizeHTML(rawName);
             let sku = sanitizeHTML(document.getElementById('prod-sku').value.trim().toUpperCase());
             const category = document.getElementById('prod-category').value;
             const price = parseFloat(document.getElementById('prod-price').value);
-            let stock = parseInt(document.getElementById('prod-stock').value);
+            const stock = parseInt(document.getElementById('prod-stock').value);
 
             const defaultImg = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80';
             const rawPhoto1 = document.getElementById('prod-image').value.trim();
@@ -1166,26 +1166,26 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             const photoList = [rawPhoto1, rawPhoto2, rawPhoto3].filter(Boolean).slice(0, 3);
             const image = photoList[0] || defaultImg;
             const images = photoList.length > 0 ? photoList : [defaultImg];
-            
+
             const material = sanitizeHTML(document.getElementById('spec-material').value.trim());
             const dimensions = sanitizeHTML(document.getElementById('spec-dimensions').value.trim());
             const care = sanitizeHTML(document.getElementById('spec-care').value.trim());
 
             if (!rawName) return alert('Enter product name.');
-            if (isNaN(price)) return alert('Enter valid price.');
+            if (isNaN(price) || price < 0) return alert('Enter valid price.');
             if (!sku) sku = `SKU-${Math.floor(1000 + Math.random() * 9000)}`;
 
-            const productData = { 
-                name, sku, category, price, stock: isNaN(stock) ? 10 : stock, image, images,
+            const productData = {
+                name, sku, category, price, stock: isNaN(stock) ? 10 : Math.max(0, stock), image, images,
                 details: { material: material || "Premium Alloy / Plated Metal", dimensions: dimensions || "Standard Fit", care: care || "Keep away from moisture and harsh chemicals." },
-                isPublished: true, updatedAt: new Date().toISOString() 
+                isPublished: true, updatedAt: new Date().toISOString()
             };
 
             const payloadBytes = new Blob([JSON.stringify(productData)]).size;
             if (payloadBytes > 950000) {
                 return alert('Combined photo size is too large for Firestore (max ~950 KB). Please remove one photo or pick smaller images.');
             }
-            
+
             let savedId = prodId;
             try {
                 if (prodId) {
@@ -1227,13 +1227,11 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             } catch (e) {
                 console.error("Telegram broadcast error:", e);
                 triggerTelegramHaptic('error');
-                alert(`Product saved, but Telegram rejected the post:
-
-${e.message}`);
+                alert(`Product saved, but Telegram rejected the post:\n\n${e.message}`);
             }
 
             closeAdminProductModal();
-            loadInitialProducts();
+            await loadInitialProducts();
         };
 
         window.broadcastExistingProduct = async function(id) {
@@ -1247,12 +1245,7 @@ ${e.message}`);
             if (chatId.trim()) localStorage.setItem('mininize_tg_chat', chatId.trim());
 
             const miniAppUrl = `https://t.me/songsashop?startapp=prod_${p.id}`;
-            const message = `✨ NEW AESTHETIC DROP: ${p.name} ✨
-
-Price: ${window.formatPrice(p.price)}
-SKU: ${p.sku}
-
-Tap the button below to order instantly!`;
+            const message = `✨ NEW AESTHETIC DROP: ${p.name} ✨\n\nPrice: ${window.formatPrice(p.price)}\nSKU: ${p.sku}\n\nTap the button below to order instantly!`;
             const coverPhoto = window.getProductImages(p)[0];
 
             try {
@@ -1266,9 +1259,7 @@ Tap the button below to order instantly!`;
                 alert('Broadcast sent successfully via Cloudflare! 📢');
             } catch (err) {
                 triggerTelegramHaptic('error');
-                alert(`Broadcast failed:
-
-${err.message}`);
+                alert(`Broadcast failed:\n\n${err.message}`);
             }
         };
 
@@ -1279,28 +1270,31 @@ ${err.message}`);
             const newStock = Math.max(0, (p.stock ?? 10) + delta);
             await updateDoc(doc(db, "products", prodId), { stock: newStock, updatedAt: new Date().toISOString() });
             await window.logUserDatabaseChange("stock_adjusted", { productId: prodId, name: p.name, newStock });
+            await loadInitialProducts();
         };
 
         window.deleteProduct = async function(id) {
-            if (window.currentUserData?.role === 'staff') return alert('Staff role cannot delete products.');
+            if ((window.currentUserData?.role || "").toLowerCase() === 'staff') return alert('Staff role cannot delete products.');
             if (confirm("Delete this product?")) {
                 await deleteDoc(doc(db, "products", id));
                 await window.logUserDatabaseChange("product_deleted", { productId: id });
                 triggerTelegramHaptic('warning');
                 alert('Product deleted.');
-                loadInitialProducts();
+                await loadInitialProducts();
             }
         };
 
         window.saveAdminCoupon = async function() {
-            if (window.currentUserData?.role === 'staff') return alert('Staff role cannot manage coupons.');
+            if ((window.currentUserData?.role || "").toLowerCase() === 'staff') return alert('Staff role cannot manage coupons.');
             const code = sanitizeHTML(document.getElementById('coupon-code-input').value.trim().toUpperCase());
             const discountPercent = parseFloat(document.getElementById('coupon-discount-input').value);
             const maxUsage = parseInt(document.getElementById('coupon-max-usage').value) || 50;
-            if (!code || isNaN(discountPercent)) return alert('Enter valid coupon code and discount percentage.');
+            if (!code || isNaN(discountPercent) || discountPercent <= 0 || discountPercent > 100) {
+                return alert('Enter valid coupon code and discount percentage (1–100).');
+            }
 
-            await setDoc(doc(db, "coupons", code), { 
-                code, discountPercent, maxUsage, usageCount: 0, totalDiscountGiven: 0, isActive: true, createdAt: new Date().toISOString() 
+            await setDoc(doc(db, "coupons", code), {
+                code, discountPercent, maxUsage, usageCount: 0, totalDiscountGiven: 0, isActive: true, createdAt: new Date().toISOString()
             }, { merge: true });
             await window.logUserDatabaseChange("coupon_saved", { code, discountPercent, maxUsage });
             triggerTelegramHaptic('success');
@@ -1342,42 +1336,39 @@ ${err.message}`);
             await updateDoc(doc(db, "orders", docId), { status: newStatus, updatedAt: new Date().toISOString() });
             await window.logUserDatabaseChange("order_status_updated", { orderDocId: docId, status: newStatus });
             triggerTelegramHaptic('success');
+            await updateAdminMetrics();
         };
+
+        function triggerCsvDownload(lines, filenamePrefix) {
+            const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${filenamePrefix}_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
 
         window.exportOrdersCSV = function() {
             triggerTelegramHaptic('medium');
             if (!window.orders || window.orders.length === 0) return alert('No orders to export.');
-            let csvContent = "data:text/csv;charset=utf-8,OrderNum,Customer,Phone,Address,Status,Total,Date
-";
+            const lines = ["OrderNum,Customer,Phone,Address,Status,Total,Date"];
             window.orders.forEach(o => {
-                csvContent += `"${o.orderNum}","${o.customerName}","${o.phone}","${o.address.replace(/"/g, '""')}","${o.status}","${o.total}","${o.date}"
-`;
+                lines.push(`"${o.orderNum}","${String(o.customerName || '').replace(/"/g, '""')}","${String(o.phone || '').replace(/"/g, '""')}","${String(o.address || '').replace(/"/g, '""')}","${o.status}","${o.total}","${o.date}"`);
             });
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `mininize_orders_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            triggerCsvDownload(lines, 'mininize_orders');
         };
 
         window.exportCouponsCSV = function() {
             triggerTelegramHaptic('medium');
             if (!window.coupons || window.coupons.length === 0) return alert('No coupons to export.');
-            let csvContent = "data:text/csv;charset=utf-8,Code,DiscountPercent,UsageCount,MaxUsage,TotalDiscountGiven,Status
-";
+            const lines = ["Code,DiscountPercent,UsageCount,MaxUsage,TotalDiscountGiven,Status"];
             window.coupons.forEach(c => {
-                csvContent += `"${c.code}","${c.discountPercent}%","${c.usageCount || 0}","${c.maxUsage || 50}","$${(c.totalDiscountGiven || 0).toFixed(2)}","${c.isActive ? 'Active' : 'Inactive'}"
-`;
+                lines.push(`"${c.code}","${c.discountPercent}%","${c.usageCount || 0}","${c.maxUsage || 50}","$${(c.totalDiscountGiven || 0).toFixed(2)}","${c.isActive ? 'Active' : 'Inactive'}"`);
             });
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `mininize_coupons_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            triggerCsvDownload(lines, 'mininize_coupons');
         };
 
         // ADMIN CUSTOMER ACTIVITY LOGS VIEWER (FILTER, EXPORT CSV, CLEAR & EXPORT+CLEAR)
@@ -1548,7 +1539,7 @@ ${err.message}`);
             const userTag = (userObj?.customId || uid.substring(0, 8)).replace(/[^a-zA-Z0-9_-]/g, '');
             const filterTag = useAllLogs ? 'full_backup' : (document.getElementById('admin-logs-action-filter')?.value || 'all');
 
-            let csvLines = ["Timestamp,UserUID,UserName,Action,Details,Source"];
+            const csvLines = ["Timestamp,UserUID,UserName,Action,Details,Source"];
             rows.forEach(log => {
                 const detailStr = typeof log.details === 'object' && log.details !== null
                     ? JSON.stringify(log.details)
@@ -1560,16 +1551,7 @@ ${err.message}`);
                 csvLines.push(`"${log.timestamp || ''}","${uid}","${safeUser}","${safeAction}","${safeDetails}","${safeSource}"`);
             });
 
-            const blob = new Blob([csvLines.join('
-')], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `mininize_logs_${userTag}_${filterTag}_${new Date().toISOString().split('T')[0]}.csv`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
+            triggerCsvDownload(csvLines, `mininize_logs_${userTag}_${filterTag}`);
             return true;
         };
 
@@ -1655,7 +1637,7 @@ ${err.message}`);
             const existingData = existingSnap.exists() ? existingSnap.data() : {};
 
             const email = (extraData.email || user.email || existingData.email || "").toLowerCase();
-            
+
             let role = existingData.role ? existingData.role.toLowerCase() : "";
             if (!role) {
                 if (user.uid === "NoIYk9Uwlc75YLdlpzx1" || window.isAdminOrStaffDomain(email)) {
@@ -1811,7 +1793,10 @@ ${err.message}`);
             }
         };
 
-        window.handleSignOut = async function() { await signOut(auth); if (window.exitAdminMode) window.exitAdminMode(); };
+        window.handleSignOut = async function() {
+            await signOut(auth);
+            if (window.exitAdminMode) window.exitAdminMode();
+        };
 
         let userDocUnsubscribe = null;
         let addressesUnsubscribe = null;
@@ -1834,7 +1819,6 @@ ${err.message}`);
                     if (currSelect) currSelect.value = initialUserData.currency;
                 }
 
-                // Merge any guest localStorage cart items into Firestore cart
                 const localGuestCart = JSON.parse(localStorage.getItem('mininize_cart') || '[]');
                 const cloudCartSnap = await getDoc(doc(db, "users", user.uid, "cart", "active"));
                 const cloudCartItems = cloudCartSnap.exists() ? (cloudCartSnap.data().items || []) : [];
@@ -1855,6 +1839,7 @@ ${err.message}`);
                         if (badge) badge.innerText = window.cart.reduce((s, i) => s + i.qty, 0);
                         const cartDrawer = document.getElementById('cart-drawer');
                         if (cartDrawer && !cartDrawer.classList.contains('hidden')) openCartDrawer();
+                        if (window.updateTelegramMainButton) window.updateTelegramMainButton();
                     }
                 });
 
@@ -1886,9 +1871,9 @@ ${err.message}`);
                     }
 
                     const role = (window.currentUserData?.role || "").toLowerCase();
-                    const isAdmin = role === "admin" || 
-                                    role === "staff" || 
-                                    window.isAdminOrStaffDomain(user.email) || 
+                    const isAdmin = role === "admin" ||
+                                    role === "staff" ||
+                                    window.isAdminOrStaffDomain(user.email) ||
                                     user.uid === "NoIYk9Uwlc75YLdlpzx1";
 
                     if (isAdmin) {
@@ -1947,7 +1932,7 @@ ${err.message}`);
                 const p = prodSnap.data();
                 const reviews = p.reviews || [];
                 const reviewId = `rev_${Date.now()}`;
-                
+
                 reviews.push({
                     id: reviewId,
                     userId: window.currentUser.uid,
@@ -1963,6 +1948,7 @@ ${err.message}`);
                 await window.logUserDatabaseChange("review_posted", { productId: window.currentSelectedProdId, reviewId, rating: window.currentSelectedStarRating || 5 });
                 triggerTelegramHaptic('success');
                 document.getElementById('new-review-text').value = '';
+                await loadInitialProducts();
                 openProductDetailModal(window.currentSelectedProdId, true);
                 alert('Review posted and saved to database! ⭐');
             }
@@ -1996,6 +1982,7 @@ ${err.message}`);
             await updateDoc(prodRef, { reviews });
             await window.logUserDatabaseChange("review_edited", { productId: prodId, reviewId, rating: updatedRating });
             triggerTelegramHaptic('success');
+            await loadInitialProducts();
             openProductDetailModal(prodId, true);
         };
 
@@ -2011,6 +1998,7 @@ ${err.message}`);
             await updateDoc(prodRef, { reviews });
             await window.logUserDatabaseChange("review_deleted", { productId: prodId, reviewId });
             triggerTelegramHaptic('warning');
+            await loadInitialProducts();
             openProductDetailModal(prodId, true);
         };
 
@@ -2039,6 +2027,7 @@ ${err.message}`);
                 });
 
                 await updateDoc(prodRef, { reviews });
+                await loadInitialProducts();
                 openProductDetailModal(prodId, true);
             }
         };
@@ -2051,7 +2040,7 @@ ${err.message}`);
 
             try {
                 const snap = await getDocs(collection(db, "products"));
-                let allReviews = [];
+                const allReviews = [];
 
                 snap.forEach(docSnap => {
                     const p = docSnap.data();
@@ -2080,8 +2069,8 @@ ${err.message}`);
                                 <span class="block text-[10px] text-[#6E5D62]">By <b>${sanitizeHTML(r.author || 'Shopper')}</b> • ${sanitizeHTML(r.date || '')} • <span class="text-[#C9A46B] font-bold">★ ${r.rating || 5}.0</span></span>
                             </div>
                             <div class="flex items-center space-x-2 shrink-0">
-                                <button onclick="editAdminReview('${r.productId}', '${r.id || ''}', ${r.reviewIndex})" class="text-[#9E5E6F] font-bold text-[11px] hover:underline">Edit</button>
-                                <button onclick="deleteAdminReview('${r.productId}', '${r.id || ''}', ${r.reviewIndex})" class="text-rose-600 font-bold text-[11px] hover:underline">Delete</button>
+                                <button type="button" onclick="editAdminReview('${r.productId}', '${r.id || ''}', ${r.reviewIndex})" class="text-[#9E5E6F] font-bold text-[11px] hover:underline">Edit</button>
+                                <button type="button" onclick="deleteAdminReview('${r.productId}', '${r.id || ''}', ${r.reviewIndex})" class="text-rose-600 font-bold text-[11px] hover:underline">Delete</button>
                             </div>
                         </div>
                         <p class="text-[#2A2124] text-xs">${sanitizeHTML(r.text)}</p>
@@ -2155,56 +2144,74 @@ ${err.message}`);
 
         window.createOrderAndInitBakong = async function() {
             if (!window.currentUser) return alert('Please sign in to complete your order.');
+            if (!window.cart || window.cart.length === 0) return alert('Your bag is empty.');
+
             const customerName = sanitizeHTML(document.getElementById('checkout-name').value.trim());
             const phone = sanitizeHTML(document.getElementById('checkout-phone').value.trim());
             const address = sanitizeHTML(document.getElementById('checkout-address').value.trim());
             const promoCodeInput = sanitizeHTML(document.getElementById('checkout-promo').value.trim().toUpperCase());
             if (!customerName || !phone || !address) return alert('Complete delivery details.');
 
-            let subtotal = window.cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            const subtotal = window.cart.reduce((s, i) => s + (Number(i.price) * Number(i.qty)), 0);
             let discount = 0;
             let appliedCouponCode = 'NONE';
 
-            if (promoCodeInput) {
-                const couponRef = doc(db, "coupons", promoCodeInput);
-                const couponSnap = await getDoc(couponRef);
-                if (couponSnap.exists()) {
-                    const cData = couponSnap.data();
-                    const currentUsage = cData.usageCount || 0;
-                    const maxAllowed = cData.maxUsage || 50;
+            try {
+                await runTransaction(db, async (transaction) => {
+                    const productSnaps = [];
+                    for (const cartItem of window.cart) {
+                        const prodRef = doc(db, "products", cartItem.id);
+                        const prodSnap = await transaction.get(prodRef);
+                        if (prodSnap.exists()) {
+                            const currentStock = prodSnap.data().stock ?? 10;
+                            if (currentStock < cartItem.qty) {
+                                throw new Error(`Sorry, "${cartItem.name}" only has ${currentStock} units left in stock!`);
+                            }
+                            productSnaps.push({ prodRef, nextStock: Math.max(0, currentStock - cartItem.qty) });
+                        }
+                    }
 
-                    if (cData.isActive && currentUsage < maxAllowed) {
+                    let couponRef = null;
+                    let couponUpdates = null;
+                    if (promoCodeInput) {
+                        couponRef = doc(db, "coupons", promoCodeInput);
+                        const couponSnap = await transaction.get(couponRef);
+                        if (!couponSnap.exists()) {
+                            throw new Error('Invalid promo code.');
+                        }
+                        const cData = couponSnap.data();
+                        const currentUsage = cData.usageCount || 0;
+                        const maxAllowed = cData.maxUsage || 50;
+                        if (!cData.isActive || currentUsage >= maxAllowed) {
+                            throw new Error('This promo code is either expired or has reached its maximum redemption limit.');
+                        }
                         discount = subtotal * (cData.discountPercent / 100);
                         appliedCouponCode = promoCodeInput;
-
-                        await updateDoc(couponRef, {
+                        couponUpdates = {
                             usageCount: currentUsage + 1,
                             totalDiscountGiven: (cData.totalDiscountGiven || 0) + discount,
                             isActive: (currentUsage + 1) >= maxAllowed ? false : cData.isActive
-                        });
-                    } else {
-                        return alert('This promo code is either expired or has reached its maximum redemption limit.');
+                        };
                     }
-                } else {
-                    return alert('Invalid promo code.');
-                }
-            }
 
-            const total = subtotal - discount;
-            const orderNum = `#ORD-${Math.floor(1000 + Math.random() * 9000)}`;
+                    const finalTotal = subtotal - discount;
+                    const earnedPoints = Math.floor(finalTotal * 10);
+                    const userRef = doc(db, "users", window.currentUser.uid);
+                    const uDoc = await transaction.get(userRef);
+                    const currentPts = uDoc.exists() ? (uDoc.data().loyaltyPoints || 0) : 0;
 
-            try {
-                for (let cartItem of window.cart) {
-                    const prodRef = doc(db, "products", cartItem.id);
-                    const prodSnap = await getDoc(prodRef);
-                    if (prodSnap.exists()) {
-                        const currentStock = prodSnap.data().stock ?? 10;
-                        if (currentStock < cartItem.qty) return alert(`Sorry, "${cartItem.name}" only has ${currentStock} units left in stock!`);
-                        await updateDoc(prodRef, { stock: Math.max(0, currentStock - cartItem.qty) });
+                    for (const item of productSnaps) {
+                        transaction.update(item.prodRef, { stock: item.nextStock, updatedAt: new Date().toISOString() });
                     }
-                }
+                    if (couponRef && couponUpdates) {
+                        transaction.update(couponRef, couponUpdates);
+                    }
+                    transaction.update(userRef, { loyaltyPoints: currentPts + earnedPoints });
+                });
 
-                // Persist user's updated contact info & checkout delivery address into Firestore
+                const total = subtotal - discount;
+                const orderNum = `#ORD-${Math.floor(1000 + Math.random() * 9000)}`;
+
                 await setDoc(doc(db, "users", window.currentUser.uid), {
                     name: customerName,
                     phone: phone,
@@ -2220,31 +2227,39 @@ ${err.message}`);
                     updatedAt: new Date().toISOString()
                 }, { merge: true });
 
-                const docRef = await addDoc(collection(db, "orders"), { 
-                    orderNum, userId: window.currentUser.uid, customerName, phone, address, items: window.cart, subtotal, discount, total, promoCode: appliedCouponCode, status: 'Pending', date: new Date().toISOString().split('T')[0], createdAt: serverTimestamp() 
+                const docRef = await addDoc(collection(db, "orders"), {
+                    orderNum,
+                    userId: window.currentUser.uid,
+                    customerName,
+                    phone,
+                    address,
+                    items: window.cart,
+                    subtotal,
+                    discount,
+                    total,
+                    promoCode: appliedCouponCode,
+                    status: 'Pending',
+                    date: new Date().toISOString().split('T')[0],
+                    createdAt: serverTimestamp()
                 });
                 window.currentActiveOrderId = docRef.id;
-                
-                const earnedPoints = Math.floor(total * 10);
-                await runTransaction(db, async (transaction) => {
-                    const userRef = doc(db, "users", window.currentUser.uid);
-                    const uDoc = await transaction.get(userRef);
-                    const currentPts = uDoc.exists() ? (uDoc.data().loyaltyPoints || 0) : 0;
-                    transaction.update(userRef, { loyaltyPoints: currentPts + earnedPoints });
-                });
 
                 await window.logUserDatabaseChange("order_placed", { orderNum, total, itemsCount: window.cart.length });
 
                 window.cart = [];
                 await window.syncCartToDatabase("checkout_completed");
-                closeCheckoutModal();
+                if (window.updateTelegramMainButton) window.updateTelegramMainButton();
+                window.closeCheckoutModal();
+                await loadInitialProducts();
 
-                document.getElementById('bakong-pay-amount').innerText = formatPrice(total);
+                document.getElementById('bakong-pay-amount').innerText = window.formatPrice(total);
                 document.getElementById('bakong-pay-ordernum').innerText = `Order: ${orderNum}`;
                 document.getElementById('bakong-qr-img').src = `https://quickchart.io/qr?text=mininize@bakong&size=250`;
                 document.getElementById('bakong-payment-modal').classList.remove('hidden');
                 triggerTelegramHaptic('medium');
-            } catch (err) { alert("Order failed: " + err.message); }
+            } catch (err) {
+                alert("Order failed: " + err.message);
+            }
         };
 
         window.verifyBakongTransactionManual = async function() {
@@ -2263,7 +2278,7 @@ ${err.message}`);
             if (!p) return;
             const refCode = window.currentUserData?.customId || 'USR-000';
             const miniAppUrl = `https://t.me/songsashop?startapp=prod_${p.id}_ref_${refCode}`;
-            const shareText = `Check out ${p.name} (${formatPrice(p.price)}) on Mininize Studio! ✨`;
+            const shareText = `Check out ${p.name} (${window.formatPrice(p.price)}) on Mininize Studio! ✨`;
             if (window.Telegram?.WebApp?.openTelegramLink) {
                 window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(miniAppUrl)}&text=${encodeURIComponent(shareText)}`);
             } else {
@@ -2301,10 +2316,10 @@ ${err.message}`);
         let startRotX = 0;
         let startRotY = 0;
 
-        let orderPageSize = 10;
+        const orderPageSize = 10;
         let lastVisibleOrderDoc = null;
         let firstVisibleOrderDoc = null;
-        let orderPaginationStack = [];
+        const orderPaginationStack = [];
         let currentAdminOrderStatusFilter = 'All';
         let adminOrderSearchQuery = '';
         let lowStockFilterActive = false;
@@ -2505,9 +2520,9 @@ ${err.message}`);
             init3DDragListeners();
             const badge = document.getElementById('cart-badge');
             if (badge) badge.innerText = window.cart.reduce((s, i) => s + i.qty, 0);
-            if (window.Telegram?.WebApp) { 
-                window.Telegram.WebApp.ready(); 
-                window.Telegram.WebApp.expand(); 
+            if (window.Telegram?.WebApp) {
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
             }
             setTimeout(() => { closePromoPopup(); }, 4000);
         });
@@ -2516,6 +2531,7 @@ ${err.message}`);
             const banner = document.getElementById('promo-popup');
             if (banner && !banner.classList.contains('hidden')) banner.classList.add('hidden');
         }
+        window.closePromoPopup = closePromoPopup;
 
         function switchAuthTab(mode) {
             triggerTelegramHaptic('light');
@@ -2556,14 +2572,14 @@ ${err.message}`);
                 document.getElementById('cust-profile-name').innerText = uData.name || 'Shopper';
                 document.getElementById('cust-profile-handle').innerText = uData.username || (window.currentUser.email ? `@${window.currentUser.email.split('@')[0]}` : "@shopper");
                 document.getElementById('cust-profile-id-display').innerText = `ID: ${uData.customId || 'USR-000'}`;
-                
+
                 if (uData.image) {
                     document.getElementById('cust-profile-avatar').src = uData.image;
                 }
 
                 const pts = uData.loyaltyPoints || 50;
                 document.getElementById('vip-points-text').innerText = `${pts} Loyalty Points`;
-                
+
                 let tierName = "Silver Member ✨";
                 let progressPercent = 0;
                 let targetText = "";
@@ -2607,7 +2623,7 @@ ${err.message}`);
             document.getElementById(`page-${tab}`).classList.remove('hidden');
             const targetBtn = document.getElementById(`nav-btn-${tab}`);
             if (targetBtn) targetBtn.className = 'flex flex-col items-center text-[#9E5E6F] font-bold';
-            
+
             if (tab === 'shop') renderProducts();
             if (tab === 'wishlist') renderWishlist();
             if (tab === 'profile') updateProfileViewUI();
@@ -2618,12 +2634,13 @@ ${err.message}`);
             triggerTelegramHaptic('light');
             activeCategory = cat;
             document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.className = (btn.innerText.includes(cat) || (cat === 'All' && btn.innerText.includes('All'))) 
-                    ? 'cat-btn bg-[#9E5E6F] text-white px-3 py-1.5 rounded-full font-medium whitespace-nowrap shadow-xs min-h-[36px]' 
+                btn.className = (btn.innerText.includes(cat) || (cat === 'All' && btn.innerText.includes('All')))
+                    ? 'cat-btn bg-[#9E5E6F] text-white px-3 py-1.5 rounded-full font-medium whitespace-nowrap shadow-xs min-h-[36px]'
                     : 'cat-btn bg-[#FFFFFF] text-[#6E5D62] border border-[#EFE4E6] px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]';
             });
             renderProducts();
         }
+        window.filterCategory = filterCategory;
 
         window.openProfileSection = async function(section) {
             triggerTelegramHaptic('light');
@@ -2655,7 +2672,7 @@ ${err.message}`);
                             <input type="tel" id="edit-phone" value="${sanitizeHTML(uData.phone || '')}" placeholder="+855 XX XXX XXX" class="w-full border border-[#EFE4E6] rounded-xl px-3 py-2 text-[#2A2124] placeholder-[#9C8A90] focus:outline-none focus:border-[#9E5E6F]">
                         </div>
                         <div class="pt-2">
-                            <button id="save-profile-btn" onclick="savePersonalData()" class="w-full bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold py-2.5 rounded-xl shadow-xs active:scale-95 transition-transform flex items-center justify-center space-x-2">
+                            <button type="button" id="save-profile-btn" onclick="savePersonalData()" class="w-full bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold py-2.5 rounded-xl shadow-xs active:scale-95 transition-transform flex items-center justify-center space-x-2">
                                 <span>Save Changes to Database</span>
                             </button>
                         </div>
@@ -2664,7 +2681,7 @@ ${err.message}`);
                 titleEl.innerText = "My Orders & PDF Invoices 📦";
                 bodyEl.innerHTML = `<p class="text-xs text-[#9C8A90] text-center py-4">Loading your orders...</p>`;
                 try {
-                    let ordersList = [];
+                    const ordersList = [];
                     if (isAdmin) {
                         const snap = await getDocs(query(collection(window.firebaseDb, "orders"), orderBy("createdAt", "desc"), limit(20)));
                         snap.forEach(d => ordersList.push({ docId: d.id, ...d.data() }));
@@ -2682,7 +2699,7 @@ ${err.message}`);
                                 <div class="bg-[#FDF9F8] p-3 rounded-2xl border border-[#EFE4E6] space-y-2.5 text-xs">
                                     <div class="flex justify-between items-center">
                                         <b class="text-[#2A2124]">${sanitizeHTML(o.orderNum)}</b>
-                                        <span class="font-bold text-[#9E5E6F]">${formatPrice(o.total || 0)}</span>
+                                        <span class="font-bold text-[#9E5E6F]">${window.formatPrice(o.total || 0)}</span>
                                     </div>
                                     <p class="text-[10px] text-[#6E5D62]">Ordered: ${o.date} | Status: <span class="font-bold text-[#2A2124]">${o.status}</span></p>
                                     <div class="flex justify-between items-center pt-2 border-t border-[#EFE4E6] text-[9px] text-[#6E5D62]">
@@ -2696,7 +2713,7 @@ ${err.message}`);
                                         `).join('')}
                                     </div>
                                     <div class="pt-2">
-                                        <button onclick="downloadOrderInvoice('${o.orderNum}', '${sanitizeHTML(o.customerName)}', '${sanitizeHTML(o.phone)}', '${sanitizeHTML(o.address)}', '${encodedItems}', ${o.total}, '${o.date}', '${o.promoCode || ''}')" class="w-full bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold py-2 rounded-xl text-[10px] flex items-center justify-center space-x-1.5 shadow-xs">
+                                        <button type="button" onclick="downloadOrderInvoice('${o.orderNum}', '${sanitizeHTML(o.customerName)}', '${sanitizeHTML(o.phone)}', '${sanitizeHTML(o.address)}', '${encodedItems}', ${o.total}, '${o.date}', '${o.promoCode || ''}')" class="w-full bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold py-2 rounded-xl text-[10px] flex items-center justify-center space-x-1.5 shadow-xs">
                                             <i class="fa-solid fa-file-pdf"></i><span>Download PDF Invoice 📄</span>
                                         </button>
                                     </div>
@@ -2722,16 +2739,16 @@ ${err.message}`);
                                     <span class="font-mono font-bold text-xs text-[#9E5E6F]">MININIZE15</span>
                                     <p class="text-[10px] text-[#6E5D62]">15% OFF Grand Opening Special</p>
                                 </div>
-                                <button onclick="navigator.clipboard.writeText('MININIZE15'); alert('Coupon code MININIZE15 copied!');" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white text-[10px] px-3 py-1.5 rounded-xl font-bold">Copy</button>
+                                <button type="button" onclick="navigator.clipboard.writeText('MININIZE15'); alert('Coupon code MININIZE15 copied!');" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white text-[10px] px-3 py-1.5 rounded-xl font-bold">Copy</button>
                             </div>
                         </div>
                     </div>`;
             } else if (section === 'favorites') {
                 titleEl.innerText = "My Cloud Wishlist";
-                let userWishlist = window.currentUserWishlist || [];
-                let favs = window.products.filter(p => userWishlist.includes(p.id));
+                const userWishlist = window.currentUserWishlist || [];
+                const favs = window.products.filter(p => userWishlist.includes(p.id));
                 bodyEl.innerHTML = favs.length === 0 ? `<p class="text-xs text-[#9C8A90] text-center py-4">No cloud favorite items saved.</p>` :
-                    `<div class="grid grid-cols-2 gap-2">${favs.map(p => `<div onclick="closeProfileSubModal(); openProductDetailModal('${p.id}')" class="bg-[#FDF9F8] p-2 rounded-xl border border-[#EFE4E6] cursor-pointer"><img src="${window.getProductImages(p)[0]}" class="w-full aspect-square object-cover rounded mb-1"><b class="text-[11px] text-[#2A2124] truncate block">${sanitizeHTML(p.name)}</b></div>`).join('')}</div>`;
+                    `<div class="grid grid-cols-2 gap-2">${favs.map(p => `<div onclick="closeProfileSubModal(); openProductDetailModal('${p.id}')" class="bg-[#FDF9F8] p-2 rounded-xl border border-[#EFE4E6] cursor-pointer"><img src="${window.getProductImages(p)[0]}" class="w-full aspect-square object-cover rounded mb-1" alt="${sanitizeHTML(p.name)}"><b class="text-[11px] text-[#2A2124] truncate block">${sanitizeHTML(p.name)}</b></div>`).join('')}</div>`;
             } else if (section === 'addresses') {
                 titleEl.innerText = "Delivery Addresses";
                 const addrs = window.currentUserAddresses || [];
@@ -2745,9 +2762,9 @@ ${err.message}`);
                                         <p class="text-[#6E5D62] text-[10px] mt-0.5">${sanitizeHTML(a.street)}, ${sanitizeHTML(a.province)}</p>
                                     </div>
                                     <div class="flex items-center space-x-2 shrink-0">
-                                        ${!a.isDefault ? `<button onclick="setDefaultAddressSubcoll('${a.id}')" title="Set Default" class="text-[10px] font-bold text-[#9E5E6F] hover:underline">Default</button>` : ''}
-                                        <button onclick="startEditAddressSubcoll('${a.id}')" title="Edit" class="text-[#6E5D62] hover:text-[#2A2124] text-xs"><i class="fa-solid fa-pen"></i></button>
-                                        <button onclick="removeAddressSubcoll('${a.id}')" title="Delete" class="text-[#9C8A90] hover:text-rose-600 text-xs"><i class="fa-solid fa-trash"></i></button>
+                                        ${!a.isDefault ? `<button type="button" onclick="setDefaultAddressSubcoll('${a.id}')" title="Set Default" class="text-[10px] font-bold text-[#9E5E6F] hover:underline">Default</button>` : ''}
+                                        <button type="button" onclick="startEditAddressSubcoll('${a.id}')" title="Edit" class="text-[#6E5D62] hover:text-[#2A2124] text-xs"><i class="fa-solid fa-pen"></i></button>
+                                        <button type="button" onclick="removeAddressSubcoll('${a.id}')" title="Delete" class="text-[#9C8A90] hover:text-rose-600 text-xs"><i class="fa-solid fa-trash"></i></button>
                                     </div>
                                 </div>
                             `).join('')}
@@ -2761,7 +2778,7 @@ ${err.message}`);
                             <input type="text" id="new-addr-label" placeholder="Label (e.g. Office, Home)" class="w-full border border-[#EFE4E6] rounded-xl px-2.5 py-1.5 text-[#2A2124] placeholder-[#9C8A90]">
                             <input type="text" id="new-addr-street" placeholder="Street Address" class="w-full border border-[#EFE4E6] rounded-xl px-2.5 py-1.5 text-[#2A2124] placeholder-[#9C8A90]">
                             <input type="text" id="new-addr-province" placeholder="City / Province" class="w-full border border-[#EFE4E6] rounded-xl px-2.5 py-1.5 text-[#2A2124] placeholder-[#9C8A90]">
-                            <button id="save-addr-btn" onclick="saveAddressSubcoll()" class="w-full bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold py-2 rounded-xl">Save Address to Database</button>
+                            <button type="button" id="save-addr-btn" onclick="saveAddressSubcoll()" class="w-full bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold py-2 rounded-xl">Save Address to Database</button>
                         </div>
                     </div>`;
             } else if (section === 'notifications') {
@@ -2953,8 +2970,13 @@ ${err.message}`);
             triggerTelegramHaptic('light');
             window.currentSelectedStarRating = rating;
             const stars = document.getElementById('star-rating-select').children;
-            for (let i = 0; i < 5; i++) stars[i].className = i < rating ? "fa-solid fa-star cursor-pointer text-[#C9A46B]" : "fa-regular fa-star cursor-pointer text-[#9C8A90]";
+            for (let i = 0; i < 5; i++) {
+                stars[i].className = i < rating
+                    ? "fa-solid fa-star cursor-pointer text-[#C9A46B]"
+                    : "fa-regular fa-star cursor-pointer text-[#9C8A90]";
+            }
         }
+        window.setReviewRating = setReviewRating;
 
         window.openProductDetailModal = async function(id, silent = false) {
             if (!window.currentUser) return alert('Please sign in to view product details.');
@@ -2974,15 +2996,15 @@ ${err.message}`);
             const thumbsContainer = document.getElementById('prod-photo-thumbs');
             if (thumbsContainer) {
                 thumbsContainer.innerHTML = photoList.map((url, idx) => `
-                    <button type="button" onclick="selectProductPhoto('${url.replace(/'/g, "\'")}', ${idx})" class="${idx === 0 ? 'w-11 h-11 rounded-xl overflow-hidden border-2 border-[#9E5E6F] shadow-xs ring-1 ring-[#9E5E6F]/25' : 'w-11 h-11 rounded-xl overflow-hidden border border-[#EFE4E6] opacity-75 hover:opacity-100'}" title="Photo ${idx + 1}">
-                        <img src="${url}" class="w-full h-full object-cover">
+                    <button type="button" onclick="selectProductPhoto('${url.replace(/'/g, "\\'")}', ${idx})" class="${idx === 0 ? 'w-11 h-11 rounded-xl overflow-hidden border-2 border-[#9E5E6F] shadow-xs ring-1 ring-[#9E5E6F]/25' : 'w-11 h-11 rounded-xl overflow-hidden border border-[#EFE4E6] opacity-75 hover:opacity-100'}" title="Photo ${idx + 1}">
+                        <img src="${url}" class="w-full h-full object-cover" alt="Thumbnail ${idx + 1}">
                     </button>
                 `).join('');
             }
 
             document.getElementById('view-prod-category').innerText = p.category || 'Accessories';
             document.getElementById('view-prod-name').innerText = sanitizeHTML(p.name);
-            document.getElementById('view-prod-price').innerText = formatPrice(p.price);
+            document.getElementById('view-prod-price').innerText = window.formatPrice(p.price);
             document.getElementById('view-prod-stock').innerText = `${p.stock ?? 10} available`;
 
             const specs = p.details || { material: "Premium Alloy / Plated Metal", dimensions: "Standard Fit", care: "Keep away from moisture and harsh chemicals." };
@@ -2991,8 +3013,8 @@ ${err.message}`);
             document.getElementById('spec-care-view').innerText = sanitizeHTML(specs.care);
 
             const reviews = p.reviews || [];
-            document.getElementById('prod-avg-rating').innerText = `⭐ ${reviews.length > 0 ? (reviews.reduce((s,r)=>s+r.rating,0)/reviews.length).toFixed(1) : "5.0"} / 5.0`;
-            
+            document.getElementById('prod-avg-rating').innerText = `⭐ ${reviews.length > 0 ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1) : "5.0"} / 5.0`;
+
             const currentUserId = window.currentUser?.uid;
             document.getElementById('prod-reviews-list').innerHTML = reviews.length === 0 ? `<p class="text-[#9C8A90] text-[10px]">No comments yet.</p>` :
                 reviews.map(r => {
@@ -3008,8 +3030,8 @@ ${err.message}`);
                             <div class="flex justify-between items-center pt-1">
                                 <span class="text-[8px] text-[#9C8A90]">${r.date}${r.editedAt ? ' (edited)' : ''}</span>
                                 <div class="flex items-center space-x-2">
-                                    ${isOwner ? `<button onclick="editOwnProductReview('${p.id}', '${r.id}')" class="text-[9px] font-bold text-[#9E5E6F] hover:underline">Edit</button><button onclick="deleteOwnProductReview('${p.id}', '${r.id}')" class="text-[9px] font-bold text-rose-600 hover:underline">Delete</button>` : ''}
-                                    <button onclick="toggleReviewLike('${p.id}', '${r.id}')" class="${hasLiked ? 'text-[#9E5E6F] font-bold' : 'text-[#6E5D62]'} text-[10px] flex items-center space-x-1">
+                                    ${isOwner ? `<button type="button" onclick="editOwnProductReview('${p.id}', '${r.id}')" class="text-[9px] font-bold text-[#9E5E6F] hover:underline">Edit</button><button type="button" onclick="deleteOwnProductReview('${p.id}', '${r.id}')" class="text-[9px] font-bold text-rose-600 hover:underline">Delete</button>` : ''}
+                                    <button type="button" onclick="toggleReviewLike('${p.id}', '${r.id}')" class="${hasLiked ? 'text-[#9E5E6F] font-bold' : 'text-[#6E5D62]'} text-[10px] flex items-center space-x-1">
                                         <i class="fa-solid fa-heart"></i> <span>${r.likes || 0}</span>
                                     </button>
                                 </div>
@@ -3043,7 +3065,7 @@ ${err.message}`);
                         </div>
                         <h3 class="font-serif italic font-bold text-sm text-[#2A2124]">Sign In to View Catalog & Prices</h3>
                         <p class="text-[11px] text-[#6E5D62]">Exclusive aesthetic collections and pricing are reserved for registered members.</p>
-                        <button onclick="switchCustomerTab('profile')" class="w-full bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold text-xs py-2.5 rounded-xl shadow-xs">
+                        <button type="button" onclick="switchCustomerTab('profile')" class="w-full bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold text-xs py-2.5 rounded-xl shadow-xs">
                             Go to Login / Sign Up ✨
                         </button>
                     </div>
@@ -3051,20 +3073,20 @@ ${err.message}`);
                 return;
             }
 
-            const searchVal = document.getElementById('search-input').value.toLowerCase();
+            const searchVal = (document.getElementById('search-input')?.value || '').toLowerCase();
             const userWishlist = window.currentUserWishlist || [];
-            let filtered = window.products.filter(p => (activeCategory === 'All' || p.category === activeCategory) && p.name.toLowerCase().includes(searchVal));
-            
+            const filtered = window.products.filter(p => (activeCategory === 'All' || p.category === activeCategory) && p.name.toLowerCase().includes(searchVal));
+
             grid.innerHTML = filtered.map(p => {
                 const imgs = window.getProductImages(p);
                 return `
                     <div class="bg-[#FFFFFF] rounded-2xl p-2.5 border border-[#EFE4E6] shadow-xs flex flex-col justify-between cursor-pointer relative hover:border-[#9E5E6F] transition-colors" onclick="openProductDetailModal('${p.id}')">
-                        <button onclick="event.stopPropagation(); toggleWishlist('${p.id}')" class="absolute top-3 right-3 w-7 h-7 bg-[#FFFFFF]/95 border border-[#EFE4E6] rounded-full flex items-center justify-center text-xs shadow-xs ${userWishlist.includes(p.id) ? 'text-[#9E5E6F]' : 'text-[#9C8A90]'}"><i class="fa-solid fa-heart"></i></button>
-                        <img src="${imgs[0]}" class="w-full aspect-square object-cover rounded-xl mb-2">
+                        <button type="button" onclick="event.stopPropagation(); toggleWishlist('${p.id}')" class="absolute top-3 right-3 w-7 h-7 bg-[#FFFFFF]/95 border border-[#EFE4E6] rounded-full flex items-center justify-center text-xs shadow-xs ${userWishlist.includes(p.id) ? 'text-[#9E5E6F]' : 'text-[#9C8A90]'}"><i class="fa-solid fa-heart"></i></button>
+                        <img src="${imgs[0]}" class="w-full aspect-square object-cover rounded-xl mb-2" alt="${sanitizeHTML(p.name)}">
                         <h4 class="font-serif italic font-bold text-xs truncate text-[#2A2124]">${sanitizeHTML(p.name)}</h4>
                         <div class="flex justify-between items-center mt-2 pt-2 border-t border-[#EFE4E6]">
-                            <span class="font-bold text-xs text-[#9E5E6F]">${formatPrice(p.price)}</span>
-                            <button onclick="event.stopPropagation(); addToCart('${p.id}')" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white px-3 py-1.5 rounded-xl text-xs font-bold">+</button>
+                            <span class="font-bold text-xs text-[#9E5E6F]">${window.formatPrice(p.price)}</span>
+                            <button type="button" onclick="event.stopPropagation(); addToCart('${p.id}')" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white px-3 py-1.5 rounded-xl text-xs font-bold">+</button>
                         </div>
                     </div>
                 `;
@@ -3074,9 +3096,9 @@ ${err.message}`);
 
         function renderWishlist() {
             const userWishlist = window.currentUserWishlist || [];
-            let favs = window.products.filter(p => userWishlist.includes(p.id));
+            const favs = window.products.filter(p => userWishlist.includes(p.id));
             document.getElementById('wishlist-grid').innerHTML = favs.length === 0 ? `<p class="text-xs text-[#9C8A90] col-span-2 text-center py-6">No saved favorite items.</p>` :
-                favs.map(p => `<div onclick="openProductDetailModal('${p.id}')" class="bg-[#FFFFFF] rounded-2xl p-2.5 border border-[#EFE4E6] shadow-xs cursor-pointer"><img src="${window.getProductImages(p)[0]}" class="w-full aspect-square object-cover rounded-xl mb-2"><h4 class="font-serif italic font-bold text-xs text-[#2A2124] truncate">${sanitizeHTML(p.name)}</h4></div>`).join('');
+                favs.map(p => `<div onclick="openProductDetailModal('${p.id}')" class="bg-[#FFFFFF] rounded-2xl p-2.5 border border-[#EFE4E6] shadow-xs cursor-pointer"><img src="${window.getProductImages(p)[0]}" class="w-full aspect-square object-cover rounded-xl mb-2" alt="${sanitizeHTML(p.name)}"><h4 class="font-serif italic font-bold text-xs text-[#2A2124] truncate">${sanitizeHTML(p.name)}</h4></div>`).join('');
         }
         window.renderWishlist = renderWishlist;
 
@@ -3088,9 +3110,9 @@ ${err.message}`);
             const existing = window.cart.find(i => i.id === id);
             if (existing) existing.qty += 1;
             else window.cart.push({ ...prod, image: window.getProductImages(prod)[0], qty: 1 });
-            
+
             await window.syncCartToDatabase(`added_${id}`);
-            
+
             if (window.Telegram?.WebApp?.enableClosingConfirmation) {
                 window.Telegram.WebApp.enableClosingConfirmation();
             }
@@ -3098,6 +3120,7 @@ ${err.message}`);
             updateTelegramMainButton();
             alert('Added to bag & synced to cloud! 🛍️');
         }
+        window.addToCart = addToCart;
 
         window.updateCartItemQty = async function(id, delta) {
             triggerTelegramHaptic('light');
@@ -3112,24 +3135,27 @@ ${err.message}`);
             openCartDrawer();
         };
 
+        let tgMainButtonBound = false;
         function updateTelegramMainButton() {
             if (window.Telegram?.WebApp?.MainButton) {
                 const mb = window.Telegram.WebApp.MainButton;
                 const totalItems = window.cart.reduce((s, i) => s + i.qty, 0);
                 if (totalItems > 0) {
                     const totalPrice = window.cart.reduce((s, i) => s + (i.price * i.qty), 0);
-                    mb.setText(`PROCEED TO CHECKOUT (${formatPrice(totalPrice)})`);
+                    mb.setText(`PROCEED TO CHECKOUT (${window.formatPrice(totalPrice)})`);
                     mb.color = '#9E5E6F';
                     mb.textColor = '#ffffff';
                     mb.show();
-                    mb.onClick(() => {
-                        openCartDrawer();
-                    });
+                    if (!tgMainButtonBound) {
+                        mb.onClick(() => openCartDrawer());
+                        tgMainButtonBound = true;
+                    }
                 } else {
                     mb.hide();
                 }
             }
         }
+        window.updateTelegramMainButton = updateTelegramMainButton;
 
         function openCartDrawer() {
             triggerTelegramHaptic('light');
@@ -3138,22 +3164,26 @@ ${err.message}`);
                     <div class="flex justify-between items-center text-xs border-b border-[#EFE4E6] pb-2 text-[#2A2124] gap-2">
                         <div class="min-w-0 flex-1">
                             <b class="truncate block">${sanitizeHTML(item.name)}</b>
-                            <span class="text-[10px] text-[#6E5D62]">${formatPrice(item.price)} each</span>
+                            <span class="text-[10px] text-[#6E5D62]">${window.formatPrice(item.price)} each</span>
                         </div>
                         <div class="flex items-center space-x-1.5 shrink-0">
-                            <button onclick="updateCartItemQty('${item.id}', -1)" class="w-6 h-6 rounded-lg bg-[#F8EFF1] border border-[#EFE4E6] font-bold text-[#2A2124]">-</button>
+                            <button type="button" onclick="updateCartItemQty('${item.id}', -1)" class="w-6 h-6 rounded-lg bg-[#F8EFF1] border border-[#EFE4E6] font-bold text-[#2A2124]">-</button>
                             <span class="font-bold w-4 text-center">${item.qty}</span>
-                            <button onclick="updateCartItemQty('${item.id}', 1)" class="w-6 h-6 rounded-lg bg-[#9E5E6F] text-white font-bold">+</button>
+                            <button type="button" onclick="updateCartItemQty('${item.id}', 1)" class="w-6 h-6 rounded-lg bg-[#9E5E6F] text-white font-bold">+</button>
                         </div>
-                        <span class="font-bold text-[#9E5E6F] shrink-0">${formatPrice(item.price * item.qty)}</span>
+                        <span class="font-bold text-[#9E5E6F] shrink-0">${window.formatPrice(item.price * item.qty)}</span>
                     </div>
                 `).join('');
-            document.getElementById('cart-total').innerText = formatPrice(window.cart.reduce((s, i) => s + (i.price * i.qty), 0));
+            document.getElementById('cart-total').innerText = window.formatPrice(window.cart.reduce((s, i) => s + (i.price * i.qty), 0));
             document.getElementById('cart-drawer').classList.remove('hidden');
         }
         window.openCartDrawer = openCartDrawer;
+
         function closeCartDrawer() { document.getElementById('cart-drawer').classList.add('hidden'); }
+        window.closeCartDrawer = closeCartDrawer;
+
         function openCheckoutModal() {
+            if (!window.cart || window.cart.length === 0) return alert('Your bag is empty.');
             closeCartDrawer();
             const uData = window.currentUserData || {};
             const defaultAddr = (window.currentUserAddresses || []).find(a => a.isDefault) || (window.currentUserAddresses || [])[0];
@@ -3168,24 +3198,27 @@ ${err.message}`);
             }
             document.getElementById('checkout-modal').classList.remove('hidden');
         }
+        window.openCheckoutModal = openCheckoutModal;
+
         function closeCheckoutModal() { document.getElementById('checkout-modal').classList.add('hidden'); }
+        window.closeCheckoutModal = closeCheckoutModal;
+
         function cancelBakongPayment() { document.getElementById('bakong-payment-modal').classList.add('hidden'); }
+        window.cancelBakongPayment = cancelBakongPayment;
 
         function enterAdminMode() {
             document.getElementById('customer-view').classList.add('hidden');
             document.getElementById('admin-view').classList.remove('hidden');
             document.getElementById('customer-nav').classList.add('hidden');
-            
+
             if (window.Telegram?.WebApp?.MainButton) {
                 window.Telegram.WebApp.MainButton.hide();
             }
 
             const role = (window.currentUserData?.role || 'admin').toLowerCase();
             document.getElementById('admin-role-tag').innerText = role === 'staff' ? 'Fulfillment Staff' : 'Super Admin';
-            if (role === 'staff') {
-                const addBtn = document.getElementById('add-prod-admin-btn');
-                if (addBtn) addBtn.style.display = 'none';
-            }
+            const addBtn = document.getElementById('add-prod-admin-btn');
+            if (addBtn) addBtn.style.display = role === 'staff' ? 'none' : '';
 
             switchAdminNav('orders');
             updateAdminMetrics();
@@ -3220,13 +3253,14 @@ ${err.message}`);
             if (sec === 'staff') loadAdminStaffUsers();
             if (sec === 'logs') initAdminLogsUserDropdown();
         }
+        window.switchAdminNav = switchAdminNav;
 
         window.loadAdminStaffUsers = async function() {
             const tbody = document.getElementById('admin-staff-table-body');
             if (!tbody) return;
             try {
                 const snap = await getDocs(collection(window.firebaseDb, "users"));
-                let usersList = [];
+                const usersList = [];
                 snap.forEach(d => usersList.push({ id: d.id, ...d.data() }));
 
                 tbody.innerHTML = usersList.length === 0 ? `<tr><td colspan="4" class="p-4 text-center text-[#9C8A90]">No users found.</td></tr>` :
@@ -3234,7 +3268,7 @@ ${err.message}`);
                         const r = (u.role || 'customer').toLowerCase();
                         return `
                             <tr class="border-b border-[#EFE4E6]">
-                                <td class="p-2 font-medium text-[#2A2124]"><b>${sanitizeHTML(u.name || 'User')}</b><span class="block text-[9px] font-mono text-[#9C8A90]">${u.customId || u.id.substring(0,8)}</span></td>
+                                <td class="p-2 font-medium text-[#2A2124]"><b>${sanitizeHTML(u.name || 'User')}</b><span class="block text-[9px] font-mono text-[#9C8A90]">${u.customId || u.id.substring(0, 8)}</span></td>
                                 <td class="p-2 text-[#6E5D62]">${sanitizeHTML(u.email || 'N/A')}</td>
                                 <td class="p-2">
                                     <span class="px-2 py-0.5 rounded text-[10px] font-bold ${r === 'admin' ? 'bg-[#9E5E6F] text-white' : (r === 'staff' ? 'bg-[#F9F3EA] text-[#9E5E6F] border border-[#C9A46B]/40' : 'bg-[#F8EFF1] text-[#6E5D62] border border-[#EFE4E6]')}">
@@ -3242,7 +3276,7 @@ ${err.message}`);
                                     </span>
                                 </td>
                                 <td class="p-2 text-right space-x-1.5">
-                                    <button onclick="inspectUserLogsFromStaff('${u.id}')" class="bg-[#FDF9F8] hover:bg-[#F8EFF1] text-[#2A2124] border border-[#EFE4E6] px-2 py-1 rounded text-[10px] font-bold" title="View User Activity Logs">Logs 🕒</button>
+                                    <button type="button" onclick="inspectUserLogsFromStaff('${u.id}')" class="bg-[#FDF9F8] hover:bg-[#F8EFF1] text-[#2A2124] border border-[#EFE4E6] px-2 py-1 rounded text-[10px] font-bold" title="View User Activity Logs">Logs 🕒</button>
                                     <select onchange="updateUserRole('${u.id}', this.value)" class="border border-[#EFE4E6] rounded px-2 py-1 text-[10px] bg-[#FFFFFF] text-[#2A2124] font-medium">
                                         <option value="customer" ${r === 'customer' ? 'selected' : ''}>Customer</option>
                                         <option value="staff" ${r === 'staff' ? 'selected' : ''}>Staff</option>
@@ -3268,7 +3302,7 @@ ${err.message}`);
                 await window.logUserDatabaseChange("user_role_updated", { targetUid: uid, newRole });
                 triggerTelegramHaptic('success');
                 alert(`User role successfully updated to "${newRole}"!`);
-                loadAdminStaffUsers();
+                await loadAdminStaffUsers();
             } catch (err) {
                 alert('Failed to update role: ' + err.message);
             }
@@ -3290,6 +3324,17 @@ ${err.message}`);
                 if (document.getElementById('admin-metric-pending')) document.getElementById('admin-metric-pending').innerText = pendingCount;
                 if (document.getElementById('admin-metric-lowstock')) document.getElementById('admin-metric-lowstock').innerText = lowStockCount;
                 if (document.getElementById('admin-metric-discounts')) document.getElementById('admin-metric-discounts').innerText = `$${totalDiscounts.toFixed(2)}`;
+
+                const banner = document.getElementById('low-stock-alert-banner');
+                const alertText = document.getElementById('low-stock-alert-text');
+                if (banner && alertText) {
+                    if (lowStockCount > 0) {
+                        banner.classList.remove('hidden');
+                        alertText.innerText = `Warning: ${lowStockCount} item${lowStockCount > 1 ? 's are' : ' is'} running low on stock (<= 5 units)!`;
+                    } else {
+                        banner.classList.add('hidden');
+                    }
+                }
             } catch (err) { console.error(err); }
         };
 
@@ -3302,14 +3347,14 @@ ${err.message}`);
 
                 if (direction === 'next' && lastVisibleOrderDoc) {
                     q = query(collection(window.firebaseDb, "orders"), orderBy("createdAt", "desc"), startAfter(lastVisibleOrderDoc), limit(orderPageSize));
-                } else if (direction === 'prev' && orderPaginationStack.length > 0) {
+                } else if (direction === 'prev' && orderPaginationStack.length > 1) {
                     orderPaginationStack.pop();
                     const prevCursor = orderPaginationStack[orderPaginationStack.length - 1];
                     if (prevCursor) {
                         q = query(collection(window.firebaseDb, "orders"), orderBy("createdAt", "desc"), startAfter(prevCursor), limit(orderPageSize));
                     }
                 } else if (direction === 'initial') {
-                    orderPaginationStack = [];
+                    orderPaginationStack.length = 0;
                     lastVisibleOrderDoc = null;
                 }
 
@@ -3336,7 +3381,7 @@ ${err.message}`);
                     snapshot.docs.map(docSnap => {
                         const o = docSnap.data();
                         const docId = docSnap.id;
-                        if (adminOrderSearchQuery && !o.orderNum.toLowerCase().includes(adminOrderSearchQuery) && !o.customerName.toLowerCase().includes(adminOrderSearchQuery)) {
+                        if (adminOrderSearchQuery && !(o.orderNum || '').toLowerCase().includes(adminOrderSearchQuery) && !(o.customerName || '').toLowerCase().includes(adminOrderSearchQuery)) {
                             return '';
                         }
                         return `
@@ -3355,8 +3400,8 @@ ${err.message}`);
                                         <option ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
                                     </select>
                                 </td>
-                                <td class="py-2.5 px-3 text-[#6E5D62]">${(o.items || []).reduce((s,i)=>s+i.qty,0)} items</td>
-                                <td class="py-2.5 px-3 text-right font-bold text-[#2A2124]">${formatPrice(o.total)}</td>
+                                <td class="py-2.5 px-3 text-[#6E5D62]">${(o.items || []).reduce((s, i) => s + i.qty, 0)} items</td>
+                                <td class="py-2.5 px-3 text-right font-bold text-[#2A2124]">${window.formatPrice(o.total)}</td>
                                 <td class="py-2.5 px-3 text-right text-[#9C8A90] text-[10px]">${o.date}</td>
                             </tr>
                         `;
@@ -3386,8 +3431,8 @@ ${err.message}`);
             ['all', 'pending', 'paid', 'shipped'].forEach(s => {
                 const btn = document.getElementById(`ord-pill-${s}`);
                 if (btn) {
-                    btn.className = s === status.toLowerCase() 
-                        ? 'px-3 py-1.5 bg-[#9E5E6F] text-white rounded-xl shadow-xs' 
+                    btn.className = s === status.toLowerCase()
+                        ? 'px-3 py-1.5 bg-[#9E5E6F] text-white rounded-xl shadow-xs'
                         : 'px-3 py-1.5 bg-[#FDF9F8] text-[#6E5D62] hover:bg-[#F8EFF1] rounded-xl border border-[#EFE4E6]';
                 }
             });
@@ -3400,7 +3445,7 @@ ${err.message}`);
         window.renderAdminAnalyticsCharts = function() {
             const categoryData = {};
             ['Hairpins', 'Necklaces', 'Rings', 'Earrings', 'Phone Charms', 'Bags & Pouches'].forEach(c => categoryData[c] = 0);
-            
+
             (window.orders || []).forEach(o => {
                 (o.items || []).forEach(item => {
                     const cat = item.category || 'Hairpins';
@@ -3451,6 +3496,10 @@ ${err.message}`);
         window.filterLowStockProducts = function() {
             triggerTelegramHaptic('light');
             lowStockFilterActive = !lowStockFilterActive;
+            const filterBtn = document.getElementById('low-stock-filter-btn');
+            if (filterBtn) {
+                filterBtn.innerText = lowStockFilterActive ? 'Show All Products' : 'View Low Stock Only';
+            }
             renderAdminProducts();
         };
 
@@ -3458,12 +3507,12 @@ ${err.message}`);
             const tbody = document.getElementById('admin-products-table-body');
             if (!tbody) return;
             const searchInput = document.getElementById('admin-product-search');
-            const query = searchInput ? searchInput.value.toLowerCase() : '';
+            const queryText = searchInput ? searchInput.value.toLowerCase() : '';
 
-            let filteredProducts = (window.products || []).filter(p => {
-                const matchesQuery = (p.name && p.name.toLowerCase().includes(query)) || 
-                                     (p.sku && p.sku.toLowerCase().includes(query)) ||
-                                     (p.category && p.category.toLowerCase().includes(query));
+            const filteredProducts = (window.products || []).filter(p => {
+                const matchesQuery = (p.name && p.name.toLowerCase().includes(queryText)) ||
+                                     (p.sku && p.sku.toLowerCase().includes(queryText)) ||
+                                     (p.category && p.category.toLowerCase().includes(queryText));
                 const matchesLowStock = !lowStockFilterActive || ((p.stock ?? 10) <= 5);
                 return matchesQuery && matchesLowStock;
             });
@@ -3485,9 +3534,9 @@ ${err.message}`);
                                 </span>
                             </td>
                             <td class="p-2 text-right space-x-1">
-                                <button onclick="broadcastExistingProduct('${p.id}')" class="bg-sky-600 text-white px-2 py-1 rounded text-[10px] font-bold" title="Broadcast"><i class="fa-brands fa-telegram"></i></button>
-                                <button onclick="adjustProductStock('${p.id}', 5)" class="bg-[#9E5E6F] text-white px-2 py-1 rounded text-[10px] font-bold" title="Restock +5">+5</button>
-                                ${!isStaff ? `<button onclick="editProduct('${p.id}')" class="text-[#9E5E6F] font-bold px-1">Edit</button><button onclick="deleteProduct('${p.id}')" class="text-rose-600 px-1">Delete</button>` : ''}
+                                <button type="button" onclick="broadcastExistingProduct('${p.id}')" class="bg-sky-600 text-white px-2 py-1 rounded text-[10px] font-bold" title="Broadcast"><i class="fa-brands fa-telegram"></i></button>
+                                <button type="button" onclick="adjustProductStock('${p.id}', 5)" class="bg-[#9E5E6F] text-white px-2 py-1 rounded text-[10px] font-bold" title="Restock +5">+5</button>
+                                ${!isStaff ? `<button type="button" onclick="editProduct('${p.id}')" class="text-[#9E5E6F] font-bold px-1">Edit</button><button type="button" onclick="deleteProduct('${p.id}')" class="text-rose-600 px-1">Delete</button>` : ''}
                             </td>
                         </tr>
                     `;
@@ -3507,7 +3556,7 @@ ${err.message}`);
                         <td class="p-2 font-bold text-[#2A2124]">$${(c.totalDiscountGiven || 0).toFixed(2)}</td>
                         <td class="p-2"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${c.isActive ? 'bg-[#9E5E6F] text-white' : 'bg-[#F8EFF1] text-[#9C8A90] border border-[#EFE4E6]'}">${c.isActive ? 'Active' : 'Inactive'}</span></td>
                         <td class="p-2 text-right space-x-2">
-                            ${!isStaff ? `<button onclick="toggleCouponStatus('${c.id}', ${Boolean(c.isActive)})" class="text-[#9E5E6F] font-bold">${c.isActive ? 'Disable' : 'Enable'}</button><button onclick="deleteCoupon('${c.id}', '${sanitizeHTML(c.code)}')" class="text-rose-600">Delete</button>` : '<span class="text-[#9C8A90] text-[10px]">Restricted</span>'}
+                            ${!isStaff ? `<button type="button" onclick="toggleCouponStatus('${c.id}', ${Boolean(c.isActive)})" class="text-[#9E5E6F] font-bold">${c.isActive ? 'Disable' : 'Enable'}</button><button type="button" onclick="deleteCoupon('${c.id}', '${sanitizeHTML(c.code)}')" class="text-rose-600">Delete</button>` : '<span class="text-[#9C8A90] text-[10px]">Restricted</span>'}
                         </td>
                     </tr>
                 `).join('');
@@ -3552,7 +3601,8 @@ ${err.message}`);
         };
 
         function closeAdminProductModal() { document.getElementById('admin-product-modal').classList.add('hidden'); }
-        
+        window.closeAdminProductModal = closeAdminProductModal;
+
         window.openCouponModal = function() {
             if ((window.currentUserData?.role || "").toLowerCase() === 'staff') return alert('Staff role cannot create coupons.');
             document.getElementById('coupon-code-input').value = '';
@@ -3561,6 +3611,7 @@ ${err.message}`);
             document.getElementById('admin-coupon-modal').classList.remove('hidden');
         };
         function closeAdminCouponModal() { document.getElementById('admin-coupon-modal').classList.add('hidden'); }
+        window.closeAdminCouponModal = closeAdminCouponModal;
 
         window.openAdminBarcodeScanner = function() {
             triggerTelegramHaptic('medium');
@@ -3586,7 +3637,7 @@ ${err.message}`);
                             }
                             setTimeout(() => { closeAdminBarcodeScanner(); }, 1500);
                         },
-                        (errorMessage) => {}
+                        () => {}
                     ).catch(err => {
                         console.error("Camera start error:", err);
                         alert("Unable to access camera for scanning.");
@@ -3599,7 +3650,7 @@ ${err.message}`);
             if (html5QrCodeScannerInstance) {
                 html5QrCodeScannerInstance.stop().then(() => {
                     html5QrCodeScannerInstance.clear();
-                }).catch(err => {});
+                }).catch(() => {});
                 html5QrCodeScannerInstance = null;
             }
             document.getElementById('admin-scanner-modal').classList.add('hidden');
