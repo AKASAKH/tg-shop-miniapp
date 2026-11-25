@@ -424,9 +424,21 @@
             <!-- STAFF MANAGEMENT SECTION -->
             <div id="admin-sec-staff" class="hidden space-y-4">
                 <div class="bg-[#FFFFFF] rounded-2xl p-4 shadow-xs border border-[#EFE4E6] space-y-3">
-                    <div class="flex justify-between items-center">
-                        <h3 class="font-bold text-xs text-[#2A2124]">User & Staff Role Management</h3>
-                        <span class="text-[10px] text-[#9C8A90]">Promote or demote user roles instantly</span>
+                    <div class="flex flex-wrap justify-between items-center gap-2">
+                        <div>
+                            <h3 class="font-bold text-xs text-[#2A2124]">User & Staff Role Management</h3>
+                            <span class="text-[10px] text-[#9C8A90]">Provision new staff logins, seed sample staff, or switch roles instantly</span>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <button type="button" id="seed-sample-staff-btn" onclick="seedSampleStaffFromAdmin()" class="bg-[#FDF9F8] hover:bg-[#F8EFF1] text-[#9E5E6F] border border-[#EFE4E6] font-bold text-[11px] px-3 py-1.5 rounded-xl shadow-2xs flex items-center space-x-1.5">
+                                <i class="fa-solid fa-users-gear text-[10px]"></i>
+                                <span>Seed Sample Staff (4)</span>
+                            </button>
+                            <button type="button" id="open-create-staff-btn" onclick="openCreateStaffModal()" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold text-[11px] px-3.5 py-1.5 rounded-xl shadow-xs flex items-center space-x-1.5">
+                                <i class="fa-solid fa-user-plus text-[10px]"></i>
+                                <span>+ Add Staff Account</span>
+                            </button>
+                        </div>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs">
@@ -504,6 +516,46 @@
         </div>
 
     </main>
+
+    <!-- CREATE STAFF ACCOUNT MODAL -->
+    <div id="admin-create-staff-modal" class="fixed inset-0 bg-[#2A2124]/60 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#FFFFFF] rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative text-xs border border-[#EFE4E6]">
+            <button type="button" onclick="closeCreateStaffModal()" class="absolute top-3 right-3 text-[#9C8A90] hover:text-[#6E5D62] w-7 h-7 bg-[#F8EFF1] rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="font-serif italic font-bold text-sm text-[#2A2124]">New Staff Account 👤</h3>
+            <p class="text-[10px] text-[#6E5D62]">Creates a staff login in Firebase Auth and assigns the <b>staff</b> role without signing you out.</p>
+
+            <div class="space-y-2.5">
+                <div>
+                    <label class="block text-[10px] font-bold text-[#6E5D62] mb-1">Full Name</label>
+                    <input type="text" id="staff-name-input" placeholder="e.g. Sokha Chan" class="w-full border border-[#EFE4E6] rounded-xl px-3 py-2 text-[#2A2124] placeholder-[#9C8A90] focus:outline-none focus:border-[#9E5E6F]">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-[#6E5D62] mb-1">Staff Email</label>
+                    <input type="email" id="staff-email-input" placeholder="e.g. sokha.staff@minimize.com" class="w-full border border-[#EFE4E6] rounded-xl px-3 py-2 text-[#2A2124] placeholder-[#9C8A90] focus:outline-none focus:border-[#9E5E6F]">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-[#6E5D62] mb-1">Temporary Password (min. 6 chars)</label>
+                    <div class="relative">
+                        <input type="password" id="staff-password-input" placeholder="••••••••" class="w-full border border-[#EFE4E6] rounded-xl px-3 py-2 pr-9 text-[#2A2124] placeholder-[#9C8A90] focus:outline-none focus:border-[#9E5E6F]">
+                        <button type="button" onclick="togglePasswordVisibility('staff-password-input', this)" aria-label="Toggle password visibility" class="absolute inset-y-0 right-0 flex items-center pr-3 text-[#9C8A90] hover:text-[#6E5D62]">
+                            <i class="fa-regular fa-eye text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-[#6E5D62] mb-1">Phone Number (Optional)</label>
+                    <input type="tel" id="staff-phone-input" placeholder="+855 12 481 920" class="w-full border border-[#EFE4E6] rounded-xl px-3 py-2 text-[#2A2124] placeholder-[#9C8A90] focus:outline-none focus:border-[#9E5E6F]">
+                </div>
+            </div>
+
+            <div class="flex space-x-2 pt-2">
+                <button type="button" id="create-staff-submit-btn" onclick="submitCreateStaffAccount()" class="flex-1 bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold py-2.5 rounded-xl shadow-xs flex items-center justify-center space-x-1.5">
+                    <span>Create Staff</span>
+                </button>
+                <button type="button" onclick="closeCreateStaffModal()" class="px-4 bg-[#F8EFF1] text-[#6E5D62] hover:text-[#2A2124] border border-[#EFE4E6] font-bold py-2.5 rounded-xl">Cancel</button>
+            </div>
+        </div>
+    </div>
 
     <!-- ADD / EDIT PRODUCT & TELEGRAM BROADCAST MODAL -->
     <div id="admin-product-modal" class="fixed inset-0 bg-[#2A2124]/60 z-50 hidden flex items-center justify-center p-4">
@@ -804,7 +856,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
     <!-- FIREBASE & ENTERPRISE ENGINE -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, updateEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, setDoc, getDoc, getDocs, query, where, limit, startAfter, orderBy, runTransaction, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
@@ -1702,6 +1754,159 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             await setDoc(userRef, payload, { merge: true });
             return payload;
         }
+
+        // CREATE SINGLE STAFF ACCOUNT VIA SECONDARY AUTH APP (KEEPS ADMIN SIGNED IN)
+        window.createStaffAccountFromAdmin = async function({ name, email, password, phone = "" }) {
+            const role = (window.currentUserData?.role || "").toLowerCase();
+            if (role === "staff") {
+                throw new Error("Staff accounts cannot create new staff accounts.");
+            }
+            const cleanEmail = (email || "").trim().toLowerCase();
+            const cleanName = sanitizeHTML((name || "").trim());
+            const cleanPhone = sanitizeHTML((phone || "").trim());
+            if (!cleanEmail || !password || password.length < 6) {
+                throw new Error("Enter a valid email and a password of at least 6 characters.");
+            }
+
+            const secondaryApp = initializeApp(firebaseConfig, `StaffCreator_${Date.now()}`);
+            const secondaryAuth = getAuth(secondaryApp);
+
+            try {
+                const cred = await createUserWithEmailAndPassword(secondaryAuth, cleanEmail, password);
+                const uid = cred.user.uid;
+                const customId = await resolveNextMinimizeUserId();
+                const nowIso = new Date().toISOString();
+
+                await setDoc(doc(db, "users", uid), {
+                    uid,
+                    customId,
+                    email: cleanEmail,
+                    name: cleanName || cleanEmail.split("@")[0],
+                    phone: cleanPhone,
+                    username: "",
+                    image: "https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80",
+                    role: "staff",
+                    currency: "USD",
+                    loyaltyPoints: 0,
+                    referralCode: customId,
+                    referredBy: "",
+                    referralCount: 0,
+                    notifications: { emailAlerts: true, telegramAlerts: true },
+                    createdAt: nowIso,
+                    updatedAt: nowIso
+                }, { merge: true });
+
+                await signOut(secondaryAuth);
+                await window.logUserDatabaseChange("staff_account_created", { uid, customId, email: cleanEmail });
+                if (window.loadAdminStaffUsers) await window.loadAdminStaffUsers();
+                return { uid, customId, email: cleanEmail };
+            } finally {
+                await deleteApp(secondaryApp);
+            }
+        };
+
+        // SEED THE 4 SAMPLE STAFF ACCOUNTS (MINIMIZE00002 - MINIMIZE00005)
+        window.seedSampleStaffFromAdmin = async function() {
+            const role = (window.currentUserData?.role || "").toLowerCase();
+            if (role === "staff") {
+                return alert("Staff accounts cannot seed staff users.");
+            }
+
+            const SAMPLE_STAFF = [
+                { customId: "MINIMIZE00002", name: "Sokha Chan", email: "sokha.staff@minimize.com", password: "ChangeMe!Staff00002", phone: "+855 12 481 920", username: "@sokha_mininize" },
+                { customId: "MINIMIZE00003", name: "Dara Meas", email: "dara.staff@minimize.com", password: "ChangeMe!Staff00003", phone: "+855 77 319 604", username: "@dara_mininize" },
+                { customId: "MINIMIZE00004", name: "Bopha Chea", email: "bopha.staff@minimize.com", password: "ChangeMe!Staff00004", phone: "+855 96 842 155", username: "@bopha_mininize" },
+                { customId: "MINIMIZE00005", name: "Visal Prak", email: "visal.staff@minimize.com", password: "ChangeMe!Staff00005", phone: "+855 15 607 832", username: "@visal_mininize" }
+            ];
+
+            if (!confirm("Create the 4 sample staff accounts (MINIMIZE00002–MINIMIZE00005) in Firebase Auth and Firestore?")) {
+                return;
+            }
+
+            const btn = document.getElementById("seed-sample-staff-btn");
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin text-[10px]"></i><span>Seeding 4 Staff...</span>`;
+            }
+
+            const secondaryApp = initializeApp(firebaseConfig, `StaffBulkSeeder_${Date.now()}`);
+            const secondaryAuth = getAuth(secondaryApp);
+            const defaultAvatar = "https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80";
+            const results = [];
+
+            try {
+                for (const staff of SAMPLE_STAFF) {
+                    let uid = null;
+                    try {
+                        const cred = await createUserWithEmailAndPassword(secondaryAuth, staff.email, staff.password);
+                        uid = cred.user.uid;
+                    } catch (authErr) {
+                        if (authErr.code === "auth/email-already-in-use") {
+                            const existingCred = await signInWithEmailAndPassword(secondaryAuth, staff.email, staff.password);
+                            uid = existingCred.user.uid;
+                        } else {
+                            throw authErr;
+                        }
+                    }
+
+                    const userRef = doc(db, "users", uid);
+                    const existingSnap = await getDoc(userRef);
+                    const existingData = existingSnap.exists() ? existingSnap.data() : {};
+                    const nowIso = new Date().toISOString();
+                    const resolvedCustomId = existingData.customId || staff.customId;
+
+                    const payload = {
+                        uid,
+                        customId: resolvedCustomId,
+                        email: staff.email,
+                        name: staff.name,
+                        phone: staff.phone,
+                        username: staff.username,
+                        image: existingData.image || defaultAvatar,
+                        role: "staff",
+                        currency: existingData.currency || "USD",
+                        loyaltyPoints: existingData.loyaltyPoints ?? 0,
+                        referralCode: existingData.referralCode || resolvedCustomId,
+                        referredBy: existingData.referredBy || "",
+                        referralCount: existingData.referralCount ?? 0,
+                        notifications: existingData.notifications || { emailAlerts: true, telegramAlerts: true },
+                        updatedAt: nowIso
+                    };
+
+                    if (!existingSnap.exists()) {
+                        payload.createdAt = nowIso;
+                    }
+
+                    await setDoc(userRef, payload, { merge: true });
+                    await signOut(secondaryAuth);
+                    results.push(`${staff.name} (${resolvedCustomId})`);
+                }
+
+                const counterRef = doc(db, "counters", "users");
+                await runTransaction(db, async (tx) => {
+                    const snap = await tx.get(counterRef);
+                    const currentSeq = snap.exists() ? (Number(snap.data().seq) || 0) : 0;
+                    if (currentSeq < 5) {
+                        tx.set(counterRef, { seq: 5, updatedAt: new Date().toISOString() }, { merge: true });
+                    }
+                });
+
+                await window.logUserDatabaseChange("sample_staff_seeded", { count: results.length, staff: results });
+                triggerTelegramHaptic("success");
+                if (window.loadAdminStaffUsers) await window.loadAdminStaffUsers();
+                alert(`Seeded ${results.length} staff accounts:\n• ${results.join("\n• ")}\n\nDefault passwords: ChangeMe!Staff00002 – 00005`);
+            } catch (err) {
+                console.error("Sample staff seed failed:", err);
+                triggerTelegramHaptic("error");
+                alert("Failed to seed sample staff: " + err.message);
+            } finally {
+                await deleteApp(secondaryApp);
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = `<i class="fa-solid fa-users-gear text-[10px]"></i><span>Seed Sample Staff (4)</span>`;
+                }
+            }
+        };
 
         window.handleEmailLogin = async function() {
             const email = document.getElementById('login-email').value.trim().toLowerCase();
@@ -3325,9 +3530,60 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         }
         window.switchAdminNav = switchAdminNav;
 
+        window.openCreateStaffModal = function() {
+            const role = (window.currentUserData?.role || "").toLowerCase();
+            if (role === "staff") {
+                return alert("Staff accounts cannot create new staff accounts.");
+            }
+            triggerTelegramHaptic("light");
+            document.getElementById("staff-name-input").value = "";
+            document.getElementById("staff-email-input").value = "";
+            document.getElementById("staff-password-input").value = "";
+            document.getElementById("staff-phone-input").value = "";
+            document.getElementById("admin-create-staff-modal").classList.remove("hidden");
+        };
+
+        window.closeCreateStaffModal = function() {
+            triggerTelegramHaptic("light");
+            document.getElementById("admin-create-staff-modal").classList.add("hidden");
+        };
+
+        window.submitCreateStaffAccount = async function() {
+            if (!window.createStaffAccountFromAdmin) {
+                return alert("Staff creator is not ready yet. Please refresh and try again.");
+            }
+            const name = document.getElementById("staff-name-input").value.trim();
+            const email = document.getElementById("staff-email-input").value.trim();
+            const password = document.getElementById("staff-password-input").value;
+            const phone = document.getElementById("staff-phone-input").value.trim();
+
+            const submitBtn = document.getElementById("create-staff-submit-btn");
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i><span>Creating...</span>`;
+
+            try {
+                const created = await window.createStaffAccountFromAdmin({ name, email, password, phone });
+                triggerTelegramHaptic("success");
+                closeCreateStaffModal();
+                alert(`Staff account created!\n\nID: ${created.customId}\nEmail: ${created.email}`);
+            } catch (err) {
+                console.error("Create staff failed:", err);
+                triggerTelegramHaptic("error");
+                alert("Failed to create staff account: " + err.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<span>Create Staff</span>`;
+            }
+        };
+
         window.loadAdminStaffUsers = async function() {
             const tbody = document.getElementById('admin-staff-table-body');
             if (!tbody) return;
+            const role = (window.currentUserData?.role || "").toLowerCase();
+            const addStaffBtn = document.getElementById("open-create-staff-btn");
+            const seedStaffBtn = document.getElementById("seed-sample-staff-btn");
+            if (addStaffBtn) addStaffBtn.classList.toggle("hidden", role === "staff");
+            if (seedStaffBtn) seedStaffBtn.classList.toggle("hidden", role === "staff");
             try {
                 const snap = await getDocs(collection(window.firebaseDb, "users"));
                 const usersList = [];
