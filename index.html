@@ -115,7 +115,7 @@
                         <span class="font-bold text-[#2A2124]" id="welcome-user-name">Welcome back, Shopper! ✨</span>
                         <p class="text-[10px] text-[#6E5D62]">Exclusive aesthetic drops curated for you.</p>
                     </div>
-                    <span class="text-[10px] font-mono font-bold bg-[#F9F3EA] px-2.5 py-1 rounded-xl text-[#9E5E6F] border border-[#EFE4E6]" id="welcome-user-id">USR-000</span>
+                    <span class="text-[10px] font-mono font-bold bg-[#F9F3EA] px-2.5 py-1 rounded-xl text-[#9E5E6F] border border-[#EFE4E6]" id="welcome-user-id">MINIMIZE00001</span>
                 </div>
 
                 <div class="relative max-w-md mx-auto">
@@ -150,79 +150,69 @@
 
             <!-- PROFILE SECTION -->
             <div id="page-profile" class="hidden space-y-3 max-w-md mx-auto">
-                <div id="customer-dashboard-view" class="space-y-3 hidden">
-                    <div class="bg-gradient-to-br from-[#2A2124] to-[#4A3339] text-white p-4 rounded-2xl shadow-sm space-y-3 border border-[#C9A46B]/40">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <span id="vip-tier-badge" class="bg-[#C9A46B]/25 text-[#F9E7C8] border border-[#C9A46B]/40 text-[9px] uppercase font-black px-2 py-0.5 rounded-md">VIP Silver Member</span>
-                                <h3 id="vip-points-text" class="text-sm font-bold mt-1">50 Loyalty Points</h3>
+                <div id="customer-dashboard-view" class="space-y-2.5 hidden">
+                    <!-- MINIMIZED ROW: LOYALTY POINTS & MEMBER TIER (LEFT) + PROFILE NAME, HANDLE & ID (RIGHT) -->
+                    <div class="bg-[#FFFFFF] rounded-2xl p-3 shadow-xs border border-[#EFE4E6] flex items-center justify-between gap-2.5">
+                        <div class="min-w-0 flex-1 space-y-1">
+                            <div class="flex items-center flex-wrap gap-1.5">
+                                <span id="vip-tier-badge" class="bg-[#F9F3EA] text-[#9E5E6F] border border-[#EFE4E6] text-[9px] uppercase font-black px-2 py-0.5 rounded-md">Silver Member ✨</span>
+                                <span id="vip-points-text" class="text-[11px] font-bold text-[#2A2124]">50 pts</span>
                             </div>
-                            <div class="w-10 h-10 bg-[#C9A46B]/20 border border-[#C9A46B]/30 rounded-full flex items-center justify-center text-lg"><i class="fa-solid fa-crown text-[#C9A46B]"></i></div>
-                        </div>
-                        <div class="space-y-1">
-                            <div class="flex justify-between text-[9px] text-[#E5D4D8] font-medium">
-                                <span id="vip-progress-label">Tier Progress</span>
-                                <span id="vip-progress-target">150 pts to Gold</span>
-                            </div>
-                            <div class="w-full bg-white/15 h-2 rounded-full overflow-hidden">
+                            <div class="w-full bg-[#F8EFF1] h-1.5 rounded-full overflow-hidden">
                                 <div id="vip-progress-bar" class="bg-[#C9A46B] h-full rounded-full transition-all duration-500" style="width: 25%;"></div>
                             </div>
+                            <p id="vip-progress-target" class="text-[9px] text-[#6E5D62] truncate">150 pts to Gold</p>
                         </div>
-                    </div>
 
-                    <div class="bg-[#FFFFFF] p-3.5 rounded-2xl border border-[#EFE4E6] flex items-center justify-between text-xs shadow-xs">
-                        <div>
-                            <b class="text-[#2A2124] block font-bold">Affiliate Referral Link 🚀</b>
-                            <p class="text-[10px] text-[#6E5D62]">Earn 50 bonus points per friend referred.</p>
-                        </div>
-                        <button type="button" onclick="copyReferralLink()" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white px-3 py-2 rounded-xl font-bold text-[10px] shadow-xs">Copy Link</button>
-                    </div>
-
-                    <div class="bg-[#FFFFFF] rounded-2xl p-4 shadow-xs border border-[#EFE4E6] flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-12 h-12 rounded-full overflow-hidden bg-[#F8EFF1] text-[#9E5E6F] font-bold flex items-center justify-center text-lg border border-[#C9A46B]/50 shadow-xs">
+                        <div class="flex items-center space-x-2 shrink-0 text-right">
+                            <div class="min-w-0">
+                                <h3 id="cust-profile-name" class="font-bold text-xs text-[#2A2124] truncate max-w-[105px]">Your Name</h3>
+                                <p id="cust-profile-handle" class="text-[10px] text-[#6E5D62] truncate max-w-[105px]">@telegram_username</p>
+                                <p id="cust-profile-id-display" class="text-[9px] font-mono text-[#C9A46B] font-semibold">ID: MINIMIZE00001</p>
+                            </div>
+                            <div class="w-10 h-10 rounded-full overflow-hidden bg-[#F8EFF1] text-[#9E5E6F] font-bold flex items-center justify-center border border-[#C9A46B]/50 shadow-xs shrink-0">
                                 <img id="cust-profile-avatar" src="https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80" class="w-full h-full object-cover" alt="User avatar">
                             </div>
-                            <div>
-                                <h3 id="cust-profile-name" class="font-bold text-sm text-[#2A2124]">Your Name</h3>
-                                <p id="cust-profile-handle" class="text-[11px] text-[#6E5D62]">@telegram_username</p>
-                                <p id="cust-profile-id-display" class="text-[9px] font-mono text-[#C9A46B] font-semibold mt-0.5">ID: USR-000000</p>
-                            </div>
                         </div>
                     </div>
 
+                    <!-- MINIMIZED MENU LIST WITH AFFILIATE REFERRAL BELOW NOTIFICATIONS & PREFERENCES -->
                     <div class="bg-[#FFFFFF] rounded-2xl shadow-xs border border-[#EFE4E6] overflow-hidden text-xs divide-y divide-[#EFE4E6]">
-                        <button type="button" onclick="openProfileSection('personal')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
-                            <span class="flex items-center space-x-2.5 text-[#2A2124] font-medium"><i class="fa-regular fa-user text-[#9E5E6F] w-4"></i><span>Personal Information</span></span>
+                        <button type="button" onclick="openProfileSection('personal')" class="w-full px-3.5 py-2.5 min-h-[42px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
+                            <span class="flex items-center space-x-2 text-[#2A2124] font-medium"><i class="fa-regular fa-user text-[#9E5E6F] w-4 text-[11px]"></i><span>Personal Information</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-[#9C8A90]"></i>
                         </button>
-                        <button type="button" onclick="openProfileSection('orders')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
-                            <span class="flex items-center space-x-2.5 text-[#2A2124] font-medium"><i class="fa-solid fa-box-archive text-[#9E5E6F] w-4"></i><span>My Orders & PDF Invoices</span></span>
+                        <button type="button" onclick="openProfileSection('orders')" class="w-full px-3.5 py-2.5 min-h-[42px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
+                            <span class="flex items-center space-x-2 text-[#2A2124] font-medium"><i class="fa-solid fa-box-archive text-[#9E5E6F] w-4 text-[11px]"></i><span>My Orders & PDF Invoices</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-[#9C8A90]"></i>
                         </button>
-                        <button type="button" onclick="openProfileSection('wallet')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
-                            <span class="flex items-center space-x-2.5 text-[#2A2124] font-medium"><i class="fa-solid fa-wallet text-[#C9A46B] w-4"></i><span>Loyalty Voucher Wallet</span></span>
+                        <button type="button" onclick="openProfileSection('wallet')" class="w-full px-3.5 py-2.5 min-h-[42px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
+                            <span class="flex items-center space-x-2 text-[#2A2124] font-medium"><i class="fa-solid fa-wallet text-[#C9A46B] w-4 text-[11px]"></i><span>Loyalty Voucher Wallet</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-[#9C8A90]"></i>
                         </button>
-                        <button type="button" onclick="openProfileSection('favorites')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
-                            <span class="flex items-center space-x-2.5 text-[#2A2124] font-medium"><i class="fa-regular fa-heart text-[#9E5E6F] w-4"></i><span>My Cloud Wishlist</span></span>
+                        <button type="button" onclick="openProfileSection('favorites')" class="w-full px-3.5 py-2.5 min-h-[42px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
+                            <span class="flex items-center space-x-2 text-[#2A2124] font-medium"><i class="fa-regular fa-heart text-[#9E5E6F] w-4 text-[11px]"></i><span>My Cloud Wishlist</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-[#9C8A90]"></i>
                         </button>
-                        <button type="button" onclick="openProfileSection('addresses')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
-                            <span class="flex items-center space-x-2.5 text-[#2A2124] font-medium"><i class="fa-solid fa-location-dot text-[#9E5E6F] w-4"></i><span>Delivery Addresses</span></span>
+                        <button type="button" onclick="openProfileSection('addresses')" class="w-full px-3.5 py-2.5 min-h-[42px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
+                            <span class="flex items-center space-x-2 text-[#2A2124] font-medium"><i class="fa-solid fa-location-dot text-[#9E5E6F] w-4 text-[11px]"></i><span>Delivery Addresses</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-[#9C8A90]"></i>
                         </button>
-                        <button type="button" onclick="openProfileSection('notifications')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
-                            <span class="flex items-center space-x-2.5 text-[#2A2124] font-medium"><i class="fa-regular fa-bell text-[#9E5E6F] w-4"></i><span>Notifications & Preferences</span></span>
+                        <button type="button" onclick="openProfileSection('notifications')" class="w-full px-3.5 py-2.5 min-h-[42px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
+                            <span class="flex items-center space-x-2 text-[#2A2124] font-medium"><i class="fa-regular fa-bell text-[#9E5E6F] w-4 text-[11px]"></i><span>Notifications & Preferences</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-[#9C8A90]"></i>
                         </button>
-                        <button type="button" onclick="openProfileSection('history')" class="w-full p-3.5 min-h-[48px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
-                            <span class="flex items-center space-x-2.5 text-[#2A2124] font-medium"><i class="fa-solid fa-clock-rotate-left text-[#9E5E6F] w-4"></i><span>Saved Edit & Activity History</span></span>
+                        <button type="button" onclick="openProfileSection('referral')" class="w-full px-3.5 py-2.5 min-h-[42px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
+                            <span class="flex items-center space-x-2 text-[#2A2124] font-medium"><i class="fa-solid fa-user-plus text-[#C9A46B] w-4 text-[11px]"></i><span>Affiliate Referral</span></span>
+                            <i class="fa-solid fa-chevron-right text-[10px] text-[#9C8A90]"></i>
+                        </button>
+                        <button type="button" onclick="openProfileSection('history')" class="w-full px-3.5 py-2.5 min-h-[42px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
+                            <span class="flex items-center space-x-2 text-[#2A2124] font-medium"><i class="fa-solid fa-clock-rotate-left text-[#9E5E6F] w-4 text-[11px]"></i><span>Saved Edit & Activity History</span></span>
                             <i class="fa-solid fa-chevron-right text-[10px] text-[#9C8A90]"></i>
                         </button>
                     </div>
 
-                    <button type="button" onclick="handleSignOut()" class="w-full bg-[#FFFFFF] border border-[#EFE4E6] text-[#6E5D62] hover:text-[#9E5E6F] font-bold text-xs py-2.5 min-h-[44px] rounded-xl shadow-xs">Log out</button>
+                    <button type="button" onclick="handleSignOut()" class="w-full bg-[#FFFFFF] border border-[#EFE4E6] text-[#6E5D62] hover:text-[#9E5E6F] font-bold text-xs py-2 min-h-[40px] rounded-xl shadow-xs">Log out</button>
                 </div>
 
                 <!-- AUTHENTICATION CARD -->
@@ -835,6 +825,40 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         window.firebaseAuth = auth;
         window.firestoreWriteBatch = writeBatch;
 
+        function formatMinimizeUserId(num) {
+            const safeNum = Math.max(1, Number(num) || 1);
+            return `MINIMIZE${String(safeNum).padStart(5, '0')}`;
+        }
+
+        async function resolveNextMinimizeUserId(existingCustomId) {
+            if (existingCustomId && /^MINIMIZE\d{5,}$/i.test(existingCustomId.trim())) {
+                return existingCustomId.trim().toUpperCase();
+            }
+            const counterRef = doc(db, "counters", "users");
+            try {
+                const nextSeq = await runTransaction(db, async (tx) => {
+                    const snap = await tx.get(counterRef);
+                    const current = snap.exists() ? (Number(snap.data().seq) || 0) : 0;
+                    const updated = current + 1;
+                    tx.set(counterRef, { seq: updated, updatedAt: new Date().toISOString() }, { merge: true });
+                    return updated;
+                });
+                return formatMinimizeUserId(nextSeq);
+            } catch (err) {
+                console.warn("Counter transaction fallback to user scan:", err.message);
+                const allUsersSnap = await getDocs(collection(db, "users"));
+                let maxSeq = 0;
+                allUsersSnap.forEach(d => {
+                    const cid = String(d.data().customId || '');
+                    const match = cid.match(/^MINIMIZE(\d+)$/i);
+                    if (match) {
+                        maxSeq = Math.max(maxSeq, parseInt(match[1], 10));
+                    }
+                });
+                return formatMinimizeUserId(maxSeq + 1);
+            }
+        }
+
         function flashCloudSyncPill() {
             const pill = document.getElementById('cloud-sync-pill');
             if (!pill) return;
@@ -1389,7 +1413,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             const a = (actionStr || '').toLowerCase();
             if (filterCategory === 'orders') return a.includes('order') || a.includes('paid') || a.includes('checkout');
             if (filterCategory === 'cart') return a.includes('cart') || a.includes('wishlist');
-            if (filterCategory === 'profile') return a.includes('profile') || a.includes('address') || a.includes('currency') || a.includes('account');
+            if (filterCategory === 'profile') return a.includes('profile') || a.includes('address') || a.includes('currency') || a.includes('account') || a.includes('referral');
             if (filterCategory === 'reviews') return a.includes('review');
             if (filterCategory === 'admin') return a.includes('product') || a.includes('stock') || a.includes('coupon') || a.includes('role') || a.includes('admin');
             return true;
@@ -1406,7 +1430,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 const currentSelection = preselectUid || selectEl.value;
                 selectEl.innerHTML = `<option value="">Select a customer (${window._cachedAdminUsersList.length})...</option>` +
                     window._cachedAdminUsersList.map(u => {
-                        const label = `${sanitizeHTML(u.name || 'Shopper')} (${sanitizeHTML(u.customId || u.id.substring(0, 6))}) — ${sanitizeHTML(u.email || 'Telegram')}`;
+                        const label = `${sanitizeHTML(u.name || 'Shopper')} (${sanitizeHTML(u.customId || 'MINIMIZE00001')}) — ${sanitizeHTML(u.email || 'Telegram')}`;
                         return `<option value="${u.id}" ${u.id === currentSelection ? 'selected' : ''}>${label}</option>`;
                     }).join('');
 
@@ -1510,7 +1534,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             if (metaBox && summaryEl) {
                 metaBox.classList.remove('hidden');
                 summaryEl.innerText = userObj
-                    ? `${userObj.name || 'User'} • ${userObj.email || 'No Email'} (${userObj.customId || uid.substring(0, 8)})`
+                    ? `${userObj.name || 'User'} • ${userObj.email || 'No Email'} (${userObj.customId || 'MINIMIZE00001'})`
                     : `UID: ${uid}`;
             }
 
@@ -1536,7 +1560,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
             const uid = document.getElementById('admin-logs-user-select')?.value || 'user';
             const userObj = (window._cachedAdminUsersList || []).find(u => u.id === uid);
-            const userTag = (userObj?.customId || uid.substring(0, 8)).replace(/[^a-zA-Z0-9_-]/g, '');
+            const userTag = (userObj?.customId || 'MINIMIZE00001').replace(/[^a-zA-Z0-9_-]/g, '');
             const filterTag = useAllLogs ? 'full_backup' : (document.getElementById('admin-logs-action-filter')?.value || 'all');
 
             const csvLines = ["Timestamp,UserUID,UserName,Action,Details,Source"];
@@ -1647,9 +1671,11 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 }
             }
 
+            const customId = await resolveNextMinimizeUserId(existingData.customId);
+
             const payload = {
                 uid: user.uid,
-                customId: existingData.customId || `USR-${user.uid.substring(0, 6).toUpperCase()}`,
+                customId,
                 email: email,
                 name: extraData.name || existingData.name || (email ? email.split('@')[0] : "Shopper"),
                 phone: extraData.phone || existingData.phone || "",
@@ -1658,6 +1684,9 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 role: role,
                 currency: existingData.currency || window.currentCurrency || "USD",
                 loyaltyPoints: existingData.loyaltyPoints ?? (role === "customer" ? 50 : 0),
+                referralCode: existingData.referralCode || customId,
+                referredBy: existingData.referredBy || "",
+                referralCount: existingData.referralCount ?? 0,
                 notifications: existingData.notifications || { emailAlerts: true, telegramAlerts: true },
                 lastLoginAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString()
@@ -1735,7 +1764,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     updatedAt: new Date().toISOString()
                 }, { merge: true });
 
-                await window.logUserDatabaseChange("account_created", { name, email });
+                await window.logUserDatabaseChange("account_created", { name, email, customId: syncedData.customId });
                 triggerTelegramHaptic('success');
                 alert('Account created and synced to database!');
             } catch (err) {
@@ -1813,6 +1842,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 if (cartUnsubscribe) { cartUnsubscribe(); cartUnsubscribe = null; }
 
                 const initialUserData = await syncUserToDatabase(user);
+                window.currentUserData = initialUserData;
                 if (initialUserData?.currency) {
                     window.currentCurrency = initialUserData.currency;
                     const currSelect = document.getElementById('currency-select');
@@ -2276,7 +2306,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             triggerTelegramHaptic('medium');
             const p = window.products.find(item => item.id === window.currentSelectedProdId);
             if (!p) return;
-            const refCode = window.currentUserData?.customId || 'USR-000';
+            const refCode = window.currentUserData?.customId || 'MINIMIZE00001';
             const miniAppUrl = `https://t.me/songsashop?startapp=prod_${p.id}_ref_${refCode}`;
             const shareText = `Check out ${p.name} (${window.formatPrice(p.price)}) on Mininize Studio! ✨`;
             if (window.Telegram?.WebApp?.openTelegramLink) {
@@ -2289,10 +2319,22 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
         window.copyReferralLink = function() {
             triggerTelegramHaptic('medium');
-            const refCode = window.currentUserData?.customId || 'USR-000';
+            const refCode = window.currentUserData?.customId || 'MINIMIZE00001';
             const refUrl = `https://t.me/songsashop?startapp=ref_${refCode}`;
             navigator.clipboard.writeText(refUrl);
             alert('Affiliate referral link copied! Share with friends to earn bonus loyalty points.');
+        };
+
+        window.saveReferredByCode = async function() {
+            if (!window.currentUser) return;
+            const code = sanitizeHTML(document.getElementById('referred-by-code-input')?.value.trim().toUpperCase() || '');
+            await setDoc(doc(db, "users", window.currentUser.uid), {
+                referredBy: code,
+                updatedAt: new Date().toISOString()
+            }, { merge: true });
+            await window.logUserDatabaseChange("referral_code_saved", { referredBy: code });
+            triggerTelegramHaptic('success');
+            alert('Referral code saved to database!');
         };
     </script>
 
@@ -2569,16 +2611,17 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 authBox.classList.add('hidden');
                 dashboardView.classList.remove('hidden');
                 const uData = window.currentUserData || {};
+                const displayId = uData.customId || 'MINIMIZE00001';
                 document.getElementById('cust-profile-name').innerText = uData.name || 'Shopper';
                 document.getElementById('cust-profile-handle').innerText = uData.username || (window.currentUser.email ? `@${window.currentUser.email.split('@')[0]}` : "@shopper");
-                document.getElementById('cust-profile-id-display').innerText = `ID: ${uData.customId || 'USR-000'}`;
+                document.getElementById('cust-profile-id-display').innerText = `ID: ${displayId}`;
 
                 if (uData.image) {
                     document.getElementById('cust-profile-avatar').src = uData.image;
                 }
 
                 const pts = uData.loyaltyPoints || 50;
-                document.getElementById('vip-points-text').innerText = `${pts} Loyalty Points`;
+                document.getElementById('vip-points-text').innerText = `${pts} pts`;
 
                 let tierName = "Silver Member ✨";
                 let progressPercent = 0;
@@ -2604,7 +2647,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 if (greetingBanner) {
                     greetingBanner.classList.remove('hidden');
                     document.getElementById('welcome-user-name').innerText = `Welcome back, ${uData.name || 'Shopper'}! ✨`;
-                    document.getElementById('welcome-user-id').innerText = uData.customId || 'USR-000';
+                    document.getElementById('welcome-user-id').innerText = displayId;
                 }
             } else {
                 authBox.classList.remove('hidden');
@@ -2801,6 +2844,33 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                                 <option value="USD" ${savedCurrency === 'USD' ? 'selected' : ''}>USD ($)</option>
                                 <option value="KHR" ${savedCurrency === 'KHR' ? 'selected' : ''}>KHR (៛)</option>
                             </select>
+                        </div>
+                    </div>`;
+            } else if (section === 'referral') {
+                titleEl.innerText = "Affiliate Referral 🚀";
+                const refCode = uData.referralCode || uData.customId || 'MINIMIZE00001';
+                const refUrl = `https://t.me/songsashop?startapp=ref_${refCode}`;
+                bodyEl.innerHTML = `
+                    <div class="space-y-3 text-xs">
+                        <div class="bg-[#FDF9F8] p-3 rounded-2xl border border-[#EFE4E6] space-y-2">
+                            <span class="text-[10px] font-bold uppercase text-[#C9A46B]">Your Referral Code & Link</span>
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="font-mono font-black text-sm text-[#9E5E6F]">${sanitizeHTML(refCode)}</span>
+                                <button type="button" onclick="copyReferralLink()" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white px-3 py-1.5 rounded-xl font-bold text-[10px] shadow-xs">Copy Link</button>
+                            </div>
+                            <p class="text-[10px] text-[#6E5D62] font-mono break-all">${sanitizeHTML(refUrl)}</p>
+                            <p class="text-[10px] text-[#6E5D62]">Earn 50 bonus points per friend referred.</p>
+                        </div>
+                        <div class="bg-[#FFFFFF] p-3 rounded-2xl border border-[#EFE4E6] flex justify-between items-center">
+                            <span class="text-[#6E5D62]">Referred Friends</span>
+                            <span class="font-bold text-[#2A2124]">${Number(uData.referralCount || 0)}</span>
+                        </div>
+                        <div class="space-y-1.5 border-t border-[#EFE4E6] pt-2">
+                            <label class="block text-[10px] font-bold text-[#6E5D62]">Referred By (Code)</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="referred-by-code-input" value="${sanitizeHTML(uData.referredBy || '')}" placeholder="e.g. MINIMIZE00001" class="flex-1 border border-[#EFE4E6] rounded-xl px-3 py-1.5 uppercase font-mono text-[#2A2124]">
+                                <button type="button" onclick="saveReferredByCode()" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold px-3 py-1.5 rounded-xl text-[10px]">Save</button>
+                            </div>
                         </div>
                     </div>`;
             } else if (section === 'history') {
@@ -3268,7 +3338,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                         const r = (u.role || 'customer').toLowerCase();
                         return `
                             <tr class="border-b border-[#EFE4E6]">
-                                <td class="p-2 font-medium text-[#2A2124]"><b>${sanitizeHTML(u.name || 'User')}</b><span class="block text-[9px] font-mono text-[#9C8A90]">${u.customId || u.id.substring(0, 8)}</span></td>
+                                <td class="p-2 font-medium text-[#2A2124]"><b>${sanitizeHTML(u.name || 'User')}</b><span class="block text-[9px] font-mono text-[#9C8A90]">${u.customId || 'MINIMIZE00001'}</span></td>
                                 <td class="p-2 text-[#6E5D62]">${sanitizeHTML(u.email || 'N/A')}</td>
                                 <td class="p-2">
                                     <span class="px-2 py-0.5 rounded text-[10px] font-bold ${r === 'admin' ? 'bg-[#9E5E6F] text-white' : (r === 'staff' ? 'bg-[#F9F3EA] text-[#9E5E6F] border border-[#C9A46B]/40' : 'bg-[#F8EFF1] text-[#6E5D62] border border-[#EFE4E6]')}">
