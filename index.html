@@ -301,13 +301,14 @@
             </div>
 
             <!-- ADMIN NAVIGATION TABS -->
-            <div class="flex space-x-1 border-b border-[#E2E8F0] text-xs font-semibold overflow-x-auto">
-                <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-[#111827] text-[#111827]">Orders & Fulfillment</button>
-                <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-[#64748B]">Products & Telegram Broadcasts</button>
-                <button onclick="switchAdminNav('coupons')" id="adtab-coupons" class="px-4 py-2 border-b-2 border-transparent text-[#64748B]">Coupons & Limits 🎟️</button>
-                <button onclick="switchAdminNav('analytics')" id="adtab-analytics" class="px-4 py-2 border-b-2 border-transparent text-[#64748B]">Analytics & Reports 📈</button>
-                <button onclick="switchAdminNav('reviews')" id="adtab-reviews" class="px-4 py-2 border-b-2 border-transparent text-[#64748B]">Reviews ⭐</button>
-                <button onclick="switchAdminNav('staff')" id="adtab-staff" class="px-4 py-2 border-b-2 border-transparent text-[#64748B]">Staff Management 👥</button>
+            <div class="flex space-x-1 border-b border-[#E2E8F0] text-xs font-semibold overflow-x-auto scrollbar-none">
+                <button onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-[#111827] text-[#111827] whitespace-nowrap">Orders & Fulfillment</button>
+                <button onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-[#64748B] whitespace-nowrap">Products & Telegram Broadcasts</button>
+                <button onclick="switchAdminNav('coupons')" id="adtab-coupons" class="px-4 py-2 border-b-2 border-transparent text-[#64748B] whitespace-nowrap">Coupons & Limits 🎟️</button>
+                <button onclick="switchAdminNav('analytics')" id="adtab-analytics" class="px-4 py-2 border-b-2 border-transparent text-[#64748B] whitespace-nowrap">Analytics & Reports 📈</button>
+                <button onclick="switchAdminNav('reviews')" id="adtab-reviews" class="px-4 py-2 border-b-2 border-transparent text-[#64748B] whitespace-nowrap">Reviews ⭐</button>
+                <button onclick="switchAdminNav('staff')" id="adtab-staff" class="px-4 py-2 border-b-2 border-transparent text-[#64748B] whitespace-nowrap">Staff Management 👥</button>
+                <button onclick="switchAdminNav('logs')" id="adtab-logs" class="px-4 py-2 border-b-2 border-transparent text-[#64748B] whitespace-nowrap">Activity Logs 🕒</button>
             </div>
             
             <!-- HIGH-DENSITY PAGINATED ORDERS SECTION -->
@@ -444,6 +445,64 @@
                                 </tr>
                             </thead>
                             <tbody id="admin-staff-table-body" class="divide-y divide-[#E2E8F0] text-[11px]"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CUSTOMER ACTIVITY LOGS VIEWER SECTION -->
+            <div id="admin-sec-logs" class="hidden space-y-4">
+                <div class="bg-[#FFFFFF] rounded-2xl p-4 shadow-xs border border-[#E2E8F0] space-y-3">
+                    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-2.5">
+                        <div>
+                            <h3 class="font-bold text-xs text-[#111827]">Customer Edit & Activity Audit Logs 🕒</h3>
+                            <p class="text-[10px] text-[#64748B]">Inspect, filter, export CSV, and clear saved database actions for any user.</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                            <select id="admin-logs-user-select" onchange="loadAdminUserActivityLogs(this.value)" class="flex-1 sm:w-52 border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-[11px] bg-[#F8FAFC] text-[#111827] font-medium focus:outline-none focus:border-[#64748B]">
+                                <option value="">Select a customer...</option>
+                            </select>
+                            <select id="admin-logs-action-filter" onchange="renderFilteredAdminActivityLogs()" class="border border-[#E2E8F0] rounded-xl px-2.5 py-1.5 text-[11px] bg-[#F8FAFC] text-[#111827] font-medium focus:outline-none focus:border-[#64748B]">
+                                <option value="all">All Actions</option>
+                                <option value="orders">Orders & Payments</option>
+                                <option value="cart">Cart & Wishlist</option>
+                                <option value="profile">Profile & Addresses</option>
+                                <option value="reviews">Reviews</option>
+                                <option value="admin">Admin & Stock</option>
+                            </select>
+                            <button onclick="loadAdminUserActivityLogs(document.getElementById('admin-logs-user-select').value)" class="bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#111827] border border-[#E2E8F0] text-[10px] px-3 py-1.5 rounded-xl font-bold whitespace-nowrap">
+                                Refresh
+                            </button>
+                            <button onclick="exportAdminUserActivityLogsCSV()" id="admin-logs-export-btn" class="bg-[#111827] hover:bg-[#1E293B] text-white text-[10px] px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1 whitespace-nowrap disabled:bg-[#F1F5F9] disabled:text-[#94A3B8]" disabled>
+                                <i class="fa-solid fa-download"></i><span>Export CSV</span>
+                            </button>
+                            <button onclick="exportAndClearAdminUserActivityLogs()" id="admin-logs-export-clear-btn" class="bg-amber-600 hover:bg-amber-700 text-white text-[10px] px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1 whitespace-nowrap disabled:bg-[#F1F5F9] disabled:text-[#94A3B8]" disabled>
+                                <i class="fa-solid fa-file-export"></i><span>Export & Clear</span>
+                            </button>
+                            <button onclick="clearAdminUserActivityLogs()" id="admin-logs-clear-btn" class="bg-rose-600 hover:bg-rose-700 text-white text-[10px] px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1 whitespace-nowrap disabled:bg-[#F1F5F9] disabled:text-[#94A3B8]" disabled>
+                                <i class="fa-solid fa-trash-can"></i><span>Clear Logs</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="admin-logs-user-meta" class="hidden bg-[#F8FAFC] p-2.5 rounded-xl border border-[#E2E8F0] flex flex-wrap justify-between items-center gap-2 text-[10px]">
+                        <span id="admin-logs-selected-summary" class="font-bold text-[#111827]">User Summary</span>
+                        <span id="admin-logs-count-badge" class="bg-[#FFFFFF] border border-[#E2E8F0] px-2 py-0.5 rounded-lg font-mono text-[#64748B]">0 entries</span>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-xl border border-[#E2E8F0]">
+                        <table class="w-full text-left text-[11px] divide-y divide-[#E2E8F0]">
+                            <thead class="bg-[#F8FAFC] text-[#64748B] font-bold uppercase tracking-wider text-[9px]">
+                                <tr>
+                                    <th class="py-2.5 px-3">Timestamp</th>
+                                    <th class="py-2.5 px-3">Action</th>
+                                    <th class="py-2.5 px-3">Details / Payload</th>
+                                    <th class="py-2.5 px-3 text-right">Source</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-activity-logs-tbody" class="divide-y divide-[#E2E8F0] bg-[#FFFFFF]">
+                                <tr><td colspan="4" class="p-4 text-center text-[#94A3B8]">Choose a user from the dropdown above to inspect their activity logs.</td></tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -753,7 +812,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, updateEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, setDoc, getDoc, getDocs, query, where, limit, startAfter, orderBy, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, setDoc, getDoc, getDocs, query, where, limit, startAfter, orderBy, runTransaction, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDz6snwoujsmp8IQ5-1c2_IL-JmEOx2tIM",
@@ -770,6 +829,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
         window.firebaseDb = db;
         window.firebaseAuth = auth;
+        window.firestoreWriteBatch = writeBatch;
 
         function flashCloudSyncPill() {
             const pill = document.getElementById('cloud-sync-pill');
@@ -786,6 +846,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 await addDoc(collection(db, "users", window.currentUser.uid, "activity_logs"), {
                     action: actionType,
                     details,
+                    source: window.Telegram?.WebApp?.initData ? "telegram_mini_app" : "web_storefront",
                     timestamp: new Date().toISOString(),
                     createdAt: serverTimestamp()
                 });
@@ -1303,6 +1364,264 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+        };
+
+        // ADMIN CUSTOMER ACTIVITY LOGS VIEWER (FILTER, EXPORT CSV, CLEAR & EXPORT+CLEAR)
+        function isCallerSuperAdmin() {
+            const role = (window.currentUserData?.role || "").toLowerCase();
+            const email = (window.currentUser?.email || "").toLowerCase();
+            return role === "admin" ||
+                window.currentUser?.uid === "NoIYk9Uwlc75YLdlpzx1" ||
+                (email.endsWith("@minimize.com") && !email.includes("staff"));
+        }
+
+        window._cachedAdminUsersList = [];
+        window._currentAdminLoadedLogs = [];
+        window._currentAdminFilteredLogs = [];
+
+        function matchesLogActionCategory(actionStr, filterCategory) {
+            if (!filterCategory || filterCategory === 'all') return true;
+            const a = (actionStr || '').toLowerCase();
+            if (filterCategory === 'orders') return a.includes('order') || a.includes('paid') || a.includes('checkout');
+            if (filterCategory === 'cart') return a.includes('cart') || a.includes('wishlist');
+            if (filterCategory === 'profile') return a.includes('profile') || a.includes('address') || a.includes('currency') || a.includes('account');
+            if (filterCategory === 'reviews') return a.includes('review');
+            if (filterCategory === 'admin') return a.includes('product') || a.includes('stock') || a.includes('coupon') || a.includes('role') || a.includes('admin');
+            return true;
+        }
+
+        window.initAdminLogsUserDropdown = async function(preselectUid = '') {
+            const selectEl = document.getElementById('admin-logs-user-select');
+            if (!selectEl) return;
+            try {
+                const snap = await getDocs(collection(db, "users"));
+                window._cachedAdminUsersList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                window._cachedAdminUsersList.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+
+                const currentSelection = preselectUid || selectEl.value;
+                selectEl.innerHTML = `<option value="">Select a customer (${window._cachedAdminUsersList.length})...</option>` +
+                    window._cachedAdminUsersList.map(u => {
+                        const label = `${sanitizeHTML(u.name || 'Shopper')} (${sanitizeHTML(u.customId || u.id.substring(0, 6))}) — ${sanitizeHTML(u.email || 'Telegram')}`;
+                        return `<option value="${u.id}" ${u.id === currentSelection ? 'selected' : ''}>${label}</option>`;
+                    }).join('');
+
+                if (currentSelection) {
+                    await loadAdminUserActivityLogs(currentSelection);
+                }
+            } catch (err) {
+                console.error("Failed to populate activity logs user dropdown:", err);
+            }
+        };
+
+        window.inspectUserLogsFromStaff = async function(uid) {
+            switchAdminNav('logs');
+            await initAdminLogsUserDropdown(uid);
+        };
+
+        window.renderFilteredAdminActivityLogs = function() {
+            const tbody = document.getElementById('admin-activity-logs-tbody');
+            const countBadge = document.getElementById('admin-logs-count-badge');
+            const exportBtn = document.getElementById('admin-logs-export-btn');
+            const exportClearBtn = document.getElementById('admin-logs-export-clear-btn');
+            const clearBtn = document.getElementById('admin-logs-clear-btn');
+            const filterVal = document.getElementById('admin-logs-action-filter')?.value || 'all';
+            if (!tbody) return;
+
+            const allLogs = window._currentAdminLoadedLogs || [];
+            const filtered = allLogs.filter(log => matchesLogActionCategory(log.action, filterVal));
+            window._currentAdminFilteredLogs = filtered;
+
+            if (countBadge) {
+                countBadge.innerText = filterVal === 'all'
+                    ? `${allLogs.length} / 50 entries`
+                    : `Showing ${filtered.length} of ${allLogs.length} entries`;
+            }
+
+            if (exportBtn) {
+                exportBtn.disabled = filtered.length === 0;
+            }
+
+            const superAdmin = isCallerSuperAdmin();
+            [exportClearBtn, clearBtn].forEach(btn => {
+                if (!btn) return;
+                if (!superAdmin) {
+                    btn.classList.add('hidden');
+                } else {
+                    btn.classList.remove('hidden');
+                    btn.disabled = allLogs.length === 0;
+                }
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-[#94A3B8]">No activity logs match this filter.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(log => {
+                const formattedTime = (log.timestamp || '').replace('T', ' ').substring(0, 19);
+                const actionLabel = (log.action || 'change').replace(/_/g, ' ').toUpperCase();
+                const detailPayload = typeof log.details === 'object' && log.details !== null
+                    ? JSON.stringify(log.details)
+                    : (log.details || (log.meta && Object.keys(log.meta).length ? JSON.stringify(log.meta) : '—'));
+                const sourceTag = log.source === 'telegram_mini_app' ? 'Telegram' : 'Web';
+
+                return `
+                    <tr class="hover:bg-[#F8FAFC] transition-colors">
+                        <td class="py-2.5 px-3 font-mono text-[10px] text-[#64748B] whitespace-nowrap">${sanitizeHTML(formattedTime)}</td>
+                        <td class="py-2.5 px-3">
+                            <span class="bg-[#F1F5F9] text-[#111827] border border-[#E2E8F0] px-2 py-0.5 rounded font-bold text-[9px] whitespace-nowrap">${sanitizeHTML(actionLabel)}</span>
+                        </td>
+                        <td class="py-2.5 px-3 text-[#111827] font-mono text-[10px] break-all">${sanitizeHTML(detailPayload)}</td>
+                        <td class="py-2.5 px-3 text-right">
+                            <span class="text-[9px] font-semibold px-2 py-0.5 rounded-full ${sourceTag === 'Telegram' ? 'bg-sky-50 text-sky-700 border border-sky-200' : 'bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0]'}">${sourceTag}</span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        };
+
+        window.loadAdminUserActivityLogs = async function(uid) {
+            const tbody = document.getElementById('admin-activity-logs-tbody');
+            const metaBox = document.getElementById('admin-logs-user-meta');
+            const summaryEl = document.getElementById('admin-logs-selected-summary');
+            if (!tbody) return;
+
+            window._currentAdminLoadedLogs = [];
+            window._currentAdminFilteredLogs = [];
+            ['admin-logs-export-btn', 'admin-logs-export-clear-btn', 'admin-logs-clear-btn'].forEach(id => {
+                const b = document.getElementById(id);
+                if (b) b.disabled = true;
+            });
+
+            if (!uid) {
+                if (metaBox) metaBox.classList.add('hidden');
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-[#94A3B8]">Choose a user from the dropdown above to inspect their activity logs.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-[#94A3B8]">Loading activity logs...</td></tr>`;
+
+            const userObj = (window._cachedAdminUsersList || []).find(u => u.id === uid);
+            if (metaBox && summaryEl) {
+                metaBox.classList.remove('hidden');
+                summaryEl.innerText = userObj
+                    ? `${userObj.name || 'User'} • ${userObj.email || 'No Email'} (${userObj.customId || uid.substring(0, 8)})`
+                    : `UID: ${uid}`;
+            }
+
+            try {
+                const logsQ = query(
+                    collection(db, "users", uid, "activity_logs"),
+                    orderBy("timestamp", "desc"),
+                    limit(50)
+                );
+                const snap = await getDocs(logsQ);
+                window._currentAdminLoadedLogs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                renderFilteredAdminActivityLogs();
+            } catch (err) {
+                console.error("Failed to fetch user activity logs:", err);
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-rose-600">Error loading logs: ${sanitizeHTML(err.message)}</td></tr>`;
+            }
+        };
+
+        window.exportAdminUserActivityLogsCSV = function(useAllLogs = false) {
+            triggerTelegramHaptic('medium');
+            const rows = useAllLogs ? (window._currentAdminLoadedLogs || []) : (window._currentAdminFilteredLogs || []);
+            if (rows.length === 0) return false;
+
+            const uid = document.getElementById('admin-logs-user-select')?.value || 'user';
+            const userObj = (window._cachedAdminUsersList || []).find(u => u.id === uid);
+            const userTag = (userObj?.customId || uid.substring(0, 8)).replace(/[^a-zA-Z0-9_-]/g, '');
+            const filterTag = useAllLogs ? 'full_backup' : (document.getElementById('admin-logs-action-filter')?.value || 'all');
+
+            let csvLines = ["Timestamp,UserUID,UserName,Action,Details,Source"];
+            rows.forEach(log => {
+                const detailStr = typeof log.details === 'object' && log.details !== null
+                    ? JSON.stringify(log.details)
+                    : String(log.details || (log.meta && Object.keys(log.meta).length ? JSON.stringify(log.meta) : ''));
+                const safeUser = String(userObj?.name || 'User').replace(/"/g, '""');
+                const safeAction = String(log.action || '').replace(/"/g, '""');
+                const safeDetails = detailStr.replace(/"/g, '""');
+                const safeSource = log.source === 'telegram_mini_app' ? 'Telegram' : 'Web';
+                csvLines.push(`"${log.timestamp || ''}","${uid}","${safeUser}","${safeAction}","${safeDetails}","${safeSource}"`);
+            });
+
+            const blob = new Blob([csvLines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `mininize_logs_${userTag}_${filterTag}_${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            return true;
+        };
+
+        window.clearAdminUserActivityLogs = async function(skipConfirm = false) {
+            if (!isCallerSuperAdmin()) {
+                return alert('Only Super Admins can clear user activity logs.');
+            }
+
+            const uid = document.getElementById('admin-logs-user-select')?.value;
+            if (!uid) return;
+
+            const userObj = (window._cachedAdminUsersList || []).find(u => u.id === uid);
+            const displayName = userObj?.name || uid;
+
+            if (!skipConfirm && !confirm(`Permanently delete all activity logs for ${displayName}? Tip: Use "Export & Clear" if you want a CSV backup first.`)) {
+                return;
+            }
+
+            const clearBtn = document.getElementById('admin-logs-clear-btn');
+            if (clearBtn) {
+                clearBtn.disabled = true;
+                clearBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i><span>Clearing...</span>`;
+            }
+
+            try {
+                const logsCol = collection(db, "users", uid, "activity_logs");
+                let totalDeleted = 0;
+
+                while (true) {
+                    const snap = await getDocs(query(logsCol, limit(450)));
+                    if (snap.empty) break;
+
+                    const batch = writeBatch(db);
+                    snap.docs.forEach(docSnap => batch.delete(docSnap.ref));
+                    await batch.commit();
+                    totalDeleted += snap.size;
+
+                    if (snap.size < 450) break;
+                }
+
+                triggerTelegramHaptic('warning');
+                alert(`Cleared ${totalDeleted} activity log entr${totalDeleted === 1 ? 'y' : 'ies'} for ${displayName}.`);
+                await loadAdminUserActivityLogs(uid);
+            } catch (err) {
+                console.error("Failed to clear activity logs:", err);
+                triggerTelegramHaptic('error');
+                alert(`Failed to clear activity logs: ${err.message}`);
+            } finally {
+                if (clearBtn) {
+                    clearBtn.innerHTML = `<i class="fa-solid fa-trash-can"></i><span>Clear Logs</span>`;
+                }
+            }
+        };
+
+        window.exportAndClearAdminUserActivityLogs = async function() {
+            const uid = document.getElementById('admin-logs-user-select')?.value;
+            if (!uid || (window._currentAdminLoadedLogs || []).length === 0) return;
+
+            const userObj = (window._cachedAdminUsersList || []).find(u => u.id === uid);
+            const displayName = userObj?.name || uid;
+            if (!confirm(`Download full CSV backup and permanently clear all activity logs for ${displayName}?`)) {
+                return;
+            }
+
+            if (exportAdminUserActivityLogsCSV(true)) {
+                await clearAdminUserActivityLogs(true);
+            }
         };
 
         function setButtonLoading(btnId, isLoading, defaultText, loadingText) {
@@ -2867,16 +3186,16 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         window.exitAdminMode = exitAdminMode;
 
         function switchAdminNav(sec) {
-            ['orders', 'products', 'coupons', 'analytics', 'reviews', 'staff'].forEach(s => {
+            ['orders', 'products', 'coupons', 'analytics', 'reviews', 'staff', 'logs'].forEach(s => {
                 const el = document.getElementById(`admin-sec-${s}`);
                 const tab = document.getElementById(`adtab-${s}`);
                 if (el) el.classList.add('hidden');
-                if (tab) tab.className = 'px-4 py-2 border-b-2 border-transparent text-[#64748B] font-semibold';
+                if (tab) tab.className = 'px-4 py-2 border-b-2 border-transparent text-[#64748B] font-semibold whitespace-nowrap';
             });
             const activeSec = document.getElementById(`admin-sec-${sec}`);
             const activeTab = document.getElementById(`adtab-${sec}`);
             if (activeSec) activeSec.classList.remove('hidden');
-            if (activeTab) activeTab.className = 'px-4 py-2 border-b-2 border-[#111827] text-[#111827] font-semibold';
+            if (activeTab) activeTab.className = 'px-4 py-2 border-b-2 border-[#111827] text-[#111827] font-semibold whitespace-nowrap';
 
             if (sec === 'orders') loadAdminOrdersPage('initial');
             if (sec === 'products') renderAdminProducts();
@@ -2884,6 +3203,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             if (sec === 'analytics') renderAdminAnalyticsCharts();
             if (sec === 'reviews') loadAllAdminReviews();
             if (sec === 'staff') loadAdminStaffUsers();
+            if (sec === 'logs') initAdminLogsUserDropdown();
         }
 
         window.loadAdminStaffUsers = async function() {
@@ -2906,7 +3226,8 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                                         ${r}
                                     </span>
                                 </td>
-                                <td class="p-2 text-right">
+                                <td class="p-2 text-right space-x-1.5">
+                                    <button onclick="inspectUserLogsFromStaff('${u.id}')" class="bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#111827] border border-[#E2E8F0] px-2 py-1 rounded text-[10px] font-bold" title="View User Activity Logs">Logs 🕒</button>
                                     <select onchange="updateUserRole('${u.id}', this.value)" class="border border-[#E2E8F0] rounded px-2 py-1 text-[10px] bg-[#FFFFFF] text-[#111827] font-medium">
                                         <option value="customer" ${r === 'customer' ? 'selected' : ''}>Customer</option>
                                         <option value="staff" ${r === 'staff' ? 'selected' : ''}>Staff</option>
