@@ -17,7 +17,6 @@
         @keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         .animate-pulse-soft { animation: pulse-soft 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 
-        /* Interactive 3D Stage */
         .stage-3d-viewport {
             perspective: 950px;
             touch-action: none;
@@ -134,7 +133,7 @@
                     <button type="button" onclick="filterCategory('Bags & Pouches')" class="cat-btn bg-[#FFFFFF] text-[#6E5D62] border border-[#EFE4E6] px-3 py-1.5 rounded-full font-medium whitespace-nowrap min-h-[36px]">Bags & Pouches 👜</button>
                 </div>
 
-                <!-- PRODUCT GRID WITH AUTHENTICATION CHECK -->
+                <!-- PRODUCT GRID -->
                 <div id="product-grid" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
 
                 <div id="load-more-container" class="text-center pt-2">
@@ -151,7 +150,6 @@
             <!-- PROFILE SECTION -->
             <div id="page-profile" class="hidden space-y-3 max-w-md mx-auto">
                 <div id="customer-dashboard-view" class="space-y-2.5 hidden">
-                    <!-- MINIMIZED ROW: LOYALTY POINTS & MEMBER TIER (LEFT) + PROFILE NAME, HANDLE & ID (RIGHT) -->
                     <div class="bg-[#FFFFFF] rounded-2xl p-3 shadow-xs border border-[#EFE4E6] flex items-center justify-between gap-2.5">
                         <div class="min-w-0 flex-1 space-y-1">
                             <div class="flex items-center flex-wrap gap-1.5">
@@ -176,7 +174,6 @@
                         </div>
                     </div>
 
-                    <!-- MINIMIZED MENU LIST WITH AFFILIATE REFERRAL BELOW NOTIFICATIONS & PREFERENCES -->
                     <div class="bg-[#FFFFFF] rounded-2xl shadow-xs border border-[#EFE4E6] overflow-hidden text-xs divide-y divide-[#EFE4E6]">
                         <button type="button" onclick="openProfileSection('personal')" class="w-full px-3.5 py-2.5 min-h-[42px] flex items-center justify-between hover:bg-[#FDF9F8] text-left">
                             <span class="flex items-center space-x-2 text-[#2A2124] font-medium"><i class="fa-regular fa-user text-[#9E5E6F] w-4 text-[11px]"></i><span>Personal Information</span></span>
@@ -305,7 +302,7 @@
                 <button type="button" onclick="switchAdminNav('logs')" id="adtab-logs" class="px-4 py-2 border-b-2 border-transparent text-[#6E5D62] whitespace-nowrap">Activity Logs 🕒</button>
             </div>
 
-            <!-- HIGH-DENSITY PAGINATED ORDERS SECTION -->
+            <!-- ORDERS SECTION -->
             <div id="admin-sec-orders" class="space-y-4">
                 <div class="bg-[#FFFFFF] rounded-2xl p-4 shadow-xs border border-[#EFE4E6] space-y-3 text-xs">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
@@ -421,24 +418,31 @@
                 <div id="admin-reviews-list-container" class="space-y-3 max-h-[60vh] overflow-y-auto text-xs"></div>
             </div>
 
-            <!-- STAFF MANAGEMENT SECTION -->
+            <!-- STAFF MANAGEMENT SECTION (WITH CREATE STAFF FORM + ROLE SYNC) -->
             <div id="admin-sec-staff" class="hidden space-y-4">
                 <div class="bg-[#FFFFFF] rounded-2xl p-4 shadow-xs border border-[#EFE4E6] space-y-3">
-                    <div class="flex flex-wrap justify-between items-center gap-2">
-                        <div>
-                            <h3 class="font-bold text-xs text-[#2A2124]">User & Staff Role Management</h3>
-                            <span class="text-[10px] text-[#9C8A90]">Provision new staff logins, seed sample staff, or switch roles instantly</span>
-                        </div>
-                        <div class="flex flex-wrap items-center gap-2">
-                            <button type="button" id="seed-sample-staff-btn" onclick="seedSampleStaffFromAdmin()" class="bg-[#FDF9F8] hover:bg-[#F8EFF1] text-[#9E5E6F] border border-[#EFE4E6] font-bold text-[11px] px-3 py-1.5 rounded-xl shadow-2xs flex items-center space-x-1.5">
-                                <i class="fa-solid fa-users-gear text-[10px]"></i>
-                                <span>Seed Sample Staff (4)</span>
-                            </button>
-                            <button type="button" id="open-create-staff-btn" onclick="openCreateStaffModal()" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold text-[11px] px-3.5 py-1.5 rounded-xl shadow-xs flex items-center space-x-1.5">
-                                <i class="fa-solid fa-user-plus text-[10px]"></i>
-                                <span>+ Add Staff Account</span>
-                            </button>
-                        </div>
+                    <div>
+                        <h3 class="font-bold text-xs text-[#2A2124]">Create & Sync Staff Account</h3>
+                        <p class="text-[10px] text-[#6E5D62]">Creates Firebase Auth login and syncs role directly to Firestore <code>users/{uid}</code> without signing out your admin session.</p>
+                    </div>
+                    <form id="create-staff-form" onsubmit="event.preventDefault(); handleCreateStaffAccount();" class="grid grid-cols-1 sm:grid-cols-5 gap-2 text-xs">
+                        <input type="text" id="new-staff-name" placeholder="Staff Full Name" required class="border border-[#EFE4E6] rounded-xl px-3 py-2 text-[#2A2124] placeholder-[#9C8A90] focus:outline-none focus:border-[#9E5E6F]">
+                        <input type="email" id="new-staff-email" placeholder="staff@minimize.com" required class="border border-[#EFE4E6] rounded-xl px-3 py-2 text-[#2A2124] placeholder-[#9C8A90] focus:outline-none focus:border-[#9E5E6F]">
+                        <input type="password" id="new-staff-password" placeholder="Temp Password (6+ chars)" minlength="6" required class="border border-[#EFE4E6] rounded-xl px-3 py-2 text-[#2A2124] placeholder-[#9C8A90] focus:outline-none focus:border-[#9E5E6F]">
+                        <select id="new-staff-role" class="border border-[#EFE4E6] rounded-xl px-3 py-2 bg-[#FFFFFF] text-[#2A2124] focus:outline-none focus:border-[#9E5E6F]">
+                            <option value="staff">Staff</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                        <button type="submit" id="create-staff-submit-btn" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold px-3 py-2 rounded-xl shadow-xs flex items-center justify-center space-x-1">
+                            <span>+ Create Staff</span>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="bg-[#FFFFFF] rounded-2xl p-4 shadow-xs border border-[#EFE4E6] space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-xs text-[#2A2124]">User & Staff Role Management</h3>
+                        <button type="button" onclick="loadAdminStaffUsers()" class="text-[10px] bg-[#FDF9F8] hover:bg-[#F8EFF1] text-[#2A2124] border border-[#EFE4E6] px-2.5 py-1 rounded-lg font-bold">Refresh List</button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs">
@@ -517,46 +521,6 @@
 
     </main>
 
-    <!-- CREATE STAFF ACCOUNT MODAL -->
-    <div id="admin-create-staff-modal" class="fixed inset-0 bg-[#2A2124]/60 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-[#FFFFFF] rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl relative text-xs border border-[#EFE4E6]">
-            <button type="button" onclick="closeCreateStaffModal()" class="absolute top-3 right-3 text-[#9C8A90] hover:text-[#6E5D62] w-7 h-7 bg-[#F8EFF1] rounded-full flex items-center justify-center text-xs z-10"><i class="fa-solid fa-xmark"></i></button>
-            <h3 class="font-serif italic font-bold text-sm text-[#2A2124]">New Staff Account 👤</h3>
-            <p class="text-[10px] text-[#6E5D62]">Creates a staff login in Firebase Auth and assigns the <b>staff</b> role without signing you out.</p>
-
-            <div class="space-y-2.5">
-                <div>
-                    <label class="block text-[10px] font-bold text-[#6E5D62] mb-1">Full Name</label>
-                    <input type="text" id="staff-name-input" placeholder="e.g. Sokha Chan" class="w-full border border-[#EFE4E6] rounded-xl px-3 py-2 text-[#2A2124] placeholder-[#9C8A90] focus:outline-none focus:border-[#9E5E6F]">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-[#6E5D62] mb-1">Staff Email</label>
-                    <input type="email" id="staff-email-input" placeholder="e.g. sokha.staff@minimize.com" class="w-full border border-[#EFE4E6] rounded-xl px-3 py-2 text-[#2A2124] placeholder-[#9C8A90] focus:outline-none focus:border-[#9E5E6F]">
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-[#6E5D62] mb-1">Temporary Password (min. 6 chars)</label>
-                    <div class="relative">
-                        <input type="password" id="staff-password-input" placeholder="••••••••" class="w-full border border-[#EFE4E6] rounded-xl px-3 py-2 pr-9 text-[#2A2124] placeholder-[#9C8A90] focus:outline-none focus:border-[#9E5E6F]">
-                        <button type="button" onclick="togglePasswordVisibility('staff-password-input', this)" aria-label="Toggle password visibility" class="absolute inset-y-0 right-0 flex items-center pr-3 text-[#9C8A90] hover:text-[#6E5D62]">
-                            <i class="fa-regular fa-eye text-xs"></i>
-                        </button>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold text-[#6E5D62] mb-1">Phone Number (Optional)</label>
-                    <input type="tel" id="staff-phone-input" placeholder="+855 12 481 920" class="w-full border border-[#EFE4E6] rounded-xl px-3 py-2 text-[#2A2124] placeholder-[#9C8A90] focus:outline-none focus:border-[#9E5E6F]">
-                </div>
-            </div>
-
-            <div class="flex space-x-2 pt-2">
-                <button type="button" id="create-staff-submit-btn" onclick="submitCreateStaffAccount()" class="flex-1 bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold py-2.5 rounded-xl shadow-xs flex items-center justify-center space-x-1.5">
-                    <span>Create Staff</span>
-                </button>
-                <button type="button" onclick="closeCreateStaffModal()" class="px-4 bg-[#F8EFF1] text-[#6E5D62] hover:text-[#2A2124] border border-[#EFE4E6] font-bold py-2.5 rounded-xl">Cancel</button>
-            </div>
-        </div>
-    </div>
-
     <!-- ADD / EDIT PRODUCT & TELEGRAM BROADCAST MODAL -->
     <div id="admin-product-modal" class="fixed inset-0 bg-[#2A2124]/60 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-[#FFFFFF] rounded-3xl max-w-md w-full p-5 space-y-3 shadow-2xl relative text-xs max-h-[90vh] overflow-y-auto border border-[#EFE4E6]">
@@ -597,7 +561,7 @@
                     </div>
                 </div>
 
-                <!-- UP TO 3 PRODUCT PHOTOS (DEVICE PICKER + AUTO-COMPRESSION + URL FALLBACK) -->
+                <!-- UP TO 3 PRODUCT PHOTOS -->
                 <div class="border-t border-[#EFE4E6] pt-2 space-y-2">
                     <div class="flex justify-between items-center">
                         <label class="block text-[10px] font-bold text-[#2A2124]">Product Photos (Up to 3) 🖼️</label>
@@ -605,7 +569,6 @@
                     </div>
 
                     <div class="grid grid-cols-3 gap-2">
-                        <!-- Slot 1 -->
                         <div class="border border-dashed border-[#EFE4E6] bg-[#FDF9F8] rounded-xl p-1.5 text-center space-y-1">
                             <div id="preview-wrap-1" class="w-full aspect-square bg-[#FFFFFF] rounded-lg overflow-hidden flex items-center justify-center border border-[#EFE4E6] relative">
                                 <img id="prod-preview-1" src="" class="w-full h-full object-cover hidden" alt="Preview 1">
@@ -619,7 +582,6 @@
                             <input type="text" id="prod-image" oninput="syncUrlPreview(1, this.value)" placeholder="or paste URL" class="w-full border border-[#EFE4E6] rounded-lg px-1.5 py-0.5 text-[9px] bg-[#FFFFFF] text-[#2A2124] placeholder-[#9C8A90]">
                         </div>
 
-                        <!-- Slot 2 -->
                         <div class="border border-dashed border-[#EFE4E6] bg-[#FDF9F8] rounded-xl p-1.5 text-center space-y-1">
                             <div id="preview-wrap-2" class="w-full aspect-square bg-[#FFFFFF] rounded-lg overflow-hidden flex items-center justify-center border border-[#EFE4E6] relative">
                                 <img id="prod-preview-2" src="" class="w-full h-full object-cover hidden" alt="Preview 2">
@@ -633,7 +595,6 @@
                             <input type="text" id="prod-image-2" oninput="syncUrlPreview(2, this.value)" placeholder="or paste URL" class="w-full border border-[#EFE4E6] rounded-lg px-1.5 py-0.5 text-[9px] bg-[#FFFFFF] text-[#2A2124] placeholder-[#9C8A90]">
                         </div>
 
-                        <!-- Slot 3 -->
                         <div class="border border-dashed border-[#EFE4E6] bg-[#FDF9F8] rounded-xl p-1.5 text-center space-y-1">
                             <div id="preview-wrap-3" class="w-full aspect-square bg-[#FFFFFF] rounded-lg overflow-hidden flex items-center justify-center border border-[#EFE4E6] relative">
                                 <img id="prod-preview-3" src="" class="w-full h-full object-cover hidden" alt="Preview 3">
@@ -710,7 +671,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         <div class="bg-[#FFFFFF] rounded-3xl max-w-sm w-full p-4 space-y-3 shadow-2xl relative text-xs max-h-[90vh] overflow-y-auto border border-[#EFE4E6]">
             <button type="button" onclick="closeProductDetailModal()" class="absolute top-3 right-3 text-[#9C8A90] hover:text-[#6E5D62] w-7 h-7 bg-[#F8EFF1] rounded-full flex items-center justify-center text-xs z-20"><i class="fa-solid fa-xmark"></i></button>
 
-            <!-- 3D ROTATABLE STAGE -->
             <div id="stage-3d-viewport" class="stage-3d-viewport relative w-full aspect-square bg-[#FDF9F8] rounded-2xl overflow-hidden border border-[#EFE4E6] flex items-center justify-center">
                 <div id="stage-3d-card" class="stage-3d-card relative w-full h-full rounded-2xl overflow-hidden shadow-md">
                     <img id="view-prod-image" src="" class="w-full h-full object-cover pointer-events-none" alt="Product preview">
@@ -723,7 +683,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 </button>
             </div>
 
-            <!-- 3D CONTROLS + UP TO 3 PHOTO THUMBNAILS -->
             <div class="flex items-center justify-between gap-2">
                 <div id="prod-photo-thumbs" class="flex items-center space-x-1.5"></div>
                 <div class="flex items-center space-x-1">
@@ -740,7 +699,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 </div>
             </div>
 
-            <!-- RICH SPECIFICATIONS CONTAINER -->
             <div id="view-prod-specs" class="bg-[#FDF9F8] p-3 rounded-2xl border border-[#EFE4E6] text-[11px] space-y-1">
                 <p class="font-bold text-[#2A2124]">Specifications & Care ✨</p>
                 <p><span class="text-[#6E5D62]">Material:</span> <span id="spec-material-view" class="text-[#2A2124]">18k Gold-Plated Brass</span></p>
@@ -856,7 +814,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
     <!-- FIREBASE & ENTERPRISE ENGINE -->
     <script type="module">
-        import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, updateEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, setDoc, getDoc, getDocs, query, where, limit, startAfter, orderBy, runTransaction, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
@@ -869,8 +827,11 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             appId: "1:1037278824991:web:84e107c0141046c74ce32a"
         };
 
-        const app = initializeApp(firebaseConfig);
+        const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+        const secondaryApp = getApps().find(a => a.name === "StaffCreator") || initializeApp(firebaseConfig, "StaffCreator");
+
         const auth = getAuth(app);
+        const secondaryAuth = getAuth(secondaryApp);
         const db = getFirestore(app);
 
         window.firebaseDb = db;
@@ -897,17 +858,8 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 });
                 return formatMinimizeUserId(nextSeq);
             } catch (err) {
-                console.warn("Counter transaction fallback to user scan:", err.message);
-                const allUsersSnap = await getDocs(collection(db, "users"));
-                let maxSeq = 0;
-                allUsersSnap.forEach(d => {
-                    const cid = String(d.data().customId || '');
-                    const match = cid.match(/^MINIMIZE(\d+)$/i);
-                    if (match) {
-                        maxSeq = Math.max(maxSeq, parseInt(match[1], 10));
-                    }
-                });
-                return formatMinimizeUserId(maxSeq + 1);
+                console.warn("Counter transaction fallback:", err.message);
+                return `MINIMIZE${String(Math.floor(10000 + Math.random() * 89999))}`;
             }
         }
 
@@ -919,7 +871,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             window._syncPillTimer = setTimeout(() => pill.classList.add('hidden'), 2200);
         }
 
-        // AUDIT & CHANGE HISTORY LOGGER (STORES EVERY USER EDIT/CHANGE IN FIRESTORE)
+        // AUDIT & CHANGE HISTORY LOGGER
         window.logUserDatabaseChange = async function(actionType, details = {}) {
             if (!window.currentUser) return;
             try {
@@ -932,11 +884,11 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 });
                 flashCloudSyncPill();
             } catch (err) {
-                console.warn("Activity log write skipped:", err.message);
+                console.warn("Activity log write skipped:", err.code || err.message);
             }
         };
 
-        // CLOUD CART SYNCHRONIZATION (PERSISTS EVERY CART EDIT TO FIRESTORE)
+        // CLOUD CART SYNCHRONIZATION
         window.syncCartToDatabase = async function(actionNote = "cart_updated") {
             localStorage.setItem('mininize_cart', JSON.stringify(window.cart));
             const badge = document.getElementById('cart-badge');
@@ -1018,11 +970,15 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             if (window.updateTelegramMainButton) window.updateTelegramMainButton();
 
             if (window.currentUser) {
-                await setDoc(doc(db, "users", window.currentUser.uid), {
-                    currency: curr,
-                    updatedAt: new Date().toISOString()
-                }, { merge: true });
-                await window.logUserDatabaseChange("currency_changed", { currency: curr });
+                try {
+                    await setDoc(doc(db, "users", window.currentUser.uid), {
+                        currency: curr,
+                        updatedAt: new Date().toISOString()
+                    }, { merge: true });
+                    await window.logUserDatabaseChange("currency_changed", { currency: curr });
+                } catch (err) {
+                    console.warn("Currency sync error:", err.message);
+                }
             }
         };
 
@@ -1113,6 +1069,21 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         window.products = [];
         let lastVisibleProductDoc = null;
         const PAGE_LIMIT = 8;
+        let productsUnsubscribe = null;
+
+        function startProductsListener() {
+            if (productsUnsubscribe) { productsUnsubscribe(); productsUnsubscribe = null; }
+            productsUnsubscribe = onSnapshot(collection(db, "products"), (snap) => {
+                const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                list.sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
+                window.products = list;
+                if (window.renderProducts) window.renderProducts();
+                if (window.renderAdminProducts) window.renderAdminProducts();
+                if (window.updateAdminMetrics) window.updateAdminMetrics();
+            }, (err) => {
+                console.warn("Products listener warning:", err.code || err.message);
+            });
+        }
 
         window.loadInitialProducts = async function() {
             if (!window.currentUser) {
@@ -1123,12 +1094,10 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             try {
                 const q = query(collection(db, "products"), orderBy("createdAt", "desc"), limit(PAGE_LIMIT));
                 const snapshot = await getDocs(q);
-                window.products = [];
-                snapshot.forEach(docSnap => {
-                    window.products.push({ id: docSnap.id, ...docSnap.data() });
-                });
+                window.products = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
                 lastVisibleProductDoc = snapshot.docs[snapshot.docs.length - 1] || null;
                 if (window.products.length === 0) await seedCatalog(db);
+                startProductsListener();
                 if (window.renderProducts) window.renderProducts();
                 if (window.renderAdminProducts) window.renderAdminProducts();
                 if (window.updateAdminMetrics) window.updateAdminMetrics();
@@ -1138,7 +1107,10 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     if (snapshot.docs.length < PAGE_LIMIT) loadBtn.classList.add('hidden');
                     else loadBtn.classList.remove('hidden');
                 }
-            } catch (err) { console.error("Pagination error:", err); }
+            } catch (err) {
+                console.error("Load products error:", err);
+                startProductsListener();
+            }
         };
 
         window.loadMoreProducts = async function() {
@@ -1147,8 +1119,11 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             try {
                 const q = query(collection(db, "products"), orderBy("createdAt", "desc"), startAfter(lastVisibleProductDoc), limit(PAGE_LIMIT));
                 const snapshot = await getDocs(q);
+                const existingIds = new Set(window.products.map(p => p.id));
                 snapshot.forEach(docSnap => {
-                    window.products.push({ id: docSnap.id, ...docSnap.data() });
+                    if (!existingIds.has(docSnap.id)) {
+                        window.products.push({ id: docSnap.id, ...docSnap.data() });
+                    }
                 });
                 lastVisibleProductDoc = snapshot.docs[snapshot.docs.length - 1] || null;
                 renderProducts();
@@ -1159,11 +1134,11 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
 
         onSnapshot(collection(db, "coupons"), (snapshot) => {
-            window.coupons = [];
-            snapshot.forEach(docSnap => window.coupons.push({ id: docSnap.id, ...docSnap.data() }));
-            if (window.coupons.length === 0 && window.currentUser) seedCoupons(db);
+            window.coupons = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
             if (window.renderAdminCoupons) window.renderAdminCoupons();
             if (window.updateAdminMetrics) window.updateAdminMetrics();
+        }, (err) => {
+            console.warn("Coupons listener warning:", err.code || err.message);
         });
 
         async function seedCatalog(db) {
@@ -1196,11 +1171,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             for (const item of initialCatalog) {
                 await addDoc(collection(db, "products"), { ...item, isPublished: true, createdAt: new Date().toISOString() });
             }
-            await loadInitialProducts();
-        }
-
-        async function seedCoupons(db) {
-            await setDoc(doc(db, "coupons", "MININIZE15"), { code: "MININIZE15", discountPercent: 15, maxUsage: 50, usageCount: 0, totalDiscountGiven: 0, isActive: true, createdAt: new Date().toISOString() });
         }
 
         // CLOUDFLARE WORKER TELEGRAM BROADCAST ENGINE
@@ -1307,7 +1277,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             }
 
             closeAdminProductModal();
-            await loadInitialProducts();
         };
 
         window.broadcastExistingProduct = async function(id) {
@@ -1346,7 +1315,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             const newStock = Math.max(0, (p.stock ?? 10) + delta);
             await updateDoc(doc(db, "products", prodId), { stock: newStock, updatedAt: new Date().toISOString() });
             await window.logUserDatabaseChange("stock_adjusted", { productId: prodId, name: p.name, newStock });
-            await loadInitialProducts();
         };
 
         window.deleteProduct = async function(id) {
@@ -1356,7 +1324,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 await window.logUserDatabaseChange("product_deleted", { productId: id });
                 triggerTelegramHaptic('warning');
                 alert('Product deleted.');
-                await loadInitialProducts();
             }
         };
 
@@ -1447,7 +1414,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             triggerCsvDownload(lines, 'mininize_coupons');
         };
 
-        // ADMIN CUSTOMER ACTIVITY LOGS VIEWER (FILTER, EXPORT CSV, CLEAR & EXPORT+CLEAR)
         function isCallerSuperAdmin() {
             const role = (window.currentUserData?.role || "").toLowerCase();
             const email = (window.currentUser?.email || "").toLowerCase();
@@ -1467,7 +1433,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             if (filterCategory === 'cart') return a.includes('cart') || a.includes('wishlist');
             if (filterCategory === 'profile') return a.includes('profile') || a.includes('address') || a.includes('currency') || a.includes('account') || a.includes('referral');
             if (filterCategory === 'reviews') return a.includes('review');
-            if (filterCategory === 'admin') return a.includes('product') || a.includes('stock') || a.includes('coupon') || a.includes('role') || a.includes('admin');
+            if (filterCategory === 'admin') return a.includes('product') || a.includes('stock') || a.includes('coupon') || a.includes('role') || a.includes('admin') || a.includes('staff');
             return true;
         }
 
@@ -1709,12 +1675,22 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         async function syncUserToDatabase(user, extraData = {}) {
             if (!user) return null;
             const userRef = doc(db, "users", user.uid);
-            const existingSnap = await getDoc(userRef);
-            const existingData = existingSnap.exists() ? existingSnap.data() : {};
+            let existingData = {};
+            let docExists = false;
+
+            try {
+                const existingSnap = await getDoc(userRef);
+                if (existingSnap.exists()) {
+                    docExists = true;
+                    existingData = existingSnap.data() || {};
+                }
+            } catch (readErr) {
+                console.warn("Could not read existing user doc:", readErr.code || readErr.message);
+            }
 
             const email = (extraData.email || user.email || existingData.email || "").toLowerCase();
 
-            let role = existingData.role ? existingData.role.toLowerCase() : "";
+            let role = existingData.role ? String(existingData.role).toLowerCase() : "";
             if (!role) {
                 if (user.uid === "NoIYk9Uwlc75YLdlpzx1" || window.isAdminOrStaffDomain(email)) {
                     role = email.includes("staff") ? "staff" : "admin";
@@ -1728,12 +1704,12 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             const payload = {
                 uid: user.uid,
                 customId,
-                email: email,
+                email,
                 name: extraData.name || existingData.name || (email ? email.split('@')[0] : "Shopper"),
                 phone: extraData.phone || existingData.phone || "",
                 username: extraData.username || existingData.username || "",
                 image: extraData.image || existingData.image || "https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80",
-                role: role,
+                role,
                 currency: existingData.currency || window.currentCurrency || "USD",
                 loyaltyPoints: existingData.loyaltyPoints ?? (role === "customer" ? 50 : 0),
                 referralCode: existingData.referralCode || customId,
@@ -1744,167 +1720,76 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 updatedAt: new Date().toISOString()
             };
 
-            if (!existingSnap.exists()) {
+            if (!docExists) {
                 payload.createdAt = new Date().toISOString();
             }
             if (extraData.telegramId) {
                 payload.telegramId = extraData.telegramId;
             }
 
-            await setDoc(userRef, payload, { merge: true });
+            try {
+                await setDoc(userRef, payload, { merge: true });
+                flashCloudSyncPill();
+            } catch (writeErr) {
+                console.warn("User profile sync warning:", writeErr.code || writeErr.message);
+            }
+
             return payload;
         }
 
-        // CREATE SINGLE STAFF ACCOUNT VIA SECONDARY AUTH APP (KEEPS ADMIN SIGNED IN)
-        window.createStaffAccountFromAdmin = async function({ name, email, password, phone = "" }) {
-            const role = (window.currentUserData?.role || "").toLowerCase();
-            if (role === "staff") {
-                throw new Error("Staff accounts cannot create new staff accounts.");
+        // CREATE STAFF ACCOUNT WITHOUT SIGNING OUT ADMIN
+        window.handleCreateStaffAccount = async function() {
+            if (!isCallerSuperAdmin()) {
+                return alert("Only Super Admins can create staff accounts.");
             }
-            const cleanEmail = (email || "").trim().toLowerCase();
-            const cleanName = sanitizeHTML((name || "").trim());
-            const cleanPhone = sanitizeHTML((phone || "").trim());
-            if (!cleanEmail || !password || password.length < 6) {
-                throw new Error("Enter a valid email and a password of at least 6 characters.");
+            const name = sanitizeHTML(document.getElementById('new-staff-name').value.trim());
+            const email = document.getElementById('new-staff-email').value.trim().toLowerCase();
+            const password = document.getElementById('new-staff-password').value;
+            const role = (document.getElementById('new-staff-role').value || "staff").toLowerCase();
+
+            if (!name || !email || password.length < 6) {
+                return alert("Enter staff name, valid email, and password (at least 6 characters).");
             }
 
-            const secondaryApp = initializeApp(firebaseConfig, `StaffCreator_${Date.now()}`);
-            const secondaryAuth = getAuth(secondaryApp);
-
+            setButtonLoading('create-staff-submit-btn', true, '+ Create Staff', 'Creating...');
             try {
-                const cred = await createUserWithEmailAndPassword(secondaryAuth, cleanEmail, password);
-                const uid = cred.user.uid;
-                const customId = await resolveNextMinimizeUserId();
-                const nowIso = new Date().toISOString();
+                const cred = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+                const newUid = cred.user.uid;
+                await signOut(secondaryAuth);
 
-                await setDoc(doc(db, "users", uid), {
-                    uid,
+                const customId = await resolveNextMinimizeUserId('');
+                const staffPayload = {
+                    uid: newUid,
                     customId,
-                    email: cleanEmail,
-                    name: cleanName || cleanEmail.split("@")[0],
-                    phone: cleanPhone,
+                    email,
+                    name,
+                    phone: "",
                     username: "",
                     image: "https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80",
-                    role: "staff",
+                    role,
                     currency: "USD",
                     loyaltyPoints: 0,
-                    referralCode: customId,
-                    referredBy: "",
-                    referralCount: 0,
-                    notifications: { emailAlerts: true, telegramAlerts: true },
-                    createdAt: nowIso,
-                    updatedAt: nowIso
-                }, { merge: true });
+                    createdBy: window.currentUser?.uid || "",
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
 
-                await signOut(secondaryAuth);
-                await window.logUserDatabaseChange("staff_account_created", { uid, customId, email: cleanEmail });
-                if (window.loadAdminStaffUsers) await window.loadAdminStaffUsers();
-                return { uid, customId, email: cleanEmail };
-            } finally {
-                await deleteApp(secondaryApp);
-            }
-        };
+                await setDoc(doc(db, "users", newUid), staffPayload, { merge: true });
+                await window.logUserDatabaseChange("staff_account_created", { staffUid: newUid, email, role, customId });
 
-        // SEED THE 4 SAMPLE STAFF ACCOUNTS (MINIMIZE00002 - MINIMIZE00005)
-        window.seedSampleStaffFromAdmin = async function() {
-            const role = (window.currentUserData?.role || "").toLowerCase();
-            if (role === "staff") {
-                return alert("Staff accounts cannot seed staff users.");
-            }
-
-            const SAMPLE_STAFF = [
-                { customId: "MINIMIZE00002", name: "Sokha Chan", email: "sokha.staff@minimize.com", password: "ChangeMe!Staff00002", phone: "+855 12 481 920", username: "@sokha_mininize" },
-                { customId: "MINIMIZE00003", name: "Dara Meas", email: "dara.staff@minimize.com", password: "ChangeMe!Staff00003", phone: "+855 77 319 604", username: "@dara_mininize" },
-                { customId: "MINIMIZE00004", name: "Bopha Chea", email: "bopha.staff@minimize.com", password: "ChangeMe!Staff00004", phone: "+855 96 842 155", username: "@bopha_mininize" },
-                { customId: "MINIMIZE00005", name: "Visal Prak", email: "visal.staff@minimize.com", password: "ChangeMe!Staff00005", phone: "+855 15 607 832", username: "@visal_mininize" }
-            ];
-
-            if (!confirm("Create the 4 sample staff accounts (MINIMIZE00002–MINIMIZE00005) in Firebase Auth and Firestore?")) {
-                return;
-            }
-
-            const btn = document.getElementById("seed-sample-staff-btn");
-            if (btn) {
-                btn.disabled = true;
-                btn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin text-[10px]"></i><span>Seeding 4 Staff...</span>`;
-            }
-
-            const secondaryApp = initializeApp(firebaseConfig, `StaffBulkSeeder_${Date.now()}`);
-            const secondaryAuth = getAuth(secondaryApp);
-            const defaultAvatar = "https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80";
-            const results = [];
-
-            try {
-                for (const staff of SAMPLE_STAFF) {
-                    let uid = null;
-                    try {
-                        const cred = await createUserWithEmailAndPassword(secondaryAuth, staff.email, staff.password);
-                        uid = cred.user.uid;
-                    } catch (authErr) {
-                        if (authErr.code === "auth/email-already-in-use") {
-                            const existingCred = await signInWithEmailAndPassword(secondaryAuth, staff.email, staff.password);
-                            uid = existingCred.user.uid;
-                        } else {
-                            throw authErr;
-                        }
-                    }
-
-                    const userRef = doc(db, "users", uid);
-                    const existingSnap = await getDoc(userRef);
-                    const existingData = existingSnap.exists() ? existingSnap.data() : {};
-                    const nowIso = new Date().toISOString();
-                    const resolvedCustomId = existingData.customId || staff.customId;
-
-                    const payload = {
-                        uid,
-                        customId: resolvedCustomId,
-                        email: staff.email,
-                        name: staff.name,
-                        phone: staff.phone,
-                        username: staff.username,
-                        image: existingData.image || defaultAvatar,
-                        role: "staff",
-                        currency: existingData.currency || "USD",
-                        loyaltyPoints: existingData.loyaltyPoints ?? 0,
-                        referralCode: existingData.referralCode || resolvedCustomId,
-                        referredBy: existingData.referredBy || "",
-                        referralCount: existingData.referralCount ?? 0,
-                        notifications: existingData.notifications || { emailAlerts: true, telegramAlerts: true },
-                        updatedAt: nowIso
-                    };
-
-                    if (!existingSnap.exists()) {
-                        payload.createdAt = nowIso;
-                    }
-
-                    await setDoc(userRef, payload, { merge: true });
-                    await signOut(secondaryAuth);
-                    results.push(`${staff.name} (${resolvedCustomId})`);
-                }
-
-                const counterRef = doc(db, "counters", "users");
-                await runTransaction(db, async (tx) => {
-                    const snap = await tx.get(counterRef);
-                    const currentSeq = snap.exists() ? (Number(snap.data().seq) || 0) : 0;
-                    if (currentSeq < 5) {
-                        tx.set(counterRef, { seq: 5, updatedAt: new Date().toISOString() }, { merge: true });
-                    }
-                });
-
-                await window.logUserDatabaseChange("sample_staff_seeded", { count: results.length, staff: results });
-                triggerTelegramHaptic("success");
-                if (window.loadAdminStaffUsers) await window.loadAdminStaffUsers();
-                alert(`Seeded ${results.length} staff accounts:\n• ${results.join("\n• ")}\n\nDefault passwords: ChangeMe!Staff00002 – 00005`);
+                document.getElementById('new-staff-name').value = '';
+                document.getElementById('new-staff-email').value = '';
+                document.getElementById('new-staff-password').value = '';
+                flashCloudSyncPill();
+                triggerTelegramHaptic('success');
+                alert(`Staff account created and synced to database (${email} • ${role})!`);
+                await loadAdminStaffUsers();
             } catch (err) {
-                console.error("Sample staff seed failed:", err);
-                triggerTelegramHaptic("error");
-                alert("Failed to seed sample staff: " + err.message);
+                console.error("Create staff failed:", err);
+                triggerTelegramHaptic('error');
+                alert(`Failed to create staff account (${err.code || 'error'}): ${err.message}`);
             } finally {
-                await deleteApp(secondaryApp);
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = `<i class="fa-solid fa-users-gear text-[10px]"></i><span>Seed Sample Staff (4)</span>`;
-                }
+                setButtonLoading('create-staff-submit-btn', false, '+ Create Staff', 'Creating...');
             }
         };
 
@@ -1917,15 +1802,20 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             try {
                 const cred = await signInWithEmailAndPassword(auth, email, password);
                 const syncedData = await syncUserToDatabase(cred.user, { email });
+                window.currentUser = cred.user;
                 window.currentUserData = syncedData;
 
-                if (syncedData.role === "admin" || syncedData.role === "staff") {
+                const role = (syncedData?.role || "").toLowerCase();
+                if (role === "admin" || role === "staff" || window.isAdminOrStaffDomain(email)) {
                     enterAdminMode();
+                } else {
+                    exitAdminMode();
+                    switchCustomerTab('profile');
                 }
                 triggerTelegramHaptic('success');
             } catch (err) {
                 triggerTelegramHaptic('error');
-                alert("Login failed: " + err.message);
+                alert(`Login failed (${err.code || 'error'}): ${err.message}`);
             } finally {
                 setButtonLoading('login-submit-btn', false, 'Log In', 'Signing In...');
             }
@@ -1959,6 +1849,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             try {
                 const cred = await createUserWithEmailAndPassword(auth, email, password);
                 const syncedData = await syncUserToDatabase(cred.user, { name, email });
+                window.currentUser = cred.user;
                 window.currentUserData = syncedData;
 
                 await setDoc(doc(db, "users", cred.user.uid, "addresses", "addr_home"), {
@@ -1974,7 +1865,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 alert('Account created and synced to database!');
             } catch (err) {
                 triggerTelegramHaptic('error');
-                alert("Sign up failed: " + err.message);
+                alert(`Sign up failed (${err.code || 'error'}): ${err.message}`);
             } finally {
                 setButtonLoading('signup-submit-btn', false, 'Create Account', 'Creating Account...');
             }
@@ -1997,8 +1888,12 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 let user = null;
                 try {
                     user = (await signInWithEmailAndPassword(auth, email, password)).user;
-                } catch (e) {
-                    user = (await createUserWithEmailAndPassword(auth, email, password)).user;
+                } catch (signInErr) {
+                    if (signInErr.code === 'auth/user-not-found' || signInErr.code === 'auth/invalid-credential') {
+                        user = (await createUserWithEmailAndPassword(auth, email, password)).user;
+                    } else {
+                        throw signInErr;
+                    }
                 }
 
                 const syncedData = await syncUserToDatabase(user, {
@@ -2008,6 +1903,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     username,
                     image: photoUrl
                 });
+                window.currentUser = user;
                 window.currentUserData = syncedData;
 
                 const addrRef = collection(db, "users", user.uid, "addresses");
@@ -2023,7 +1919,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
                 triggerTelegramHaptic('success');
             } catch (err) {
-                alert("Authentication required: " + err.message);
+                alert("Authentication error: " + err.message);
             }
         };
 
@@ -2038,13 +1934,13 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         let cartUnsubscribe = null;
 
         onAuthStateChanged(auth, async (user) => {
+            if (userDocUnsubscribe) { userDocUnsubscribe(); userDocUnsubscribe = null; }
+            if (addressesUnsubscribe) { addressesUnsubscribe(); addressesUnsubscribe = null; }
+            if (wishlistUnsubscribe) { wishlistUnsubscribe(); wishlistUnsubscribe = null; }
+            if (cartUnsubscribe) { cartUnsubscribe(); cartUnsubscribe = null; }
+
             if (user) {
                 window.currentUser = user;
-
-                if (userDocUnsubscribe) { userDocUnsubscribe(); userDocUnsubscribe = null; }
-                if (addressesUnsubscribe) { addressesUnsubscribe(); addressesUnsubscribe = null; }
-                if (wishlistUnsubscribe) { wishlistUnsubscribe(); wishlistUnsubscribe = null; }
-                if (cartUnsubscribe) { cartUnsubscribe(); cartUnsubscribe = null; }
 
                 const initialUserData = await syncUserToDatabase(user);
                 window.currentUserData = initialUserData;
@@ -2054,16 +1950,20 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     if (currSelect) currSelect.value = initialUserData.currency;
                 }
 
-                const localGuestCart = JSON.parse(localStorage.getItem('mininize_cart') || '[]');
-                const cloudCartSnap = await getDoc(doc(db, "users", user.uid, "cart", "active"));
-                const cloudCartItems = cloudCartSnap.exists() ? (cloudCartSnap.data().items || []) : [];
+                try {
+                    const localGuestCart = JSON.parse(localStorage.getItem('mininize_cart') || '[]');
+                    const cloudCartSnap = await getDoc(doc(db, "users", user.uid, "cart", "active"));
+                    const cloudCartItems = cloudCartSnap.exists() ? (cloudCartSnap.data().items || []) : [];
 
-                if (localGuestCart.length > 0 && cloudCartItems.length === 0) {
-                    window.cart = localGuestCart;
-                    await window.syncCartToDatabase("merged_guest_cart");
-                } else if (cloudCartItems.length > 0) {
-                    window.cart = cloudCartItems;
-                    localStorage.setItem('mininize_cart', JSON.stringify(window.cart));
+                    if (localGuestCart.length > 0 && cloudCartItems.length === 0) {
+                        window.cart = localGuestCart;
+                        await window.syncCartToDatabase("merged_guest_cart");
+                    } else if (cloudCartItems.length > 0) {
+                        window.cart = cloudCartItems;
+                        localStorage.setItem('mininize_cart', JSON.stringify(window.cart));
+                    }
+                } catch (cartErr) {
+                    console.warn("Cart init warning:", cartErr.message);
                 }
 
                 cartUnsubscribe = onSnapshot(doc(db, "users", user.uid, "cart", "active"), (snap) => {
@@ -2076,7 +1976,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                         if (cartDrawer && !cartDrawer.classList.contains('hidden')) openCartDrawer();
                         if (window.updateTelegramMainButton) window.updateTelegramMainButton();
                     }
-                });
+                }, () => {});
 
                 await loadInitialProducts();
 
@@ -2092,7 +1992,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
                 userDocUnsubscribe = onSnapshot(doc(db, "users", user.uid), (docSnap) => {
                     if (docSnap.exists()) {
-                        window.currentUserData = docSnap.data();
+                        window.currentUserData = { ...window.currentUserData, ...docSnap.data() };
                         if (window.currentUserData.currency && window.currentUserData.currency !== window.currentCurrency) {
                             window.currentCurrency = window.currentUserData.currency;
                             const currSelect = document.getElementById('currency-select');
@@ -2105,7 +2005,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                         headerAvatar.src = window.currentUserData.image;
                     }
 
-                    const role = (window.currentUserData?.role || "").toLowerCase();
+                    const role = String(window.currentUserData?.role || "").toLowerCase();
                     const isAdmin = role === "admin" ||
                                     role === "staff" ||
                                     window.isAdminOrStaffDomain(user.email) ||
@@ -2119,24 +2019,22 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                         if (window.updateProfileViewUI) window.updateProfileViewUI();
                         if (window.renderProducts) window.renderProducts();
                     }
+                }, (err) => {
+                    console.warn("User doc listener fallback:", err.code || err.message);
+                    if (window.updateProfileViewUI) window.updateProfileViewUI();
                 });
 
                 addressesUnsubscribe = onSnapshot(collection(db, "users", user.uid, "addresses"), (snapshot) => {
-                    window.currentUserAddresses = [];
-                    snapshot.forEach(docSnap => window.currentUserAddresses.push({ id: docSnap.id, ...docSnap.data() }));
-                });
+                    window.currentUserAddresses = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
+                }, () => {});
 
                 wishlistUnsubscribe = onSnapshot(collection(db, "users", user.uid, "wishlist"), (snapshot) => {
-                    window.currentUserWishlist = [];
-                    snapshot.forEach(docSnap => window.currentUserWishlist.push(docSnap.data().productId));
+                    window.currentUserWishlist = snapshot.docs.map(docSnap => docSnap.data().productId);
                     if (window.renderProducts) window.renderProducts();
                     if (!document.getElementById('page-wishlist').classList.contains('hidden')) renderWishlist();
-                });
+                }, () => {});
             } else {
-                if (userDocUnsubscribe) { userDocUnsubscribe(); userDocUnsubscribe = null; }
-                if (addressesUnsubscribe) { addressesUnsubscribe(); addressesUnsubscribe = null; }
-                if (wishlistUnsubscribe) { wishlistUnsubscribe(); wishlistUnsubscribe = null; }
-                if (cartUnsubscribe) { cartUnsubscribe(); cartUnsubscribe = null; }
+                if (productsUnsubscribe) { productsUnsubscribe(); productsUnsubscribe = null; }
                 window.orders = [];
                 window.products = [];
                 window.currentUser = null;
@@ -2165,7 +2063,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
             if (prodSnap.exists()) {
                 const p = prodSnap.data();
-                const reviews = p.reviews || [];
+                const reviews = [...(p.reviews || [])];
                 const reviewId = `rev_${Date.now()}`;
 
                 reviews.push({
@@ -2183,7 +2081,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 await window.logUserDatabaseChange("review_posted", { productId: window.currentSelectedProdId, reviewId, rating: window.currentSelectedStarRating || 5 });
                 triggerTelegramHaptic('success');
                 document.getElementById('new-review-text').value = '';
-                await loadInitialProducts();
                 openProductDetailModal(window.currentSelectedProdId, true);
                 alert('Review posted and saved to database! ⭐');
             }
@@ -2217,7 +2114,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             await updateDoc(prodRef, { reviews });
             await window.logUserDatabaseChange("review_edited", { productId: prodId, reviewId, rating: updatedRating });
             triggerTelegramHaptic('success');
-            await loadInitialProducts();
             openProductDetailModal(prodId, true);
         };
 
@@ -2233,7 +2129,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             await updateDoc(prodRef, { reviews });
             await window.logUserDatabaseChange("review_deleted", { productId: prodId, reviewId });
             triggerTelegramHaptic('warning');
-            await loadInitialProducts();
             openProductDetailModal(prodId, true);
         };
 
@@ -2262,7 +2157,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 });
 
                 await updateDoc(prodRef, { reviews });
-                await loadInitialProducts();
                 openProductDetailModal(prodId, true);
             }
         };
@@ -2346,7 +2240,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 await window.logUserDatabaseChange("admin_review_edited", { productId, reviewId });
                 triggerTelegramHaptic('success');
                 await loadAllAdminReviews();
-                await loadInitialProducts();
             } catch (err) {
                 console.error("Edit review failed:", err);
                 alert("Failed to edit review: " + err.message);
@@ -2370,7 +2263,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 await window.logUserDatabaseChange("admin_review_deleted", { productId, reviewId });
                 triggerTelegramHaptic('warning');
                 await loadAllAdminReviews();
-                await loadInitialProducts();
             } catch (err) {
                 console.error("Delete review failed:", err);
                 alert("Failed to delete review: " + err.message);
@@ -2441,7 +2333,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     if (couponRef && couponUpdates) {
                         transaction.update(couponRef, couponUpdates);
                     }
-                    transaction.update(userRef, { loyaltyPoints: currentPts + earnedPoints });
+                    transaction.set(userRef, { loyaltyPoints: currentPts + earnedPoints }, { merge: true });
                 });
 
                 const total = subtotal - discount;
@@ -2449,7 +2341,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
                 await setDoc(doc(db, "users", window.currentUser.uid), {
                     name: customerName,
-                    phone: phone,
+                    phone,
                     lastDeliveryAddress: address,
                     updatedAt: new Date().toISOString()
                 }, { merge: true });
@@ -2485,7 +2377,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 await window.syncCartToDatabase("checkout_completed");
                 if (window.updateTelegramMainButton) window.updateTelegramMainButton();
                 window.closeCheckoutModal();
-                await loadInitialProducts();
 
                 document.getElementById('bakong-pay-amount').innerText = window.formatPrice(total);
                 document.getElementById('bakong-pay-ordernum').innerText = `Order: ${orderNum}`;
@@ -2543,9 +2434,8 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
     </script>
 
-    <!-- STOREFRONT, PROFILE, 3D VIEWER, PHOTO COMPRESSOR & HIGH-DENSITY PAGINATED ADMIN LOGIC -->
+    <!-- STOREFRONT, PROFILE, 3D VIEWER, PHOTO COMPRESSOR & ADMIN LOGIC -->
     <script>
-        const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80';
         window.products = []; window.orders = []; window.coupons = [];
         window.cart = JSON.parse(localStorage.getItem('mininize_cart') || '[]');
         window.currentUserAddresses = []; window.currentUserWishlist = [];
@@ -2554,7 +2444,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         window.currentSelectedStarRating = 5;
         let html5QrCodeScannerInstance = null;
 
-        // 3D Rotation State
         let rotX = 0;
         let rotY = 0;
         let isDragging3D = false;
@@ -2571,7 +2460,6 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         let adminOrderSearchQuery = '';
         let lowStockFilterActive = false;
 
-        // DEVICE PHOTO FILE PICKER & HTML5 CANVAS COMPRESSOR
         function compressImageFile(file, maxDimension = 600, quality = 0.72) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -2598,8 +2486,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                         ctx.fillRect(0, 0, width, height);
                         ctx.drawImage(img, 0, 0, width, height);
 
-                        const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
-                        resolve(compressedDataUrl);
+                        resolve(canvas.toDataURL('image/jpeg', quality));
                     };
                     img.src = e.target.result;
                 };
@@ -2969,7 +2856,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                             `;
                         }).join('');
                 } catch (err) {
-                    bodyEl.innerHTML = `<p class="text-xs text-rose-600 text-center py-4">Failed to load orders.</p>`;
+                    bodyEl.innerHTML = `<p class="text-xs text-rose-600 text-center py-4">Failed to load orders: ${sanitizeHTML(err.message)}</p>`;
                 }
             } else if (section === 'wallet') {
                 titleEl.innerText = "Loyalty Voucher Wallet 🎟️";
@@ -3086,8 +2973,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     if (logsSnap.empty) {
                         bodyEl.innerHTML = `<p class="text-xs text-[#9C8A90] text-center py-4">No database edits recorded yet.</p>`;
                     } else {
-                        const rows = [];
-                        logsSnap.forEach(d => rows.push(d.data()));
+                        const rows = logsSnap.docs.map(d => d.data());
                         bodyEl.innerHTML = rows.map(item => `
                             <div class="bg-[#FDF9F8] p-2.5 rounded-xl border border-[#EFE4E6] space-y-1">
                                 <div class="flex justify-between items-center">
@@ -3099,7 +2985,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                         `).join('');
                     }
                 } catch (err) {
-                    bodyEl.innerHTML = `<p class="text-xs text-rose-600 text-center py-4">Could not load activity logs.</p>`;
+                    bodyEl.innerHTML = `<p class="text-xs text-rose-600 text-center py-4">Could not load activity logs: ${sanitizeHTML(err.message)}</p>`;
                 }
             }
         };
@@ -3350,7 +3236,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
             const searchVal = (document.getElementById('search-input')?.value || '').toLowerCase();
             const userWishlist = window.currentUserWishlist || [];
-            const filtered = window.products.filter(p => (activeCategory === 'All' || p.category === activeCategory) && p.name.toLowerCase().includes(searchVal));
+            const filtered = window.products.filter(p => (activeCategory === 'All' || p.category === activeCategory) && (p.name || '').toLowerCase().includes(searchVal));
 
             grid.innerHTML = filtered.map(p => {
                 const imgs = window.getProductImages(p);
@@ -3490,7 +3376,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 window.Telegram.WebApp.MainButton.hide();
             }
 
-            const role = (window.currentUserData?.role || 'admin').toLowerCase();
+            const role = String(window.currentUserData?.role || 'admin').toLowerCase();
             document.getElementById('admin-role-tag').innerText = role === 'staff' ? 'Fulfillment Staff' : 'Super Admin';
             const addBtn = document.getElementById('add-prod-admin-btn');
             if (addBtn) addBtn.style.display = role === 'staff' ? 'none' : '';
@@ -3530,71 +3416,20 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         }
         window.switchAdminNav = switchAdminNav;
 
-        window.openCreateStaffModal = function() {
-            const role = (window.currentUserData?.role || "").toLowerCase();
-            if (role === "staff") {
-                return alert("Staff accounts cannot create new staff accounts.");
-            }
-            triggerTelegramHaptic("light");
-            document.getElementById("staff-name-input").value = "";
-            document.getElementById("staff-email-input").value = "";
-            document.getElementById("staff-password-input").value = "";
-            document.getElementById("staff-phone-input").value = "";
-            document.getElementById("admin-create-staff-modal").classList.remove("hidden");
-        };
-
-        window.closeCreateStaffModal = function() {
-            triggerTelegramHaptic("light");
-            document.getElementById("admin-create-staff-modal").classList.add("hidden");
-        };
-
-        window.submitCreateStaffAccount = async function() {
-            if (!window.createStaffAccountFromAdmin) {
-                return alert("Staff creator is not ready yet. Please refresh and try again.");
-            }
-            const name = document.getElementById("staff-name-input").value.trim();
-            const email = document.getElementById("staff-email-input").value.trim();
-            const password = document.getElementById("staff-password-input").value;
-            const phone = document.getElementById("staff-phone-input").value.trim();
-
-            const submitBtn = document.getElementById("create-staff-submit-btn");
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i><span>Creating...</span>`;
-
-            try {
-                const created = await window.createStaffAccountFromAdmin({ name, email, password, phone });
-                triggerTelegramHaptic("success");
-                closeCreateStaffModal();
-                alert(`Staff account created!\n\nID: ${created.customId}\nEmail: ${created.email}`);
-            } catch (err) {
-                console.error("Create staff failed:", err);
-                triggerTelegramHaptic("error");
-                alert("Failed to create staff account: " + err.message);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = `<span>Create Staff</span>`;
-            }
-        };
-
         window.loadAdminStaffUsers = async function() {
             const tbody = document.getElementById('admin-staff-table-body');
             if (!tbody) return;
-            const role = (window.currentUserData?.role || "").toLowerCase();
-            const addStaffBtn = document.getElementById("open-create-staff-btn");
-            const seedStaffBtn = document.getElementById("seed-sample-staff-btn");
-            if (addStaffBtn) addStaffBtn.classList.toggle("hidden", role === "staff");
-            if (seedStaffBtn) seedStaffBtn.classList.toggle("hidden", role === "staff");
+            tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-[#9C8A90]">Loading users...</td></tr>`;
             try {
                 const snap = await getDocs(collection(window.firebaseDb, "users"));
-                const usersList = [];
-                snap.forEach(d => usersList.push({ id: d.id, ...d.data() }));
+                const usersList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
                 tbody.innerHTML = usersList.length === 0 ? `<tr><td colspan="4" class="p-4 text-center text-[#9C8A90]">No users found.</td></tr>` :
                     usersList.map(u => {
-                        const r = (u.role || 'customer').toLowerCase();
+                        const r = String(u.role || 'customer').toLowerCase();
                         return `
                             <tr class="border-b border-[#EFE4E6]">
-                                <td class="p-2 font-medium text-[#2A2124]"><b>${sanitizeHTML(u.name || 'User')}</b><span class="block text-[9px] font-mono text-[#9C8A90]">${u.customId || 'MINIMIZE00001'}</span></td>
+                                <td class="p-2 font-medium text-[#2A2124]"><b>${sanitizeHTML(u.name || 'User')}</b><span class="block text-[9px] font-mono text-[#9C8A90]">${sanitizeHTML(u.customId || 'MINIMIZE00001')}</span></td>
                                 <td class="p-2 text-[#6E5D62]">${sanitizeHTML(u.email || 'N/A')}</td>
                                 <td class="p-2">
                                     <span class="px-2 py-0.5 rounded text-[10px] font-bold ${r === 'admin' ? 'bg-[#9E5E6F] text-white' : (r === 'staff' ? 'bg-[#F9F3EA] text-[#9E5E6F] border border-[#C9A46B]/40' : 'bg-[#F8EFF1] text-[#6E5D62] border border-[#EFE4E6]')}">
@@ -3614,17 +3449,16 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     }).join('');
             } catch (err) {
                 console.error("Error loading users:", err);
-                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-rose-600">Failed to load users. Check Firestore permissions.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-rose-600">Failed to load users (${sanitizeHTML(err.code || 'error')}): ${sanitizeHTML(err.message)}</td></tr>`;
             }
         };
 
         window.updateUserRole = async function(uid, newRole) {
-            const currentRole = (window.currentUserData?.role || "").toLowerCase();
-            if (currentRole !== 'admin' && !window.isAdminOrStaffDomain(window.currentUser?.email) && window.currentUser?.uid !== 'NoIYk9Uwlc75YLdlpzx1') {
+            if (!isCallerSuperAdmin()) {
                 return alert('Only Super Admins can change user roles.');
             }
             try {
-                await updateDoc(doc(window.firebaseDb, "users", uid), { role: newRole.toLowerCase(), updatedAt: new Date().toISOString() });
+                await setDoc(doc(window.firebaseDb, "users", uid), { role: newRole.toLowerCase(), updatedAt: new Date().toISOString() }, { merge: true });
                 await window.logUserDatabaseChange("user_role_updated", { targetUid: uid, newRole });
                 triggerTelegramHaptic('success');
                 alert(`User role successfully updated to "${newRole}"!`);
@@ -3637,8 +3471,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         window.updateAdminMetrics = async function() {
             try {
                 const snap = await getDocs(collection(window.firebaseDb, "orders"));
-                window.orders = [];
-                snap.forEach(d => window.orders.push({ docId: d.id, ...d.data() }));
+                window.orders = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
 
                 const totalRevenue = (window.orders || []).reduce((sum, o) => sum + (Number(o.total) || 0), 0);
                 const pendingCount = (window.orders || []).filter(o => o.status === 'Pending').length;
@@ -3661,16 +3494,16 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                         banner.classList.add('hidden');
                     }
                 }
-            } catch (err) { console.error(err); }
+            } catch (err) {
+                console.warn("Metrics update notice:", err.code || err.message);
+            }
         };
 
         window.loadAdminOrdersPage = async function(direction = 'initial') {
+            const tbody = document.getElementById('high-density-orders-tbody');
+            if (!tbody) return;
             try {
                 let q = query(collection(window.firebaseDb, "orders"), orderBy("createdAt", "desc"), limit(orderPageSize));
-                if (currentAdminOrderStatusFilter !== 'All') {
-                    q = query(collection(window.firebaseDb, "orders"), where("status", "==", currentAdminOrderStatusFilter), orderBy("createdAt", "desc"), limit(orderPageSize));
-                }
-
                 if (direction === 'next' && lastVisibleOrderDoc) {
                     q = query(collection(window.firebaseDb, "orders"), orderBy("createdAt", "desc"), startAfter(lastVisibleOrderDoc), limit(orderPageSize));
                 } else if (direction === 'prev' && orderPaginationStack.length > 1) {
@@ -3700,43 +3533,47 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     }
                 }
 
-                const tbody = document.getElementById('high-density-orders-tbody');
-                if (!tbody) return;
+                const rows = snapshot.docs
+                    .map(docSnap => ({ docId: docSnap.id, ...docSnap.data() }))
+                    .filter(o => {
+                        const matchesStatus = currentAdminOrderStatusFilter === 'All' || o.status === currentAdminOrderStatusFilter;
+                        const matchesSearch = !adminOrderSearchQuery ||
+                            String(o.orderNum || '').toLowerCase().includes(adminOrderSearchQuery) ||
+                            String(o.customerName || '').toLowerCase().includes(adminOrderSearchQuery);
+                        return matchesStatus && matchesSearch;
+                    });
 
-                tbody.innerHTML = snapshot.empty ? `<tr><td colspan="6" class="p-4 text-center text-[#9C8A90]">No orders found.</td></tr>` :
-                    snapshot.docs.map(docSnap => {
-                        const o = docSnap.data();
-                        const docId = docSnap.id;
-                        if (adminOrderSearchQuery && !(o.orderNum || '').toLowerCase().includes(adminOrderSearchQuery) && !(o.customerName || '').toLowerCase().includes(adminOrderSearchQuery)) {
-                            return '';
-                        }
-                        return `
-                            <tr class="hover:bg-[#FDF9F8] transition-colors">
-                                <td class="py-2.5 px-3 font-mono font-bold text-[#9E5E6F]">${sanitizeHTML(o.orderNum)}</td>
-                                <td class="py-2.5 px-3">
-                                    <span class="font-bold block text-[#2A2124]">${sanitizeHTML(o.customerName)}</span>
-                                    <span class="text-[10px] text-[#6E5D62]">${sanitizeHTML(o.phone)}</span>
-                                </td>
-                                <td class="py-2.5 px-3">
-                                    <select onchange="updateOrderStatus('${docId}', this.value)" class="border border-[#EFE4E6] rounded-lg px-2 py-0.5 text-[10px] bg-[#FFFFFF] font-medium ${o.status === 'Paid' ? 'text-emerald-600' : 'text-[#C9A46B]'}">
-                                        <option ${o.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                                        <option ${o.status === 'Paid' ? 'selected' : ''}>Paid</option>
-                                        <option ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
-                                        <option ${o.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
-                                        <option ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
-                                    </select>
-                                </td>
-                                <td class="py-2.5 px-3 text-[#6E5D62]">${(o.items || []).reduce((s, i) => s + i.qty, 0)} items</td>
-                                <td class="py-2.5 px-3 text-right font-bold text-[#2A2124]">${window.formatPrice(o.total)}</td>
-                                <td class="py-2.5 px-3 text-right text-[#9C8A90] text-[10px]">${o.date}</td>
-                            </tr>
-                        `;
-                    }).join('');
+                tbody.innerHTML = rows.length === 0
+                    ? `<tr><td colspan="6" class="p-4 text-center text-[#9C8A90]">No orders found.</td></tr>`
+                    : rows.map(o => `
+                        <tr class="hover:bg-[#FDF9F8] transition-colors">
+                            <td class="py-2.5 px-3 font-mono font-bold text-[#9E5E6F]">${sanitizeHTML(o.orderNum)}</td>
+                            <td class="py-2.5 px-3">
+                                <span class="font-bold block text-[#2A2124]">${sanitizeHTML(o.customerName)}</span>
+                                <span class="text-[10px] text-[#6E5D62]">${sanitizeHTML(o.phone)}</span>
+                            </td>
+                            <td class="py-2.5 px-3">
+                                <select onchange="updateOrderStatus('${o.docId}', this.value)" class="border border-[#EFE4E6] rounded-lg px-2 py-0.5 text-[10px] bg-[#FFFFFF] font-medium ${o.status === 'Paid' ? 'text-emerald-600' : 'text-[#C9A46B]'}">
+                                    <option ${o.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                    <option ${o.status === 'Paid' ? 'selected' : ''}>Paid</option>
+                                    <option ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
+                                    <option ${o.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
+                                    <option ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                                </select>
+                            </td>
+                            <td class="py-2.5 px-3 text-[#6E5D62]">${(o.items || []).reduce((s, i) => s + i.qty, 0)} items</td>
+                            <td class="py-2.5 px-3 text-right font-bold text-[#2A2124]">${window.formatPrice(o.total)}</td>
+                            <td class="py-2.5 px-3 text-right text-[#9C8A90] text-[10px]">${o.date}</td>
+                        </tr>
+                    `).join('');
 
                 document.getElementById('prev-page-btn').disabled = orderPaginationStack.length <= 1;
                 document.getElementById('next-page-btn').disabled = snapshot.docs.length < orderPageSize;
                 document.getElementById('pagination-info').innerText = `Page stack depth: ${orderPaginationStack.length}`;
-            } catch (err) { console.error("Pagination error:", err); }
+            } catch (err) {
+                console.error("Orders load error:", err);
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-rose-600">Failed to load orders (${sanitizeHTML(err.code || 'error')}): ${sanitizeHTML(err.message)}</td></tr>`;
+            }
         };
 
         window.fetchNextOrdersPage = () => loadAdminOrdersPage('next');
@@ -3973,11 +3810,12 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
 
         window.closeAdminBarcodeScanner = function() {
+            triggerTelegramHaptic('light');
             if (html5QrCodeScannerInstance) {
                 html5QrCodeScannerInstance.stop().then(() => {
                     html5QrCodeScannerInstance.clear();
+                    html5QrCodeScannerInstance = null;
                 }).catch(() => {});
-                html5QrCodeScannerInstance = null;
             }
             document.getElementById('admin-scanner-modal').classList.add('hidden');
         };
