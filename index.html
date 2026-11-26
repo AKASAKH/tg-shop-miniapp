@@ -261,10 +261,17 @@
             </div>
         </div>
 
-        <!-- ADMIN PORTAL VIEW -->
+        <!-- ROLE-BASED STAFF & ADMIN PORTAL VIEW -->
         <div id="admin-view" class="hidden space-y-4">
-            <div class="bg-[#FFFFFF] p-3 rounded-2xl border border-[#EFE4E6] shadow-xs flex justify-between items-center">
-                <span class="font-bold text-xs text-[#2A2124] flex items-center"><i class="fa-solid fa-shield-halved text-[#9E5E6F] mr-1.5"></i> Mininize Studio Admin Portal <span id="admin-role-tag" class="ml-2 text-[9px] bg-[#F8EFF1] text-[#9E5E6F] border border-[#EFE4E6] px-2 py-0.5 rounded font-bold">Super Admin</span></span>
+            <div class="bg-[#FFFFFF] p-3 rounded-2xl border border-[#EFE4E6] shadow-xs flex flex-wrap justify-between items-center gap-2">
+                <div class="space-y-0.5">
+                    <span class="font-bold text-xs text-[#2A2124] flex items-center flex-wrap gap-1.5">
+                        <i class="fa-solid fa-shield-halved text-[#9E5E6F]"></i>
+                        <span>Mininize Studio Role Dashboard</span>
+                        <span id="admin-role-tag" class="text-[9px] bg-[#F8EFF1] text-[#9E5E6F] border border-[#EFE4E6] px-2 py-0.5 rounded font-bold uppercase">Super Admin</span>
+                    </span>
+                    <p id="admin-role-permissions-summary" class="text-[10px] text-[#6E5D62]">Full system access across orders, catalog, promotions, reviews, and staff roles.</p>
+                </div>
                 <div class="flex items-center space-x-2">
                     <button type="button" onclick="openProductModal()" id="add-prod-admin-btn" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white text-xs px-3 py-2 rounded-xl font-bold">+ New Product & Broadcast</button>
                     <button type="button" onclick="handleSignOut()" class="text-xs bg-[#F8EFF1] text-[#6E5D62] hover:text-[#2A2124] border border-[#EFE4E6] px-3 py-2 rounded-xl font-medium">Sign Out</button>
@@ -294,11 +301,11 @@
             <!-- ADMIN NAVIGATION TABS -->
             <div class="flex space-x-1 border-b border-[#EFE4E6] text-xs font-semibold overflow-x-auto scrollbar-none">
                 <button type="button" onclick="switchAdminNav('orders')" id="adtab-orders" class="px-4 py-2 border-b-2 border-[#9E5E6F] text-[#9E5E6F] whitespace-nowrap">Orders & Fulfillment</button>
-                <button type="button" onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-[#6E5D62] whitespace-nowrap">Products & Telegram Broadcasts</button>
+                <button type="button" onclick="switchAdminNav('products')" id="adtab-products" class="px-4 py-2 border-b-2 border-transparent text-[#6E5D62] whitespace-nowrap">Products & Broadcasts</button>
                 <button type="button" onclick="switchAdminNav('coupons')" id="adtab-coupons" class="px-4 py-2 border-b-2 border-transparent text-[#6E5D62] whitespace-nowrap">Coupons & Limits 🎟️</button>
                 <button type="button" onclick="switchAdminNav('analytics')" id="adtab-analytics" class="px-4 py-2 border-b-2 border-transparent text-[#6E5D62] whitespace-nowrap">Analytics & Reports 📈</button>
                 <button type="button" onclick="switchAdminNav('reviews')" id="adtab-reviews" class="px-4 py-2 border-b-2 border-transparent text-[#6E5D62] whitespace-nowrap">Reviews ⭐</button>
-                <button type="button" onclick="switchAdminNav('staff')" id="adtab-staff" class="px-4 py-2 border-b-2 border-transparent text-[#6E5D62] whitespace-nowrap">Staff Management 👥</button>
+                <button type="button" onclick="switchAdminNav('staff')" id="adtab-staff" class="px-4 py-2 border-b-2 border-transparent text-[#6E5D62] whitespace-nowrap">Staff & Roles 👥</button>
                 <button type="button" onclick="switchAdminNav('logs')" id="adtab-logs" class="px-4 py-2 border-b-2 border-transparent text-[#6E5D62] whitespace-nowrap">Activity Logs 🕒</button>
             </div>
 
@@ -317,7 +324,7 @@
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-[#9C8A90]"><i class="fa-solid fa-magnifying-glass text-[10px]"></i></span>
                                 <input type="text" id="admin-order-search" oninput="debounceOrderSearch(this.value)" placeholder="Search order #, customer..." class="w-full pl-8 pr-3 py-1.5 bg-[#FDF9F8] border border-[#EFE4E6] rounded-xl text-[11px] text-[#2A2124] placeholder-[#9C8A90] focus:outline-none focus:border-[#9E5E6F]">
                             </div>
-                            <button type="button" onclick="exportOrdersCSV()" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white text-[10px] px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-download"></i><span>Export CSV</span></button>
+                            <button type="button" onclick="exportOrdersCSV()" id="export-orders-csv-btn" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white text-[10px] px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1 whitespace-nowrap"><i class="fa-solid fa-download"></i><span>Export CSV</span></button>
                         </div>
                     </div>
                     <div class="overflow-x-auto rounded-xl border border-[#EFE4E6]">
@@ -325,7 +332,7 @@
                             <thead class="bg-[#FDF9F8] text-[#6E5D62] font-bold uppercase tracking-wider text-[9px]">
                                 <tr>
                                     <th class="py-2.5 px-3">Order #</th>
-                                    <th class="py-2.5 px-3">Customer & Phone</th>
+                                    <th class="py-2.5 px-3">Customer & Delivery</th>
                                     <th class="py-2.5 px-3">Status</th>
                                     <th class="py-2.5 px-3">Items</th>
                                     <th class="py-2.5 px-3 text-right">Total</th>
@@ -382,7 +389,7 @@
                         <h3 class="font-bold text-xs text-[#2A2124]">Promo Codes & Usage Limits</h3>
                         <div class="flex items-center space-x-2">
                             <button type="button" onclick="exportCouponsCSV()" class="bg-[#FDF9F8] text-[#2A2124] border border-[#EFE4E6] text-[10px] px-3 py-1.5 rounded-lg font-bold flex items-center space-x-1"><i class="fa-solid fa-download"></i><span>Export CSV</span></button>
-                            <button type="button" onclick="openCouponModal()" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white text-xs px-3 py-1.5 rounded-xl font-bold">+ New Coupon</button>
+                            <button type="button" onclick="openCouponModal()" id="add-coupon-admin-btn" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white text-xs px-3 py-1.5 rounded-xl font-bold">+ New Coupon</button>
                         </div>
                     </div>
                     <div class="overflow-x-auto">
@@ -418,9 +425,76 @@
                 <div id="admin-reviews-list-container" class="space-y-3 max-h-[60vh] overflow-y-auto text-xs"></div>
             </div>
 
-            <!-- STAFF MANAGEMENT SECTION -->
+            <!-- STAFF & PERMISSIONS MANAGEMENT SECTION -->
             <div id="admin-sec-staff" class="hidden space-y-4">
-                <div class="bg-[#FFFFFF] rounded-2xl p-4 shadow-xs border border-[#EFE4E6] space-y-3">
+                <!-- Role Permissions Reference Matrix -->
+                <div class="bg-[#FFFFFF] rounded-2xl p-4 shadow-xs border border-[#EFE4E6] space-y-2.5">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold text-xs text-[#2A2124]">Role Permission Matrix 🔐</h3>
+                            <p class="text-[10px] text-[#6E5D62]">Each staff role automatically unlocks or restricts actions across the dashboard.</p>
+                        </div>
+                        <span class="text-[10px] font-mono bg-[#F9F3EA] text-[#9E5E6F] border border-[#EFE4E6] px-2.5 py-1 rounded-lg font-bold">RBAC Active</span>
+                    </div>
+                    <div class="overflow-x-auto rounded-xl border border-[#EFE4E6]">
+                        <table class="w-full text-left text-[10px] divide-y divide-[#EFE4E6]">
+                            <thead class="bg-[#FDF9F8] text-[#6E5D62] font-bold uppercase text-[9px]">
+                                <tr>
+                                    <th class="py-2 px-2.5">Role</th>
+                                    <th class="py-2 px-2.5">Orders</th>
+                                    <th class="py-2 px-2.5">Catalog & Broadcast</th>
+                                    <th class="py-2 px-2.5">Coupons & Analytics</th>
+                                    <th class="py-2 px-2.5">Reviews & Logs</th>
+                                    <th class="py-2 px-2.5">Staff Roles</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-[#EFE4E6] bg-[#FFFFFF] text-[#2A2124]">
+                                <tr>
+                                    <td class="py-2 px-2.5 font-bold text-[#9E5E6F]">admin</td>
+                                    <td class="py-2 px-2.5">View, Update, Export</td>
+                                    <td class="py-2 px-2.5">Create, Edit, Delete, Broadcast</td>
+                                    <td class="py-2 px-2.5">Full Coupons + Charts</td>
+                                    <td class="py-2 px-2.5">Edit/Delete Reviews + Export/Clear Logs</td>
+                                    <td class="py-2 px-2.5 font-semibold text-emerald-700">Create & Assign</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-2.5 font-bold">manager</td>
+                                    <td class="py-2 px-2.5">View, Update, Export</td>
+                                    <td class="py-2 px-2.5">Create, Edit, Broadcast (No Delete)</td>
+                                    <td class="py-2 px-2.5">Full Coupons + Charts</td>
+                                    <td class="py-2 px-2.5">Edit/Delete Reviews + Export Logs</td>
+                                    <td class="py-2 px-2.5 text-[#6E5D62]">View Only</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-2.5 font-bold">fulfillment_staff</td>
+                                    <td class="py-2 px-2.5">View, Update Status, Export</td>
+                                    <td class="py-2 px-2.5">Restock (+5) & Scan Barcode</td>
+                                    <td class="py-2 px-2.5 text-[#9C8A90]">Restricted</td>
+                                    <td class="py-2 px-2.5 text-[#9C8A90]">Restricted</td>
+                                    <td class="py-2 px-2.5 text-[#9C8A90]">Restricted</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-2.5 font-bold">support_staff</td>
+                                    <td class="py-2 px-2.5">View Orders</td>
+                                    <td class="py-2 px-2.5 text-[#9C8A90]">View Only</td>
+                                    <td class="py-2 px-2.5 text-[#9C8A90]">Restricted</td>
+                                    <td class="py-2 px-2.5">Edit/Delete Reviews + View Logs</td>
+                                    <td class="py-2 px-2.5 text-[#9C8A90]">Restricted</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-2.5 font-bold">marketing_staff</td>
+                                    <td class="py-2 px-2.5 text-[#9C8A90]">Restricted</td>
+                                    <td class="py-2 px-2.5">Create, Edit, Broadcast</td>
+                                    <td class="py-2 px-2.5">Create & Toggle Coupons</td>
+                                    <td class="py-2 px-2.5 text-[#9C8A90]">Restricted</td>
+                                    <td class="py-2 px-2.5 text-[#9C8A90]">Restricted</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="create-staff-card" class="bg-[#FFFFFF] rounded-2xl p-4 shadow-xs border border-[#EFE4E6] space-y-3">
                     <div>
                         <h3 class="font-bold text-xs text-[#2A2124]">Create & Sync Staff Account</h3>
                         <p class="text-[10px] text-[#6E5D62]">Creates Firebase Auth login and syncs role directly to Firestore <code>users/{uid}</code> without signing out your admin session.</p>
@@ -430,8 +504,11 @@
                         <input type="email" id="new-staff-email" placeholder="staff@minimize.com" required class="border border-[#EFE4E6] rounded-xl px-3 py-2 text-[#2A2124] placeholder-[#9C8A90] focus:outline-none focus:border-[#9E5E6F]">
                         <input type="password" id="new-staff-password" placeholder="Temp Password (6+ chars)" minlength="6" required class="border border-[#EFE4E6] rounded-xl px-3 py-2 text-[#2A2124] placeholder-[#9C8A90] focus:outline-none focus:border-[#9E5E6F]">
                         <select id="new-staff-role" class="border border-[#EFE4E6] rounded-xl px-3 py-2 bg-[#FFFFFF] text-[#2A2124] focus:outline-none focus:border-[#9E5E6F]">
-                            <option value="staff">Staff</option>
-                            <option value="admin">Admin</option>
+                            <option value="fulfillment_staff">Fulfillment Staff</option>
+                            <option value="support_staff">Support Staff</option>
+                            <option value="marketing_staff">Marketing Staff</option>
+                            <option value="manager">Store Manager</option>
+                            <option value="admin">Super Admin</option>
                         </select>
                         <button type="submit" id="create-staff-submit-btn" class="bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold px-3 py-2 rounded-xl shadow-xs flex items-center justify-center space-x-1">
                             <span>+ Create Staff</span>
@@ -747,7 +824,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         </div>
     </div>
 
-    <!-- CHECKOUT MODAL -->
+    <!-- CHECKOUT MODAL WITH SAVED ADDRESS DROPDOWN & PIN CURRENT LOCATION -->
     <div id="checkout-modal" class="fixed inset-0 bg-[#2A2124]/40 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-[#FFFFFF] rounded-2xl max-w-xs w-full p-4 space-y-2.5 shadow-xl relative text-xs border border-[#EFE4E6]">
             <button type="button" onclick="closeCheckoutModal()" class="absolute top-3 right-3 text-[#9C8A90] hover:text-[#6E5D62]"><i class="fa-solid fa-xmark"></i></button>
@@ -755,10 +832,29 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             <div class="space-y-2">
                 <input type="text" id="checkout-name" placeholder="Full Name" class="w-full border border-[#EFE4E6] rounded-xl px-3 py-1.5 text-[#2A2124] placeholder-[#9C8A90]">
                 <input type="text" id="checkout-phone" placeholder="Phone Number" class="w-full border border-[#EFE4E6] rounded-xl px-3 py-1.5 text-[#2A2124] placeholder-[#9C8A90]">
+
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="text-[10px] font-bold text-[#6E5D62]">Select Saved Address</label>
+                        <button type="button" id="pin-current-location-btn" onclick="pinCurrentLocationForDelivery()" class="text-[10px] font-bold text-[#9E5E6F] hover:underline flex items-center space-x-1">
+                            <i class="fa-solid fa-location-crosshairs"></i><span>Pin Current Location</span>
+                        </button>
+                    </div>
+                    <select id="checkout-address-select" onchange="onCheckoutAddressSelect(this.value)" class="w-full border border-[#EFE4E6] rounded-xl px-2.5 py-1.5 text-[11px] bg-[#FDF9F8] text-[#2A2124] focus:outline-none focus:border-[#9E5E6F]">
+                        <option value="">-- Choose saved address or type below --</option>
+                    </select>
+                </div>
+
                 <textarea id="checkout-address" placeholder="Delivery Address" rows="2" class="w-full border border-[#EFE4E6] rounded-xl px-3 py-1.5 text-[#2A2124] placeholder-[#9C8A90]"></textarea>
+                <p id="checkout-gps-status" class="text-[10px] text-[#6E5D62] hidden"></p>
+                <label class="flex items-center space-x-1.5 text-[10px] text-[#6E5D62] cursor-pointer">
+                    <input type="checkbox" id="save-checkout-address-check" checked class="rounded accent-[#9E5E6F]">
+                    <span>Save this delivery address to my account</span>
+                </label>
+
                 <input type="text" id="checkout-promo" placeholder="Promo Code (e.g. MININIZE15)" class="w-full border border-[#EFE4E6] rounded-xl px-3 py-1.5 uppercase font-mono text-[#2A2124] placeholder-[#9C8A90]">
             </div>
-            <button type="button" onclick="createOrderAndInitBakong()" class="w-full bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold py-2.5 rounded-xl flex items-center justify-center space-x-1.5">
+            <button type="button" id="checkout-submit-btn" onclick="createOrderAndInitBakong()" class="w-full bg-[#9E5E6F] hover:bg-[#854B5B] text-white font-bold py-2.5 rounded-xl flex items-center justify-center space-x-1.5">
                 <i class="fa-solid fa-qrcode"></i><span>Pay via Bakong KHQR</span>
             </button>
         </div>
@@ -815,7 +911,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
     <!-- FIREBASE & ENTERPRISE ENGINE -->
     <script type="module">
         import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, updateEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, setDoc, getDoc, getDocs, query, where, limit, startAfter, orderBy, runTransaction, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -850,8 +946,180 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         window.firestoreLimit = limit;
         window.firestoreStartAfter = startAfter;
         window.firestoreWriteBatch = writeBatch;
+        window.firestoreRunTransaction = runTransaction;
+        window.firestoreServerTimestamp = serverTimestamp;
         window.getDoc = getDoc;
         window.getDocs = getDocs;
+
+        // ROLE-BASED PERMISSIONS MATRIX
+        const ROLE_PERMISSIONS = {
+            admin: {
+                label: "Super Admin",
+                summary: "Full system access across orders, catalog, promotions, reviews, logs, and staff roles.",
+                canViewOrders: true,
+                canUpdateOrders: true,
+                canExportOrders: true,
+                canViewProducts: true,
+                canCreateProducts: true,
+                canEditProducts: true,
+                canDeleteProducts: true,
+                canRestockProducts: true,
+                canBroadcastProducts: true,
+                canViewCoupons: true,
+                canManageCoupons: true,
+                canViewAnalytics: true,
+                canViewReviews: true,
+                canModerateReviews: true,
+                canViewLogs: true,
+                canExportLogs: true,
+                canClearLogs: true,
+                canViewStaff: true,
+                canManageStaffRoles: true
+            },
+            manager: {
+                label: "Store Manager",
+                summary: "Can manage orders, products, broadcasts, coupons, analytics, reviews, and export logs.",
+                canViewOrders: true,
+                canUpdateOrders: true,
+                canExportOrders: true,
+                canViewProducts: true,
+                canCreateProducts: true,
+                canEditProducts: true,
+                canDeleteProducts: false,
+                canRestockProducts: true,
+                canBroadcastProducts: true,
+                canViewCoupons: true,
+                canManageCoupons: true,
+                canViewAnalytics: true,
+                canViewReviews: true,
+                canModerateReviews: true,
+                canViewLogs: true,
+                canExportLogs: true,
+                canClearLogs: false,
+                canViewStaff: true,
+                canManageStaffRoles: false
+            },
+            fulfillment_staff: {
+                label: "Fulfillment Staff",
+                summary: "Can update order statuses, export orders CSV, scan barcodes, and restock inventory.",
+                canViewOrders: true,
+                canUpdateOrders: true,
+                canExportOrders: true,
+                canViewProducts: true,
+                canCreateProducts: false,
+                canEditProducts: false,
+                canDeleteProducts: false,
+                canRestockProducts: true,
+                canBroadcastProducts: false,
+                canViewCoupons: false,
+                canManageCoupons: false,
+                canViewAnalytics: false,
+                canViewReviews: false,
+                canModerateReviews: false,
+                canViewLogs: false,
+                canExportLogs: false,
+                canClearLogs: false,
+                canViewStaff: false,
+                canManageStaffRoles: false
+            },
+            support_staff: {
+                label: "Support Staff",
+                summary: "Can view orders, moderate customer reviews, and inspect user activity logs.",
+                canViewOrders: true,
+                canUpdateOrders: false,
+                canExportOrders: false,
+                canViewProducts: true,
+                canCreateProducts: false,
+                canEditProducts: false,
+                canDeleteProducts: false,
+                canRestockProducts: false,
+                canBroadcastProducts: false,
+                canViewCoupons: false,
+                canManageCoupons: false,
+                canViewAnalytics: false,
+                canViewReviews: true,
+                canModerateReviews: true,
+                canViewLogs: true,
+                canExportLogs: false,
+                canClearLogs: false,
+                canViewStaff: false,
+                canManageStaffRoles: false
+            },
+            marketing_staff: {
+                label: "Marketing Staff",
+                summary: "Can create/edit products, send Telegram broadcasts, and manage promo coupons.",
+                canViewOrders: false,
+                canUpdateOrders: false,
+                canExportOrders: false,
+                canViewProducts: true,
+                canCreateProducts: true,
+                canEditProducts: true,
+                canDeleteProducts: false,
+                canRestockProducts: false,
+                canBroadcastProducts: true,
+                canViewCoupons: true,
+                canManageCoupons: true,
+                canViewAnalytics: true,
+                canViewReviews: false,
+                canModerateReviews: false,
+                canViewLogs: false,
+                canExportLogs: false,
+                canClearLogs: false,
+                canViewStaff: false,
+                canManageStaffRoles: false
+            }
+        };
+
+        window.normalizeStaffRole = function(rawRole) {
+            const r = String(rawRole || "customer").toLowerCase().trim();
+            if (r === "staff") return "fulfillment_staff";
+            return r;
+        };
+
+        window.getCurrentRolePermissions = function() {
+            const role = window.normalizeStaffRole(window.currentUserData?.role);
+            if (role === "admin" || window.currentUser?.uid === "NoIYk9Uwlc75YLdlpzx1") {
+                return ROLE_PERMISSIONS.admin;
+            }
+            return ROLE_PERMISSIONS[role] || {
+                label: "Customer",
+                summary: "Standard storefront access.",
+                canViewOrders: false,
+                canUpdateOrders: false,
+                canExportOrders: false,
+                canViewProducts: false,
+                canCreateProducts: false,
+                canEditProducts: false,
+                canDeleteProducts: false,
+                canRestockProducts: false,
+                canBroadcastProducts: false,
+                canViewCoupons: false,
+                canManageCoupons: false,
+                canViewAnalytics: false,
+                canViewReviews: false,
+                canModerateReviews: false,
+                canViewLogs: false,
+                canExportLogs: false,
+                canClearLogs: false,
+                canViewStaff: false,
+                canManageStaffRoles: false
+            };
+        };
+
+        window.hasRolePermission = function(permKey) {
+            return Boolean(window.getCurrentRolePermissions()[permKey]);
+        };
+
+        window.isStaffOrAdminUser = function(userObj, userDataObj) {
+            const u = userObj || window.currentUser;
+            const d = userDataObj || window.currentUserData;
+            if (!u) return false;
+            const role = window.normalizeStaffRole(d?.role);
+            const email = String(d?.email || u.email || "").toLowerCase();
+            return ["admin", "manager", "fulfillment_staff", "support_staff", "marketing_staff"].includes(role) ||
+                u.uid === "NoIYk9Uwlc75YLdlpzx1" ||
+                email.endsWith("@minimize.com");
+        };
 
         function formatMinimizeUserId(num) {
             const safeNum = Math.max(1, Number(num) || 1);
@@ -886,20 +1154,23 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             window._syncPillTimer = setTimeout(() => pill.classList.add('hidden'), 2200);
         }
 
-        // AUDIT & CHANGE HISTORY LOGGER
+        // AUDIT & CHANGE HISTORY LOGGER (writes to users/{uid}/activity_logs)
         window.logUserDatabaseChange = async function(actionType, details = {}) {
             if (!window.currentUser) return;
+            const nowIso = new Date().toISOString();
+            const entry = {
+                action: actionType,
+                details,
+                source: window.Telegram?.WebApp?.initData ? "telegram_mini_app" : "web_storefront",
+                timestamp: nowIso,
+                createdAt: serverTimestamp()
+            };
+            window.currentUserActivityLogs = [entry, ...(window.currentUserActivityLogs || [])].slice(0, 50);
             try {
-                await addDoc(collection(db, "users", window.currentUser.uid, "activity_logs"), {
-                    action: actionType,
-                    details,
-                    source: window.Telegram?.WebApp?.initData ? "telegram_mini_app" : "web_storefront",
-                    timestamp: new Date().toISOString(),
-                    createdAt: serverTimestamp()
-                });
+                await addDoc(collection(db, "users", window.currentUser.uid, "activity_logs"), entry);
                 flashCloudSyncPill();
             } catch (err) {
-                console.warn("Activity log write skipped:", err.code || err.message);
+                console.warn("Activity log write warning:", err.code || err.message);
             }
         };
 
@@ -1211,8 +1482,14 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         }
 
         window.saveAdminProductAndBroadcast = async function() {
-            if ((window.currentUserData?.role || "").toLowerCase() === 'staff') return alert('Staff role is restricted from creating/editing products.');
             const prodId = document.getElementById('prod-id').value;
+            if (prodId && !window.hasRolePermission('canEditProducts')) {
+                return alert('Your role does not have permission to edit products.');
+            }
+            if (!prodId && !window.hasRolePermission('canCreateProducts')) {
+                return alert('Your role does not have permission to create products.');
+            }
+
             const rawName = document.getElementById('prod-name').value.trim();
             const name = sanitizeHTML(rawName);
             let sku = sanitizeHTML(document.getElementById('prod-sku').value.trim().toUpperCase());
@@ -1264,6 +1541,12 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 return alert("Failed to save product to database: " + dbErr.message);
             }
 
+            if (!window.hasRolePermission('canBroadcastProducts')) {
+                alert('Product saved to database (Telegram broadcast requires Marketing, Manager, or Admin role).');
+                closeAdminProductModal();
+                return;
+            }
+
             const template = document.getElementById('telegram-template-text').value;
             const chatIdInput = document.getElementById('telegram-chat-id').value.trim();
             if (chatIdInput) localStorage.setItem('mininize_tg_chat', chatIdInput);
@@ -1295,6 +1578,9 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
 
         window.broadcastExistingProduct = async function(id) {
+            if (!window.hasRolePermission('canBroadcastProducts')) {
+                return alert('Your role is not permitted to broadcast Telegram posts.');
+            }
             const p = window.products.find(item => item.id === id);
             if (!p) return;
 
@@ -1324,6 +1610,9 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
 
         window.adjustProductStock = async function(prodId, delta) {
+            if (!window.hasRolePermission('canRestockProducts')) {
+                return alert('Your role cannot adjust inventory stock.');
+            }
             triggerTelegramHaptic('light');
             const p = window.products.find(item => item.id === prodId);
             if (!p) return;
@@ -1333,7 +1622,9 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
 
         window.deleteProduct = async function(id) {
-            if ((window.currentUserData?.role || "").toLowerCase() === 'staff') return alert('Staff role cannot delete products.');
+            if (!window.hasRolePermission('canDeleteProducts')) {
+                return alert('Only Super Admins can delete products.');
+            }
             if (confirm("Delete this product?")) {
                 await deleteDoc(doc(db, "products", id));
                 await window.logUserDatabaseChange("product_deleted", { productId: id });
@@ -1343,7 +1634,9 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
 
         window.saveAdminCoupon = async function() {
-            if ((window.currentUserData?.role || "").toLowerCase() === 'staff') return alert('Staff role cannot manage coupons.');
+            if (!window.hasRolePermission('canManageCoupons')) {
+                return alert('Your role cannot manage coupons.');
+            }
             const code = sanitizeHTML(document.getElementById('coupon-code-input').value.trim().toUpperCase());
             const discountPercent = parseFloat(document.getElementById('coupon-discount-input').value);
             const maxUsage = parseInt(document.getElementById('coupon-max-usage').value) || 50;
@@ -1361,8 +1654,8 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
 
         window.toggleCouponStatus = async function(docId, currentStatus) {
-            if ((window.currentUserData?.role || "").toLowerCase() === 'staff') {
-                return alert('Staff role cannot manage coupons.');
+            if (!window.hasRolePermission('canManageCoupons')) {
+                return alert('Your role cannot manage coupons.');
             }
             try {
                 await updateDoc(doc(db, "coupons", docId), { isActive: !currentStatus });
@@ -1375,8 +1668,8 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
 
         window.deleteCoupon = async function(docId, codeLabel) {
-            if ((window.currentUserData?.role || "").toLowerCase() === 'staff') {
-                return alert('Staff role cannot manage coupons.');
+            if (!window.hasRolePermission('canManageCoupons')) {
+                return alert('Your role cannot delete coupons.');
             }
             if (confirm(`Delete coupon ${codeLabel || docId}?`)) {
                 try {
@@ -1391,10 +1684,17 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
 
         window.updateOrderStatus = async function(docId, newStatus) {
-            await updateDoc(doc(db, "orders", docId), { status: newStatus, updatedAt: new Date().toISOString() });
-            await window.logUserDatabaseChange("order_status_updated", { orderDocId: docId, status: newStatus });
-            triggerTelegramHaptic('success');
-            await updateAdminMetrics();
+            if (!window.hasRolePermission('canUpdateOrders')) {
+                return alert('Your role is view-only for orders and cannot update fulfillment status.');
+            }
+            try {
+                await updateDoc(doc(db, "orders", docId), { status: newStatus, updatedAt: new Date().toISOString() });
+                await window.logUserDatabaseChange("order_status_updated", { orderDocId: docId, status: newStatus });
+                triggerTelegramHaptic('success');
+                await updateAdminMetrics();
+            } catch (err) {
+                alert("Failed to update order status: " + err.message);
+            }
         };
 
         function triggerCsvDownload(lines, filenamePrefix) {
@@ -1410,6 +1710,9 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         }
 
         window.exportOrdersCSV = function() {
+            if (!window.hasRolePermission('canExportOrders')) {
+                return alert('Your role cannot export orders.');
+            }
             triggerTelegramHaptic('medium');
             if (!window.orders || window.orders.length === 0) return alert('No orders to export.');
             const lines = ["OrderNum,Customer,Phone,Address,Status,Total,Date"];
@@ -1420,6 +1723,9 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
 
         window.exportCouponsCSV = function() {
+            if (!window.hasRolePermission('canViewCoupons')) {
+                return alert('Your role cannot export coupons.');
+            }
             triggerTelegramHaptic('medium');
             if (!window.coupons || window.coupons.length === 0) return alert('No coupons to export.');
             const lines = ["Code,DiscountPercent,UsageCount,MaxUsage,TotalDiscountGiven,Status"];
@@ -1430,11 +1736,8 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
 
         function isCallerSuperAdmin() {
-            const role = (window.currentUserData?.role || "").toLowerCase();
-            const email = (window.currentUser?.email || "").toLowerCase();
-            return role === "admin" ||
-                window.currentUser?.uid === "NoIYk9Uwlc75YLdlpzx1" ||
-                (email.endsWith("@minimize.com") && !email.includes("staff"));
+            return window.normalizeStaffRole(window.currentUserData?.role) === "admin" ||
+                window.currentUser?.uid === "NoIYk9Uwlc75YLdlpzx1";
         }
 
         window._cachedAdminUsersList = [];
@@ -1455,6 +1758,10 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         window.initAdminLogsUserDropdown = async function(preselectUid = '') {
             const selectEl = document.getElementById('admin-logs-user-select');
             if (!selectEl) return;
+            if (!window.hasRolePermission('canViewLogs')) {
+                selectEl.innerHTML = `<option value="">Activity logs restricted for your role</option>`;
+                return;
+            }
             try {
                 const snap = await getDocs(collection(db, "users"));
                 window._cachedAdminUsersList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -1476,6 +1783,9 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
 
         window.inspectUserLogsFromStaff = async function(uid) {
+            if (!window.hasRolePermission('canViewLogs')) {
+                return alert('Your role does not have permission to view user activity logs.');
+            }
             switchAdminNav('logs');
             await initAdminLogsUserDropdown(uid);
         };
@@ -1499,14 +1809,16 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     : `Showing ${filtered.length} of ${allLogs.length} entries`;
             }
 
+            const canExport = window.hasRolePermission('canExportLogs');
             if (exportBtn) {
+                exportBtn.classList.toggle('hidden', !canExport);
                 exportBtn.disabled = filtered.length === 0;
             }
 
-            const superAdmin = isCallerSuperAdmin();
+            const canClear = window.hasRolePermission('canClearLogs') && canExport;
             [exportClearBtn, clearBtn].forEach(btn => {
                 if (!btn) return;
-                if (!superAdmin) {
+                if (!canClear) {
                     btn.classList.add('hidden');
                 } else {
                     btn.classList.remove('hidden');
@@ -1548,6 +1860,11 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             const summaryEl = document.getElementById('admin-logs-selected-summary');
             if (!tbody) return;
 
+            if (!window.hasRolePermission('canViewLogs')) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-[#9C8A90]">Your role does not have permission to view activity logs.</td></tr>`;
+                return;
+            }
+
             window._currentAdminLoadedLogs = [];
             window._currentAdminFilteredLogs = [];
             ['admin-logs-export-btn', 'admin-logs-export-clear-btn', 'admin-logs-clear-btn'].forEach(id => {
@@ -1572,13 +1889,10 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             }
 
             try {
-                const logsQ = query(
-                    collection(db, "users", uid, "activity_logs"),
-                    orderBy("timestamp", "desc"),
-                    limit(50)
-                );
-                const snap = await getDocs(logsQ);
-                window._currentAdminLoadedLogs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                const snap = await getDocs(collection(db, "users", uid, "activity_logs"));
+                const rows = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                rows.sort((a, b) => String(b.timestamp || '').localeCompare(String(a.timestamp || '')));
+                window._currentAdminLoadedLogs = rows.slice(0, 50);
                 renderFilteredAdminActivityLogs();
             } catch (err) {
                 console.error("Failed to fetch user activity logs:", err);
@@ -1587,6 +1901,9 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
 
         window.exportAdminUserActivityLogsCSV = function(useAllLogs = false) {
+            if (!window.hasRolePermission('canExportLogs')) {
+                return alert('Your role cannot export activity logs.');
+            }
             triggerTelegramHaptic('medium');
             const rows = useAllLogs ? (window._currentAdminLoadedLogs || []) : (window._currentAdminFilteredLogs || []);
             if (rows.length === 0) return false;
@@ -1613,7 +1930,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
 
         window.clearAdminUserActivityLogs = async function(skipConfirm = false) {
-            if (!isCallerSuperAdmin()) {
+            if (!window.hasRolePermission('canClearLogs')) {
                 return alert('Only Super Admins can clear user activity logs.');
             }
 
@@ -1705,10 +2022,14 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
             const email = (extraData.email || user.email || existingData.email || "").toLowerCase();
 
-            let role = existingData.role ? String(existingData.role).toLowerCase() : "";
+            let role = existingData.role ? window.normalizeStaffRole(existingData.role) : "";
             if (!role) {
                 if (user.uid === "NoIYk9Uwlc75YLdlpzx1" || window.isAdminOrStaffDomain(email)) {
-                    role = email.includes("staff") ? "staff" : "admin";
+                    if (email.includes("manager")) role = "manager";
+                    else if (email.includes("support")) role = "support_staff";
+                    else if (email.includes("marketing")) role = "marketing_staff";
+                    else if (email.includes("staff")) role = "fulfillment_staff";
+                    else role = "admin";
                 } else {
                     role = "customer";
                 }
@@ -1760,7 +2081,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             const name = sanitizeHTML(document.getElementById('new-staff-name').value.trim());
             const email = document.getElementById('new-staff-email').value.trim().toLowerCase();
             const password = document.getElementById('new-staff-password').value;
-            const role = (document.getElementById('new-staff-role').value || "staff").toLowerCase();
+            const role = window.normalizeStaffRole(document.getElementById('new-staff-role').value || "fulfillment_staff");
 
             if (!name || !email || password.length < 6) {
                 return alert("Enter staff name, valid email, and password (at least 6 characters).");
@@ -1819,9 +2140,9 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 const syncedData = await syncUserToDatabase(cred.user, { email });
                 window.currentUser = cred.user;
                 window.currentUserData = syncedData;
+                await window.logUserDatabaseChange("user_login", { method: "email", email });
 
-                const role = (syncedData?.role || "").toLowerCase();
-                if (role === "admin" || role === "staff" || window.isAdminOrStaffDomain(email)) {
+                if (window.isStaffOrAdminUser(cred.user, syncedData)) {
                     enterAdminMode();
                 } else {
                     exitAdminMode();
@@ -1867,13 +2188,15 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 window.currentUser = cred.user;
                 window.currentUserData = syncedData;
 
-                await setDoc(doc(db, "users", cred.user.uid, "addresses", "addr_home"), {
+                const defaultAddr = {
                     label: 'Home',
                     street: '123 Main Street',
                     province: 'Phnom Penh',
                     isDefault: true,
                     updatedAt: new Date().toISOString()
-                }, { merge: true });
+                };
+                await setDoc(doc(db, "users", cred.user.uid, "addresses", "addr_home"), defaultAddr, { merge: true });
+                window.currentUserAddresses = [{ id: "addr_home", ...defaultAddr }];
 
                 await window.logUserDatabaseChange("account_created", { name, email, customId: syncedData.customId });
                 triggerTelegramHaptic('success');
@@ -1923,15 +2246,18 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
                 const addrRef = collection(db, "users", user.uid, "addresses");
                 if ((await getDocs(addrRef)).empty) {
-                    await setDoc(doc(db, "users", user.uid, "addresses", "addr_home"), {
+                    const tgAddr = {
                         label: 'Home',
                         street: 'Telegram St',
                         province: 'Phnom Penh',
                         isDefault: true,
                         updatedAt: new Date().toISOString()
-                    }, { merge: true });
+                    };
+                    await setDoc(doc(db, "users", user.uid, "addresses", "addr_home"), tgAddr, { merge: true });
+                    window.currentUserAddresses = [{ id: "addr_home", ...tgAddr }];
                 }
 
+                await window.logUserDatabaseChange("user_login", { method: "telegram", telegramId: tgId });
                 triggerTelegramHaptic('success');
             } catch (err) {
                 alert("Authentication error: " + err.message);
@@ -1947,12 +2273,35 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         let addressesUnsubscribe = null;
         let wishlistUnsubscribe = null;
         let cartUnsubscribe = null;
+        let userLogsUnsubscribe = null;
+
+        function renderUserActivityHistoryContainer(containerEl) {
+            if (!containerEl) return;
+            const rows = [...(window.currentUserActivityLogs || [])].sort(
+                (a, b) => String(b.timestamp || '').localeCompare(String(a.timestamp || ''))
+            );
+            if (rows.length === 0) {
+                containerEl.innerHTML = `<p class="text-xs text-[#9C8A90] text-center py-4">No database edits recorded yet.</p>`;
+                return;
+            }
+            containerEl.innerHTML = rows.map(item => `
+                <div class="bg-[#FDF9F8] p-2.5 rounded-xl border border-[#EFE4E6] space-y-1">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-[#9E5E6F] uppercase text-[10px]">${sanitizeHTML((item.action || 'change').replace(/_/g, ' '))}</span>
+                        <span class="text-[9px] text-[#9C8A90] font-mono">${sanitizeHTML((item.timestamp || '').replace('T', ' ').substring(0, 19))}</span>
+                    </div>
+                    <p class="text-[10px] text-[#6E5D62] font-mono break-all">${sanitizeHTML(JSON.stringify(item.details || {}))}</p>
+                </div>
+            `).join('');
+        }
+        window.renderUserActivityHistoryContainer = renderUserActivityHistoryContainer;
 
         onAuthStateChanged(auth, async (user) => {
             if (userDocUnsubscribe) { userDocUnsubscribe(); userDocUnsubscribe = null; }
             if (addressesUnsubscribe) { addressesUnsubscribe(); addressesUnsubscribe = null; }
             if (wishlistUnsubscribe) { wishlistUnsubscribe(); wishlistUnsubscribe = null; }
             if (cartUnsubscribe) { cartUnsubscribe(); cartUnsubscribe = null; }
+            if (userLogsUnsubscribe) { userLogsUnsubscribe(); userLogsUnsubscribe = null; }
 
             if (user) {
                 window.currentUser = user;
@@ -1993,6 +2342,17 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     }
                 }, () => {});
 
+                // Live listener for user's own activity logs
+                userLogsUnsubscribe = onSnapshot(collection(db, "users", user.uid, "activity_logs"), (snap) => {
+                    const logs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                    logs.sort((a, b) => String(b.timestamp || '').localeCompare(String(a.timestamp || '')));
+                    window.currentUserActivityLogs = logs.slice(0, 50);
+                    const historyContainer = document.getElementById('user-activity-history-list');
+                    if (historyContainer) renderUserActivityHistoryContainer(historyContainer);
+                }, (err) => {
+                    console.warn("User activity logs listener warning:", err.code || err.message);
+                });
+
                 await loadInitialProducts();
 
                 const startParam = window.Telegram?.WebApp?.initDataUnsafe?.start_param || "";
@@ -2020,13 +2380,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                         headerAvatar.src = window.currentUserData.image;
                     }
 
-                    const role = String(window.currentUserData?.role || "").toLowerCase();
-                    const isAdmin = role === "admin" ||
-                                    role === "staff" ||
-                                    window.isAdminOrStaffDomain(user.email) ||
-                                    user.uid === "NoIYk9Uwlc75YLdlpzx1";
-
-                    if (isAdmin) {
+                    if (window.isStaffOrAdminUser(user, window.currentUserData)) {
                         enterAdminMode();
                     } else {
                         exitAdminMode();
@@ -2041,6 +2395,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
                 addressesUnsubscribe = onSnapshot(collection(db, "users", user.uid, "addresses"), (snapshot) => {
                     window.currentUserAddresses = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
+                    if (window.populateCheckoutAddressDropdown) window.populateCheckoutAddressDropdown();
                 }, () => {});
 
                 wishlistUnsubscribe = onSnapshot(collection(db, "users", user.uid, "wishlist"), (snapshot) => {
@@ -2056,6 +2411,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 window.currentUserData = null;
                 window.currentUserAddresses = [];
                 window.currentUserWishlist = [];
+                window.currentUserActivityLogs = [];
 
                 const headerAvatar = document.getElementById('header-user-avatar');
                 if (headerAvatar) headerAvatar.src = 'https://images.unsplash.com/photo-1535557142533-b5e1cc6e2a5d?w=600&q=80';
@@ -2181,6 +2537,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             const container = document.getElementById('admin-reviews-list-container');
             if (!container) return;
             container.innerHTML = `<p class="text-[#9C8A90] text-center py-4">Loading all customer reviews...</p>`;
+            const canModerate = window.hasRolePermission('canModerateReviews');
 
             try {
                 const snap = await getDocs(collection(db, "products"));
@@ -2212,10 +2569,11 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                                 <b class="text-[#2A2124]">${sanitizeHTML(r.productName)}</b>
                                 <span class="block text-[10px] text-[#6E5D62]">By <b>${sanitizeHTML(r.author || 'Shopper')}</b> • ${sanitizeHTML(r.date || '')} • <span class="text-[#C9A46B] font-bold">★ ${r.rating || 5}.0</span></span>
                             </div>
+                            ${canModerate ? `
                             <div class="flex items-center space-x-2 shrink-0">
                                 <button type="button" onclick="editAdminReview('${r.productId}', '${r.id || ''}', ${r.reviewIndex})" class="text-[#9E5E6F] font-bold text-[11px] hover:underline">Edit</button>
                                 <button type="button" onclick="deleteAdminReview('${r.productId}', '${r.id || ''}', ${r.reviewIndex})" class="text-rose-600 font-bold text-[11px] hover:underline">Delete</button>
-                            </div>
+                            </div>` : `<span class="text-[10px] text-[#9C8A90]">Read-only</span>`}
                         </div>
                         <p class="text-[#2A2124] text-xs">${sanitizeHTML(r.text)}</p>
                     </div>
@@ -2227,6 +2585,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
 
         window.editAdminReview = async function(productId, reviewId, reviewIndex) {
+            if (!window.hasRolePermission('canModerateReviews')) return alert('Your role cannot edit reviews.');
             try {
                 const prodRef = doc(db, "products", productId);
                 const prodSnap = await getDoc(prodRef);
@@ -2262,6 +2621,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
 
         window.deleteAdminReview = async function(productId, reviewId, reviewIndex) {
+            if (!window.hasRolePermission('canModerateReviews')) return alert('Your role cannot delete reviews.');
             if (!confirm("Permanently delete this review?")) return;
             try {
                 const prodRef = doc(db, "products", productId);
@@ -2284,109 +2644,151 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             }
         };
 
+        // ORDER CREATION & FIRESTORE SYNC
         window.createOrderAndInitBakong = async function() {
-            if (!window.currentUser) return alert('Please sign in to complete your order.');
+            const activeUser = window.currentUser || window.firebaseAuth?.currentUser;
+            if (!activeUser) return alert('Please sign in to complete your order.');
             if (!window.cart || window.cart.length === 0) return alert('Your bag is empty.');
 
             const customerName = sanitizeHTML(document.getElementById('checkout-name').value.trim());
             const phone = sanitizeHTML(document.getElementById('checkout-phone').value.trim());
             const address = sanitizeHTML(document.getElementById('checkout-address').value.trim());
             const promoCodeInput = sanitizeHTML(document.getElementById('checkout-promo').value.trim().toUpperCase());
-            if (!customerName || !phone || !address) return alert('Complete delivery details.');
+            const shouldSaveAddress = Boolean(document.getElementById('save-checkout-address-check')?.checked);
 
-            const subtotal = window.cart.reduce((s, i) => s + (Number(i.price) * Number(i.qty)), 0);
+            if (!customerName || !phone || !address) return alert('Complete delivery details (name, phone, and address).');
+
+            const submitBtn = document.getElementById('checkout-submit-btn');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i><span>Syncing Order...</span>`;
+            }
+
+            const subtotal = window.cart.reduce((s, i) => s + (Number(i.price || 0) * Number(i.qty || 1)), 0);
             let discount = 0;
             let appliedCouponCode = 'NONE';
+            let earnedPoints = Math.floor(subtotal * 10);
+            let couponUpdates = null;
+            let couponRef = null;
+            const stockUpdates = [];
 
             try {
-                await runTransaction(db, async (transaction) => {
-                    const productSnaps = [];
-                    for (const cartItem of window.cart) {
-                        const prodRef = doc(db, "products", cartItem.id);
-                        const prodSnap = await transaction.get(prodRef);
+                for (const cartItem of window.cart) {
+                    try {
+                        const prodSnap = await getDoc(doc(db, "products", cartItem.id));
                         if (prodSnap.exists()) {
-                            const currentStock = prodSnap.data().stock ?? 10;
+                            const currentStock = Number(prodSnap.data().stock ?? 10);
                             if (currentStock < cartItem.qty) {
                                 throw new Error(`Sorry, "${cartItem.name}" only has ${currentStock} units left in stock!`);
                             }
-                            productSnaps.push({ prodRef, nextStock: Math.max(0, currentStock - cartItem.qty) });
+                            stockUpdates.push({ id: cartItem.id, nextStock: Math.max(0, currentStock - cartItem.qty) });
                         }
+                    } catch (stockErr) {
+                        if (stockErr.message.includes('only has')) throw stockErr;
                     }
+                }
 
-                    let couponRef = null;
-                    let couponUpdates = null;
-                    if (promoCodeInput) {
-                        couponRef = doc(db, "coupons", promoCodeInput);
-                        const couponSnap = await transaction.get(couponRef);
-                        if (!couponSnap.exists()) {
-                            throw new Error('Invalid promo code.');
-                        }
-                        const cData = couponSnap.data();
-                        const currentUsage = cData.usageCount || 0;
-                        const maxAllowed = cData.maxUsage || 50;
-                        if (!cData.isActive || currentUsage >= maxAllowed) {
-                            throw new Error('This promo code is either expired or has reached its maximum redemption limit.');
-                        }
-                        discount = subtotal * (cData.discountPercent / 100);
-                        appliedCouponCode = promoCodeInput;
-                        couponUpdates = {
-                            usageCount: currentUsage + 1,
-                            totalDiscountGiven: (cData.totalDiscountGiven || 0) + discount,
-                            isActive: (currentUsage + 1) >= maxAllowed ? false : cData.isActive
-                        };
+                if (promoCodeInput) {
+                    couponRef = doc(db, "coupons", promoCodeInput);
+                    const couponSnap = await getDoc(couponRef);
+                    if (!couponSnap.exists()) {
+                        throw new Error('Invalid promo code.');
                     }
-
-                    const finalTotal = subtotal - discount;
-                    const earnedPoints = Math.floor(finalTotal * 10);
-                    const userRef = doc(db, "users", window.currentUser.uid);
-                    const uDoc = await transaction.get(userRef);
-                    const currentPts = uDoc.exists() ? (uDoc.data().loyaltyPoints || 0) : 0;
-
-                    for (const item of productSnaps) {
-                        transaction.update(item.prodRef, { stock: item.nextStock, updatedAt: new Date().toISOString() });
+                    const cData = couponSnap.data();
+                    const currentUsage = Number(cData.usageCount || 0);
+                    const maxAllowed = Number(cData.maxUsage || 50);
+                    if (!cData.isActive || currentUsage >= maxAllowed) {
+                        throw new Error('This promo code is either expired or has reached its maximum redemption limit.');
                     }
-                    if (couponRef && couponUpdates) {
-                        transaction.update(couponRef, couponUpdates);
-                    }
-                    transaction.set(userRef, { loyaltyPoints: currentPts + earnedPoints }, { merge: true });
-                });
+                    discount = subtotal * (Number(cData.discountPercent || 0) / 100);
+                    appliedCouponCode = promoCodeInput;
+                    couponUpdates = {
+                        usageCount: currentUsage + 1,
+                        totalDiscountGiven: Number(cData.totalDiscountGiven || 0) + discount,
+                        isActive: (currentUsage + 1) >= maxAllowed ? false : Boolean(cData.isActive)
+                    };
+                }
 
-                const total = subtotal - discount;
+                const total = Math.max(0, subtotal - discount);
+                earnedPoints = Math.floor(total * 10);
                 const orderNum = `#ORD-${Math.floor(1000 + Math.random() * 9000)}`;
+                const dateStr = new Date().toISOString().split('T')[0];
 
-                await setDoc(doc(db, "users", window.currentUser.uid), {
+                // Apply stock & coupon updates
+                for (const su of stockUpdates) {
+                    try {
+                        await updateDoc(doc(db, "products", su.id), { stock: su.nextStock, updatedAt: new Date().toISOString() });
+                    } catch (e) {
+                        console.warn("Stock update warning:", e.message);
+                    }
+                }
+                if (couponRef && couponUpdates) {
+                    try {
+                        await updateDoc(couponRef, couponUpdates);
+                    } catch (e) {
+                        console.warn("Coupon update warning:", e.message);
+                    }
+                }
+
+                // Update user profile & optional saved address
+                const currentPts = Number(window.currentUserData?.loyaltyPoints || 50);
+                await setDoc(doc(db, "users", activeUser.uid), {
                     name: customerName,
                     phone,
                     lastDeliveryAddress: address,
+                    loyaltyPoints: currentPts + earnedPoints,
                     updatedAt: new Date().toISOString()
                 }, { merge: true });
+                window.currentUserData = {
+                    ...(window.currentUserData || {}),
+                    name: customerName,
+                    phone,
+                    lastDeliveryAddress: address,
+                    loyaltyPoints: currentPts + earnedPoints
+                };
 
-                await setDoc(doc(db, "users", window.currentUser.uid, "addresses", "addr_checkout_latest"), {
-                    label: "Latest Checkout",
-                    street: address,
-                    province: "Cambodia",
-                    isDefault: window.currentUserAddresses.length === 0,
-                    updatedAt: new Date().toISOString()
-                }, { merge: true });
+                if (shouldSaveAddress) {
+                    const addrDocId = `addr_${Date.now()}`;
+                    const newAddrObj = {
+                        label: address.startsWith("Pinned GPS") ? "Pinned Location" : "Checkout Address",
+                        street: address,
+                        province: "Cambodia",
+                        isDefault: (window.currentUserAddresses || []).length === 0,
+                        updatedAt: new Date().toISOString()
+                    };
+                    await setDoc(doc(db, "users", activeUser.uid, "addresses", addrDocId), newAddrObj, { merge: true });
+                    window.currentUserAddresses = [...(window.currentUserAddresses || []), { id: addrDocId, ...newAddrObj }];
+                }
 
-                const docRef = await addDoc(collection(db, "orders"), {
+                const orderRecord = {
                     orderNum,
-                    userId: window.currentUser.uid,
+                    userId: activeUser.uid,
                     customerName,
                     phone,
                     address,
-                    items: window.cart,
+                    items: window.cart.map(i => ({
+                        id: i.id,
+                        name: i.name,
+                        price: Number(i.price || 0),
+                        qty: Number(i.qty || 1),
+                        category: i.category || 'Accessories',
+                        image: i.image || ''
+                    })),
                     subtotal,
                     discount,
                     total,
                     promoCode: appliedCouponCode,
                     status: 'Pending',
-                    date: new Date().toISOString().split('T')[0],
-                    createdAt: serverTimestamp()
-                });
-                window.currentActiveOrderId = docRef.id;
+                    date: dateStr,
+                    createdAt: new Date().toISOString(),
+                    serverCreatedAt: serverTimestamp()
+                };
 
-                await window.logUserDatabaseChange("order_placed", { orderNum, total, itemsCount: window.cart.length });
+                const docRef = await addDoc(collection(db, "orders"), orderRecord);
+                window.currentActiveOrderId = docRef.id;
+                window.orders = [{ docId: docRef.id, ...orderRecord }, ...(window.orders || [])];
+
+                await window.logUserDatabaseChange("order_placed", { orderNum, total, address, itemsCount: window.cart.length });
 
                 window.cart = [];
                 await window.syncCartToDatabase("checkout_completed");
@@ -2399,18 +2801,29 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 document.getElementById('bakong-payment-modal').classList.remove('hidden');
                 triggerTelegramHaptic('medium');
             } catch (err) {
+                console.error("Order creation error:", err);
                 alert("Order failed: " + err.message);
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `<i class="fa-solid fa-qrcode"></i><span>Pay via Bakong KHQR</span>`;
+                }
             }
         };
 
         window.verifyBakongTransactionManual = async function() {
             if (window.currentActiveOrderId) {
-                await updateDoc(doc(db, "orders", window.currentActiveOrderId), { status: "Paid", paidAt: new Date().toISOString() });
-                await window.logUserDatabaseChange("order_paid", { orderDocId: window.currentActiveOrderId });
+                try {
+                    await updateDoc(doc(db, "orders", window.currentActiveOrderId), { status: "Paid", paidAt: new Date().toISOString() });
+                    await window.logUserDatabaseChange("order_paid", { orderDocId: window.currentActiveOrderId });
+                } catch (err) {
+                    alert("Could not mark order paid in database: " + err.message);
+                    return;
+                }
             }
             triggerTelegramHaptic('success');
             document.getElementById('bakong-payment-modal').classList.add('hidden');
-            alert('Payment Verified Successfully! Courier dispatched. 🎉');
+            alert('Payment Verified Successfully & Synced! 🎉');
         };
 
         window.shareProduct = function() {
@@ -2449,11 +2862,11 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         };
     </script>
 
-    <!-- STOREFRONT, PROFILE, 3D VIEWER, PHOTO COMPRESSOR & ADMIN LOGIC -->
+    <!-- STOREFRONT, PROFILE, 3D VIEWER, PHOTO COMPRESSOR, GEOLOCATION & ROLE-BASED ADMIN LOGIC -->
     <script>
         window.products = []; window.orders = []; window.coupons = [];
         window.cart = JSON.parse(localStorage.getItem('mininize_cart') || '[]');
-        window.currentUserAddresses = []; window.currentUserWishlist = [];
+        window.currentUserAddresses = []; window.currentUserWishlist = []; window.currentUserActivityLogs = [];
         let activeCategory = 'All';
         window.currentSelectedProdId = null;
         window.currentSelectedStarRating = 5;
@@ -2811,7 +3224,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             panel.classList.remove('translate-x-full');
 
             const uData = window.currentUserData || {};
-            const isAdmin = uData.role === "admin" || uData.role === "staff" || window.currentUser?.uid === "NoIYk9Uwlc75YLdlpzx1";
+            const isStaffOrAdmin = window.isStaffOrAdminUser(window.currentUser, uData);
 
             if (section === 'personal') {
                 titleEl.innerText = "Personal Information 👤";
@@ -2841,14 +3254,15 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 try {
                     const getDocsFn = getFirestoreGetDocs();
                     const ordersList = [];
-                    if (isAdmin) {
-                        const snap = await getDocsFn(window.firestoreQuery(window.firestoreCollection(window.firebaseDb, "orders"), window.firestoreOrderBy("createdAt", "desc"), window.firestoreLimit(20)));
+                    if (isStaffOrAdmin) {
+                        const snap = await getDocsFn(window.firestoreCollection(window.firebaseDb, "orders"));
                         snap.forEach(d => ordersList.push({ docId: d.id, ...d.data() }));
                     } else if (window.currentUser) {
                         const q = window.firestoreQuery(window.firestoreCollection(window.firebaseDb, "orders"), window.firestoreWhere("userId", "==", window.currentUser.uid));
                         const querySnapshot = await getDocsFn(q);
                         querySnapshot.forEach(docSnap => ordersList.push({ docId: docSnap.id, ...docSnap.data() }));
                     }
+                    ordersList.sort((a, b) => String(b.createdAt || b.date || '').localeCompare(String(a.createdAt || a.date || '')));
                     const statuses = ['Pending', 'Paid', 'Processing', 'Shipped', 'Delivered'];
                     bodyEl.innerHTML = ordersList.length === 0 ? `<p class="text-xs text-[#9C8A90] text-center py-4">You have no active orders yet.</p>` :
                         ordersList.map(o => {
@@ -2861,6 +3275,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                                         <span class="font-bold text-[#9E5E6F]">${window.formatPrice(o.total || 0)}</span>
                                     </div>
                                     <p class="text-[10px] text-[#6E5D62]">Ordered: ${o.date} | Status: <span class="font-bold text-[#2A2124]">${o.status}</span></p>
+                                    <p class="text-[10px] text-[#6E5D62] break-words"><b>Deliver to:</b> ${sanitizeHTML(o.address || '')}</p>
                                     <div class="flex justify-between items-center pt-2 border-t border-[#EFE4E6] text-[9px] text-[#6E5D62]">
                                         ${statuses.map((st, idx) => `
                                             <div class="flex flex-col items-center space-y-1">
@@ -2931,7 +3346,10 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                         <div class="border-t border-[#EFE4E6] pt-2 space-y-2">
                             <div class="flex justify-between items-center">
                                 <p id="addr-form-heading" class="font-bold text-[#2A2124] text-[11px]">Add New Address:</p>
-                                <button type="button" id="cancel-edit-addr-btn" onclick="resetAddressForm()" class="hidden text-[10px] text-[#6E5D62] hover:text-[#2A2124] underline">Cancel Edit</button>
+                                <div class="flex items-center space-x-2">
+                                    <button type="button" onclick="pinCurrentLocationForProfileAddress()" class="text-[10px] font-bold text-[#9E5E6F] hover:underline"><i class="fa-solid fa-location-crosshairs"></i> Pin GPS</button>
+                                    <button type="button" id="cancel-edit-addr-btn" onclick="resetAddressForm()" class="hidden text-[10px] text-[#6E5D62] hover:text-[#2A2124] underline">Cancel Edit</button>
+                                </div>
                             </div>
                             <input type="hidden" id="edit-addr-id" value="">
                             <input type="text" id="new-addr-label" placeholder="Label (e.g. Office, Home)" class="w-full border border-[#EFE4E6] rounded-xl px-2.5 py-1.5 text-[#2A2124] placeholder-[#9C8A90]">
@@ -2991,26 +3409,25 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     </div>`;
             } else if (section === 'history') {
                 titleEl.innerText = "Saved Edit & Activity History 🕒";
-                bodyEl.innerHTML = `<p class="text-xs text-[#9C8A90] text-center py-4">Loading database change history...</p>`;
-                try {
-                    const getDocsFn = getFirestoreGetDocs();
-                    const logsSnap = await getDocsFn(window.firestoreQuery(window.firestoreCollection(window.firebaseDb, "users", window.currentUser.uid, "activity_logs"), window.firestoreOrderBy("timestamp", "desc"), window.firestoreLimit(25)));
-                    if (logsSnap.empty) {
-                        bodyEl.innerHTML = `<p class="text-xs text-[#9C8A90] text-center py-4">No database edits recorded yet.</p>`;
-                    } else {
+                bodyEl.innerHTML = `<div id="user-activity-history-list" class="space-y-2"><p class="text-xs text-[#9C8A90] text-center py-4">Loading database change history...</p></div>`;
+                const listEl = document.getElementById('user-activity-history-list');
+                if (window.currentUser) {
+                    try {
+                        const getDocsFn = getFirestoreGetDocs();
+                        const logsSnap = await getDocsFn(window.firestoreCollection(window.firebaseDb, "users", window.currentUser.uid, "activity_logs"));
                         const rows = logsSnap.docs.map(d => d.data());
-                        bodyEl.innerHTML = rows.map(item => `
-                            <div class="bg-[#FDF9F8] p-2.5 rounded-xl border border-[#EFE4E6] space-y-1">
-                                <div class="flex justify-between items-center">
-                                    <span class="font-bold text-[#9E5E6F] uppercase text-[10px]">${sanitizeHTML((item.action || 'change').replace(/_/g, ' '))}</span>
-                                    <span class="text-[9px] text-[#9C8A90] font-mono">${sanitizeHTML((item.timestamp || '').replace('T', ' ').substring(0, 19))}</span>
-                                </div>
-                                <p class="text-[10px] text-[#6E5D62] font-mono break-all">${sanitizeHTML(JSON.stringify(item.details || {}))}</p>
-                            </div>
-                        `).join('');
+                        rows.sort((a, b) => String(b.timestamp || '').localeCompare(String(a.timestamp || '')));
+                        window.currentUserActivityLogs = rows.slice(0, 50);
+                        if (window.renderUserActivityHistoryContainer) {
+                            window.renderUserActivityHistoryContainer(listEl);
+                        }
+                    } catch (err) {
+                        if (window.currentUserActivityLogs?.length && window.renderUserActivityHistoryContainer) {
+                            window.renderUserActivityHistoryContainer(listEl);
+                        } else {
+                            listEl.innerHTML = `<p class="text-xs text-rose-600 text-center py-4">Could not load activity logs: ${sanitizeHTML(err.message)}</p>`;
+                        }
                     }
-                } catch (err) {
-                    bodyEl.innerHTML = `<p class="text-xs text-rose-600 text-center py-4">Could not load activity logs: ${sanitizeHTML(err.message)}</p>`;
                 }
             }
         };
@@ -3040,6 +3457,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                     }
                     const userRef = window.firestoreDoc(window.firebaseDb, "users", window.currentUser.uid);
                     await window.firestoreSetDoc(userRef, { name, email, phone, updatedAt: new Date().toISOString() }, { merge: true });
+                    window.currentUserData = { ...(window.currentUserData || {}), name, email, phone };
                     await window.logUserDatabaseChange("profile_updated", { name, email, phone });
                     triggerTelegramHaptic('success');
                     alert('Profile updated and saved to database successfully!');
@@ -3075,49 +3493,183 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             document.getElementById('cancel-edit-addr-btn').classList.add('hidden');
         };
 
+        async function detectCurrentGpsLocation() {
+            if (!navigator.geolocation) {
+                throw new Error("Geolocation is not supported by this browser.");
+            }
+            const pos = await new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(resolve, reject, {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                });
+            });
+            const lat = Number(pos.coords.latitude.toFixed(6));
+            const lng = Number(pos.coords.longitude.toFixed(6));
+            let formattedAddress = `Pinned GPS (${lat}, ${lng})`;
+            let cityName = "Cambodia";
+
+            try {
+                const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.display_name) {
+                        formattedAddress = `${data.display_name} (${lat}, ${lng})`;
+                    }
+                    cityName = data.address?.city || data.address?.town || data.address?.state || cityName;
+                }
+            } catch (_) {
+                // Keep coordinate address fallback
+            }
+
+            return { lat, lng, formattedAddress, cityName };
+        }
+
+        window.pinCurrentLocationForProfileAddress = async function() {
+            triggerTelegramHaptic('medium');
+            try {
+                const loc = await detectCurrentGpsLocation();
+                if (!document.getElementById('new-addr-label').value.trim()) {
+                    document.getElementById('new-addr-label').value = 'Pinned Location';
+                }
+                document.getElementById('new-addr-street').value = loc.formattedAddress;
+                document.getElementById('new-addr-province').value = loc.cityName;
+                triggerTelegramHaptic('success');
+            } catch (err) {
+                alert("Could not pin current location: " + err.message);
+            }
+        };
+
         window.saveAddressSubcoll = async function() {
+            const activeUser = window.currentUser || window.firebaseAuth?.currentUser;
+            if (!activeUser) return alert("Please sign in to save addresses.");
             const existingId = document.getElementById('edit-addr-id')?.value.trim();
             const label = sanitizeHTML(document.getElementById('new-addr-label').value.trim());
             const street = sanitizeHTML(document.getElementById('new-addr-street').value.trim());
             const province = sanitizeHTML(document.getElementById('new-addr-province').value.trim());
-            if (!label || !street || !province) return alert('Please fill in all fields.');
-            if (window.currentUser) {
-                const cleanDocId = existingId || `addr_${label.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+            if (!label || !street || !province) return alert('Please fill in label, street address, and city/province.');
+
+            try {
+                const cleanDocId = existingId || `addr_${Date.now()}`;
                 const existingObj = (window.currentUserAddresses || []).find(a => a.id === cleanDocId);
-                const addressRef = window.firestoreDoc(window.firebaseDb, "users", window.currentUser.uid, "addresses", cleanDocId);
-                await window.firestoreSetDoc(addressRef, {
+                const addrPayload = {
                     label,
                     street,
                     province,
-                    isDefault: existingObj ? Boolean(existingObj.isDefault) : window.currentUserAddresses.length === 0,
+                    isDefault: existingObj ? Boolean(existingObj.isDefault) : (window.currentUserAddresses || []).length === 0,
                     updatedAt: new Date().toISOString()
-                }, { merge: true });
+                };
+                const addressRef = window.firestoreDoc(window.firebaseDb, "users", activeUser.uid, "addresses", cleanDocId);
+                await window.firestoreSetDoc(addressRef, addrPayload, { merge: true });
+
+                if (existingId) {
+                    window.currentUserAddresses = (window.currentUserAddresses || []).map(a => a.id === cleanDocId ? { id: cleanDocId, ...addrPayload } : a);
+                } else {
+                    window.currentUserAddresses = [...(window.currentUserAddresses || []), { id: cleanDocId, ...addrPayload }];
+                }
+
                 await window.logUserDatabaseChange(existingId ? "address_updated" : "address_added", { addressId: cleanDocId, label, street, province });
                 triggerTelegramHaptic('success');
                 openProfileSection('addresses');
+            } catch (err) {
+                alert("Failed to save address to database: " + err.message);
             }
         };
 
         window.setDefaultAddressSubcoll = async function(addressId) {
-            if (!window.currentUser) return;
+            const activeUser = window.currentUser || window.firebaseAuth?.currentUser;
+            if (!activeUser) return;
             const addrs = window.currentUserAddresses || [];
             for (const a of addrs) {
-                await window.firestoreSetDoc(window.firestoreDoc(window.firebaseDb, "users", window.currentUser.uid, "addresses", a.id), {
+                await window.firestoreSetDoc(window.firestoreDoc(window.firebaseDb, "users", activeUser.uid, "addresses", a.id), {
                     isDefault: a.id === addressId,
                     updatedAt: new Date().toISOString()
                 }, { merge: true });
             }
+            window.currentUserAddresses = addrs.map(a => ({ ...a, isDefault: a.id === addressId }));
             await window.logUserDatabaseChange("default_address_changed", { addressId });
             triggerTelegramHaptic('success');
             openProfileSection('addresses');
         };
 
         window.removeAddressSubcoll = async function(addressId) {
-            if (window.currentUser) {
-                await window.firestoreDeleteDoc(window.firestoreDoc(window.firebaseDb, "users", window.currentUser.uid, "addresses", addressId));
+            const activeUser = window.currentUser || window.firebaseAuth?.currentUser;
+            if (activeUser) {
+                await window.firestoreDeleteDoc(window.firestoreDoc(window.firebaseDb, "users", activeUser.uid, "addresses", addressId));
+                window.currentUserAddresses = (window.currentUserAddresses || []).filter(a => a.id !== addressId);
                 await window.logUserDatabaseChange("address_deleted", { addressId });
                 triggerTelegramHaptic('medium');
                 openProfileSection('addresses');
+            }
+        };
+
+        // CHECKOUT SAVED ADDRESS DROPDOWN & PIN CURRENT LOCATION
+        window.populateCheckoutAddressDropdown = function() {
+            const selectEl = document.getElementById('checkout-address-select');
+            if (!selectEl) return;
+            const addrs = window.currentUserAddresses || [];
+            const lastAddr = window.currentUserData?.lastDeliveryAddress || '';
+
+            const options = [`<option value="">-- Choose saved address or type below --</option>`];
+            addrs.forEach(a => {
+                const fullText = `${a.street}, ${a.province}`;
+                options.push(`<option value="${sanitizeHTML(fullText)}">${sanitizeHTML(a.label)}${a.isDefault ? ' (Default)' : ''} — ${sanitizeHTML(fullText)}</option>`);
+            });
+            if (lastAddr && !addrs.some(a => `${a.street}, ${a.province}` === lastAddr)) {
+                options.push(`<option value="${sanitizeHTML(lastAddr)}">Last Used — ${sanitizeHTML(lastAddr)}</option>`);
+            }
+            selectEl.innerHTML = options.join('');
+        };
+
+        window.onCheckoutAddressSelect = function(val) {
+            if (!val) return;
+            const addrInput = document.getElementById('checkout-address');
+            if (addrInput) addrInput.value = val;
+            const statusEl = document.getElementById('checkout-gps-status');
+            if (statusEl) {
+                statusEl.classList.remove('hidden');
+                statusEl.innerText = "Selected from saved addresses.";
+            }
+            triggerTelegramHaptic('light');
+        };
+
+        window.pinCurrentLocationForDelivery = async function() {
+            const btn = document.getElementById('pin-current-location-btn');
+            const statusEl = document.getElementById('checkout-gps-status');
+            const addrInput = document.getElementById('checkout-address');
+            const selectEl = document.getElementById('checkout-address-select');
+
+            if (btn) btn.disabled = true;
+            if (statusEl) {
+                statusEl.classList.remove('hidden');
+                statusEl.innerText = "Detecting current GPS location...";
+            }
+            triggerTelegramHaptic('medium');
+
+            try {
+                const loc = await detectCurrentGpsLocation();
+                if (addrInput) addrInput.value = loc.formattedAddress;
+                if (selectEl) {
+                    let pinnedOpt = Array.from(selectEl.options).find(o => o.value === '__pinned__');
+                    if (!pinnedOpt) {
+                        pinnedOpt = document.createElement('option');
+                        pinnedOpt.value = '__pinned__';
+                        selectEl.appendChild(pinnedOpt);
+                    }
+                    pinnedOpt.text = `Pinned GPS — ${loc.formattedAddress}`;
+                    selectEl.value = '__pinned__';
+                }
+                if (statusEl) {
+                    statusEl.innerText = `Pinned location (${loc.lat}, ${loc.lng}) applied.`;
+                }
+                triggerTelegramHaptic('success');
+            } catch (err) {
+                if (statusEl) {
+                    statusEl.innerText = `GPS pin failed: ${err.message}`;
+                }
+                alert("Could not pin current location: " + err.message);
+            } finally {
+                if (btn) btn.disabled = false;
             }
         };
 
@@ -3299,6 +3851,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             else window.cart.push({ ...prod, image: window.getProductImages(prod)[0], qty: 1 });
 
             await window.syncCartToDatabase(`added_${id}`);
+            await window.logUserDatabaseChange("cart_item_added", { productId: id, name: prod.name });
 
             if (window.Telegram?.WebApp?.enableClosingConfirmation) {
                 window.Telegram.WebApp.enableClosingConfirmation();
@@ -3372,16 +3925,25 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         function openCheckoutModal() {
             if (!window.cart || window.cart.length === 0) return alert('Your bag is empty.');
             closeCartDrawer();
+            populateCheckoutAddressDropdown();
+
             const uData = window.currentUserData || {};
             const defaultAddr = (window.currentUserAddresses || []).find(a => a.isDefault) || (window.currentUserAddresses || [])[0];
             const nameInput = document.getElementById('checkout-name');
             const phoneInput = document.getElementById('checkout-phone');
             const addrInput = document.getElementById('checkout-address');
+            const selectEl = document.getElementById('checkout-address-select');
+            const statusEl = document.getElementById('checkout-gps-status');
 
             if (nameInput && !nameInput.value) nameInput.value = uData.name || '';
             if (phoneInput && !phoneInput.value) phoneInput.value = uData.phone || '';
-            if (addrInput && !addrInput.value) {
-                addrInput.value = defaultAddr ? `${defaultAddr.street}, ${defaultAddr.province}` : (uData.lastDeliveryAddress || '');
+            if (statusEl) statusEl.classList.add('hidden');
+
+            const initialAddr = defaultAddr ? `${defaultAddr.street}, ${defaultAddr.province}` : (uData.lastDeliveryAddress || '');
+            if (addrInput && !addrInput.value) addrInput.value = initialAddr;
+            if (selectEl && initialAddr) {
+                const match = Array.from(selectEl.options).find(o => o.value === initialAddr);
+                if (match) selectEl.value = initialAddr;
             }
             document.getElementById('checkout-modal').classList.remove('hidden');
         }
@@ -3393,461 +3955,525 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         function cancelBakongPayment() { document.getElementById('bakong-payment-modal').classList.add('hidden'); }
         window.cancelBakongPayment = cancelBakongPayment;
 
+        function applyRolePermissionsToAdminUI() {
+            const perms = window.getCurrentRolePermissions();
+            document.getElementById('admin-role-tag').innerText = perms.label;
+            const summaryEl = document.getElementById('admin-role-permissions-summary');
+            if (summaryEl) summaryEl.innerText = perms.summary;
+
+            const addProdBtn = document.getElementById('add-prod-admin-btn');
+            if (addProdBtn) {
+                addProdBtn.classList.toggle('hidden', !perms.canCreateProducts);
+            }
+
+            const exportOrdersBtn = document.getElementById('export-orders-csv-btn');
+            if (exportOrdersBtn) {
+                exportOrdersBtn.classList.toggle('hidden', !perms.canExportOrders);
+            }
+
+            const addCouponBtn = document.getElementById('add-coupon-admin-btn');
+            if (addCouponBtn) {
+                addCouponBtn.classList.toggle('hidden', !perms.canManageCoupons);
+            }
+
+            const createStaffCard = document.getElementById('create-staff-card');
+            if (createStaffCard) {
+                createStaffCard.classList.toggle('hidden', !perms.canManageStaffRoles);
+            }
+
+            const tabAccess = {
+                orders: perms.canViewOrders,
+                products: perms.canViewProducts,
+                coupons: perms.canViewCoupons,
+                analytics: perms.canViewAnalytics,
+                reviews: perms.canViewReviews,
+                staff: perms.canViewStaff,
+                logs: perms.canViewLogs
+            };
+
+            let firstAllowedTab = null;
+            Object.entries(tabAccess).forEach(([tabName, allowed]) => {
+                const tabBtn = document.getElementById(`adtab-${tabName}`);
+                if (tabBtn) tabBtn.classList.toggle('hidden', !allowed);
+                if (!firstAllowedTab && allowed) firstAllowedTab = tabName;
+            });
+
+            return firstAllowedTab || 'products';
+        }
+
         function enterAdminMode() {
             document.getElementById('customer-view').classList.add('hidden');
             document.getElementById('admin-view').classList.remove('hidden');
-            document.getElementById('customer-nav').classList.add('hidden');
+            const custNav = document.getElementById('customer-nav');
+            if (custNav) custNav.classList.add('hidden');
 
-            if (window.Telegram?.WebApp?.MainButton) {
-                window.Telegram.WebApp.MainButton.hide();
-            }
-
-            const role = String(window.currentUserData?.role || 'admin').toLowerCase();
-            document.getElementById('admin-role-tag').innerText = role === 'staff' ? 'Fulfillment Staff' : 'Super Admin';
-            const addBtn = document.getElementById('add-prod-admin-btn');
-            if (addBtn) addBtn.style.display = role === 'staff' ? 'none' : '';
-
-            switchAdminNav('orders');
+            const defaultTab = applyRolePermissionsToAdminUI();
+            switchAdminNav(defaultTab);
+            fetchOrdersPage('first');
             updateAdminMetrics();
         }
+        window.enterAdminMode = enterAdminMode;
 
         function exitAdminMode() {
             document.getElementById('customer-view').classList.remove('hidden');
             document.getElementById('admin-view').classList.add('hidden');
-            document.getElementById('customer-nav').classList.remove('hidden');
-            switchCustomerTab('shop');
-            updateTelegramMainButton();
+            const custNav = document.getElementById('customer-nav');
+            if (custNav) custNav.classList.remove('hidden');
         }
         window.exitAdminMode = exitAdminMode;
 
-        function switchAdminNav(sec) {
-            ['orders', 'products', 'coupons', 'analytics', 'reviews', 'staff', 'logs'].forEach(s => {
-                const el = document.getElementById(`admin-sec-${s}`);
-                const tab = document.getElementById(`adtab-${s}`);
-                if (el) el.classList.add('hidden');
-                if (tab) tab.className = 'px-4 py-2 border-b-2 border-transparent text-[#6E5D62] font-semibold whitespace-nowrap';
-            });
-            const activeSec = document.getElementById(`admin-sec-${sec}`);
-            const activeTab = document.getElementById(`adtab-${sec}`);
-            if (activeSec) activeSec.classList.remove('hidden');
-            if (activeTab) activeTab.className = 'px-4 py-2 border-b-2 border-[#9E5E6F] text-[#9E5E6F] font-semibold whitespace-nowrap';
+        let ordersUnsubscribe = null;
 
-            if (sec === 'orders') loadAdminOrdersPage('initial');
-            if (sec === 'products') renderAdminProducts();
-            if (sec === 'coupons') renderAdminCoupons();
-            if (sec === 'analytics') renderAdminAnalyticsCharts();
-            if (sec === 'reviews') loadAllAdminReviews();
-            if (sec === 'staff') loadAdminStaffUsers();
-            if (sec === 'logs') initAdminLogsUserDropdown();
+        function startOrdersListener() {
+            if (ordersUnsubscribe) { ordersUnsubscribe(); ordersUnsubscribe = null; }
+            ordersUnsubscribe = window.firestoreOnSnapshot
+                ? window.firestoreOnSnapshot(window.firestoreCollection(window.firebaseDb, "orders"), (snap) => {
+                    const list = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
+                    list.sort((a, b) => String(b.createdAt || b.date || '').localeCompare(String(a.createdAt || a.date || '')));
+                    window.orders = list;
+                    renderHighDensityOrdersTable();
+                    updateAdminMetrics();
+                }, () => {})
+                : null;
+        }
+
+        async function fetchOrdersPage(direction = 'first') {
+            if (!window.currentUser || !window.hasRolePermission('canViewOrders')) return;
+            try {
+                const getDocsFn = getFirestoreGetDocs();
+                const snap = await getDocsFn(window.firestoreCollection(window.firebaseDb, "orders"));
+                const allList = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
+                allList.sort((a, b) => String(b.createdAt || b.date || '').localeCompare(String(a.createdAt || a.date || '')));
+                window.orders = allList;
+                renderHighDensityOrdersTable();
+                updateAdminMetrics();
+                if (!ordersUnsubscribe && window.firestoreOnSnapshot) startOrdersListener();
+            } catch (err) {
+                console.error("Failed to fetch orders:", err);
+            }
+        }
+        window.fetchOrdersPage = fetchOrdersPage;
+
+        window.fetchNextOrdersPage = function() {
+            fetchOrdersPage('next');
+        };
+        window.fetchPreviousOrdersPage = function() {
+            fetchOrdersPage('prev');
+        };
+
+        window.setAdminOrderStatusFilter = function(status) {
+            triggerTelegramHaptic('light');
+            currentAdminOrderStatusFilter = status;
+            ['all', 'pending', 'paid', 'shipped'].forEach(pill => {
+                const btn = document.getElementById(`ord-pill-${pill}`);
+                if (!btn) return;
+                const active = pill.toLowerCase() === status.toLowerCase();
+                btn.className = active
+                    ? 'px-3 py-1.5 bg-[#9E5E6F] text-white rounded-xl shadow-xs font-bold'
+                    : 'px-3 py-1.5 bg-[#FDF9F8] text-[#6E5D62] hover:bg-[#F8EFF1] rounded-xl border border-[#EFE4E6] font-medium';
+            });
+            renderHighDensityOrdersTable();
+        };
+
+        let orderSearchTimer = null;
+        window.debounceOrderSearch = function(val) {
+            clearTimeout(orderSearchTimer);
+            orderSearchTimer = setTimeout(() => {
+                adminOrderSearchQuery = (val || '').trim().toLowerCase();
+                renderHighDensityOrdersTable();
+            }, 180);
+        };
+
+        function renderHighDensityOrdersTable() {
+            const tbody = document.getElementById('high-density-orders-tbody');
+            const paginationInfo = document.getElementById('pagination-info');
+            if (!tbody) return;
+            const canUpdate = window.hasRolePermission('canUpdateOrders');
+
+            const filtered = (window.orders || []).filter(o => {
+                const matchesStatus = currentAdminOrderStatusFilter === 'All' || String(o.status || '').toLowerCase() === currentAdminOrderStatusFilter.toLowerCase();
+                const hay = `${o.orderNum || ''} ${o.customerName || ''} ${o.phone || ''} ${o.address || ''}`.toLowerCase();
+                const matchesQuery = !adminOrderSearchQuery || hay.includes(adminOrderSearchQuery);
+                return matchesStatus && matchesQuery;
+            });
+
+            if (paginationInfo) {
+                paginationInfo.innerText = `Showing ${filtered.length} of ${(window.orders || []).length} orders`;
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-[#9C8A90]">No orders found matching current filter.</td></tr>`;
+                return;
+            }
+
+            const statusOptions = ['Pending', 'Paid', 'Processing', 'Shipped', 'Delivered'];
+            tbody.innerHTML = filtered.map(o => {
+                const itemCount = (o.items || []).reduce((sum, i) => sum + (Number(i.qty) || 1), 0);
+                return `
+                    <tr class="hover:bg-[#FDF9F8]">
+                        <td class="py-2.5 px-3 font-mono font-bold text-[#9E5E6F] whitespace-nowrap">${sanitizeHTML(o.orderNum || '')}</td>
+                        <td class="py-2.5 px-3">
+                            <div class="font-bold text-[#2A2124]">${sanitizeHTML(o.customerName || 'Shopper')}</div>
+                            <div class="text-[10px] text-[#6E5D62]">${sanitizeHTML(o.phone || '')} • ${sanitizeHTML(o.address || '')}</div>
+                        </td>
+                        <td class="py-2.5 px-3">
+                            ${canUpdate ? `
+                            <select onchange="updateOrderStatus('${o.docId}', this.value)" class="border border-[#EFE4E6] rounded-lg px-2 py-1 text-[10px] font-bold bg-[#FFFFFF] text-[#2A2124]">
+                                ${statusOptions.map(st => `<option value="${st}" ${(o.status || 'Pending') === st ? 'selected' : ''}>${st}</option>`).join('')}
+                            </select>` : `<span class="px-2 py-0.5 rounded bg-[#F8EFF1] text-[#2A2124] font-bold text-[10px]">${sanitizeHTML(o.status || 'Pending')}</span>`}
+                        </td>
+                        <td class="py-2.5 px-3 text-[#6E5D62]">${itemCount} item(s)</td>
+                        <td class="py-2.5 px-3 text-right font-bold text-[#2A2124]">${window.formatPrice(o.total || 0)}</td>
+                        <td class="py-2.5 px-3 text-right font-mono text-[10px] text-[#6E5D62]">${sanitizeHTML(o.date || '')}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        window.renderHighDensityOrdersTable = renderHighDensityOrdersTable;
+
+        async function updateAdminMetrics() {
+            const allOrders = window.orders || [];
+            const totalRev = allOrders.reduce((s, o) => s + (Number(o.total) || 0), 0);
+            const pendingCount = allOrders.filter(o => (o.status || 'Pending') === 'Pending').length;
+            const lowStockCount = (window.products || []).filter(p => (p.stock ?? 10) <= 5).length;
+            const totalDiscounts = (window.coupons || []).reduce((s, c) => s + (Number(c.totalDiscountGiven) || 0), 0);
+
+            const revEl = document.getElementById('admin-metric-revenue');
+            const pendEl = document.getElementById('admin-metric-pending');
+            const lowEl = document.getElementById('admin-metric-lowstock');
+            const discEl = document.getElementById('admin-metric-discounts');
+            if (revEl) revEl.innerText = window.formatPrice(totalRev);
+            if (pendEl) pendEl.innerText = String(pendingCount);
+            if (lowEl) lowEl.innerText = String(lowStockCount);
+            if (discEl) discEl.innerText = window.formatPrice(totalDiscounts);
+        }
+        window.updateAdminMetrics = updateAdminMetrics;
+
+        function switchAdminNav(tab) {
+            triggerTelegramHaptic('light');
+            const perms = window.getCurrentRolePermissions();
+            const permissionByTab = {
+                orders: perms.canViewOrders,
+                products: perms.canViewProducts,
+                coupons: perms.canViewCoupons,
+                analytics: perms.canViewAnalytics,
+                reviews: perms.canViewReviews,
+                staff: perms.canViewStaff,
+                logs: perms.canViewLogs
+            };
+
+            if (permissionByTab[tab] === false) {
+                return alert('Your current role does not have permission to view this section.');
+            }
+
+            ['orders', 'products', 'coupons', 'analytics', 'reviews', 'staff', 'logs'].forEach(t => {
+                document.getElementById(`admin-sec-${t}`)?.classList.add('hidden');
+                const btn = document.getElementById(`adtab-${t}`);
+                if (btn) btn.className = 'px-4 py-2 border-b-2 border-transparent text-[#6E5D62] whitespace-nowrap';
+            });
+            document.getElementById(`admin-sec-${tab}`)?.classList.remove('hidden');
+            const activeBtn = document.getElementById(`adtab-${tab}`);
+            if (activeBtn) activeBtn.className = 'px-4 py-2 border-b-2 border-[#9E5E6F] text-[#9E5E6F] whitespace-nowrap';
+
+            if (tab === 'orders') {
+                renderHighDensityOrdersTable();
+                updateAdminMetrics();
+            } else if (tab === 'products') {
+                renderAdminProducts();
+            } else if (tab === 'coupons') {
+                renderAdminCoupons();
+            } else if (tab === 'analytics') {
+                renderAnalyticsCharts();
+            } else if (tab === 'reviews') {
+                if (window.loadAllAdminReviews) window.loadAllAdminReviews();
+            } else if (tab === 'staff') {
+                loadAdminStaffUsers();
+            } else if (tab === 'logs') {
+                if (window.initAdminLogsUserDropdown) window.initAdminLogsUserDropdown();
+            }
         }
         window.switchAdminNav = switchAdminNav;
 
         window.loadAdminStaffUsers = async function() {
             const tbody = document.getElementById('admin-staff-table-body');
             if (!tbody) return;
+            const canAssign = window.hasRolePermission('canManageStaffRoles');
             tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-[#9C8A90]">Loading users...</td></tr>`;
+
             try {
                 const getDocsFn = getFirestoreGetDocs();
                 const snap = await getDocsFn(window.firestoreCollection(window.firebaseDb, "users"));
                 const usersList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                usersList.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
 
-                tbody.innerHTML = usersList.length === 0 ? `<tr><td colspan="4" class="p-4 text-center text-[#9C8A90]">No users found.</td></tr>` :
-                    usersList.map(u => {
-                        const r = String(u.role || 'customer').toLowerCase();
-                        return `
-                            <tr class="border-b border-[#EFE4E6]">
-                                <td class="p-2 font-medium text-[#2A2124]"><b>${sanitizeHTML(u.name || 'User')}</b><span class="block text-[9px] font-mono text-[#9C8A90]">${sanitizeHTML(u.customId || 'MINIMIZE00001')}</span></td>
-                                <td class="p-2 text-[#6E5D62]">${sanitizeHTML(u.email || 'N/A')}</td>
-                                <td class="p-2">
-                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold ${r === 'admin' ? 'bg-[#9E5E6F] text-white' : (r === 'staff' ? 'bg-[#F9F3EA] text-[#9E5E6F] border border-[#C9A46B]/40' : 'bg-[#F8EFF1] text-[#6E5D62] border border-[#EFE4E6]')}">
-                                        ${r}
-                                    </span>
-                                </td>
-                                <td class="p-2 text-right space-x-1.5">
-                                    <button type="button" onclick="inspectUserLogsFromStaff('${u.id}')" class="bg-[#FDF9F8] hover:bg-[#F8EFF1] text-[#2A2124] border border-[#EFE4E6] px-2 py-1 rounded text-[10px] font-bold" title="View User Activity Logs">Logs 🕒</button>
-                                    <select onchange="updateUserRole('${u.id}', this.value)" class="border border-[#EFE4E6] rounded px-2 py-1 text-[10px] bg-[#FFFFFF] text-[#2A2124] font-medium">
-                                        <option value="customer" ${r === 'customer' ? 'selected' : ''}>Customer</option>
-                                        <option value="staff" ${r === 'staff' ? 'selected' : ''}>Staff</option>
-                                        <option value="admin" ${r === 'admin' ? 'selected' : ''}>Admin</option>
-                                    </select>
-                                </td>
-                            </tr>
-                        `;
-                    }).join('');
-            } catch (err) {
-                console.error("Error loading users:", err);
-                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-rose-600">Failed to load users (${sanitizeHTML(err.code || 'error')}): ${sanitizeHTML(err.message)}</td></tr>`;
-            }
-        };
-
-        window.updateUserRole = async function(uid, newRole) {
-            if (!isCallerSuperAdmin()) {
-                return alert('Only Super Admins can change user roles.');
-            }
-            try {
-                await window.firestoreSetDoc(window.firestoreDoc(window.firebaseDb, "users", uid), { role: newRole.toLowerCase(), updatedAt: new Date().toISOString() }, { merge: true });
-                await window.logUserDatabaseChange("user_role_updated", { targetUid: uid, newRole });
-                triggerTelegramHaptic('success');
-                alert(`User role successfully updated to "${newRole}"!`);
-                await loadAdminStaffUsers();
-            } catch (err) {
-                alert('Failed to update role: ' + err.message);
-            }
-        };
-
-        window.updateAdminMetrics = async function() {
-            try {
-                const getDocsFn = getFirestoreGetDocs();
-                const snap = await getDocsFn(window.firestoreCollection(window.firebaseDb, "orders"));
-                window.orders = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
-
-                const totalRevenue = (window.orders || []).reduce((sum, o) => sum + (Number(o.total) || 0), 0);
-                const pendingCount = (window.orders || []).filter(o => o.status === 'Pending').length;
-                const lowStockItems = (window.products || []).filter(p => (p.stock ?? 10) <= 5);
-                const lowStockCount = lowStockItems.length;
-                const totalDiscounts = (window.coupons || []).reduce((sum, c) => sum + (Number(c.totalDiscountGiven) || 0), 0);
-
-                if (document.getElementById('admin-metric-revenue')) document.getElementById('admin-metric-revenue').innerText = `$${totalRevenue.toFixed(2)}`;
-                if (document.getElementById('admin-metric-pending')) document.getElementById('admin-metric-pending').innerText = pendingCount;
-                if (document.getElementById('admin-metric-lowstock')) document.getElementById('admin-metric-lowstock').innerText = lowStockCount;
-                if (document.getElementById('admin-metric-discounts')) document.getElementById('admin-metric-discounts').innerText = `$${totalDiscounts.toFixed(2)}`;
-
-                const banner = document.getElementById('low-stock-alert-banner');
-                const alertText = document.getElementById('low-stock-alert-text');
-                if (banner && alertText) {
-                    if (lowStockCount > 0) {
-                        banner.classList.remove('hidden');
-                        alertText.innerText = `Warning: ${lowStockCount} item${lowStockCount > 1 ? 's are' : ' is'} running low on stock (<= 5 units)!`;
-                    } else {
-                        banner.classList.add('hidden');
-                    }
-                }
-            } catch (err) {
-                console.warn("Metrics update notice:", err.code || err.message);
-            }
-        };
-
-        window.loadAdminOrdersPage = async function(direction = 'initial') {
-            const tbody = document.getElementById('high-density-orders-tbody');
-            if (!tbody) return;
-            try {
-                const getDocsFn = getFirestoreGetDocs();
-                let q = window.firestoreQuery(window.firestoreCollection(window.firebaseDb, "orders"), window.firestoreOrderBy("createdAt", "desc"), window.firestoreLimit(orderPageSize));
-                if (direction === 'next' && lastVisibleOrderDoc) {
-                    q = window.firestoreQuery(window.firestoreCollection(window.firebaseDb, "orders"), window.firestoreOrderBy("createdAt", "desc"), window.firestoreStartAfter(lastVisibleOrderDoc), window.firestoreLimit(orderPageSize));
-                } else if (direction === 'prev' && orderPaginationStack.length > 1) {
-                    orderPaginationStack.pop();
-                    const prevCursor = orderPaginationStack[orderPaginationStack.length - 1];
-                    if (prevCursor) {
-                        q = window.firestoreQuery(window.firestoreCollection(window.firebaseDb, "orders"), window.firestoreOrderBy("createdAt", "desc"), window.firestoreStartAfter(prevCursor), window.firestoreLimit(orderPageSize));
-                    }
-                } else if (direction === 'initial') {
-                    orderPaginationStack.length = 0;
-                    lastVisibleOrderDoc = null;
-                }
-
-                const snapshot = await getDocsFn(q);
-                if (snapshot.empty && direction !== 'initial') {
-                    if (direction === 'next') document.getElementById('next-page-btn').disabled = true;
-                    return;
-                }
-
-                if (!snapshot.empty) {
-                    firstVisibleOrderDoc = snapshot.docs[0];
-                    lastVisibleOrderDoc = snapshot.docs[snapshot.docs.length - 1];
-                    if (direction === 'next' || direction === 'initial') {
-                        if (orderPaginationStack.length === 0 || orderPaginationStack[orderPaginationStack.length - 1] !== firstVisibleOrderDoc) {
-                            orderPaginationStack.push(firstVisibleOrderDoc);
-                        }
-                    }
-                }
-
-                const rows = snapshot.docs
-                    .map(docSnap => ({ docId: docSnap.id, ...docSnap.data() }))
-                    .filter(o => {
-                        const matchesStatus = currentAdminOrderStatusFilter === 'All' || o.status === currentAdminOrderStatusFilter;
-                        const matchesSearch = !adminOrderSearchQuery ||
-                            String(o.orderNum || '').toLowerCase().includes(adminOrderSearchQuery) ||
-                            String(o.customerName || '').toLowerCase().includes(adminOrderSearchQuery);
-                        return matchesStatus && matchesSearch;
-                    });
-
-                tbody.innerHTML = rows.length === 0
-                    ? `<tr><td colspan="6" class="p-4 text-center text-[#9C8A90]">No orders found.</td></tr>`
-                    : rows.map(o => `
-                        <tr class="hover:bg-[#FDF9F8] transition-colors">
-                            <td class="py-2.5 px-3 font-mono font-bold text-[#9E5E6F]">${sanitizeHTML(o.orderNum)}</td>
-                            <td class="py-2.5 px-3">
-                                <span class="font-bold block text-[#2A2124]">${sanitizeHTML(o.customerName)}</span>
-                                <span class="text-[10px] text-[#6E5D62]">${sanitizeHTML(o.phone)}</span>
-                            </td>
-                            <td class="py-2.5 px-3">
-                                <select onchange="updateOrderStatus('${o.docId}', this.value)" class="border border-[#EFE4E6] rounded-lg px-2 py-0.5 text-[10px] bg-[#FFFFFF] font-medium ${o.status === 'Paid' ? 'text-emerald-600' : 'text-[#C9A46B]'}">
-                                    <option ${o.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                                    <option ${o.status === 'Paid' ? 'selected' : ''}>Paid</option>
-                                    <option ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
-                                    <option ${o.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
-                                    <option ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
-                                </select>
-                            </td>
-                            <td class="py-2.5 px-3 text-[#6E5D62]">${(o.items || []).reduce((s, i) => s + i.qty, 0)} items</td>
-                            <td class="py-2.5 px-3 text-right font-bold text-[#2A2124]">${window.formatPrice(o.total)}</td>
-                            <td class="py-2.5 px-3 text-right text-[#9C8A90] text-[10px]">${o.date}</td>
-                        </tr>
-                    `).join('');
-
-                document.getElementById('prev-page-btn').disabled = orderPaginationStack.length <= 1;
-                document.getElementById('next-page-btn').disabled = snapshot.docs.length < orderPageSize;
-                document.getElementById('pagination-info').innerText = `Page stack depth: ${orderPaginationStack.length}`;
-            } catch (err) {
-                console.error("Orders load error:", err);
-                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-rose-600">Failed to load orders (${sanitizeHTML(err.code || 'error')}): ${sanitizeHTML(err.message)}</td></tr>`;
-            }
-        };
-
-        window.fetchNextOrdersPage = () => loadAdminOrdersPage('next');
-        window.fetchPreviousOrdersPage = () => loadAdminOrdersPage('prev');
-
-        let searchDebounceTimer = null;
-        window.debounceOrderSearch = function(val) {
-            clearTimeout(searchDebounceTimer);
-            searchDebounceTimer = setTimeout(() => {
-                adminOrderSearchQuery = val.trim().toLowerCase();
-                loadAdminOrdersPage('initial');
-            }, 300);
-        };
-
-        window.setAdminOrderStatusFilter = function(status) {
-            triggerTelegramHaptic('light');
-            currentAdminOrderStatusFilter = status;
-            ['all', 'pending', 'paid', 'shipped'].forEach(s => {
-                const btn = document.getElementById(`ord-pill-${s}`);
-                if (btn) {
-                    btn.className = s === status.toLowerCase()
-                        ? 'px-3 py-1.5 bg-[#9E5E6F] text-white rounded-xl shadow-xs'
-                        : 'px-3 py-1.5 bg-[#FDF9F8] text-[#6E5D62] hover:bg-[#F8EFF1] rounded-xl border border-[#EFE4E6]';
-                }
-            });
-            loadAdminOrdersPage('initial');
-        };
-
-        let categoryChartInstance = null;
-        let orderStatusChartInstance = null;
-
-        window.renderAdminAnalyticsCharts = function() {
-            const categoryData = {};
-            ['Hairpins', 'Necklaces', 'Rings', 'Earrings', 'Phone Charms', 'Bags & Pouches'].forEach(c => categoryData[c] = 0);
-
-            (window.orders || []).forEach(o => {
-                (o.items || []).forEach(item => {
-                    const cat = item.category || 'Hairpins';
-                    categoryData[cat] = (categoryData[cat] || 0) + (item.price * item.qty);
-                });
-            });
-
-            const ctxCat = document.getElementById('categoryChart')?.getContext('2d');
-            if (ctxCat) {
-                if (categoryChartInstance) categoryChartInstance.destroy();
-                categoryChartInstance = new Chart(ctxCat, {
-                    type: 'doughnut',
-                    data: {
-                        labels: Object.keys(categoryData),
-                        datasets: [{
-                            data: Object.values(categoryData),
-                            backgroundColor: ['#9E5E6F', '#C9A46B', '#2A2124', '#C48B9B', '#DFC394', '#EFE4E6']
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false }
-                });
-            }
-
-            const statusCount = { Pending: 0, Paid: 0, Processing: 0, Shipped: 0, Delivered: 0 };
-            (window.orders || []).forEach(o => {
-                const st = o.status || 'Pending';
-                if (statusCount[st] !== undefined) statusCount[st]++;
-            });
-
-            const ctxStatus = document.getElementById('orderStatusChart')?.getContext('2d');
-            if (ctxStatus) {
-                if (orderStatusChartInstance) orderStatusChartInstance.destroy();
-                orderStatusChartInstance = new Chart(ctxStatus, {
-                    type: 'bar',
-                    data: {
-                        labels: Object.keys(statusCount),
-                        datasets: [{
-                            label: 'Orders',
-                            data: Object.values(statusCount),
-                            backgroundColor: '#9E5E6F'
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
-                });
-            }
-        };
-
-        window.filterLowStockProducts = function() {
-            triggerTelegramHaptic('light');
-            lowStockFilterActive = !lowStockFilterActive;
-            const filterBtn = document.getElementById('low-stock-filter-btn');
-            if (filterBtn) {
-                filterBtn.innerText = lowStockFilterActive ? 'Show All Products' : 'View Low Stock Only';
-            }
-            renderAdminProducts();
-        };
-
-        window.renderAdminProducts = function() {
-            const tbody = document.getElementById('admin-products-table-body');
-            if (!tbody) return;
-            const searchInput = document.getElementById('admin-product-search');
-            const queryText = searchInput ? searchInput.value.toLowerCase() : '';
-
-            const filteredProducts = (window.products || []).filter(p => {
-                const matchesQuery = (p.name && p.name.toLowerCase().includes(queryText)) ||
-                                     (p.sku && p.sku.toLowerCase().includes(queryText)) ||
-                                     (p.category && p.category.toLowerCase().includes(queryText));
-                const matchesLowStock = !lowStockFilterActive || ((p.stock ?? 10) <= 5);
-                return matchesQuery && matchesLowStock;
-            });
-
-            tbody.innerHTML = filteredProducts.length === 0 ? `<tr><td colspan="5" class="p-4 text-center text-[#9C8A90]">No products found.</td></tr>` :
-                filteredProducts.map(p => {
-                    const stock = p.stock ?? 10;
-                    const isLow = stock <= 5;
-                    const isStaff = (window.currentUserData?.role || "").toLowerCase() === 'staff';
-                    const photoCount = window.getProductImages(p).length;
+                tbody.innerHTML = usersList.map(u => {
+                    const role = window.normalizeStaffRole(u.role || 'customer');
                     return `
-                        <tr class="border-b border-[#EFE4E6] ${isLow ? 'bg-[#FDF9F8]' : ''}">
-                            <td class="p-2 font-medium text-[#2A2124]"><b>${sanitizeHTML(p.name)}</b><span class="block text-[9px] font-mono text-[#9C8A90]">${sanitizeHTML(p.sku || 'SKU')} • ${photoCount} photo${photoCount > 1 ? 's' : ''}</span></td>
-                            <td class="p-2 text-[#6E5D62]">${sanitizeHTML(p.category)}</td>
-                            <td class="p-2 font-bold text-[#9E5E6F]">$${Number(p.price).toFixed(2)}</td>
+                        <tr class="hover:bg-[#FDF9F8]">
                             <td class="p-2">
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isLow ? 'bg-rose-50 text-rose-600 border border-rose-200 animate-pulse' : 'bg-[#F8EFF1] text-[#2A2124] border border-[#EFE4E6]'}">
-                                    ${stock} left ${isLow ? '⚠️' : ''}
-                                </span>
+                                <div class="font-bold text-[#2A2124]">${sanitizeHTML(u.name || 'Shopper')}</div>
+                                <div class="text-[9px] font-mono text-[#6E5D62]">${sanitizeHTML(u.customId || 'MINIMIZE00001')}</div>
                             </td>
-                            <td class="p-2 text-right space-x-1">
-                                <button type="button" onclick="broadcastExistingProduct('${p.id}')" class="bg-sky-600 text-white px-2 py-1 rounded text-[10px] font-bold" title="Broadcast"><i class="fa-brands fa-telegram"></i></button>
-                                <button type="button" onclick="adjustProductStock('${p.id}', 5)" class="bg-[#9E5E6F] text-white px-2 py-1 rounded text-[10px] font-bold" title="Restock +5">+5</button>
-                                ${!isStaff ? `<button type="button" onclick="editProduct('${p.id}')" class="text-[#9E5E6F] font-bold px-1">Edit</button><button type="button" onclick="deleteProduct('${p.id}')" class="text-rose-600 px-1">Delete</button>` : ''}
+                            <td class="p-2 text-[#6E5D62]">${sanitizeHTML(u.email || 'Telegram')}</td>
+                            <td class="p-2">
+                                <span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase bg-[#F8EFF1] text-[#9E5E6F] border border-[#EFE4E6]">${sanitizeHTML(role)}</span>
+                            </td>
+                            <td class="p-2 text-right whitespace-nowrap">
+                                <div class="inline-flex items-center space-x-1.5">
+                                    ${canAssign ? `
+                                    <select onchange="updateUserRoleAdmin('${u.id}', this.value)" class="border border-[#EFE4E6] rounded-lg px-2 py-1 text-[10px] bg-[#FFFFFF] text-[#2A2124]">
+                                        <option value="customer" ${role === 'customer' ? 'selected' : ''}>customer</option>
+                                        <option value="fulfillment_staff" ${role === 'fulfillment_staff' ? 'selected' : ''}>fulfillment_staff</option>
+                                        <option value="support_staff" ${role === 'support_staff' ? 'selected' : ''}>support_staff</option>
+                                        <option value="marketing_staff" ${role === 'marketing_staff' ? 'selected' : ''}>marketing_staff</option>
+                                        <option value="manager" ${role === 'manager' ? 'selected' : ''}>manager</option>
+                                        <option value="admin" ${role === 'admin' ? 'selected' : ''}>admin</option>
+                                    </select>` : ''}
+                                    <button type="button" onclick="inspectUserLogsFromStaff('${u.id}')" class="bg-[#FDF9F8] hover:bg-[#F8EFF1] border border-[#EFE4E6] text-[#2A2124] px-2 py-1 rounded-lg text-[10px] font-bold">Logs</button>
+                                </div>
                             </td>
                         </tr>
                     `;
                 }).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-rose-600">Error loading users: ${sanitizeHTML(err.message)}</td></tr>`;
+            }
         };
 
-        window.renderAdminCoupons = function() {
-            const tbody = document.getElementById('admin-coupons-table-body');
+        window.updateUserRoleAdmin = async function(targetUid, newRole) {
+            if (!window.hasRolePermission('canManageStaffRoles')) {
+                return alert('Only Super Admins can assign roles.');
+            }
+            const normalized = window.normalizeStaffRole(newRole);
+            await window.firestoreSetDoc(window.firestoreDoc(window.firebaseDb, "users", targetUid), {
+                role: normalized,
+                updatedAt: new Date().toISOString()
+            }, { merge: true });
+            await window.logUserDatabaseChange("user_role_updated", { targetUid, role: normalized });
+            triggerTelegramHaptic('success');
+            await loadAdminStaffUsers();
+        };
+
+        window.filterLowStockProducts = function() {
+            lowStockFilterActive = !lowStockFilterActive;
+            const btn = document.getElementById('low-stock-filter-btn');
+            if (btn) btn.innerText = lowStockFilterActive ? 'Show All Products' : 'View Low Stock Only';
+            renderAdminProducts();
+        };
+
+        function renderAdminProducts() {
+            const tbody = document.getElementById('admin-products-table-body');
             if (!tbody) return;
-            const isStaff = (window.currentUserData?.role || "").toLowerCase() === 'staff';
-            tbody.innerHTML = (window.coupons || []).length === 0 ? `<tr><td colspan="6" class="p-4 text-center text-[#9C8A90]">No active coupons.</td></tr>` :
-                (window.coupons || []).map(c => `
-                    <tr class="border-b border-[#EFE4E6]">
-                        <td class="p-2 font-mono font-bold text-[#9E5E6F]">${sanitizeHTML(c.code)}</td>
-                        <td class="p-2 font-semibold text-[#6E5D62]">${c.discountPercent}% OFF</td>
-                        <td class="p-2 font-bold text-[#2A2124]">${c.usageCount || 0} / ${c.maxUsage || 50}</td>
-                        <td class="p-2 font-bold text-[#2A2124]">$${(c.totalDiscountGiven || 0).toFixed(2)}</td>
-                        <td class="p-2"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${c.isActive ? 'bg-[#9E5E6F] text-white' : 'bg-[#F8EFF1] text-[#9C8A90] border border-[#EFE4E6]'}">${c.isActive ? 'Active' : 'Inactive'}</span></td>
-                        <td class="p-2 text-right space-x-2">
-                            ${!isStaff ? `<button type="button" onclick="toggleCouponStatus('${c.id}', ${Boolean(c.isActive)})" class="text-[#9E5E6F] font-bold">${c.isActive ? 'Disable' : 'Enable'}</button><button type="button" onclick="deleteCoupon('${c.id}', '${sanitizeHTML(c.code)}')" class="text-rose-600">Delete</button>` : '<span class="text-[#9C8A90] text-[10px]">Restricted</span>'}
+            const perms = window.getCurrentRolePermissions();
+
+            const lowStockItems = window.products.filter(p => (p.stock ?? 10) <= 5);
+            const banner = document.getElementById('low-stock-alert-banner');
+            if (banner) {
+                if (lowStockItems.length > 0) {
+                    banner.classList.remove('hidden');
+                    document.getElementById('low-stock-alert-text').innerText = `Warning: ${lowStockItems.length} item(s) running low on stock (<= 5 units)!`;
+                } else {
+                    banner.classList.add('hidden');
+                }
+            }
+
+            const qVal = (document.getElementById('admin-product-search')?.value || '').trim().toLowerCase();
+            const list = window.products.filter(p => {
+                if (lowStockFilterActive && (p.stock ?? 10) > 5) return false;
+                if (!qVal) return true;
+                return `${p.name || ''} ${p.sku || ''} ${p.category || ''}`.toLowerCase().includes(qVal);
+            });
+
+            tbody.innerHTML = list.map(p => {
+                const stock = p.stock ?? 10;
+                const stockBadge = stock <= 5
+                    ? `<span class="text-rose-600 font-bold">${stock} units (Low)</span>`
+                    : `<span class="text-[#2A2124] font-semibold">${stock} units</span>`;
+
+                return `
+                    <tr class="hover:bg-[#FDF9F8]">
+                        <td class="p-2 font-bold text-[#2A2124]">
+                            <div>${sanitizeHTML(p.name)}</div>
+                            <div class="text-[9px] font-mono text-[#6E5D62]">${sanitizeHTML(p.sku || '')}</div>
+                        </td>
+                        <td class="p-2 text-[#6E5D62]">${sanitizeHTML(p.category || '')}</td>
+                        <td class="p-2 font-bold text-[#9E5E6F]">${window.formatPrice(p.price)}</td>
+                        <td class="p-2">${stockBadge}</td>
+                        <td class="p-2 text-right whitespace-nowrap space-x-1.5">
+                            ${perms.canRestockProducts ? `<button type="button" onclick="adjustProductStock('${p.id}', 5)" class="bg-[#FDF9F8] hover:bg-[#F8EFF1] border border-[#EFE4E6] text-[#2A2124] px-2 py-1 rounded-lg text-[10px] font-bold">+5 Stock</button>` : ''}
+                            ${perms.canBroadcastProducts ? `<button type="button" onclick="broadcastExistingProduct('${p.id}')" class="bg-[#F9F3EA] hover:bg-[#EFE4E6] border border-[#EFE4E6] text-[#9E5E6F] px-2 py-1 rounded-lg text-[10px] font-bold">Broadcast</button>` : ''}
+                            ${perms.canEditProducts ? `<button type="button" onclick="openProductModal('${p.id}')" class="text-[#9E5E6F] font-bold text-[10px] hover:underline px-1">Edit</button>` : ''}
+                            ${perms.canDeleteProducts ? `<button type="button" onclick="deleteProduct('${p.id}')" class="text-rose-600 font-bold text-[10px] hover:underline px-1">Delete</button>` : ''}
                         </td>
                     </tr>
-                `).join('');
-        };
+                `;
+            }).join('');
+        }
+        window.renderAdminProducts = renderAdminProducts;
 
-        window.openProductModal = function() {
-            if ((window.currentUserData?.role || "").toLowerCase() === 'staff') return alert('Staff role cannot add products.');
-            document.getElementById('prod-id').value = '';
-            document.getElementById('prod-name').value = '';
-            document.getElementById('prod-sku').value = '';
-            document.getElementById('prod-price').value = '';
-            document.getElementById('prod-stock').value = '';
-            syncUrlPreview(1, '');
-            syncUrlPreview(2, '');
-            syncUrlPreview(3, '');
-            document.getElementById('spec-material').value = '';
-            document.getElementById('spec-dimensions').value = '';
-            document.getElementById('spec-care').value = '';
+        function openProductModal(id = null) {
+            if (id && !window.hasRolePermission('canEditProducts')) {
+                return alert('Your role cannot edit products.');
+            }
+            if (!id && !window.hasRolePermission('canCreateProducts')) {
+                return alert('Your role cannot create products.');
+            }
+            triggerTelegramHaptic('light');
+            const p = id ? window.products.find(item => item.id === id) : null;
+            document.getElementById('product-modal-title').innerText = p ? "Edit Product & Broadcast" : "Add Product & Customize Telegram Post";
+            document.getElementById('prod-id').value = p ? p.id : '';
+            document.getElementById('prod-name').value = p ? p.name : '';
+            document.getElementById('prod-sku').value = p ? p.sku : '';
+            document.getElementById('prod-category').value = p ? p.category : 'Hairpins';
+            document.getElementById('prod-price').value = p ? p.price : '';
+            document.getElementById('prod-stock').value = p ? (p.stock ?? 10) : 10;
+
+            const existingPhotos = p ? window.getProductImages(p) : [];
+            syncUrlPreview(1, existingPhotos[0] || '');
+            syncUrlPreview(2, existingPhotos[1] || '');
+            syncUrlPreview(3, existingPhotos[2] || '');
+
+            document.getElementById('spec-material').value = p?.details?.material || '';
+            document.getElementById('spec-dimensions').value = p?.details?.dimensions || '';
+            document.getElementById('spec-care').value = p?.details?.care || '';
             document.getElementById('telegram-chat-id').value = localStorage.getItem('mininize_tg_chat') || '';
             document.getElementById('admin-product-modal').classList.remove('hidden');
-        };
-
-        window.editProduct = function(id) {
-            if ((window.currentUserData?.role || "").toLowerCase() === 'staff') return alert('Staff role cannot edit products.');
-            const p = window.products.find(item => item.id === id);
-            if (!p) return;
-            const imgs = window.getProductImages(p);
-            document.getElementById('prod-id').value = p.id;
-            document.getElementById('prod-name').value = p.name;
-            document.getElementById('prod-sku').value = p.sku || '';
-            document.getElementById('prod-category').value = p.category || 'Hairpins';
-            document.getElementById('prod-price').value = p.price;
-            document.getElementById('prod-stock').value = p.stock ?? 10;
-            syncUrlPreview(1, imgs[0] || '');
-            syncUrlPreview(2, imgs[1] || '');
-            syncUrlPreview(3, imgs[2] || '');
-            document.getElementById('spec-material').value = p.details?.material || '';
-            document.getElementById('spec-dimensions').value = p.details?.dimensions || '';
-            document.getElementById('spec-care').value = p.details?.care || '';
-            document.getElementById('telegram-chat-id').value = localStorage.getItem('mininize_tg_chat') || '';
-            document.getElementById('admin-product-modal').classList.remove('hidden');
-        };
+        }
+        window.openProductModal = openProductModal;
 
         function closeAdminProductModal() { document.getElementById('admin-product-modal').classList.add('hidden'); }
         window.closeAdminProductModal = closeAdminProductModal;
 
-        window.openCouponModal = function() {
-            if ((window.currentUserData?.role || "").toLowerCase() === 'staff') return alert('Staff role cannot create coupons.');
-            document.getElementById('coupon-code-input').value = '';
-            document.getElementById('coupon-discount-input').value = '';
-            document.getElementById('coupon-max-usage').value = '50';
+        function renderAdminCoupons() {
+            const tbody = document.getElementById('admin-coupons-table-body');
+            if (!tbody) return;
+            const canManage = window.hasRolePermission('canManageCoupons');
+            tbody.innerHTML = (window.coupons || []).map(c => {
+                const docId = c.id || c.code;
+                const usage = c.usageCount || 0;
+                const maxU = c.maxUsage || 50;
+                const isActive = Boolean(c.isActive);
+                return `
+                    <tr class="hover:bg-[#FDF9F8]">
+                        <td class="p-2 font-mono font-bold text-[#9E5E6F]">${sanitizeHTML(c.code)}</td>
+                        <td class="p-2 font-bold text-[#2A2124]">${c.discountPercent}%</td>
+                        <td class="p-2 text-[#6E5D62]">${usage} / ${maxU}</td>
+                        <td class="p-2 font-bold text-emerald-700">${window.formatPrice(c.totalDiscountGiven || 0)}</td>
+                        <td class="p-2"><span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${isActive ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-[#F8EFF1] text-[#9C8A90]'}">${isActive ? 'Active' : 'Inactive'}</span></td>
+                        <td class="p-2 text-right space-x-2">
+                            ${canManage ? `
+                            <button type="button" onclick="toggleCouponStatus('${docId}', ${isActive})" class="text-[10px] font-bold text-[#9E5E6F] hover:underline">${isActive ? 'Disable' : 'Enable'}</button>
+                            <button type="button" onclick="deleteCoupon('${docId}', '${sanitizeHTML(c.code)}')" class="text-[10px] font-bold text-rose-600 hover:underline">Delete</button>` : `<span class="text-[10px] text-[#9C8A90]">Read-only</span>`}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        window.renderAdminCoupons = renderAdminCoupons;
+
+        function openCouponModal() {
+            if (!window.hasRolePermission('canManageCoupons')) return alert('Your role cannot create coupons.');
             document.getElementById('admin-coupon-modal').classList.remove('hidden');
-        };
+        }
+        window.openCouponModal = openCouponModal;
+
         function closeAdminCouponModal() { document.getElementById('admin-coupon-modal').classList.add('hidden'); }
         window.closeAdminCouponModal = closeAdminCouponModal;
 
-        window.openAdminBarcodeScanner = function() {
-            triggerTelegramHaptic('medium');
+        let categoryChartInstance = null;
+        let orderStatusChartInstance = null;
+
+        function renderAnalyticsCharts() {
+            const catCanvas = document.getElementById('categoryChart');
+            const statusCanvas = document.getElementById('orderStatusChart');
+            if (!catCanvas || !statusCanvas || typeof Chart === 'undefined') return;
+
+            const catTotals = {};
+            const statusCounts = { Pending: 0, Paid: 0, Processing: 0, Shipped: 0, Delivered: 0 };
+
+            (window.orders || []).forEach(o => {
+                const st = o.status || 'Pending';
+                statusCounts[st] = (statusCounts[st] || 0) + 1;
+                (o.items || []).forEach(i => {
+                    const cat = i.category || 'Accessories';
+                    catTotals[cat] = (catTotals[cat] || 0) + ((Number(i.price) || 0) * (Number(i.qty) || 1));
+                });
+            });
+
+            if (Object.keys(catTotals).length === 0) {
+                catTotals['Hairpins'] = 12.5;
+                catTotals['Necklaces'] = 24.5;
+            }
+
+            if (categoryChartInstance) categoryChartInstance.destroy();
+            categoryChartInstance = new Chart(catCanvas, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(catTotals),
+                    datasets: [{
+                        data: Object.values(catTotals),
+                        backgroundColor: ['#9E5E6F', '#C9A46B', '#6E5D62', '#D4A5A5', '#A7C4B5', '#E2C290']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            if (orderStatusChartInstance) orderStatusChartInstance.destroy();
+            orderStatusChartInstance = new Chart(statusCanvas, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(statusCounts),
+                    datasets: [{
+                        label: 'Orders',
+                        data: Object.values(statusCounts),
+                        backgroundColor: '#9E5E6F',
+                        borderRadius: 8
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+        }
+        window.renderAnalyticsCharts = renderAnalyticsCharts;
+
+        function openAdminBarcodeScanner() {
+            if (!window.hasRolePermission('canRestockProducts')) {
+                return alert('Your role cannot restock scanned items.');
+            }
             document.getElementById('admin-scanner-modal').classList.remove('hidden');
             document.getElementById('scan-result-banner').classList.add('hidden');
+            if (typeof Html5Qrcode !== 'undefined' && !html5QrCodeScannerInstance) {
+                html5QrCodeScannerInstance = new Html5Qrcode("reader");
+                html5QrCodeScannerInstance.start(
+                    { facingMode: "environment" },
+                    { fps: 10, qrbox: { width: 200, height: 120 } },
+                    async (decodedText) => {
+                        const code = decodedText.trim().toUpperCase();
+                        const matched = window.products.find(p => (p.sku || '').toUpperCase() === code || p.id === decodedText.trim());
+                        const banner = document.getElementById('scan-result-banner');
+                        banner.classList.remove('hidden');
+                        if (matched) {
+                            await adjustProductStock(matched.id, 5);
+                            banner.innerText = `Restocked +5 for ${matched.name} (${code})!`;
+                        } else {
+                            banner.innerText = `Scanned code: ${code} (No matching SKU)`;
+                        }
+                    },
+                    () => {}
+                ).catch(() => {});
+            }
+        }
+        window.openAdminBarcodeScanner = openAdminBarcodeScanner;
 
-            setTimeout(() => {
-                try {
-                    html5QrCodeScannerInstance = new Html5Qrcode("reader");
-                    html5QrCodeScannerInstance.start(
-                        { facingMode: "environment" },
-                        { fps: 10, qrbox: { width: 250, height: 150 } },
-                        (decodedText) => {
-                            triggerTelegramHaptic('success');
-                            const banner = document.getElementById('scan-result-banner');
-                            banner.innerText = `Scanned Code: ${decodedText}`;
-                            banner.classList.remove('hidden');
-
-                            const searchInput = document.getElementById('admin-product-search');
-                            if (searchInput) {
-                                searchInput.value = decodedText;
-                                renderAdminProducts();
-                            }
-                            setTimeout(() => { closeAdminBarcodeScanner(); }, 1500);
-                        },
-                        () => {}
-                    ).catch(err => {
-                        console.error("Camera start error:", err);
-                        alert("Unable to access camera for scanning.");
-                    });
-                } catch (e) { console.error(e); }
-            }, 300);
-        };
-
-        window.closeAdminBarcodeScanner = function() {
-            triggerTelegramHaptic('light');
+        function closeAdminBarcodeScanner() {
+            document.getElementById('admin-scanner-modal').classList.add('hidden');
             if (html5QrCodeScannerInstance) {
                 html5QrCodeScannerInstance.stop().then(() => {
                     html5QrCodeScannerInstance.clear();
                     html5QrCodeScannerInstance = null;
-                }).catch(() => {});
+                }).catch(() => { html5QrCodeScannerInstance = null; });
             }
-            document.getElementById('admin-scanner-modal').classList.add('hidden');
-        };
+        }
+        window.closeAdminBarcodeScanner = closeAdminBarcodeScanner;
     </script>
 </body>
 </html>
