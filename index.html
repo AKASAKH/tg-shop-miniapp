@@ -418,7 +418,7 @@
                 <div id="admin-reviews-list-container" class="space-y-3 max-h-[60vh] overflow-y-auto text-xs"></div>
             </div>
 
-            <!-- STAFF MANAGEMENT SECTION (WITH CREATE STAFF FORM + ROLE SYNC) -->
+            <!-- STAFF MANAGEMENT SECTION -->
             <div id="admin-sec-staff" class="hidden space-y-4">
                 <div class="bg-[#FFFFFF] rounded-2xl p-4 shadow-xs border border-[#EFE4E6] space-y-3">
                     <div>
@@ -836,7 +836,22 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
         window.firebaseDb = db;
         window.firebaseAuth = auth;
+        window.firestoreGetDoc = getDoc;
+        window.firestoreGetDocs = getDocs;
+        window.firestoreSetDoc = setDoc;
+        window.firestoreUpdateDoc = updateDoc;
+        window.firestoreDeleteDoc = deleteDoc;
+        window.firestoreAddDoc = addDoc;
+        window.firestoreCollection = collection;
+        window.firestoreDoc = doc;
+        window.firestoreQuery = query;
+        window.firestoreWhere = where;
+        window.firestoreOrderBy = orderBy;
+        window.firestoreLimit = limit;
+        window.firestoreStartAfter = startAfter;
         window.firestoreWriteBatch = writeBatch;
+        window.getDoc = getDoc;
+        window.getDocs = getDocs;
 
         function formatMinimizeUserId(num) {
             const safeNum = Math.max(1, Number(num) || 1);
@@ -2460,6 +2475,14 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         let adminOrderSearchQuery = '';
         let lowStockFilterActive = false;
 
+        function getFirestoreGetDoc() {
+            return window.getDoc || window.firestoreGetDoc;
+        }
+
+        function getFirestoreGetDocs() {
+            return window.getDocs || window.firestoreGetDocs;
+        }
+
         function compressImageFile(file, maxDimension = 600, quality = 0.72) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -2816,13 +2839,14 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 titleEl.innerText = "My Orders & PDF Invoices 📦";
                 bodyEl.innerHTML = `<p class="text-xs text-[#9C8A90] text-center py-4">Loading your orders...</p>`;
                 try {
+                    const getDocsFn = getFirestoreGetDocs();
                     const ordersList = [];
                     if (isAdmin) {
-                        const snap = await getDocs(query(collection(window.firebaseDb, "orders"), orderBy("createdAt", "desc"), limit(20)));
+                        const snap = await getDocsFn(window.firestoreQuery(window.firestoreCollection(window.firebaseDb, "orders"), window.firestoreOrderBy("createdAt", "desc"), window.firestoreLimit(20)));
                         snap.forEach(d => ordersList.push({ docId: d.id, ...d.data() }));
                     } else if (window.currentUser) {
-                        const q = query(collection(window.firebaseDb, "orders"), where("userId", "==", window.currentUser.uid));
-                        const querySnapshot = await getDocs(q);
+                        const q = window.firestoreQuery(window.firestoreCollection(window.firebaseDb, "orders"), window.firestoreWhere("userId", "==", window.currentUser.uid));
+                        const querySnapshot = await getDocsFn(q);
                         querySnapshot.forEach(docSnap => ordersList.push({ docId: docSnap.id, ...docSnap.data() }));
                     }
                     const statuses = ['Pending', 'Paid', 'Processing', 'Shipped', 'Delivered'];
@@ -2969,7 +2993,8 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 titleEl.innerText = "Saved Edit & Activity History 🕒";
                 bodyEl.innerHTML = `<p class="text-xs text-[#9C8A90] text-center py-4">Loading database change history...</p>`;
                 try {
-                    const logsSnap = await getDocs(query(collection(window.firebaseDb, "users", window.currentUser.uid, "activity_logs"), orderBy("timestamp", "desc"), limit(25)));
+                    const getDocsFn = getFirestoreGetDocs();
+                    const logsSnap = await getDocsFn(window.firestoreQuery(window.firestoreCollection(window.firebaseDb, "users", window.currentUser.uid, "activity_logs"), window.firestoreOrderBy("timestamp", "desc"), window.firestoreLimit(25)));
                     if (logsSnap.empty) {
                         bodyEl.innerHTML = `<p class="text-xs text-[#9C8A90] text-center py-4">No database edits recorded yet.</p>`;
                     } else {
@@ -3008,13 +3033,13 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 if (window.currentUser) {
                     if (email && window.currentUser.email && email !== window.currentUser.email.toLowerCase() && !email.endsWith('@telegram.org')) {
                         try {
-                            await updateEmail(window.currentUser, email);
+                            await window.firebaseAuth.currentUser.updateEmail?.(email);
                         } catch (authEmailErr) {
                             console.warn("Firebase Auth email update notice:", authEmailErr.message);
                         }
                     }
-                    const userRef = doc(window.firebaseDb, "users", window.currentUser.uid);
-                    await setDoc(userRef, { name, email, phone, updatedAt: new Date().toISOString() }, { merge: true });
+                    const userRef = window.firestoreDoc(window.firebaseDb, "users", window.currentUser.uid);
+                    await window.firestoreSetDoc(userRef, { name, email, phone, updatedAt: new Date().toISOString() }, { merge: true });
                     await window.logUserDatabaseChange("profile_updated", { name, email, phone });
                     triggerTelegramHaptic('success');
                     alert('Profile updated and saved to database successfully!');
@@ -3059,8 +3084,8 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             if (window.currentUser) {
                 const cleanDocId = existingId || `addr_${label.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
                 const existingObj = (window.currentUserAddresses || []).find(a => a.id === cleanDocId);
-                const addressRef = doc(window.firebaseDb, "users", window.currentUser.uid, "addresses", cleanDocId);
-                await setDoc(addressRef, {
+                const addressRef = window.firestoreDoc(window.firebaseDb, "users", window.currentUser.uid, "addresses", cleanDocId);
+                await window.firestoreSetDoc(addressRef, {
                     label,
                     street,
                     province,
@@ -3077,7 +3102,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             if (!window.currentUser) return;
             const addrs = window.currentUserAddresses || [];
             for (const a of addrs) {
-                await setDoc(doc(window.firebaseDb, "users", window.currentUser.uid, "addresses", a.id), {
+                await window.firestoreSetDoc(window.firestoreDoc(window.firebaseDb, "users", window.currentUser.uid, "addresses", a.id), {
                     isDefault: a.id === addressId,
                     updatedAt: new Date().toISOString()
                 }, { merge: true });
@@ -3089,7 +3114,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
         window.removeAddressSubcoll = async function(addressId) {
             if (window.currentUser) {
-                await deleteDoc(doc(window.firebaseDb, "users", window.currentUser.uid, "addresses", addressId));
+                await window.firestoreDeleteDoc(window.firestoreDoc(window.firebaseDb, "users", window.currentUser.uid, "addresses", addressId));
                 await window.logUserDatabaseChange("address_deleted", { addressId });
                 triggerTelegramHaptic('medium');
                 openProfileSection('addresses');
@@ -3100,7 +3125,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             const emailAlerts = document.getElementById('notif-email').checked;
             const telegramAlerts = document.getElementById('notif-telegram').checked;
             if (window.currentUser) {
-                await setDoc(doc(window.firebaseDb, "users", window.currentUser.uid), {
+                await window.firestoreSetDoc(window.firestoreDoc(window.firebaseDb, "users", window.currentUser.uid), {
                     notifications: { emailAlerts, telegramAlerts },
                     updatedAt: new Date().toISOString()
                 }, { merge: true });
@@ -3112,14 +3137,15 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
         window.toggleWishlist = async function(id) {
             triggerTelegramHaptic('medium');
             if (window.currentUser) {
-                const wishRef = collection(window.firebaseDb, "users", window.currentUser.uid, "wishlist");
-                const q = query(wishRef, where("productId", "==", id));
-                const snap = await getDocs(q);
+                const getDocsFn = getFirestoreGetDocs();
+                const wishRef = window.firestoreCollection(window.firebaseDb, "users", window.currentUser.uid, "wishlist");
+                const q = window.firestoreQuery(wishRef, window.firestoreWhere("productId", "==", id));
+                const snap = await getDocsFn(q);
                 if (!snap.empty) {
-                    await deleteDoc(doc(window.firebaseDb, "users", window.currentUser.uid, "wishlist", snap.docs[0].id));
+                    await window.firestoreDeleteDoc(window.firestoreDoc(window.firebaseDb, "users", window.currentUser.uid, "wishlist", snap.docs[0].id));
                     await window.logUserDatabaseChange("wishlist_removed", { productId: id });
                 } else {
-                    await setDoc(doc(window.firebaseDb, "users", window.currentUser.uid, "wishlist", id), { productId: id, createdAt: new Date().toISOString() }, { merge: true });
+                    await window.firestoreSetDoc(window.firestoreDoc(window.firebaseDb, "users", window.currentUser.uid, "wishlist", id), { productId: id, createdAt: new Date().toISOString() }, { merge: true });
                     await window.logUserDatabaseChange("wishlist_added", { productId: id });
                 }
             } else {
@@ -3421,7 +3447,8 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             if (!tbody) return;
             tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-[#9C8A90]">Loading users...</td></tr>`;
             try {
-                const snap = await getDocs(collection(window.firebaseDb, "users"));
+                const getDocsFn = getFirestoreGetDocs();
+                const snap = await getDocsFn(window.firestoreCollection(window.firebaseDb, "users"));
                 const usersList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
                 tbody.innerHTML = usersList.length === 0 ? `<tr><td colspan="4" class="p-4 text-center text-[#9C8A90]">No users found.</td></tr>` :
@@ -3458,7 +3485,7 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
                 return alert('Only Super Admins can change user roles.');
             }
             try {
-                await setDoc(doc(window.firebaseDb, "users", uid), { role: newRole.toLowerCase(), updatedAt: new Date().toISOString() }, { merge: true });
+                await window.firestoreSetDoc(window.firestoreDoc(window.firebaseDb, "users", uid), { role: newRole.toLowerCase(), updatedAt: new Date().toISOString() }, { merge: true });
                 await window.logUserDatabaseChange("user_role_updated", { targetUid: uid, newRole });
                 triggerTelegramHaptic('success');
                 alert(`User role successfully updated to "${newRole}"!`);
@@ -3470,7 +3497,8 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
 
         window.updateAdminMetrics = async function() {
             try {
-                const snap = await getDocs(collection(window.firebaseDb, "orders"));
+                const getDocsFn = getFirestoreGetDocs();
+                const snap = await getDocsFn(window.firestoreCollection(window.firebaseDb, "orders"));
                 window.orders = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
 
                 const totalRevenue = (window.orders || []).reduce((sum, o) => sum + (Number(o.total) || 0), 0);
@@ -3503,21 +3531,22 @@ Tap below to shop instantly in our Telegram Mini App! 🛍️
             const tbody = document.getElementById('high-density-orders-tbody');
             if (!tbody) return;
             try {
-                let q = query(collection(window.firebaseDb, "orders"), orderBy("createdAt", "desc"), limit(orderPageSize));
+                const getDocsFn = getFirestoreGetDocs();
+                let q = window.firestoreQuery(window.firestoreCollection(window.firebaseDb, "orders"), window.firestoreOrderBy("createdAt", "desc"), window.firestoreLimit(orderPageSize));
                 if (direction === 'next' && lastVisibleOrderDoc) {
-                    q = query(collection(window.firebaseDb, "orders"), orderBy("createdAt", "desc"), startAfter(lastVisibleOrderDoc), limit(orderPageSize));
+                    q = window.firestoreQuery(window.firestoreCollection(window.firebaseDb, "orders"), window.firestoreOrderBy("createdAt", "desc"), window.firestoreStartAfter(lastVisibleOrderDoc), window.firestoreLimit(orderPageSize));
                 } else if (direction === 'prev' && orderPaginationStack.length > 1) {
                     orderPaginationStack.pop();
                     const prevCursor = orderPaginationStack[orderPaginationStack.length - 1];
                     if (prevCursor) {
-                        q = query(collection(window.firebaseDb, "orders"), orderBy("createdAt", "desc"), startAfter(prevCursor), limit(orderPageSize));
+                        q = window.firestoreQuery(window.firestoreCollection(window.firebaseDb, "orders"), window.firestoreOrderBy("createdAt", "desc"), window.firestoreStartAfter(prevCursor), window.firestoreLimit(orderPageSize));
                     }
                 } else if (direction === 'initial') {
                     orderPaginationStack.length = 0;
                     lastVisibleOrderDoc = null;
                 }
 
-                const snapshot = await getDocs(q);
+                const snapshot = await getDocsFn(q);
                 if (snapshot.empty && direction !== 'initial') {
                     if (direction === 'next') document.getElementById('next-page-btn').disabled = true;
                     return;
